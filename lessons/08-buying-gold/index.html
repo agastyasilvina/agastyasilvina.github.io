@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Heavy Money</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- disclaimer notice ---------- */
+.notice{
+  margin-block:1.6rem 2.4rem; border:2px solid var(--flag); border-radius:2px;
+  background:var(--flag-soft); padding:1.15rem 1.2rem;
+}
+.notice .block-label{ color:var(--flag); }
+.notice p{ margin:.45rem 0 0; font-size:.97rem; line-height:1.55; }
+.notice p:first-of-type{ margin-top:0; }
+.notice b{ color:var(--ink); }
+.notmine{
+  margin-block:1.4rem; border-left:3px solid var(--flag); padding:.2rem 0 .2rem 1rem;
+  font-family:var(--f-mono); font-size:.76rem; line-height:1.6; color:var(--flag);
+}
+.notmine b{ color:var(--flag); font-weight:700; }
+
+/* ---------- stack maths ---------- */
+.sums{ margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:1rem 1.1rem; }
+.sums .row{
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.6rem;
+  padding-block:.42rem; border-top:1px solid var(--line-soft);
+  font-family:var(--f-mono); font-size:.82rem; color:var(--muted);
+}
+.sums .row:first-of-type{ border-top:0; }
+.sums .row b{ color:var(--ink); font-weight:400; font-variant-numeric:tabular-nums; }
+.sums .row.total b{ color:var(--accent-ink); }
+.sums .row.bad b{ color:var(--flag); }
+.sums .cap{ margin-top:.7rem; font-family:var(--f-mono); font-size:.72rem; color:var(--muted); line-height:1.6; }
+table.week td.opt{ font-family:var(--f-mono); font-size:.76rem; color:var(--accent-ink); white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Heavy Money</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 08 &middot; Buying gold</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 08 &middot; One investor&rsquo;s gold stack</p>
+    <h1>What you want gold <em>for</em> decides how to hold it.</h1>
+    <p class="standfirst">A video about 3.8 kilos of metal in a safe: why he bought it, which bars, where he stores it, and whether he thinks you should. Then the part the video doesn&rsquo;t do &mdash; what its own numbers say when you recompute them, what it leaves out, and the question you asked: if you can buy gold through a bank, why hold the metal at all?</p>
+    <div class="metarow">
+      <span><b>13 moves</b> in four arcs</span>
+      <span>Video &mdash; <b>one investor&rsquo;s stack</b></span>
+      <span>Arcs C and D are <b>mine, not the video&rsquo;s</b></span>
+      <span>Notes taken <b>22 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The thirteen moves">
+    <p class="arclabel">The case, as made</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The numbers on screen</a></li>
+      <li><a href="#m2"><span class="n">2</span> Why it went up</a></li>
+      <li><a href="#m3"><span class="n">3</span> Money, not investment</a></li>
+      <li><a href="#m4"><span class="n">4</span> Speculation, admitted</a></li>
+      <li><a href="#m5"><span class="n">5</span> Is it still a good time?</a></li>
+    </ol>
+    <p class="arclabel">Buying and storing</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> Bars and stamps</a></li>
+      <li><a href="#m7"><span class="n">7</span> Where to buy</a></li>
+      <li><a href="#m8"><span class="n">8</span> The treasure map</a></li>
+    </ol>
+    <p class="arclabel">What it leaves out</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> The wrong benchmark</a></li>
+      <li><a href="#m10"><span class="n">10</span> The 1980 problem</a></li>
+      <li><a href="#m11"><span class="n">11</span> The round trip</a></li>
+    </ol>
+    <p class="arclabel">Your question: bank gold</p>
+    <ol>
+      <li><a href="#m12"><span class="n">12</span> What you actually own</a></li>
+      <li><a href="#m13"><span class="n">13</span> Which one fits which reason</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;13 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="notice">
+      <span class="block-label">Disclaimer &mdash; read this first</span>
+      <p><b>These are study notes, not financial advice.</b> Nothing here knows your income, your debts, your tax residency, your time horizon or your nerve, and none of it is a recommendation to buy or not buy anything.</p>
+      <p><b>Arcs A and B are the video&rsquo;s.</b> Arcs C and D are <b>mine</b> &mdash; the video makes none of those arguments, and arc D answers a question it never raises. Every section that isn&rsquo;t the video&rsquo;s is flagged in red where it starts.</p>
+      <p><b>Product details change and vary by country.</b> Anything about a specific bank, dealer or account type is a description of the general category, written to give you the right questions &mdash; check the current terms with the provider before acting on any of it.</p>
+      <p><b>The video links a dealer in its description</b> and says it isn&rsquo;t sponsored. Treat that as a disclosure worth verifying rather than a settled fact; a link can pay without being a sponsorship.</p>
+    </div>
+
+    <p class="lead">You said this one left you wondering rather than convinced. That&rsquo;s the right reaction, and it&rsquo;s the reason the page is built the way it is: arcs A and B set out the case exactly as the video makes it, then arc C asks what a careful reader should push back on, and arc D answers your bank question. The video is honest in places where finance videos usually aren&rsquo;t &mdash; and it is missing three things that would change the picture.</p>
+
+    <div class="arc"><h2>Arc A &middot; The case, as made</h2><span class="rule"></span><span class="cnt">5 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>The numbers on screen</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The stack, and whether the arithmetic holds</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>123.2 troy ounces &mdash; 91 one-ounce bars from Argor-Heraeus and 10 hundred-gram bars from Valcambi. About 3.8 kg, or 8.4 pounds. At the $3,401 per ounce quoted while filming, worth $419,003, against roughly $267,284 paid. Up about 56% in under two years. &ldquo;I got pretty lucky with the timing.&rdquo;</p>
+
+      <p>House rule on this page and the others: <strong>recompute, don&rsquo;t repeat.</strong> So:</p>
+
+      <div class="sums">
+        <div class="row"><span>91 one-ounce bars</span><b>91.00 oz</b></div>
+        <div class="row"><span>10 &times; 100 g, at 31.1035 g per troy ounce</span><b>32.15 oz</b></div>
+        <div class="row total"><span>Total, against the 123.2 oz claimed</span><b>123.15 oz &#10003;</b></div>
+        <div class="row"><span>123.2 oz &times; $3,401</span><b>$419,003 &#10003;</b></div>
+        <div class="row"><span>3.83 kg in pounds, against the 8.4 lb claimed</span><b>8.45 lb &#10003;</b></div>
+        <div class="row bad"><span>$419,003 &minus; $267,284, against the $151,559 claimed</span><b>$151,719</b></div>
+        <div class="row"><span>Gain on cost</span><b>56.8%</b></div>
+        <p class="cap">Five of six check out exactly &mdash; the weights, the ounce conversion and the valuation are all internally consistent, which is more than most finance videos manage. The stated gain is $160 light against his own two figures. Trivial in itself; worth noticing because it tells you the numbers were typed rather than derived.</p>
+      </div>
+
+      <p>And note the sentence most people skip past: <strong>&ldquo;I got pretty lucky with the timing.&rdquo;</strong> He is not claiming skill for the 56%. Keep that in mind when arc C gets to what the percentage does and doesn&rsquo;t prove.</p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>Why it went up &mdash; his three reasons</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">The explanation offered for the run</p>
+
+      <ol>
+        <li><strong>Central bank buying.</strong> His framing: the institutions that control entire countries&rsquo; currencies &mdash; the people who literally print the money &mdash; have been buying gold heavily.</li>
+        <li><strong>Geopolitics.</strong> Wars, trade fights, political tension. When people are nervous about the future they buy gold, and have for centuries.</li>
+        <li><strong>Inflation.</strong> Offered without elaboration, on the grounds that you experience it yourself.</li>
+      </ol>
+
+      <p>The first is the strongest of the three, and it is the one with an actual mechanism: a central bank shifting reserves into bullion is a large, price-insensitive buyer, and unlike a retail investor it is not going to panic-sell in a drawdown. The second and third are real forces, but they are also the explanations that get offered for <em>every</em> gold move, in both directions.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>All three are narratives about why gold <b>went</b> up, produced after it went up. That is not a criticism of their truth &mdash; it is a warning about what they can be used for. The question that matters for a buyer today isn&rsquo;t whether these forces are real, it&rsquo;s whether they are <b>already in the price</b>, and that question isn&rsquo;t asked. Everyone reading the same headlines has already bought.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Money, not an investment</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">The actual thesis, and where it came from</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>He started buying to keep savings somewhere safe until the right opportunity came. Reading the history of money, one pattern kept recurring: thousands of paper currencies, and every one eventually went to zero &mdash; the dollar itself having lost about 98% of its value since 1913. Then a Ray Dalio interview: gold is a currency; we have dollars, euros, yen and gold, and if you own a currency it makes sense to own some gold. The click: <b>gold isn&rsquo;t an investment, it&rsquo;s a more durable form of money to store savings in.</b></p>
+
+      <p>This is the load-bearing idea of the whole video, and it is worth separating from the price chart. He is not claiming gold produces returns. He is claiming it is <strong>a place to keep money</strong> that doesn&rsquo;t erode &mdash; and that the only reason gold stopped being money is that it can&rsquo;t be printed.</p>
+      <p>The origin story is the human part, and it is more instructive than the thesis. In 2018 he found $1,300 for an ounce of gold intimidating, so he bought a <strong>one-ounce silver coin for about $20</strong> instead. Then another. He carried them around, and describes the appeal plainly: solid, cold, heavy &mdash; <em>real wealth, not numbers on a screen.</em> That&rsquo;s what eventually got him into gold.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Two claims here need handling. <b>&ldquo;Every single paper currency went to zero&rdquo;</b> is too strong: most historical currencies were <em>replaced</em> &mdash; redenominated, or folded into a successor like the euro &mdash; rather than inflated into worthlessness, and holders were generally converted rather than wiped out. And <b>&ldquo;the dollar lost 98% since 1913&rdquo;</b> is roughly right as a statement about <em>cash</em>, and says nothing about savings, because almost nobody held banknotes for a century. That distinction is the whole of <a href="#m9">move 9</a>.</p>
+      <p>Worth adding that the Dalio line is an argument for <strong>a small allocation</strong> &mdash; &ldquo;at least a small portion&rdquo; is doing work in that quote, and it is a materially different claim from the video&rsquo;s own 3.8 kilos.</p>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Speculation, admitted</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">The most honest thirty seconds in the video</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>&ldquo;A real investment is something you&rsquo;ll hold for 20 or 30 years. If you&rsquo;re buying in the hope it rises over the next two or three, that&rsquo;s speculation.&rdquo; And then: yes, he was speculating that gold would hold its value better than paper currencies &mdash; and so far that speculation has paid off.</p>
+
+      <p>Give him this one. A video whose entire premise is a 56% gain, stopping to say <em>what I did was speculate, and it happened to work</em>, is doing something most of the genre never does. It also quietly undercuts the thumbnail: if the position is a speculation, the gain is evidence about a bet that came in, not about a method you can copy.</p>
+      <p>He also volunteers that he hasn&rsquo;t checked what the same money would have done in stocks, and that it might have done better. That is an unusual thing to leave in.</p>
+      <p>The distinction itself is the same one <a href="../04-market-timing/index.html">topic 04</a> runs on &mdash; a long horizon changes what counts as evidence. A two-year result tells you about the two years. It does not tell you the strategy was right, and he says so.</p>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Is it still a good time?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">His four questions</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Nobody can predict the perfect time, but here is how he thinks about it. Are we still printing money? Are central banks still accumulating gold? Do major currencies still lose purchasing power to inflation? Are there still tensions between major countries? If most of the answers are yes &mdash; and right now they are &mdash; there&rsquo;s still uncertainty in the system, and it makes sense to hold some gold.</p>
+
+      <p>The framework is clear and testable, which is more than most, and it has one structural problem worth naming: <strong>the answers have been &ldquo;yes&rdquo; almost continuously for fifty years.</strong> Money has been printed, currencies have lost purchasing power and countries have been in tension through periods when gold tripled and through periods when it fell by two thirds and stayed there.</p>
+      <p>A test that is always on cannot distinguish a good time from a bad one. What it actually supports is a different and more defensible position: <em>hold a permanent allocation, because the conditions are permanent</em> &mdash; which is a sensible thing to believe, and which removes timing from the question entirely. Sold as a timing signal it promises something it can&rsquo;t deliver.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; make the test falsifiable</span>
+        <p>Take his four questions and add the one that makes them a test rather than a mood: <strong>what would have to be true for the answer to be no?</strong> Write down, now, what would make you stop holding gold &mdash; a price, a real interest rate, a change in central bank behaviour.</p>
+        <p>If nothing would, you don&rsquo;t have a thesis, you have an allegiance &mdash; the same trap as <a href="../01-communication/index.html">topic 01</a>, move 2, and <a href="../04-market-timing/index.html">topic 04</a>, move 11.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Buying and storing</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Bars and stamps</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">The practical part, and it&rsquo;s the best part of the video</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Stick with small bars from well-known refiners &mdash; Argor-Heraeus, Valcambi, PAMP Suisse, Perth Mint, Royal Canadian Mint. A legitimate bar has four things stamped on it: the weight, the purity, the refiner&rsquo;s name or logo, and a unique serial number. &ldquo;That&rsquo;s like the bar&rsquo;s passport.&rdquo;</p>
+
+      <p>Those four stamps are the single most transferable thing in the video &mdash; a checklist you can run in a shop, in thirty seconds, without knowing anything about metals. Recognised refiners matter for the same reason: a bar from a name the whole market knows is one a buyer will take back without assay, and <strong>resale is where obscure product hurts you.</strong></p>
+      <p>His preference for one-ounce bars over one large one is a liquidity argument, and the analogy is good: <strong>twenty-dollar bills rather than hundreds.</strong> If you need to sell some, you sell some &mdash; rather than breaking up a single large holding you can only sell whole.</p>
+      <p>He is also straight about the cost of that: <strong>smaller bars carry higher premiums</strong> &mdash; the amount over spot that covers the dealer&rsquo;s costs &mdash; and he judges the flexibility worth it. That&rsquo;s a real trade-off, fairly stated. <a href="#m11">Move 11</a> puts numbers on it.</p>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Where to buy</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Choosing a dealer</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Look for established dealers with many positive reviews, transparent pricing and clear buyback policies. Don&rsquo;t shop on price alone &mdash; compare delivery times, customer service, and whether they educate you or just push high-margin products. For a first purchase, buy from <b>two different dealers</b> so you can compare. And don&rsquo;t ignore online dealers: lower overhead often beats local coin shops even after delivery, and you can lock in the market price immediately.</p>
+
+      <p>The two-dealer tip is genuinely clever and costs nothing but a bit of admin &mdash; you learn more about a dealer from one transaction than from a hundred reviews, and doing two in parallel gives you a baseline.</p>
+      <p>Of his four criteria, one matters far more than the others and it is the one people skim: <strong>a clear buyback policy</strong>. Everything about buying is visible and competitive; the exit is where the cost hides. A dealer who will quote you their buy price today, in public, before you have bought anything, is telling you what the round trip actually costs.</p>
+      <p>&ldquo;Whether they educate you or push high-margin products&rdquo; is worth keeping too &mdash; the high-margin end of this market is collectible and commemorative coins, where you pay a large premium for a mintage story that the next buyer may not value at all.</p>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>The treasure map</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Storage &mdash; and the one idea here worth stealing whatever you own</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Two priorities when storing: accessibility and security. A small amount close to home for emergencies; the majority in high-security insured storage he can reach 24/7. The golden rule: <b>never keep it all in one place</b> &mdash; spread the risk, and make sure every location is both secure and reachable when you need it.</p>
+
+      <p>Then the part that deserves to outlive the video. He keeps what he calls a <strong>treasure map</strong>: a document with the complete access details, with copies given to two trusted family members, so that if something happens to him they know exactly how to retrieve everything.</p>
+      <p>Self-custody has a failure mode nobody plans for, and it isn&rsquo;t theft &mdash; it is <strong>the owner being hit by a bus.</strong> Metal in an undisclosed location, a safe nobody can open, a vault account nobody knows exists: all of it is simply gone, and the more careful you were, the more thoroughly it is gone. This generalises well past gold, to crypto keys, safe deposit boxes and any account that isn&rsquo;t in a will.</p>
+      <p>He also mentions a vaulted option for people who don&rsquo;t want to deal with storage &mdash; a Swiss dealer offering free insured storage up to a threshold, instant sell-back at market price, which he says he has used for three years and which he discloses is linked in the description but not sponsored.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Two things about &ldquo;free insured storage&rdquo;. Free storage is a <b>customer-acquisition cost</b> &mdash; it&rsquo;s paid for by the buy/sell spread, so it isn&rsquo;t free, it&rsquo;s bundled. And storing metal with the dealer who sold it to you puts your holding back inside <b>somebody else&rsquo;s balance sheet</b>, which is precisely the exposure the physical thesis exists to avoid. That isn&rsquo;t a reason not to do it &mdash; it&rsquo;s convenient and the firm may be excellent &mdash; but it means you are no longer making the argument from <a href="#m3">move 3</a>. Which is exactly the issue in your bank question, at <a href="#m12">move 12</a>.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; write the treasure map tonight</span>
+        <p>Whatever you own that only you can reach &mdash; accounts, keys, a safe, a vault login &mdash; write the retrieval instructions as though for someone who knows none of it. Where it is, how to get in, who to contact, what proof they&rsquo;ll need.</p>
+        <p>Then give it to <strong>two</strong> people, separately. One is a single point of failure; two is a system. This takes twenty minutes and is the highest-value thing on this page for most people, gold or no gold.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; What it leaves out</h2><span class="rule"></span><span class="cnt">3 moves &middot; mine</span></div>
+
+    <p class="notmine"><b>Not from the video.</b> Everything in arcs C and D is my own analysis, added because you said it left you wondering. The video makes none of these arguments and doesn&rsquo;t address them. Still not financial advice &mdash; see the disclaimer at the top.</p>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>The wrong benchmark</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">The biggest gap, and it&rsquo;s a logical one rather than a factual one</p>
+
+      <p>&ldquo;The dollar has lost 98% of its value since 1913&rdquo; is approximately true and almost entirely beside the point, because it measures <strong>banknotes in a drawer</strong>. Nobody held cash for a century. The comparison that would settle anything is gold against <em>the alternatives people actually used to store savings</em> &mdash; bonds, property, a share in productive businesses &mdash; and over that same window the equity comparison is not close.</p>
+      <p>So the argument proves less than it appears to. <strong>Currency debasement is an argument against holding currency.</strong> It is not, by itself, an argument for gold; it is equally an argument for a house, a bond ladder, or an index fund. To get from &ldquo;cash decays&rdquo; to &ldquo;therefore gold&rdquo; you need a second premise &mdash; that gold beats those other options, or does something they can&rsquo;t &mdash; and that premise is never stated, let alone defended.</p>
+      <p>There <em>is</em> a good version of the second premise, and it is worth having because it is the honest case: gold does something an index fund can&rsquo;t, which is <strong>exist outside the financial system</strong>. It has no issuer, no counterparty and no default. That is a real property, it is the one he is actually buying, and it is worth paying something for. It is just not the same claim as &ldquo;gold preserves wealth better&rdquo;, and the video slides between the two.</p>
+
+      <blockquote class="pull"><p>Cash decays &rarr; therefore gold. The arrow is doing work that nobody has shown it can do.</p><cite>The gap in the argument</cite></blockquote>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>The 1980 problem</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">What &ldquo;store of value&rdquo; looks like on a bad entry</p>
+
+      <p>&ldquo;Gold holds its value over 5,000 years&rdquo; and &ldquo;gold will hold <em>my</em> savings over 30 years&rdquo; are different claims, and only the first one is safe. The counter-example is specific: gold peaked in <strong>January 1980</strong> around $850 an ounce and did not return to that level in <em>nominal</em> terms until <strong>2008</strong> &mdash; roughly 28 years. Adjusted for the inflation it was bought to protect against, the wait was far longer still.</p>
+      <p>Which is the exact failure the purchase was meant to prevent. Someone who bought at that top, for precisely the reasons given in this video, spent most of a working life underwater in real terms. It is the same shape as the Japan case in <a href="../04-market-timing/index.html">topic 04</a>: a long-run average that is perfectly true and perfectly useless if your thirty years happen to be the wrong thirty.</p>
+      <p>And the structural point underneath it: <strong>gold pays nothing.</strong> No dividend, no coupon, no rent. The entire return is the price going up, so there is no income to carry you through a flat decade &mdash; and with physical metal the carry is actually <em>negative</em>, because storage and insurance cost money every year you hold it. A share that falls 20% and pays a dividend and a bar that falls 20% and charges you rent are not the same position.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>None of this says gold is bad. It says the <b>entry price matters enormously</b> for an asset with no income, which sits awkwardly beside a video whose thesis is that timing doesn&rsquo;t matter because the conditions are permanent. Both can&rsquo;t be fully true. If timing doesn&rsquo;t matter, the 1980 buyer should have been fine.</p>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>The round trip</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">The cost nobody quotes</p>
+
+      <p>Physical gold has a spread in both directions: you pay a <strong>premium over spot</strong> to buy, and you sell back <strong>below spot</strong>. Both together are the round trip, and it is the number that decides whether small-bar flexibility is worth what it costs.</p>
+      <p>His own figures let you estimate it. April 2023, 85 one-ounce bars, about $185,000:</p>
+
+      <div class="sums">
+        <div class="row"><span>$185,000 &divide; 85 one-ounce bars</span><b>$2,176 / oz</b></div>
+        <div class="row"><span>Approximate spot, April 2023</span><b>&asymp; $2,000 / oz</b></div>
+        <div class="row total"><span>Implied premium over spot</span><b>&asymp; 8&ndash;9%</b></div>
+        <p class="cap">Higher than the 3&ndash;5% usually quoted for one-ounce bars &mdash; consistent with his own point that small bars cost more, or with the figures being rounded. The spot price here is from memory; check it before relying on the number. Either way the method is the thing: <b>divide what you paid by what you got, and compare it to spot on the day.</b></p>
+      </div>
+
+      <p>Add a sell-side discount of a few percent and the round trip on small bars can be <strong>roughly a tenth of the position</strong>. So the headline 56% is nearer 45% once you account for getting in and out &mdash; still an excellent two years, and a materially different number from the one on the thumbnail.</p>
+      <p>This is also the honest answer to &ldquo;why would anyone hold paper gold?&rdquo; The round trip on an exchange-traded fund or a bank account is a fraction of this. You are paying that difference for the property in <a href="#m9">move 9</a> &mdash; no counterparty &mdash; and if that property isn&rsquo;t why you&rsquo;re buying, you are paying for something you don&rsquo;t want.</p>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; Your question: bank gold</h2><span class="rule"></span><span class="cnt">2 moves &middot; mine</span></div>
+
+    <p class="notmine"><b>Not from the video, and it matters more here.</b> The video is entirely about metal you can hold; it never mentions bank gold accounts, ETFs or vaulted allocation. What follows is my answer to your question, written as a description of the general categories &mdash; <b>not</b> a description of any particular bank&rsquo;s current product. Terms, fees and legal treatment differ by bank and by country and change without notice. Check the product sheet before acting on any of it.</p>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>What you actually own</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">Five ways to hold gold, and the one distinction that decides everything</p>
+
+      <p>&ldquo;Buying gold&rdquo; covers five quite different things. They give you similar price exposure and wildly different <strong>legal positions</strong>, which is the part that only matters on the day it matters.</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>How you hold it</th><th>What you legally own</th><th>The trade</th></tr></thead>
+          <tbody>
+            <tr><td class="opt">Physical, at home</td><td>The metal. Nobody else is involved.</td><td>No counterparty at all &mdash; and all the theft, insurance and round-trip cost is yours.</td></tr>
+            <tr><td class="opt">Physical, allocated vault</td><td>Specific bars, by serial number, in your name. The vault is a <em>custodian</em>, holding your property.</td><td>Storage fee, but the bars aren&rsquo;t the vault&rsquo;s asset &mdash; they sit outside its balance sheet if it fails.</td></tr>
+            <tr><td class="opt">Unallocated account<br>(the typical bank product)</td><td><b>A claim on the bank</b>, denominated in grams. No particular metal is yours.</td><td>Cheap, instant, no storage hassle &mdash; and you are an <b>unsecured creditor</b> of that bank.</td></tr>
+            <tr><td class="opt">Gold ETF</td><td>Units in a fund that holds allocated bullion through a custodian.</td><td>Cheapest and most liquid; still a chain of institutions between you and the metal.</td></tr>
+            <tr><td class="opt">Mining shares</td><td>A company. Not gold.</td><td>Operational, political and management risk on top of the gold price. A different asset.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>So what is a bank gold savings account?</h3>
+      <p>The product OCBC and other banks in the region offer under names like <em>gold savings account</em> or <em>precious metals account</em> is, in the typical case, the <strong>third row</strong>: an unallocated account. You pay in currency, the balance is expressed in grams or ounces, it tracks the gold price, and you can usually buy and sell within the app at a spread far tighter than any coin dealer will give you.</p>
+      <p>What you generally do <em>not</em> get is metal with your name on it. There is usually <strong>no physical delivery</strong>, or delivery only by converting into bars at extra cost, in set sizes, with notice. And because the balance is a claim rather than a deposit, it is typically <strong>outside deposit-insurance protection</strong> &mdash; in Singapore, the SDIC scheme covers qualifying deposits, and precious metals accounts are generally not among them. <em>Verify that for your specific account; it is the single most important line in the product sheet.</em></p>
+
+      <p class="flag"><span class="block-label">The point for your question</span>Go back to <a href="#m3">move 3</a>. The video&rsquo;s entire thesis is that gold is money <b>with no issuer and no counterparty</b> &mdash; the thing that survives when paper claims don&rsquo;t. An unallocated bank account is a paper claim on a bank. It is an excellent way to own <b>the price of gold</b> and a poor way to own <b>the reason he gives for owning gold</b>. If the scenario you're insuring against is one where banks are in trouble, the insurance is issued by the thing you're insuring against.</p>
+      <p>That is not an argument against the bank account. It is an argument that <strong>it answers a different question</strong> &mdash; and for most people, most of the time, the different question is the one they actually have.</p>
+    </article>
+
+    <article class="move" id="m13">
+      <div class="movehead">
+        <span class="n">13</span>
+        <h2>Which one fits which reason</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m13">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="13"> Done</label>
+        </div>
+      </div>
+      <p class="who">The decision, in the only order that works</p>
+
+      <p>The mistake is choosing the <em>format</em> first and the <em>reason</em> afterwards. Reason first, and the format falls out:</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>If your reason is&hellip;</th><th>Then</th><th>Because</th></tr></thead>
+          <tbody>
+            <tr><td class="opt">A diversifier in a portfolio &mdash; I want gold&rsquo;s price behaviour alongside my other holdings</td><td>Bank account or ETF</td><td>You want the price, not the metal. Physical is an expensive way to buy a price.</td></tr>
+            <tr><td class="opt">Insurance against a systemic or banking failure</td><td>Physical, self-held or allocated vault</td><td>An unallocated claim fails in precisely the scenario you bought it for.</td></tr>
+            <tr><td class="opt">&ldquo;Money outside the system&rdquo; &mdash; the video&rsquo;s own thesis</td><td>Physical only</td><td>Every other format reintroduces the counterparty the thesis exists to remove.</td></tr>
+            <tr><td class="opt">Accumulating a bit every month</td><td>Bank account or ETF</td><td>No round-trip premium on small amounts; convert to physical later if the reason changes.</td></tr>
+            <tr><td class="opt">I want to learn, and hold one in my hand</td><td>One small physical bar or coin</td><td>Treat the premium as tuition. This is how the video&rsquo;s author started &mdash; a $20 silver coin.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Most people, honestly answered, are in row one &mdash; and row one is where the bank account and the ETF win comfortably on cost, liquidity and hassle. The video is written by someone in row three, for whom physical is the only option that makes sense. Both are coherent. They are just not the same purchase, and the video presents one as though it were the other.</p>
+
+      <h3>What to ask the bank before you open anything</h3>
+      <p>This is the actual deliverable. Whatever the provider, these seven questions separate the product categories from each other, and every one of them has an answer in writing somewhere:</p>
+      <ol>
+        <li><strong>Is the account allocated or unallocated?</strong> If unallocated &mdash; am I an unsecured creditor of the bank?</li>
+        <li><strong>Is it covered by deposit insurance?</strong> Usually no. Get the answer in writing rather than assuming.</li>
+        <li><strong>What is the buy/sell spread,</strong> and are there monthly or maintenance fees? What&rsquo;s the round trip on a small amount?</li>
+        <li><strong>Can I convert to physical metal?</strong> At what cost, in what bar sizes, with how much notice, and is it guaranteed or subject to availability?</li>
+        <li><strong>What happens if the bank fails,</strong> or simply decides to withdraw the product? Where do I sit in the queue?</li>
+        <li><strong>Is the quoted price the market price</strong> or the bank&rsquo;s own quote, and how far can the two diverge?</li>
+        <li><strong>How is it taxed where I live?</strong> Physical investment-grade gold and paper gold products are often treated quite differently &mdash; in Singapore, qualifying physical Investment Precious Metals have a GST exemption that does not automatically extend to every paper product. Check the current rules rather than trusting any summary, including this one.</li>
+      </ol>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; answer the prior question first</span>
+        <p>Before comparing any products, write <strong>one sentence</strong>: <em>I want gold because ______, and I would sell it if ______.</em></p>
+        <p>If the first blank is &ldquo;it has been going up&rdquo;, you are in <a href="#m4">move 4</a>&rsquo;s territory &mdash; speculating, which he admits he was doing, and which is allowed as long as it is named. If the first blank mentions banks failing, the bank account is not the answer. The sentence does the choosing.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What are the four stamps on a legitimate bar?</span><span class="a">Weight, purity, refiner&rsquo;s name or logo, and a unique serial number. The bar&rsquo;s passport.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why small bars rather than one large one?</span><span class="a">Flexibility on the way out &mdash; twenty-dollar bills rather than hundreds. You pay for it in higher premiums.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">His three reasons gold rose?</span><span class="a">Central bank buying, geopolitical tension, inflation. Only the first has a clear mechanism; all three are explanations produced after the move.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is his actual thesis &mdash; not the price chart?</span><span class="a">Gold isn&rsquo;t an investment, it&rsquo;s a more durable form of money to store savings in. It stopped being money mainly because it can&rsquo;t be printed.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Investment or speculation &mdash; his own distinction?</span><span class="a">Investment is a 20&ndash;30 year hold; buying hoping for a rise over two or three years is speculation. He says plainly that&rsquo;s what he was doing.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What&rsquo;s wrong with his four timing questions?</span><span class="a">They&rsquo;ve been &ldquo;yes&rdquo; for fifty years, through gold tripling and through gold falling by two thirds. A test that&rsquo;s always on can&rsquo;t time anything &mdash; it argues for a permanent allocation instead.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is &ldquo;the dollar lost 98% since 1913&rdquo; a weak argument for gold?</span><span class="a">It measures banknotes in a drawer, which nobody held. Currency decay argues against holding currency &mdash; equally an argument for property, bonds or shares. It doesn&rsquo;t reach gold on its own.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What&rsquo;s the honest version of the case for gold?</span><span class="a">It exists outside the financial system &mdash; no issuer, no counterparty, no default. A real property, worth paying for, and a different claim from &ldquo;it preserves wealth better&rdquo;.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The 1980 problem?</span><span class="a">Gold peaked around $850 in January 1980 and didn&rsquo;t regain that nominally until about 2008 &mdash; far longer in real terms. A bad entry can leave you underwater for a working lifetime.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does gold paying nothing matter?</span><span class="a">The whole return is the price, so there&rsquo;s no income to carry you through a flat decade. Physical is worse: storage and insurance make the carry negative.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the round trip, and roughly how big?</span><span class="a">Premium over spot to buy plus the discount below spot to sell. On small bars it can be around a tenth of the position &mdash; which turns a 56% gain into nearer 45%.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Allocated versus unallocated?</span><span class="a">Allocated: specific bars by serial number, your property, the vault is a custodian. Unallocated: a claim on the institution in grams &mdash; you&rsquo;re an unsecured creditor.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does a typical bank gold account give you &mdash; and not?</span><span class="a">It gives you the gold price cheaply, instantly, with no storage. It usually doesn&rsquo;t give you allocated metal, physical delivery as of right, or deposit-insurance cover.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why can&rsquo;t a bank account serve the video&rsquo;s thesis?</span><span class="a">The thesis is gold as money with no counterparty. An unallocated account is a paper claim on a bank &mdash; issued by the institution you&rsquo;re insuring against.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Which order do you decide in?</span><span class="a">Reason first, format second. &ldquo;I want gold because ___, and I&rsquo;d sell if ___&rdquo; &mdash; the sentence picks the format.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The single most important question to ask a bank?</span><span class="a">Allocated or unallocated &mdash; and if unallocated, am I an unsecured creditor and is it deposit-insured? Get it in writing.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is &ldquo;free insured storage&rdquo; from a dealer not free?</span><span class="a">It&rsquo;s bundled into the spread &mdash; a customer-acquisition cost. And it puts your metal back on someone else&rsquo;s balance sheet.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The treasure map &mdash; and why it generalises?</span><span class="a">Written retrieval instructions, given to two trusted people. Self-custody&rsquo;s real failure mode isn&rsquo;t theft, it&rsquo;s the owner dying &mdash; true for crypto keys and safe deposit boxes too.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <p>This page carries more unverified numbers than the others, so it gets a longer list. Several of my own figures are from memory and are flagged as such on the page itself.</p>
+      <ul>
+        <li><strong>The stated gain is $160 out.</strong> $419,003 &minus; $267,284 = $151,719, not the $151,559 given. Everything else in his arithmetic checks exactly.</li>
+        <li><strong>The 1980 peak and the 2008 recovery</strong> &mdash; roughly $850 in January 1980, regained nominally around 2008 &mdash; is from memory. Verify against a long-run price series before quoting it.</li>
+        <li><strong>April 2023 spot near $2,000</strong>, used to derive the 8&ndash;9% implied premium in move 11, is also from memory. The method matters more than my number: divide paid by ounces, compare to spot on the day.</li>
+        <li><strong>Typical one-ounce bar premiums of 3&ndash;5%</strong> &mdash; a general figure that moves with demand; check live dealer pricing.</li>
+        <li><strong>Everything about bank products in arc D</strong> describes the general category. Whether a specific OCBC account is allocated or unallocated, whether physical conversion is offered, what the spread and fees are, and whether it sits outside deposit insurance &mdash; all of that must come from the bank&rsquo;s own product sheet, not from here.</li>
+        <li><strong>Singapore specifics</strong> &mdash; SDIC coverage excluding precious metals accounts, and the GST exemption for qualifying Investment Precious Metals &mdash; are as I understand them, and tax rules change. Confirm with the current official guidance.</li>
+        <li><strong>Mike Maloney&rsquo;s book title</strong> is given in the video as <em>The Gold and Silver Rush of the 21st Century</em>; his book is usually titled <em>Guide to Investing in Gold and Silver</em>.</li>
+        <li><strong>The Dalio quote</strong> is reported, not sourced &mdash; and note it argues for &ldquo;at least a small portion&rdquo;, which is a different scale from the video&rsquo;s own holding.</li>
+        <li><strong>The &ldquo;not sponsored&rdquo; disclosure</strong> sits next to a link in the description. Affiliate arrangements pay without being sponsorships; worth knowing which it is.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the video (arcs A and B):</strong> the stack and its figures; the three reasons for the rise; the money-not-investment thesis, the currency history and the Dalio quote; the silver coin story; the investment-versus-speculation distinction and the admission of speculating; the four timing questions; the refiner list and the four stamps; small bars for flexibility and their higher premiums; the dealer criteria and the two-dealer tip; the storage principles, the treasure map, and the vaulted-dealer option; the 5&ndash;15% suggestion and the closing.</p>
+      <p><strong>Mine (arcs C and D, plus the checks):</strong> recomputing his arithmetic and finding the $160 gap; the point that his three reasons are post-hoc and may be priced in; the benchmark critique &mdash; that currency decay argues against currency, not for gold &mdash; and the honest restatement of the case; the 1980 problem and the no-income/negative-carry point; the round-trip estimate; the observation that permanent conditions and entry-price sensitivity can&rsquo;t both be fully true; the entire bank-gold arc including both tables and the seven questions; every drill; the quiz; the cross-links to topics 01 and 04; and this list.</p>
+      <p>Where I&rsquo;ve used a number from memory rather than from the video, the page says so on the spot.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The video</strong> &mdash; one investor&rsquo;s gold stack: why, which bars, where bought, how stored.</li>
+        <li><strong>Named in it:</strong> refiners Argor-Heraeus, Valcambi, PAMP Suisse, Perth Mint, Royal Canadian Mint; Ray Dalio on gold as a currency; Mike Maloney&rsquo;s book on gold and silver; a Swiss vaulted dealer, linked in the description.</li>
+        <li><strong>Worth checking yourself:</strong> the World Gold Council for central bank purchase data (his strongest reason, and the one with real figures behind it); the LBMA for the reference price; a long-run inflation-adjusted gold series for the 1980 point; your bank&rsquo;s own product sheet for anything in arc D.</li>
+        <li><strong>Related here:</strong> <a href="../04-market-timing/index.html">Topic 04</a> &mdash; speculation versus investment, and what a long flat decade does to a thesis; <a href="../02-money/index.html">topic 02</a> for the boring-index-fund position this sits against.</li>
+      </ul>
+      <p class="endnote"><b>Study notes, not financial advice.</b> Topic 08 of the study notes: a video about one person&rsquo;s physical gold holding, written up 22 September 2026. Arcs A and B report the video; arcs C and D are my own analysis and are marked as such where they begin. Figures taken from memory rather than from the video are flagged on the spot and listed again under <em>To check</em>. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "heavymoney.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "heavymoney.voice.v1", RTK = "heavymoney.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

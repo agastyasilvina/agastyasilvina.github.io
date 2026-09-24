@@ -1,0 +1,1013 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Sixty Percent</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Sixty Percent</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 14 &middot; Lessons from the CIA</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 14 &middot; Three former CIA officers</p>
+    <h1>Say what you think &mdash; <em>and how sure you are.</em></h1>
+    <p class="standfirst">Three senior officers &mdash; an analyst, a technologist and a paramilitary operator &mdash; on what intelligence work teaches about ordinary life: building trust slowly, reading people against their own baseline, owning a role you don&rsquo;t feel ready for, giving the most powerful person in the room bad news, the worst mistake the agency ever made, and why the man who doubted the bin Laden intelligence most still told the president to go.</p>
+    <div class="metarow">
+      <span><b>14 moves</b> in five arcs</span>
+      <span>MasterClass &mdash; <b>Morell, Meyerriecks, Carbaugh</b></span>
+      <span>Notes taken <b>24 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The fourteen moves">
+    <p class="arclabel">What the work is</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> A puzzle with no box</a></li>
+      <li><a href="#m2"><span class="n">2</span> The spy in the room</a></li>
+    </ol>
+    <p class="arclabel">People</p>
+    <ol>
+      <li><a href="#m3"><span class="n">3</span> Relationships take time</a></li>
+      <li><a href="#m4"><span class="n">4</span> Why am I talking?</a></li>
+      <li><a href="#m5"><span class="n">5</span> Baselines, not tells</a></li>
+    </ol>
+    <p class="arclabel">Roles</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> Makeup to spacecraft</a></li>
+      <li><a href="#m7"><span class="n">7</span> Closest to the truth</a></li>
+      <li><a href="#m8"><span class="n">8</span> The actual imposter</a></li>
+    </ol>
+    <p class="arclabel">Hard truths</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> Bad news, upwards</a></li>
+      <li><a href="#m10"><span class="n">10</span> Let them correct you</a></li>
+    </ol>
+    <p class="arclabel">Judgement and risk</p>
+    <ol>
+      <li><a href="#m11"><span class="n">11</span> Five biases at once</a></li>
+      <li><a href="#m12"><span class="n">12</span> Say how sure you are</a></li>
+      <li><a href="#m13"><span class="n">13</span> 95, 80, 60</a></li>
+      <li><a href="#m14"><span class="n">14</span> The right risks</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;14 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">It opens on Air Force One on the evening of 9/11. Michael Morell, the president&rsquo;s intelligence briefer, is waved over to a window and sees an F-16 flying so close he can make out the pilot, with smoke still rising from the Pentagon beyond. The fighter is there, he&rsquo;s told, to put itself between a missile and the president on final approach. The class that follows is quieter than that opening, and more useful: what three decades inside the CIA taught three people about trust, honesty, confidence and judgement.</p>
+
+    <div class="arc"><h2>Arc A &middot; What the work is</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>A puzzle with no box</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">Michael Morell &mdash; why the agency exists, and what analysis really is</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>The CIA was created because the US government had all the information it needed to know Pearl Harbor was coming &mdash; and nobody was there to put it together. People say analysis is connecting dots; he dislikes that, because it implies it&rsquo;s easy. It&rsquo;s a puzzle: a thousand pieces, and you have to say what&rsquo;s on the box. Except you don&rsquo;t have the box, you only have 250 of the pieces, and another 5,000 look as though they belong and don&rsquo;t.</p>
+
+      <p>The metaphor earns its keep because each part of it names a real difficulty. <strong>No box</strong>: you don&rsquo;t know what the answer is supposed to look like. <strong>A quarter of the pieces</strong>: most of the truth is simply unavailable. <strong>Thousands of decoys</strong>: most of what you do have is noise that fits suspiciously well. And the pieces come from different sources &mdash; spies, intercepts &mdash; while their value keeps changing as the world moves.</p>
+      <p>Which is why he insists <strong>analysis is not speculation and not opinion</strong>. It&rsquo;s sifting everything, seeing what fits, and seeing what brings new insight. The difference matters in ordinary life too: most of us form views from the three pieces we happened to see, and call it judgement.</p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>The spy in the room</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">Dawn Meyerriecks &mdash; why people beat machines at the thing that matters most</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>The agency collects two kinds of secret intelligence: human &mdash; recruiting and running spies &mdash; and technical, like breaking into a conference room to plant a bug. She led technical collection: massive, multi-year projects bringing in huge amounts of data. And yet a good human report was better than anything she could produce. She&rsquo;s unequivocal &mdash; she saw some of them, and they were game changers.</p>
+
+      <p>This is striking coming from the person who ran the machines. What a human source can supply, and a bug usually can&rsquo;t, is <strong>plans and intentions</strong> &mdash; not what someone said in a room, but what they mean to do and why. Keep that in mind: <a href="#m11">move 11</a> shows what happened when the agency didn&rsquo;t have that.</p>
+      <p>The everyday version is familiar: you can read every document about a situation and still learn more from one honest conversation with the person at its centre. Data tells you what happened. People tell you what&rsquo;s about to.</p>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; People</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Relationships take time</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">Brian Carbaugh &mdash; the Farm, and the relationship at the centre of the work</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>He joined as a paramilitary officer in Ground Branch, the unit that carries out presidentially directed covert action, after the Marine Corps. Everyone goes through the Farm, the agency&rsquo;s training site for tradecraft &mdash; communications, relationship building, and the agent acquisition cycle: identifying someone with access to valuable information, then building a relationship in which they feel confident answering detailed questions.</p>
+
+      <p>All three agree that the heart of human intelligence is <strong>the relationship between the case officer and the agent</strong>, and that it runs on trust. Their first rule for building it is unglamorous: <strong>be patient</strong>. Rush it and you never reach the conversations that go deeper than the superficial. It takes, in their phrase, <em>time on target</em> &mdash; getting to know someone properly, asking a lot of questions, and listening very hard.</p>
+      <p>Two further points make it more than technique. <strong>It can&rsquo;t be transactional</strong>: transactional relationships don&rsquo;t add value however you define value, so it has to rest on something real. And, from Carbaugh&rsquo;s career: he never met a single person who worked with the agency purely for money. Understanding the challenges the other person is facing is part of the relationship, not a tactic within it.</p>
+      <p>It&rsquo;s <a href="../07-love-and-relationships/index.html">topic 07</a>&rsquo;s two hundred hours in a different setting &mdash; there&rsquo;s no hack for the time a real relationship takes, even when lives depend on it.</p>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Why am I talking?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">Two acronyms from a CIA leadership course</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>In the leadership course one of them still teaches for the agency, there are two reminders. <b>WAIT</b> &mdash; Why Am I Talking? And <b>WAIST</b> &mdash; Why Am I <em>Still</em> Talking? Then wait some more. Getting to know someone isn&rsquo;t about waiting for your turn to say your next three words.</p>
+
+      <p>Two small acronyms, and they&rsquo;re better than most listening advice because they&rsquo;re questions you can actually ask yourself mid-sentence. The second is the sharper one: most people know to stop talking eventually; fewer notice when they&rsquo;ve kept going after the point was made.</p>
+      <p>It&rsquo;s the practical version of <a href="../12-conflict/index.html">topic 12</a>&rsquo;s performing listening &mdash; the listener who is really waiting for their turn. Ripley&rsquo;s fix was to prove you heard with an accurate summary. The CIA&rsquo;s is to make space first, by noticing when your own mouth is the obstacle.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; count the WAISTs</span>
+        <p>In your next three conversations that matter, notice each time you&rsquo;re still talking after your point has landed. Don&rsquo;t fix it yet &mdash; just count.</p>
+        <p>Then, in the fourth, stop at the point and wait. The silence feels long. What the other person says into it is usually the most useful thing in the conversation.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Baselines, not tells</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">How they judged whether someone was lying &mdash; and how it translates to managing people</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>To tell whether someone is lying, first understand their <b>baseline</b> &mdash; how they normally talk, think and answer in an ordinary, non-threatening conversation. It takes time. Then deviations start to matter: tone, mannerisms, chronology, timeline, inflection, speech patterns.</p>
+
+      <p>Carbaugh&rsquo;s example is from Afghanistan after 9/11, when some people fabricated access to al-Qaeda leaders simply to keep a relationship with the CIA going. One source sat calmly on the carpet, leg resting over a pillow &mdash; until he claimed sensitive information about senior figures, when his leg began to swing, and kept swinging through the follow-up questions. When the conversation moved elsewhere, he settled. That, plus the questions he kept asking back, marked him as someone inventing access he&rsquo;d never had.</p>
+      <p>The techniques they describe, in order of how much weight they deserve:</p>
+      <ul>
+        <li><strong>Know the baseline first.</strong> Some people look away when lying; some lock eyes. Neither means anything except as a change from what <em>that</em> person normally does.</li>
+        <li><strong>Ask thoughtful follow-ups</strong> &mdash; and try changing a fact when you play the story back. If they don&rsquo;t correct you, that&rsquo;s an indicator.</li>
+        <li><strong>Details trip people up</strong> &mdash; dates, specifics, sequence. Invented stories are hard to keep consistent under questions.</li>
+        <li><strong>Look for a cluster</strong>, never a single sign. One red flag is noise; several together raise concern.</li>
+      </ul>
+
+      <h3>The version for leaders</h3>
+      <p>Carried into business, the baseline becomes a way of noticing when someone is struggling rather than lying: coming in later, leaving earlier, longer lunches, work slipping a little. The response is to sit down with them &mdash; <em>let&rsquo;s talk about you for a minute; how are you doing?</em> &mdash; and it only works if two things are already true. <strong>You know them</strong>, so you can see the deviation. And <strong>you&rsquo;ve had those conversations before, when nothing was wrong</strong> &mdash; otherwise the sudden interest is alarming rather than caring. You have to know your people and genuinely care about them.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Research on lie detection is humbling here. Studies consistently find that people &mdash; professionals included &mdash; judge lies from demeanour only slightly better than chance; a large 2006 meta-analysis put it at roughly 54%. No single cue, including looking away, is reliable. The parts of their method that hold up best are the ones that don&rsquo;t depend on body language at all: knowing the individual&rsquo;s baseline, and testing the <b>content</b> of a story with follow-up questions and details. Treat the leg-swinging as a story about one person, not a rule.</p>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; Roles</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>From makeup to spacecraft</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Dawn Meyerriecks &mdash; the only woman in the room, and then &ldquo;Q&rdquo;</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>She became an engineer to build things that changed people&rsquo;s lives, and spent over thirty years as a technologist, including at AOL and NASA, before the agency. Early on it was hard being the only woman in the room: she wore baggy suits, put her hair in a bun, wore glasses. She could feel the room change when she&rsquo;d proved herself &mdash; suddenly she wasn&rsquo;t the twenty-five-year-old technologist, she was the person who could help get the mission done.</p>
+
+      <p>Her strategy for getting there is the transferable part: <strong>every time there was a briefing, a talk, a conference presentation, she forced herself to do it.</strong> That&rsquo;s how she established her expertise and built a reputation &mdash; and eventually how she was recruited to run the agency&rsquo;s science and technology directorate. Visibility wasn&rsquo;t a by-product of the career; she manufactured it, one uncomfortable presentation at a time.</p>
+      <p>Inside the agency she introduced herself simply: <strong>think of me as Q</strong>. Her deputies said they did everything &ldquo;from makeup to spacecraft&rdquo;: communications you can hide in a sleeve, bugs in household objects &mdash; fake rocks, clothing &mdash; and disguises that change someone&rsquo;s profile so cameras and watchers can&rsquo;t pick them up.</p>
+      <p>Carbaugh supplies the comic relief: fitted for his first disguise with round glasses, a clip-on spiky hairpiece he describes as <em>Footloose</em>-era Kevin Bacon, and a wool roll-neck &mdash; his instructor got into the car, looked at him, and fell apart laughing. But her real observation is about the people inside the disguises: <strong>you could watch them change</strong> &mdash; the way they held themselves, their personality. The costume was only the start; the transformation was the person owning the role.</p>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Closest to the truth</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Brian Carbaugh &mdash; what it took to live under a cover identity</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>After years deployed in Afghanistan and the Middle East, a counterterrorism operation required him to travel under commercial cover as a technology-company employee &mdash; a whole new persona, placing himself among people in a way that was plausible, unalarming and natural. It was a complete break from what he&rsquo;d done before, and it took a great deal of preparation: interviews, rehearsals, and a fair amount of anxiety.</p>
+
+      <p>What preparation meant is the vivid part. Not just a name and a job but the texture of a life: <em>where do you live? Where do you get petrol? Your hair cut? Your dry cleaning? Which grocery store?</em> If the story comes apart over time, a foreign security service works out that you&rsquo;re living a lie, and things cascade very quickly.</p>
+
+      <blockquote class="pull"><p>&ldquo;The best lie is the lie which is closest to the truth.&rdquo;</p><cite>Brian Carbaugh</cite></blockquote>
+
+      <p>The operational lesson is his to keep. The one worth carrying into ordinary life is about <strong>preparation for a role you haven&rsquo;t played before</strong>: the details are what hold under pressure. A new job, a first negotiation, a talk to a room of strangers &mdash; the people who seem natural in them have usually rehearsed the boring particulars that everyone else leaves to chance.</p>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>The actual imposter</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Imposter syndrome, from someone who really was one</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>&ldquo;Considering that I was an actual imposter when I was undercover, it&rsquo;s kind of funny that I&rsquo;ve struggled with imposter syndrome in my life.&rdquo; How did I get picked for this team? If they only knew. For anyone who feels in over their head: we all did. What he learned was the importance of <b>owning it</b> &mdash; confidence, belief in yourself, positive self-talk that this is working and this is who you are.</p>
+
+      <p>Then the move that makes the whole arc useful: <strong>a disguise doesn&rsquo;t have to be physical &mdash; it can be psychological.</strong> Picture yourself the way you want to be seen, and act like that person. If you aren&rsquo;t confident speaking in public, leading a meeting or asking for a raise, imagine the person you&rsquo;d like to be and act as them.</p>
+      <p>Meyerriecks&rsquo; version is the one to remember. When she started speaking publicly, her voice shook and she thought <em>I don&rsquo;t belong here; why would anyone listen to me?</em> A mentor pulled her aside and asked one question: <strong>do you know more about this subject than anybody else in the room?</strong> Probably, yes. <em>Then act like that.</em> Don&rsquo;t undermine your own expertise with the way you conduct yourself.</p>
+      <p>And the quiet point underneath, which Carbaugh draws out: she got there because <strong>someone pulled her aside</strong>. Cultivating people around you who will do that for you in the bad moments is part of the cure. It&rsquo;s <a href="../13-becoming-a-writer/index.html">topic 13</a>&rsquo;s advice about fear &mdash; name it, and remember there may be a helper on your side &mdash; in a very different building.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the mentor&rsquo;s question</span>
+        <p>Before the next meeting or talk that makes you nervous, write down the answer to her mentor&rsquo;s question: <strong>on this subject, what do I know better than anyone else who&rsquo;ll be there?</strong> Be specific &mdash; there is always something.</p>
+        <p>Then decide one visible thing the person who knew that would do &mdash; speak first, sit at the table rather than the wall, not apologise before making the point &mdash; and do only that one thing.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; Hard truths</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Bad news, upwards</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">Michael Morell &mdash; telling a president the war was being lost</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>In 2013, as acting director, he joined a series of meetings to help President Obama decide US troop levels in Afghanistan, and was asked to give his own view. After working it through with his analysts and operators, he concluded two things: the US had been steadily losing ground to the Taliban since they re-emerged in the mid-2000s; and if there were no US troops there today, nobody in the room would decide to send them. The implication: leave, or significantly increase the force.</p>
+
+      <p>After twelve years of war, he knew how that would land, and he describes the discipline it required from two sides at once: <strong>not saying it because it was what the president wanted to hear, and not softening it to avoid antagonising the military</strong>. It takes courage not to be swayed by the president, the chairman of the Joint Chiefs, or the commander on the ground.</p>
+      <p>His practical advice for anyone who has to deliver bad news is to do the groundwork before there&rsquo;s bad news to deliver: <strong>set expectations at the start of the relationship</strong>. Something like: <em>one of the things I have to do in this job is sometimes tell you things you might not want to hear, but need to know.</em> He applies it equally to a president, a spouse, a business partner &mdash; and especially to children, whatever their age.</p>
+      <p>And a smaller rule, from the other side of the desk: very few people who brought him problems also brought potential solutions, and <strong>the ones who did fared much better in their careers</strong>. When you present a problem, present a solution.</p>
+      <p><a href="../01-communication/index.html">Topic 01</a>&rsquo;s Marcus Aurelius would recognise all of it &mdash; say what needs saying, kindly, modestly, without hypocrisy &mdash; including the part about not telling the powerful what they want to hear.</p>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Let them correct you</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">Dawn Meyerriecks &mdash; why being contradicted in front of a partner was the point</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>Planning a joint operation with an allied service, her own people corrected her in front of her counterpart. Afterwards he pulled her aside, astonished &mdash; your people corrected you? In his very hierarchical culture, nobody disagreed with the boss in front of others. Her answer: they&rsquo;re working technologists; I&rsquo;m a manager now and not as current as they are, so they should correct me. <b>If we do this wrong, people will die.</b></p>
+
+      <p>The general rule: <strong>surround yourself with yes-people and they reflect back what they think you want to hear, not what you need to hear</strong> &mdash; and the more senior you become, the more that is everyone&rsquo;s default behaviour towards you. Honest feedback you can act on, from your boss, your peers and the people who report to you, has to be designed for.</p>
+      <p>Their methods for designing it are concrete:</p>
+      <ul>
+        <li><strong>Don&rsquo;t offer your opinion first</strong> in a meeting. Wait.</li>
+        <li><strong>Start with the most junior person</strong>, so their view isn&rsquo;t shaped by anyone above them.</li>
+        <li><strong>Signal that whatever they say is welcome</strong> &mdash; and mean it.</li>
+        <li>And a detail they love: the CIA director <strong>sits in the middle of the table, not at the head</strong>, to tell junior people their view is wanted.</li>
+      </ul>
+      <p>They&rsquo;re candid that it&rsquo;s a balance. The person who makes consequential decisions needs the confidence &mdash; even the ego &mdash; to make them and own them. But the room around that person works best as a <strong>high-humility, low-ego learning environment</strong>, where no idea is too far out to discuss. It&rsquo;s <a href="../12-conflict/index.html">topic 12</a>&rsquo;s fighter getting compliance but not commitment, solved structurally.</p>
+    </article>
+
+    <div class="arc"><h2>Arc E &middot; Judgement and risk</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Five biases at once</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">Michael Morell &mdash; &ldquo;the worst mistake the CIA has ever made&rdquo;</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>After 9/11, the fear was terrorists with weapons of mass destruction. Iraq had once had chemical weapons &mdash; it had used them against Iran and against its own people &mdash; and had links to terrorist groups. The agency&rsquo;s analysts concluded Iraq still had such weapons; Colin Powell presented the case to the UN Security Council; it&rsquo;s essentially why the US went to war. It was wrong: no chemical weapons, no biological weapons, no reconstituted nuclear programme.</p>
+
+      <p>He gives two reasons, and the first is <a href="#m2">move 2</a> again. <strong>The hardest thing for an analyst to understand is a foreign leader&rsquo;s intentions</strong>, and the only real way to know them is a spy in the room &mdash; which they didn&rsquo;t have. &ldquo;Nobody talks about that, by the way.&rdquo;</p>
+      <p>The second is that the analysis itself failed, because <strong>five kinds of bias came together</strong> in a rare way:</p>
+
+      <div class="rules">
+        <div class="r">
+          <span class="num">1</span>
+          <div><h4>Anchoring</h4><p>What you already know becomes an anchor against changing your judgement. <em>We knew he&rsquo;d had chemical weapons and a nuclear programme</em> &mdash; so everything new was read through that.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">2</span>
+          <div><h4>Confirmation bias</h4><p>Having reached a judgement, you interpret new information as though the judgement were right, rather than staying open to changing it. He calls it one of the most pernicious.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">3</span>
+          <div><h4>&ldquo;Pendulum bias&rdquo;</h4><p>His own term. The agency had <em>missed</em> Iraq&rsquo;s nuclear programme once before &mdash; it was far further along than they&rsquo;d thought &mdash; so determined not to repeat that, the pendulum swung too far the other way.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">4</span>
+          <div><h4>Groupthink</h4><p>Everyone thought he had the weapons, and they took comfort in everyone thinking so.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">5</span>
+          <div><h4>Mirror imaging</h4><p><em>Here&rsquo;s what I&rsquo;d do if I were Saddam.</em> Analysts assumed he&rsquo;d never give the weapons up, because they wouldn&rsquo;t have in his place.</p></div>
+        </div>
+      </div>
+
+      <p>Then the part that turns an analytical lesson into a moral one. He was number three on the analytic side, in the chain of command for that judgement, and <strong>if they&rsquo;d got it right, maybe the US wouldn&rsquo;t have gone to war</strong>. &ldquo;That&rsquo;s something I have to carry with me the rest of my life.&rdquo; It&rsquo;s rare to hear someone that senior say plainly: this was my failure, and this is what it cost.</p>
+    </article>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>Say how sure you are</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">The reform that came out of Iraq</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>You can mitigate most biases just by being aware of them &mdash; step one &mdash; and then by actually thinking about them while you form judgements, staying open to the idea that your first thinking may be wrong and following new data wherever it leads. But the biggest change after Iraq was <b>levels of confidence</b>: analysts now have to think rigorously about how confident they are in a judgement.</p>
+
+      <p>His point about Iraq is precise. Had anyone pressed the analysts on confidence, they&rsquo;d have said <em>not very</em>: the evidence was largely circumstantial; the data was five years old, from when UN inspectors had last left; and much of the judgement rested on the anchor of <em>he had them before, so why would he have got rid of them?</em> So the sentence that should have reached the president was: <strong>&ldquo;We think he has it &mdash; but we have only low confidence in that judgement, and here&rsquo;s why.&rdquo;</strong> Maybe the decision would have been the same. Maybe not.</p>
+      <p>And the painful twist he adds: after Saddam was captured, he said he&rsquo;d given the weapons up and <em>intended</em> the US to realise it, so sanctions would be lifted &mdash; while not saying so openly, because he wanted Iran to keep believing he still had them. &ldquo;He had more confidence in the CIA than we ended up demonstrating.&rdquo;</p>
+      <p>The everyday lesson is simple and almost never practised: <strong>attach a confidence level to your opinions</strong>, especially the ones other people will act on. &ldquo;I think X&rdquo; and &ldquo;I think X, but I&rsquo;m maybe sixty percent sure&rdquo; are completely different pieces of advice.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; add a number</span>
+        <p>For a week, every time you give a recommendation that someone will act on, add a confidence level &mdash; <em>high, medium, low</em>, or a rough percentage &mdash; and one reason it isn&rsquo;t higher.</p>
+        <p>You&rsquo;ll notice two things: how often your real confidence is lower than your tone implied, and how much more useful people find you when you say so.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m13">
+      <div class="movehead">
+        <span class="n">13</span>
+        <h2>95, 80, 60</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m13">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="13"> Done</label>
+        </div>
+      </div>
+      <p class="who">The bin Laden decision, and what the disagreement actually was</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>From summer 2010, the agency grew increasingly sure something unusual was happening at a compound in Abbottabad. Meyerriecks&rsquo; directorate kept asking the analysts: if you have medium confidence, what would it take to get to high? What data would you need? Carbaugh, then chief of operations in Ground Branch, planned what a Ground Branch raid would look like &mdash; one of many teams working the puzzle, though not the one that went in. The case was all satellite imagery, ground reporting and inference: high walls, barbed wire, covered windows, a figure often seen pacing the courtyard.</p>
+
+      <p>Then the Situation Room, where the president asked the analysts how sure they were:</p>
+
+      <div class="figs">
+        <div class="fig"><b>95%</b><span>the lead analyst on the hunt</span></div>
+        <div class="fig"><b>80%</b><span>the senior counterterrorism analyst</span></div>
+        <div class="fig"><b>60%</b><span>Michael Morell</span></div>
+      </div>
+
+      <p>Obama asked why everyone was all over the map, and Morell answered: they were each <strong>washing the evidence through their own experience</strong>. The people at the high end had been through success after success &mdash; plots stopped, terrorists removed. He was washing it through having lived through Iraq. And then: <strong>the case that Saddam had weapons of mass destruction, which turned out to be wrong, was stronger than the case that bin Laden was in that compound.</strong> You could hear a pin drop.</p>
+      <p>Obama asked whether that meant he wouldn&rsquo;t do it. <em>No &mdash; I would absolutely do this. It&rsquo;s the best chance we&rsquo;ve ever had. Just realise it&rsquo;s all circumstantial.</em> In their words, the world&rsquo;s most compelling circumstantial case.</p>
+      <p>Two lessons sit in that exchange, and the second is the one most people miss. The first: <strong>the numbers weren&rsquo;t a disagreement about evidence</strong> &mdash; everyone had the same evidence. They were different histories applied to it, which is exactly the bias problem from <a href="#m11">move 11</a>, surfaced and named in real time. The second: <strong>low confidence is not a recommendation to do nothing.</strong> The confidence level describes the evidence; whether to act depends on what you stand to gain and lose. Sixty percent was enough, because of what was at stake.</p>
+    </article>
+
+    <article class="move" id="m14">
+      <div class="movehead">
+        <span class="n">14</span>
+        <h2>Take the right risks</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m14">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="14"> Done</label>
+        </div>
+      </div>
+      <p class="who">How the agency thinks about risk, and why it applies to everyone</p>
+
+      <p class="shorthand"><span class="block-label">In the class</span>Obama took enormous risks sending the SEALs to Abbottabad &mdash; to their lives, to the relationship with Pakistan, to America&rsquo;s reputation if bin Laden was there and escaped or wasn&rsquo;t there at all &mdash; because the potential payoff was so high. The CIA is unusually good at risk because it takes so many: covert action is murky, answers are rarely clear, and officers are physically at risk.</p>
+
+      <p>They reduce it to a sequence anyone can use, because everyone takes hundreds of risks a day:</p>
+      <ol>
+        <li><strong>Understand all the risks.</strong> Most people think of one or two and stop. That is the typical failure.</li>
+        <li><strong>For each one, think about how to mitigate it.</strong> Understanding a risk and doing something about it are separate steps.</li>
+        <li><strong>Weigh payoff against risk.</strong> In the end, risk management is exactly that comparison &mdash; and the higher the potential payoff, the more risk it can justify.</li>
+      </ol>
+      <p>And keep your eyes on the mission and its objectives through the whole thing: some of their operations took years, and the discipline was not taking your eye off the ball.</p>
+
+      <blockquote class="pull"><p>&ldquo;Mitigating risk doesn&rsquo;t mean not taking risks. It&rsquo;s taking the right risks at the right time.&rdquo;</p><cite>The class&rsquo;s closing principle</cite></blockquote>
+
+      <p>That line connects the whole arc. The Iraq failure was acting with <em>unacknowledged</em> uncertainty; Abbottabad was acting with <em>acknowledged</em> uncertainty, openly weighed against the payoff. Same kind of evidence, opposite quality of decision. It&rsquo;s also the frame <a href="../04-market-timing/index.html">topic 04</a> reached from finance: nobody can remove the risk, so the question is always whether you&rsquo;re being paid enough to take it &mdash; and whether you&rsquo;ve looked at all of it.</p>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why was the CIA created?</span><span class="a">The US had the information to foresee Pearl Harbor, and nobody put it together.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why &ldquo;puzzle&rdquo; rather than &ldquo;connecting dots&rdquo;?</span><span class="a">No box, only 250 of 1,000 pieces, 5,000 decoys that look right, pieces changing value. Dots imply it&rsquo;s easy.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What can a human source give that technical collection usually can&rsquo;t?</span><span class="a">Plans and intentions. Even the head of technical collection said a good human report beat anything she produced.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">First rule for building a trusted relationship?</span><span class="a">Be patient &mdash; time on target, lots of questions, hard listening. And never transactional.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">WAIT and WAIST?</span><span class="a">Why Am I Talking? Why Am I <em>Still</em> Talking? Then wait some more.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What must you know before judging whether someone is lying?</span><span class="a">Their baseline &mdash; how they normally talk in a non-threatening setting. A cue only means something as a change from that.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The most reliable parts of their method?</span><span class="a">Testing content: follow-up questions, playing back a changed fact to see if they correct it, pressing on dates and specifics. And requiring a cluster of signs, never one.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">When a good employee&rsquo;s behaviour changes, what&rsquo;s the move?</span><span class="a">&ldquo;Let&rsquo;s talk about you for a minute.&rdquo; It only works if you know them and have had those conversations before, when nothing was wrong.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How did Meyerriecks build her reputation?</span><span class="a">She forced herself to take every briefing, talk and conference presentation. Visibility, manufactured deliberately.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">&ldquo;The best lie is&hellip;&rdquo;</span><span class="a">&ldquo;&hellip;the one closest to the truth.&rdquo; The everyday lesson: prepare the boring details of a new role; they&rsquo;re what hold under pressure.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The mentor&rsquo;s question for imposter syndrome?</span><span class="a">&ldquo;Do you know more about this subject than anyone else in the room?&rdquo; Then act like it. A disguise can be psychological.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How do you make bad news deliverable later?</span><span class="a">Set expectations at the start: &ldquo;sometimes I&rsquo;ll tell you things you don&rsquo;t want to hear but need to know.&rdquo; And bring a solution with every problem.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How do you keep a room honest when you&rsquo;re senior?</span><span class="a">Don&rsquo;t give your view first; start with the most junior person; signal every view is welcome. The director sits mid-table.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Two reasons the Iraq WMD judgement was wrong?</span><span class="a">No spy in the room to reveal intentions &mdash; and five biases at once: anchoring, confirmation, pendulum, groupthink, mirror imaging.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What&rsquo;s &ldquo;pendulum bias&rdquo;?</span><span class="a">Having once underestimated Iraq&rsquo;s nuclear programme, overcorrecting the next time. His own label.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The biggest reform after Iraq?</span><span class="a">Confidence levels. &ldquo;We think he has it, but with low confidence, and here&rsquo;s why&rdquo; might have changed the decision.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why were the bin Laden estimates 95, 80 and 60?</span><span class="a">Same evidence, different histories: successes at the high end, Iraq at the low. The case for WMD had been stronger than the case for Abbottabad.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Did 60% mean &ldquo;don&rsquo;t go&rdquo;?</span><span class="a">No &mdash; &ldquo;I would absolutely do this.&rdquo; Confidence describes the evidence; action depends on payoff versus risk.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The three steps of risk management?</span><span class="a">Understand <em>all</em> the risks; think how to mitigate each; weigh payoff against risk. Mitigating risk isn&rsquo;t avoiding it.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>The 54% figure</strong> for lie detection from demeanour is from a large 2006 meta-analysis (Bond and DePaulo) &mdash; confirm before quoting.</li>
+        <li><strong>&ldquo;Pendulum bias&rdquo;</strong> is Morell&rsquo;s own term; the other four are standard names from the literature on cognitive bias.</li>
+        <li><strong>Saddam&rsquo;s explanation</strong> of why he let the ambiguity stand &mdash; to lift sanctions while still deterring Iran &mdash; is given as reported after his capture; worth reading the post-war accounts before repeating it.</li>
+        <li><strong>The Afghanistan meetings</strong> are dated to 2013, when he was acting director &mdash; his account of his own advice.</li>
+        <li><strong>The International Spy Museum exhibit</strong> on the Abbottabad decision is mentioned in the class; check it&rsquo;s still on show before planning a visit.</li>
+        <li><strong>The last line of the class</strong> is a teaser for a story about secret missions to North Korea, which this part doesn&rsquo;t cover.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the class:</strong> all the stories and the lessons they draw &mdash; the F-16 over the Pentagon; the Pearl Harbor origin and the thousand-piece puzzle; human versus technical intelligence; the Farm, the agent acquisition cycle, patience, and non-transactional trust; WAIT and WAIST; baselines, the leg on the carpet, follow-up questions and clusters; the employee check-in; Meyerriecks&rsquo; early career and &ldquo;think of me as Q&rdquo;; disguises and the Kevin Bacon hairpiece; cover identities and &ldquo;the best lie&rdquo;; imposter syndrome and the mentor&rsquo;s question; Afghanistan in 2013, setting expectations, and bringing solutions; being corrected in front of a partner, yes-people, and the director mid-table; the Iraq failure and its five biases; confidence levels and Saddam&rsquo;s explanation; 95, 80, 60; and the risk sequence.</p>
+      <p><strong>Mine:</strong> the five-arc structure; the reading of each part of the puzzle metaphor; &ldquo;data tells you what happened, people tell you what&rsquo;s about to&rdquo;; ranking the lie-detection techniques and the research caution; the everyday reading of the cover-identity story as preparation; &ldquo;the numbers weren&rsquo;t a disagreement about evidence&rdquo; and &ldquo;low confidence isn&rsquo;t a recommendation to do nothing&rdquo;; Iraq versus Abbottabad as unacknowledged versus acknowledged uncertainty; every drill; the quiz; the cross-links to topics 01, 04, 07, 12 and 13; and this list.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The class.</strong> MasterClass with three former CIA officers: <b>Michael Morell</b>, former deputy director and twice acting director; <b>Dawn Meyerriecks</b>, former deputy director for science and technology; <b>Brian Carbaugh</b>, former director of the Special Activities Center.</li>
+        <li><strong>Events discussed:</strong> 9/11 aboard Air Force One; Iraq&rsquo;s weapons of mass destruction and Colin Powell&rsquo;s presentation to the UN Security Council; the 2013 Afghanistan troop decision; the May 2011 raid on the Abbottabad compound.</li>
+        <li><strong>Added by me:</strong> research on lie detection from demeanour (Bond and DePaulo, 2006).</li>
+        <li><strong>Related here:</strong> <a href="../01-communication/index.html">01</a> &mdash; saying the hard thing; <a href="../04-market-timing/index.html">04</a> &mdash; risk against payoff; <a href="../07-love-and-relationships/index.html">07</a> &mdash; the time relationships take; <a href="../12-conflict/index.html">12</a> &mdash; listening, and honest rooms; <a href="../13-becoming-a-writer/index.html">13</a> &mdash; naming the fear.</li>
+      </ul>
+
+      <p class="endnote">Topic 14 of the study notes, written up on 24 September 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "sixtypct.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "sixtypct.voice.v1", RTK = "sixtypct.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

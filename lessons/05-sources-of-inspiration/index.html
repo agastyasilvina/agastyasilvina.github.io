@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Compost Heap</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- what-if chain ---------- */
+.chain{ margin-block:1.6rem; display:flex; flex-direction:column; }
+.chain .step{ display:grid; grid-template-columns:1.7rem minmax(0,1fr); gap:.8rem; padding-block:.7rem; border-top:1px solid var(--line-soft); }
+.chain .step:first-child{ border-top:0; padding-top:0; }
+.chain .step .dot{
+  font-family:var(--f-mono); font-size:.66rem; color:var(--muted);
+  border:1px solid var(--line); border-radius:2px; height:1.7rem; display:grid; place-items:center;
+}
+.chain .step.out .dot{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.chain .step p{ margin:0; }
+.chain .step .q{ font-family:var(--f-mono); font-size:.74rem; color:var(--accent-ink); margin-bottom:.15rem; }
+.chain .step .a{ font-size:.98rem; line-height:1.55; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Compost Heap</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 05 &middot; Sources of inspiration</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 05 &middot; Neil Gaiman&rsquo;s MasterClass</p>
+    <h1>Where do you get your ideas? <em>Two things, colliding.</em></h1>
+    <p class="standfirst">This is the lesson built around the question writers usually make fun of &mdash; and Gaiman&rsquo;s explanation of why they make fun of it. It comes in three parts: what goes on the compost heap, what to do with the material once it has rotted down, and the mechanism itself, demonstrated live on a werewolf until it turns into a chair.</p>
+    <div class="metarow">
+      <span><b>11 moves</b> in three arcs</span>
+      <span>MasterClass &mdash; <b>Neil Gaiman</b></span>
+      <span>Same class as <b><a href="../03-storytelling/index.html">topic 03</a></b></span>
+      <span>Notes taken <b>22 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The eleven moves">
+    <p class="arclabel">What goes on the heap</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The compost heap</a></li>
+      <li><a href="#m2"><span class="n">2</span> Your real influences</a></li>
+      <li><a href="#m3"><span class="n">3</span> Don&rsquo;t say how to feel</a></li>
+    </ol>
+    <p class="arclabel">Working the material</p>
+    <ol>
+      <li><a href="#m4"><span class="n">4</span> Take a story apart</a></li>
+      <li><a href="#m5"><span class="n">5</span> Snow White, turned round</a></li>
+      <li><a href="#m6"><span class="n">6</span> Strangers in a carriage</a></li>
+      <li><a href="#m7"><span class="n">7</span> Listen, write it down</a></li>
+    </ol>
+    <p class="arclabel">Where ideas come from</p>
+    <ol>
+      <li><a href="#m8"><span class="n">8</span> The mocked question</a></li>
+      <li><a href="#m9"><span class="n">9</span> Confluence</a></li>
+      <li><a href="#m10"><span class="n">10</span> The chair wolf</a></li>
+      <li><a href="#m11"><span class="n">11</span> Moments, not a plot</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;11 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">Topic 03 was about what a story is for and how honest you have to be to write one. This lesson is the supply side: where the material comes from in the first place, and what to do with it when you have it. It ends with him building a story out loud from nothing, which is the most useful three minutes in the class.</p>
+
+    <div class="arc"><h2>Arc A &middot; What goes on the heap</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>The compost heap</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The governing metaphor of the whole lesson</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Every writer has a compost heap. Everything you read, everything you write, everything you listen to, the people you encounter &mdash; it all goes on, it rots down, and out of it grow stories.</p>
+
+      <p>The image is doing more work than it looks. A compost heap has three properties, and each one is an instruction.</p>
+      <p><strong>You don&rsquo;t sort it.</strong> Nobody stands over a heap deciding which peelings deserve to be there. Everything goes on &mdash; the bad novel, the overheard argument, the tedious job, the film you disliked. Sorting at intake is exactly the mistake, because you cannot tell in advance which scrap turns into the thing that grows.</p>
+      <p><strong>It takes time.</strong> The heap is useless for a year. That is not a flaw in the process, it is the process. Material used immediately is still recognisably itself; material left to rot becomes something you can actually plant in.</p>
+      <p><strong>What comes out is not what went in.</strong> Nobody points at the tomatoes and identifies last spring&rsquo;s potato peelings. If you can trace a line cleanly from a thing you loved to a thing you wrote, it has not rotted yet &mdash; you are borrowing rather than growing. That is a useful test to run on your own work.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; audit the intake</span>
+        <p>For one week, keep a list of everything that actually landed &mdash; not the books you meant to read, the things that stuck. Include the non-literary ones: a conversation, an argument, a shop, a smell, a piece of music, a bad day at work.</p>
+        <p>At the end of the week, look at the proportions. Most writers find the heap is much narrower than they assumed, and almost entirely made of other people&rsquo;s writing. That is a thin diet, and it shows in the output.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>Your real influences aren&rsquo;t the ones you cite</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">The lesson&rsquo;s most quietly useful idea</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Asked about influences, the tendency &mdash; especially young &mdash; is to point at the people who do what you do. Easier for him to name Tolkien, Dunsany, James Branch Cabell, Ursula Le Guin, P.L. Travers. What you don&rsquo;t point to is the thing that does what you do in a completely different field.</p>
+
+      <p>Two examples, and they are the heart of the lesson.</p>
+      <p><strong>His wife</strong>, a songwriter and performer whose whole subject is emotional honesty, spent years giving the same list of influences &mdash; The Cure, Leonard Cohen, punk bands. She was in her late thirties before she noticed that the one she never mentioned was <strong>Judy Blume</strong>, read between about ten and fourteen, who went in deep and was <em>about</em> honesty. The influence that formed her was missing from every list she had ever given.</p>
+      <p><strong>Gaiman</strong> says he never talks about <strong>Lou Reed</strong> &mdash; who turns out, in move 3, to have taught him the technique he still uses.</p>
+
+      <div class="script">
+        <div class="line"><span class="k bad">Cited</span><q>Tolkien, Dunsany, Cabell, Le Guin, Travers &mdash; writers whose work looks like mine.</q></div>
+        <div class="line"><span class="k good">Actual</span><q>A songwriter, a children&rsquo;s author read at eleven &mdash; people who taught me what to value.</q></div>
+      </div>
+
+      <p>The mechanism is worth naming, because once you see it you can go looking. <strong>The influences you cite are the ones that resemble your output.</strong> They are visible, so they are citable. The ones that actually formed you usually taught you a <em>value</em> rather than a style &mdash; honesty, compression, restraint, nerve &mdash; and a value leaves no fingerprint on the surface of the work, so you forget to mention it.</p>
+      <p>His instruction is short: your influences are all sorts of things, some will surprise you, and the most important thing you can do is <strong>open yourself to everything</strong>.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; find the missing name</span>
+        <ol>
+          <li>Write the five influences you would give if someone asked you today.</li>
+          <li>Beside each, write what it taught you. If the honest answer is &ldquo;how it looks&rdquo;, mark it as surface.</li>
+          <li>Now the real question: <strong>what did you love at eleven?</strong> Not the respectable answer. The thing you read until it fell apart.</li>
+          <li>What did it teach you to value? That one belongs on the list and almost certainly isn&rsquo;t on it.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Don&rsquo;t tell them how to feel</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">What Lou Reed taught him</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Lou Reed wrote songs that were like three-minute novels &mdash; compressed, heightened, a story in there even if you weren&rsquo;t sure what it was. He wouldn&rsquo;t tell you what to feel or how he felt; the emotion was there for you to interpret.</p>
+
+      <p>Three things are bundled here, and they are separable.</p>
+      <p><strong>Compression.</strong> A song has very few words, so every choice carries weight. The constraint is the teacher &mdash; it removes the room in which a writer would normally explain.</p>
+      <p><strong>Heightening.</strong> Anything set to music arrives amplified. That is worth stealing deliberately: the register of a scene can be raised past the naturalistic without becoming false.</p>
+      <p><strong>Withholding the label.</strong> The big one. Reed doesn&rsquo;t name the feeling, so the listener supplies it &mdash; and a feeling you arrive at yourself is stronger than one you were handed. Gaiman&rsquo;s version of the rule is flat and practical: <strong>tell them what happens</strong>. Not how sad it was.</p>
+
+      <blockquote class="pull"><p>&ldquo;I&rsquo;m going to kill that unicorn and I&rsquo;m going to break your heart.&rdquo;</p><cite>Neil Gaiman &mdash; on not explaining the death of the unicorn</cite></blockquote>
+
+      <p>Note that this is the same principle as <a href="../03-storytelling/index.html">topic 03</a>&rsquo;s rule about writing the events that make the reader arrive at your sentence without you having to state it. There it was about theme; here it is about emotion. Same move: <strong>the writer supplies the cause, the reader supplies the effect.</strong></p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; delete the emotion words</span>
+        <p>Take a page of your own writing and strike out every word that names a feeling &mdash; sad, furious, heartbroken, terrified, nervous &mdash; and replace them with nothing.</p>
+        <p>Read it back. Wherever the feeling survives, the events were doing the work and the word was decoration. Wherever it collapses, you had been labelling instead of dramatising, and now you know exactly which scene needs rebuilding.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Working the material</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Take a familiar story apart</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">The method, before the example</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>One of the things that&rsquo;s really fun is subverting expectations. Take a story you know, inspect it new, see how it ticks, look at the things people take for granted. Turn it round, examine it from odd angles, and suddenly it can open up into a story.</p>
+
+      <p>The counter-intuitive part is that <strong>familiarity is the qualification</strong>, not the obstacle. A story you have met a thousand times is good raw material precisely because you have stopped seeing it &mdash; which means nobody, including you, has ever questioned the parts everyone accepts. Those unexamined parts are load-bearing, and load-bearing things are where the pressure is.</p>
+      <p>Three questions that do most of the work:</p>
+      <ul>
+        <li><strong>What does everyone take for granted here?</strong> Not the plot &mdash; the assumptions underneath it that nobody states.</li>
+        <li><strong>What is actually strange, said out loud?</strong> Read the description literally, as though you had never heard it. Familiar phrasing hides absurdity extremely well.</li>
+        <li><strong>Who else was in the room?</strong> Every story is told by somebody. Ask what the other people in it would say happened.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Snow White, turned round</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">The worked example &mdash; and the assignment</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Snow White may be the first story he ever read &mdash; known since he was two or three, perhaps a thousand versions. On the thousandth reading he stopped and thought: it&rsquo;s a pretty strange story. What kind of person has hair black as coal, lips red as blood, skin white as snow, lies in a coffin for a year and gets up fine? What kind of prince rides past and wants the girl in the coffin brought back to his castle?</p>
+
+      <p>Watch what he actually does, because the move is repeatable and it isn&rsquo;t invention. He <strong>takes the description literally</strong>. Every detail he uses was already in the story &mdash; the colours, the year in the coffin, the prince who wants the body. He simply refuses to let the familiar phrasing slide past, and the moment he does, the material reorganises itself: a princess who is arguably a vampire, a prince who is arguably a necrophile.</p>
+      <p>And then the second move, which is the one worth learning: <strong>once the facts change, the moral centre has to move.</strong> If the girl in the coffin is the dangerous thing, then the stepmother &mdash; the villain everyone has accepted for two centuries without ever asking why &mdash; is a queen trying to protect a kingdom. The inversion isn&rsquo;t a gimmick laid on top; it falls out of taking the details seriously.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>This isn&rsquo;t hypothetical. Gaiman wrote that story &mdash; <b><em>Snow, Glass, Apples</em></b> (1994, collected in <em>Smoke and Mirrors</em>) tells Snow White from the stepmother&rsquo;s point of view, with the vampire reading intact. So the exercise he is setting is one he has already run and published. Read it after you have done your own version, not before, or you will write his.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; his assignment, verbatim in substance</span>
+        <ol>
+          <li>Take a <strong>folktale or fairy tale &mdash; a story owned by the world</strong>. (That phrase is doing legal work as well as creative: you can publish a retelling of a folk tale. You cannot do this to somebody&rsquo;s novel.)</li>
+          <li>Turn it round and try to look at it for the first time. Find <strong>the bits that don&rsquo;t quite make sense</strong>.</li>
+          <li>See where it could be completely reinvented, and write your own take.</li>
+          <li><strong>Make the people people.</strong> His phrasing &mdash; make them breathe. The inversion is nothing if the characters stay figures.</li>
+          <li>Set it now, or in a Never-Never-Land time. Use it as a framework, a mirror, or something to bounce ideas off. Put in the things <em>you</em> care about.</li>
+          <li>Then see where it took you &mdash; the destination is not supposed to be known at the start.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Strangers in a carriage</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">A game for dead time</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Thought experiments with the people around you &mdash; train carriages, underground carriages, bus journeys, anywhere with a bunch of disparate people you don&rsquo;t know. Throw them all into a situation you&rsquo;ve never been in and start wondering what each one would do. The train is transported to a distant planet. Somebody has a heart attack. They&rsquo;re trapped and it goes on for days.</p>
+
+      <p>It looks like a way to pass a commute. It is actually a character exercise with the difficulty turned up, because <strong>you have nothing to work from but surfaces</strong> &mdash; a coat, a posture, how someone holds their phone &mdash; so every conclusion you reach has to be inferred. That inference <em>is</em> characterisation. Doing it on strangers rather than on invented people stops you defaulting to types you already know how to write.</p>
+      <p>And the punchline of the exercise is the actual lesson: <strong>real people are stranger, more interesting and more unlikely than anything you could make up.</strong> Invention drifts toward the plausible. Observation keeps supplying things you would never have dared to invent.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; three strangers, one pressure</span>
+        <ol>
+          <li>Pick <strong>three</strong> people in the carriage. Not the interesting-looking one and two extras &mdash; three.</li>
+          <li>Apply one pressure: the doors won&rsquo;t open; it has been four hours; the lights go out.</li>
+          <li>Write what each does in the <strong>first five minutes</strong>. Behaviour only &mdash; no interior monologue, no backstory.</li>
+          <li>Then the useful question: <strong>which one surprised you?</strong> That one is a character. The other two are your own defaults wearing other people&rsquo;s coats.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Listen, and write it down</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">The notebook, and what it is actually for</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Go into a coffee shop, look at the people, listen to what they&rsquo;re saying and how they talk. He used to keep notebooks of overheard conversations &mdash; and occasionally ones he&rsquo;d had himself, with bus drivers, where he thought: I don&rsquo;t believe I just had that conversation, I should write it down while it&rsquo;s fresh. You almost never use the actual lines. But they&rsquo;re fantastic to throw on the compost heap.</p>
+
+      <p>That last admission is the interesting part, and most advice about keeping a notebook gets it backwards. <strong>The value is not in the contents.</strong> He says plainly that he almost never uses the lines. So what is the notebook for?</p>
+      <ul>
+        <li><strong>Calibration.</strong> Invented dialogue drifts toward how people <em>write</em> &mdash; complete sentences, one topic at a time, everyone answering the question they were asked. Listening resets the ear to how people actually talk, which is nothing like that.</li>
+        <li><strong>Attention.</strong> Writing it down is what makes you listen properly. The notebook is a device for noticing, and the noticing is the skill.</li>
+        <li><strong>Freshness.</strong> His own instruction: <em>while it&rsquo;s fresh</em>. Remembered speech is smoothed within the hour &mdash; you keep the gist and lose exactly the oddities that made it worth having.</li>
+      </ul>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; two overheard, verbatim</span>
+        <p>Twice this week, write down a fragment of overheard speech <strong>exactly</strong> as it was said &mdash; including the repetition, the false start, the bit where they changed the subject halfway through.</p>
+        <p>Then write the same exchange the way you would have invented it. Put them side by side. The gap between the two is your ear&rsquo;s current error, and it is usually embarrassing in a specific and fixable way.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; Where ideas come from</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>The question authors mock</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Why the joke answers exist</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Ask an author where they get their ideas and they&rsquo;ll probably mock you &mdash; the Idea of the Month Club, a little idea shop behind Charing Cross, or they&rsquo;ll just be horrible to you. This is because authors are scared and we don&rsquo;t know. Because we don&rsquo;t know and because we&rsquo;re scared, we lash out and make you feel like you asked a stupid question. You didn&rsquo;t. You asked the big question.</p>
+
+      <p>That is an unusually honest piece of self-description, and it generalises well past writing: <strong>mockery of a question is a reliable tell that the person cannot answer it and finds that frightening.</strong> The joke isn&rsquo;t about the questioner. It is a way of not standing in front of the part of your craft you don&rsquo;t understand.</p>
+      <p>What changed his mind was a cost he could see. At his daughter&rsquo;s school, in a room of seven- and eight-year-olds, one of them asked it. You cannot make fun of a seven-year-old, and she had asked <em>the only big important question in the room</em> &mdash; so he thought for a moment and gave a straight answer for the first time.</p>
+      <p>Worth keeping as a professional habit rather than a nice anecdote: <strong>the question you are tired of is usually the central one.</strong> Being asked it repeatedly is not evidence that it is naive; it is evidence that it is the question your whole field has failed to answer clearly.</p>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Confluence</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">The straight answer he gave the seven-year-olds</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You get ideas from confluence &mdash; from two things coming together. From things you have seen and thought and known about, and then something else you have seen and thought and known about, and the realisation that you can just collide those things.</p>
+
+      <p>Two claims, both load-bearing.</p>
+      <p><strong>Ideas are combinatorial, not generated.</strong> Nothing arrives from outside. An idea is two existing things put in contact for the first time &mdash; which means the input problem is not inspiration, it is <em>stock</em>. You cannot collide things you do not have. That is what move 1 was for: <strong>the compost heap exists to make confluence possible</strong>, and the two ends of this lesson are the same idea seen from opposite sides.</p>
+      <p><strong>Boredom is the condition, not the enemy.</strong> His examples are looking out of a window, and &mdash; the good one &mdash; a junior-school play. You are stuck there. You cannot leave, cannot take your phone out, cannot read. You have to sit and watch, and the need to be elsewhere is so strong that you go somewhere and come back with something.</p>
+      <p>That is worth stating baldly, because it is the most actionable line in the lesson. <strong>The conditions that produce ideas are the ones a phone is designed to eliminate.</strong> Queues, commutes, waiting rooms, bad meetings, school plays &mdash; every one of them used to be an engine, and every one of them now has an exit. Keeping a few of them exit-free is a deliberate professional choice.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; collide two on purpose</span>
+        <p>Write two lists of five: things you know a lot about, and things that have stuck with you recently for no clear reason. Then take them <strong>in pairs, at random</strong>, and for each pair write the one sentence where they touch.</p>
+        <p>Most pairs give you nothing. Two or three will produce a sentence you want to keep, and that sentence is an idea in exactly the sense he means &mdash; nothing new arrived, two things you already had were put in contact.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>The chair wolf</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">Confluence demonstrated live, from nothing</p>
+
+      <p>He does not explain the method further. He runs it, out loud, starting from something everybody already knows. Watch the shape rather than the jokes:</p>
+
+      <div class="chain">
+        <div class="step">
+          <span class="dot">&#9679;</span>
+          <div><p class="q">The thing everybody knows</p><p class="a">If a werewolf bites you, you become a werewolf when the moon is full. <em>That&rsquo;s an idea.</em></p></div>
+        </div>
+        <div class="step">
+          <span class="dot">?</span>
+          <div><p class="q">What if a werewolf bites a wolf?</p><p class="a">A wolf that turns into a different wolf when the moon is full.</p></div>
+        </div>
+        <div class="step">
+          <span class="dot">?</span>
+          <div><p class="q">What if a werewolf bit a goldfish?</p><p class="a">A goldfish that turns hairy, comes out of its bowl and kills people at the full moon.</p></div>
+        </div>
+        <div class="step">
+          <span class="dot">?</span>
+          <div><p class="q">What if a werewolf absent-mindedly chewed on a chair?</p><p class="a">A chair that becomes a wolf when the moon is full. <strong>A chair wolf.</strong></p></div>
+        </div>
+        <div class="step out">
+          <span class="dot">&#9632;</span>
+          <div><p class="q">And now the evidence it would leave</p><p class="a">Bodies found with their throats ripped out &mdash; and in the mud nearby, the marks of a chair leg.</p></div>
+        </div>
+        <div class="step out">
+          <span class="dot">&#9632;</span>
+          <div><p class="q">And the scene that follows from it</p><p class="a">The great detective sits in the library, working it out as the full moon rises &mdash; and realises the leather chair he is sitting in is getting hairier, and has begun to move.</p></div>
+        </div>
+      </div>
+
+      <p>Three things are happening, and they are all teachable.</p>
+      <p><strong>One operator, applied to steadily less likely objects.</strong> The rule never changes &mdash; bite causes transformation. Only the target does: person, wolf, goldfish, chair. The first two variations are nearly jokes. He keeps going anyway, and the fourth one produces an image with a story in it. <em>The material is past the point where it stops being sensible</em>, which is exactly where most people stop.</p>
+      <p><strong>He never defends the premise.</strong> No time is spent on whether a chair can be bitten. The question is only ever <em>and then what</em>. Interrogating plausibility at this stage kills every idea before it has anything to show.</p>
+      <p><strong>Then the real move: turn the premise into evidence.</strong> A chair wolf is a funny thought. Chair-leg marks in the mud beside a body is a <em>story</em> &mdash; because it implies somebody who has to notice it and work it out. That is the conversion: ask what your premise would leave behind, then put a person in the room who has to explain it.</p>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Moments aren&rsquo;t a plot yet</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">The most practically useful distinction in the lesson</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>It&rsquo;s not yet a plot, it&rsquo;s just moments from a plot &mdash; but now you have something you could build up from. What would have to happen before that, in order to make a story? What happens after? Can you shoot a chair with a silver bullet, would that work, and how do you destroy a chair that is coming after you up the stairs?</p>
+
+      <p>He is describing the exact place most writers get stuck without knowing it: <strong>you have a moment and you think you have a story.</strong> A striking image, a brilliant opening, a scene you can see clearly &mdash; and then nothing, because moments don&rsquo;t generate their own before and after. Naming the two as different things is half the fix.</p>
+      <p>The other half is his procedure, which is a set of questions rather than an outline:</p>
+      <ol>
+        <li><strong>What must be true <em>before</em> this?</strong> Work backwards from the moment until you reach something that could plausibly start a story.</li>
+        <li><strong>What does it force <em>afterwards</em>?</strong> Not what could happen next &mdash; what this moment has made unavoidable.</li>
+        <li><strong>What are the rules?</strong> Silver bullets, full moons, what counts as dead. Rules turn a premise into a world.</li>
+        <li><strong>How is it beaten?</strong> His version is wonderfully concrete: how <em>do</em> you destroy a chair that is coming up the stairs after you? Answer that and you have an ending, plus everything the protagonist has to learn first.</li>
+      </ol>
+      <p>And he closes the loop himself: all of this is <strong>confluence</strong> &mdash; things you have seen a thousand times, looked at in a slightly different way. Which is the same sentence as the Snow White exercise in move 5, arrived at from the other direction.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; promote a moment</span>
+        <p>Take the best unused moment in your notebook &mdash; the image you keep not being able to build anything around. Put it in the middle of a page and answer the four questions above, in writing, in under twenty minutes.</p>
+        <p>If the &ldquo;how is it beaten&rdquo; question has no interesting answer, the moment is scenery rather than a story, and now you know that in twenty minutes rather than three chapters.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the compost heap?</span><span class="a">Everything you read, write, listen to and everyone you meet, thrown on unsorted and left to rot down. Stories grow out of what it becomes.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Three properties of a heap, three instructions.</span><span class="a">You don&rsquo;t sort it. It takes time. What comes out isn&rsquo;t what went in &mdash; if you can trace the line cleanly, it hasn&rsquo;t rotted yet.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why do writers name the wrong influences?</span><span class="a">They name the ones that resemble their output, because those are visible. The formative ones taught a value &mdash; honesty, compression &mdash; which leaves no fingerprint on the surface.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Which influence did his wife leave off every list?</span><span class="a">Judy Blume, read between about ten and fourteen. She cited The Cure, Leonard Cohen and punk bands instead, and only noticed in her late thirties.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Whom does Gaiman say he never talks about?</span><span class="a">Lou Reed &mdash; who taught him the technique he still uses.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did Lou Reed teach him, in three parts?</span><span class="a">Compression (few words, each one weighted), heightening (music amplifies everything), and withholding the label &mdash; never telling you what to feel.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Gaiman&rsquo;s own version of that rule?</span><span class="a">Tell them what happens. Kill the unicorn; don&rsquo;t explain how sad the death of the unicorn was.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is a story you know by heart good raw material?</span><span class="a">Familiarity is the qualification. You have stopped seeing it, so nobody has ever questioned the load-bearing parts everyone accepts.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How did the Snow White inversion actually work?</span><span class="a">He took the description literally &mdash; black, red, white, a year in a coffin, a prince who wants the body. Once the facts changed, the moral centre had to move to the stepmother.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Did that exercise produce anything?</span><span class="a">Yes &mdash; <em>Snow, Glass, Apples</em> (1994), collected in <em>Smoke and Mirrors</em>. Do your own version before reading his.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the train-carriage game really training?</span><span class="a">Characterisation from surfaces only &mdash; every conclusion has to be inferred. And it proves that real people are stranger than anything you&rsquo;d dare invent.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is a notebook of overheard talk for, given he never uses the lines?</span><span class="a">Calibration &mdash; invented dialogue drifts toward how people write. And attention: writing it down is what makes you listen. Do it while it&rsquo;s fresh.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why do authors mock &ldquo;where do you get your ideas?&rdquo;</span><span class="a">Because they don&rsquo;t know and it frightens them, so they lash out. It&rsquo;s the real question, not a naive one.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The straight answer he gave the seven-year-olds?</span><span class="a">Confluence &mdash; two things coming together. Things you&rsquo;ve seen and thought and known, collided with other things you&rsquo;ve seen and thought and known.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What conditions produce ideas?</span><span class="a">Boredom with no exit &mdash; a window, a school play you can&rsquo;t leave and can&rsquo;t escape into a phone. The need to be elsewhere does the work.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the shape of the werewolf chain?</span><span class="a">One operator &mdash; a bite causes transformation &mdash; applied to steadily less likely objects, past the point where it stops being sensible. He never defends the premise, only asks &ldquo;and then what&rdquo;.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What turns a funny premise into a story?</span><span class="a">Evidence. Chair-leg marks in the mud beside a body implies somebody who has to notice and explain it.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Moment or plot &mdash; what&rsquo;s the difference, and the fix?</span><span class="a">Moments don&rsquo;t generate their own before and after. Ask: what must be true before? What does it force after? What are the rules? How is it beaten?</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>What Judy Blume gave her.</strong> The exact phrase is hard to make out; the sense is that Blume supplied something the influences she cited didn&rsquo;t. Worth a re-watch.</li>
+        <li><strong>His wife is not named in the lesson.</strong> He says only &ldquo;my wife&rdquo;, so this page does too.</li>
+        <li><strong>The idea shop.</strong> He gives it as &ldquo;behind Charing Cross&rdquo; here, but he has told this joke many times with different locations, and has answered the same question in print in a much-reprinted essay. Worth comparing the written version before quoting this one as definitive.</li>
+        <li><strong>The school story.</strong> Daughter&rsquo;s school, children of seven or eight &mdash; he says both ages and doesn&rsquo;t settle on one.</li>
+        <li><strong>Which lesson this is</strong> in the class running order &mdash; not stated in the lesson.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the lesson:</strong> the compost heap; the influences argument and both examples; Lou Reed; the take-a-story-apart method; the Snow White reading and the fairy-tale assignment; the carriage game; the notebook; why authors mock the question and the school story; confluence; boredom; the whole werewolf-to-chair chain including the mud and the library; and the moments-aren&rsquo;t-a-plot distinction with his four questions.</p>
+      <p><strong>Mine:</strong> the three-arc structure and the numbering; the three properties of a heap and the &ldquo;if you can trace it, it hasn&rsquo;t rotted&rdquo; test; the value-versus-style explanation of why influences go uncited; splitting Lou Reed into three separable techniques; the three questions in move 4; the &ldquo;takes the description literally, then the moral centre moves&rdquo; reading of Snow White; the note about phones removing the conditions in move 9; the analysis of the chain&rsquo;s shape in move 10; every drill except the fairy-tale assignment, which is his; the <em>Watch for</em> box; and the cross-links to topic 03.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lesson.</strong> Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; the lesson on where material comes from. Same class as <a href="../03-storytelling/index.html">topic 03</a>, which covers what a story is for.</li>
+        <li><strong>The story the Snow White exercise produced.</strong> Neil Gaiman, <em>Snow, Glass, Apples</em> (1994), collected in <em>Smoke and Mirrors</em> (1998).</li>
+        <li><strong>Named in the lesson:</strong> J.R.R. Tolkien, Lord Dunsany, James Branch Cabell, Ursula K. Le Guin, P.L. Travers &mdash; the citable influences; Lou Reed, Judy Blume, The Cure, Leonard Cohen &mdash; the real ones.</li>
+      </ul>
+      <p class="endnote">Topic 05 of the study notes: Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; the lesson on sources of inspiration &mdash; written up 22 September 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "compostheap.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "compostheap.voice.v1", RTK = "compostheap.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

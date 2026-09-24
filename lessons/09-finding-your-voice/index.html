@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Bad Drawings</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- book voices table ---------- */
+table.week td.bk{ font-family:var(--f-display); font-size:1.08rem; line-height:1.2; color:var(--accent-ink); white-space:nowrap; }
+table.week td.bk em{ display:block; font-family:var(--f-mono); font-size:.66rem; font-style:normal; color:var(--muted); margin-top:.2rem; letter-spacing:.06em; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Bad Drawings</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 09 &middot; Finding your voice</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 09 &middot; Neil Gaiman&rsquo;s MasterClass</p>
+    <h1>Your voice is <em>the stuff you can&rsquo;t help doing.</em></h1>
+    <p class="standfirst">A lesson about style that turns out to be a lesson about volume. Voice isn&rsquo;t chosen and can&rsquo;t be rushed &mdash; it is what remains after enough writing, made mostly of the things you get wrong consistently enough to become recognisable. Then the other half: how he built three deliberately different narrators, and the one trick he calls dangerous.</p>
+    <div class="metarow">
+      <span><b>12 moves</b> in three arcs</span>
+      <span>MasterClass &mdash; <b>Neil Gaiman</b></span>
+      <span>Third from this class, after <b><a href="../03-storytelling/index.html">03</a></b> and <b><a href="../05-sources-of-inspiration/index.html">05</a></b></span>
+      <span>Notes taken <b>23 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The twelve moves">
+    <p class="arclabel">What voice is</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The stuff you get wrong</a></li>
+      <li><a href="#m2"><span class="n">2</span> First you sound like everybody</a></li>
+      <li><a href="#m3"><span class="n">3</span> A page and a half</a></li>
+    </ol>
+    <p class="arclabel">How you get there</p>
+    <ol>
+      <li><a href="#m4"><span class="n">4</span> A million bad drawings</a></li>
+      <li><a href="#m5"><span class="n">5</span> Not on purpose</a></li>
+      <li><a href="#m6"><span class="n">6</span> Finish things</a></li>
+      <li><a href="#m7"><span class="n">7</span> What stays the same</a></li>
+    </ol>
+    <p class="arclabel">A project&rsquo;s voice</p>
+    <ol>
+      <li><a href="#m8"><span class="n">8</span> Ask before you write</a></li>
+      <li><a href="#m9"><span class="n">9</span> American transparent</a></li>
+      <li><a href="#m10"><span class="n">10</span> Invent the narrator</a></li>
+      <li><a href="#m11"><span class="n">11</span> A child&rsquo;s height</a></li>
+      <li><a href="#m12"><span class="n">12</span> Then let go</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;12 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">Voice is the thing a reader responds to more than anything else, and it&rsquo;s the thing a beginner most wants and least controls. The lesson&rsquo;s answer is unglamorous: you cannot decide what you sound like, you can only write until it shows up &mdash; and then, separately, you can choose what a particular book sounds like, which is a craft question with actual technique behind it. Arcs A and B are the first half. Arc C is the second.</p>
+
+    <div class="arc"><h2>Arc A &middot; What voice is</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>Style is the stuff you get wrong</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The thesis &mdash; and a quotation that may not exist</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Years ago he ran into a line from Jerry Garcia: <em>style is the stuff that you get wrong.</em> If you were playing the guitar perfectly, making music perfectly, there would be no style. He thought it was a great quote and remembered it &mdash; and years later went to find it on the internet, and the only place he could find it was himself saying it in interviews. &ldquo;So maybe he never said it at all.&rdquo;</p>
+
+      <p>Take the idea first, because it is the spine of the whole lesson. <strong>Perfect execution is invisible and identical.</strong> If every guitarist played a passage exactly as written, you could not tell them apart &mdash; what identifies a player is the set of deviations they can&rsquo;t or don&rsquo;t remove. Style is the residue of imperfection, made consistent by repetition.</p>
+      <p>Which means the thing beginners chase deliberately is, by definition, the thing that arrives by accident. You cannot select your deviations. You can only produce enough work for them to become visible &mdash; to a reader first, and to you much later.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>This is the <b>second</b> quotation in this class that traces back to Gaiman himself &mdash; <a href="../03-storytelling/index.html">topic 03</a> has the Chesterton line he effectively invented and which is now attributed to Chesterton everywhere. The pattern is worth knowing, and so is the fact that <b>he volunteers it both times</b>; he is the one who went looking and reported the result. Practical rule: the idea is excellent, and if you use it, attribute it to <b>Gaiman</b> rather than Garcia. There is a certain justice in a line about getting things wrong being a thing he got wrong.</p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>First you sound like everybody</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">Imitation as the mechanism, not the embarrassment</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The problem young writers have is that they don&rsquo;t sound like anybody yet. &ldquo;I didn&rsquo;t really sound like anybody. What I did was sounded like everybody else.&rdquo; That&rsquo;s what you do starting out &mdash; you imitate. You find voices you like, you think <em>this person&rsquo;s doing something great, I&rsquo;ll try and do that.</em> His own list: R. A. Lafferty, Harlan Ellison, Roger Zelazny, Ursula Le Guin.</p>
+
+      <p>The sentence to hold on to is &ldquo;<strong>I sounded like everybody else</strong>&rdquo; &mdash; not like <em>somebody</em>, like <em>everybody</em>. That&rsquo;s the difference between plagiarism and apprenticeship, and it is also the escape route: imitate one writer and you produce a weak copy, imitate thirty and the blend stops resembling any of them. <strong>The composite is where you appear.</strong></p>
+      <p>Which is <a href="../05-sources-of-inspiration/index.html">topic 05</a>&rsquo;s compost heap seen from the output end. There, the instruction was to throw everything on and let it rot down. Here is what rotting down looks like from the writer&rsquo;s side: you stop being able to point at which bit came from where, and at that moment it is yours.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>A page and a half</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">The manuscript in the attic</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>At 22 he wrote a children&rsquo;s book &mdash; the first thing he ever wrote, still unpublished, existing only in manuscript in his attic. After <em>Coraline</em> came out he wondered whether it was any good, fetched it down and read it to his daughter, then six or seven. It went back up to the attic, where it will stay &ldquo;until the crack of doom&rdquo;. But about <b>a page and a half</b>, near the end, read like him. The rest read like Noel Langley and Roald Dahl and every children&rsquo;s author he had ever read, all coming back out again.</p>
+
+      <p>There are two readings of this and you need both.</p>
+      <p><strong>The encouraging one</strong>, which is the one he gives: the voice was already there at 22. It existed. He just had to do a great deal more writing for it to take over.</p>
+      <p><strong>The exacting one</strong>, which is the one that makes it useful: it was a page and a half <em>in a whole book</em>. Call it two per cent. That is the actual ratio at the start, and knowing it changes what you expect from your own early work. You are not waiting to acquire a voice you don&rsquo;t have. <strong>You already have it, at about two per cent, and the work is raising the percentage.</strong></p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; find your two per cent</span>
+        <p>Go back to something you wrote years ago and read it looking for one thing: <strong>the paragraph that sounds like you now.</strong> There will be one, and it will probably be somewhere late, after you stopped concentrating on doing it properly.</p>
+        <p>Mark it. That&rsquo;s the earliest appearance of your voice, and everything around it is what you were borrowing at the time. Both halves are information &mdash; the borrowed parts tell you who you were imitating, which you may have forgotten.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; How you get there</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>A million bad drawings</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">Chuck Jones, applied to sentences</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Chuck Jones said you have a million bad drawings in you, and your job as an artist is to get them out so the good ones can follow. As a writer, and especially a young one, your job is to get the bad words out, the bad sentences out, the stories that aren&rsquo;t any good yet.</p>
+
+      <p>The reframing is the whole value. Bad work is not <em>evidence that you shouldn&rsquo;t be doing this</em>, and it is not even the price of good work &mdash; it is the <strong>route</strong> to it. The bad drawings are not wasted material standing between you and the good ones; they are the mechanism by which the good ones become possible, and there is no path that skips them.</p>
+      <p>Which also means the only genuinely wasted year is the one spent not producing them. Reading about craft, planning, waiting to be ready: none of it draws down the inventory.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The number moves around in retellings &mdash; the version usually told about Chuck Jones has his teacher putting it at <b>a hundred thousand</b> bad drawings, not a million. The figure is rhetorical either way and nothing turns on it, but if you quote it, quote it loosely (&ldquo;Chuck Jones used to say you have a great many bad drawings in you&rdquo;) rather than committing to a number the source may not support.</p>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Not on purpose</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">The catch in the previous move</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You never get them out by going <em>&ldquo;I am going to write a really bad story now, I just have to get this out.&rdquo;</em> You think it is a great story. You think it is a great idea. You think it is at least good &mdash; and it may be. But the important thing is that you get it out.</p>
+
+      <p>This is the part that stops move 4 from being a licence to be careless, and it is subtler than it looks. <strong>The bad work has to be attempted sincerely.</strong> You cannot clear the inventory by writing deliberately badly, because deliberate badness never finds the edge of your ability &mdash; you only discover where your reach ends by reaching as far as you actually can and watching where it stops.</p>
+      <p>The uncomfortable corollary, stated plainly: at the time, <strong>every one of those felt like the good one.</strong> Which means the feeling &ldquo;this is working&rdquo; carries almost no information early on. That sounds bleak and isn&rsquo;t &mdash; it means you can stop using the feeling as a gate, and simply finish the thing and find out.</p>
+      <p>His version of the arithmetic is bracing: if you want to write an award-winning television episode, you are going to write episodes the critics don&rsquo;t like. Award-winning film, films they don&rsquo;t like. Award-winning short stories, stories nobody reads and that don&rsquo;t really work. <em>That&rsquo;s okay.</em> The bad ones aren&rsquo;t a detour from the career; they are the early part of it.</p>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Finish things</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">The single highest-leverage instruction in the lesson</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>In his attic: a hundred or two hundred first pages &mdash; first two pages, maybe three &mdash; written between sixteen and twenty. A setup, some characters, wanting to see what would happen, and then three pages in they&rsquo;d sputter and flame out and be dead. It wasn&rsquo;t until he was twenty or twenty-one that he realised he had to start <b>finishing</b> them. At that point the improvement became, in a word Terry Pratchett loved, <b>quantum</b>.</p>
+
+      <blockquote class="pull"><p>&ldquo;You learn more from finishing a failure than you do from writing a success &mdash; and you definitely learn more from finishing a failure than you ever do from beginning something that is fantastic but stops.&rdquo;</p><cite>Neil Gaiman</cite></blockquote>
+
+      <p>Why finishing does so much work is worth spelling out, because &ldquo;finish things&rdquo; sounds like discipline advice and is actually a claim about what gets exercised. <strong>A beginning only trains the skills of beginning</strong> &mdash; premise, atmosphere, a hook, a voice for two pages. Every hard thing lives after page three: structure, consequence, the middle where nothing has momentum yet, an ending that pays for the setup, and the discovery that your lovely premise cannot support a story.</p>
+      <p>None of that can be learned from a first page, however good the first page is. So a hundred brilliant openings teach you one skill a hundred times, and one finished disaster teaches you six things once. That is the &ldquo;quantum&rdquo; jump &mdash; not working harder, working on the parts that were never being touched.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; finish the worst one</span>
+        <p>Take the project you are least excited about &mdash; the one you already know isn&rsquo;t working &mdash; and <strong>finish it anyway</strong>, at whatever length gets it to an ending. Badly is fine. Short is fine.</p>
+        <p>Then write half a page on what broke and where. That half page is the thing you were never going to get from starting something new, and it&rsquo;s worth more than the draft.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>What stays the same</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Voice, and the thing underneath voice</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Take a dozen of his short stories, or half a dozen novels: they use absolutely different language, they have a different feel, they could almost have been written by different people &mdash; except that they&rsquo;re obviously all written by him. There is a uniformity, and it isn&rsquo;t word choice. It isn&rsquo;t even voice: <em>each story has its own voice.</em> It&rsquo;s the attitude, the soul, the thing you take away.</p>
+
+      <p>This quietly splits a word the lesson has been using for two different things, and the split is the most clarifying idea in the arc:</p>
+      <ul>
+        <li><strong>Voice, at the project level</strong> &mdash; diction, syntax, register, person, distance. Chosen per book. Craft. That is the whole of arc C.</li>
+        <li><strong>Attitude, at the author level</strong> &mdash; what you find funny, what you think is at stake, what you will and won&rsquo;t do to a character, what you evidently believe about people. Not chosen, and not fakeable.</li>
+      </ul>
+      <p>The second one is the <em>stuff you can&rsquo;t help doing</em> from move 1 &mdash; and it survives every deliberate change of style, which is why the books can sound like different people and still be unmistakable. It is also why imitating someone&rsquo;s prose gets you nowhere near them: you can copy the voice and you cannot copy the attitude, because it isn&rsquo;t on the page, it is the thing that decided what went on the page.</p>
+      <p>Practical consequence, and it&rsquo;s a relief: <strong>you do not have to protect your voice.</strong> Write a hard-boiled detective story, a space opera, a doctor-nurse romance &mdash; the attitude comes anyway. His own line: your voice will be there because it&rsquo;s the stuff that is going to be there whatever you do.</p>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; A project&rsquo;s voice</h2><span class="rule"></span><span class="cnt">5 moves</span></div>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Ask before you write</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Three questions, and the third is the sharp one</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>If you&rsquo;re trying to find the voice of a project, the most important thing is to take a stab at it. Sit down and think, before you start writing: what are the most important things about this project? Does it feel like first person or third? <b>Who is telling you the story &mdash; and does it matter who is telling you the story?</b></p>
+
+      <p>The first two are the standard questions. The third is the one that does the work, because it has a real answer either way and the answer determines the technique.</p>
+      <p>If it <strong>doesn&rsquo;t</strong> matter who&rsquo;s telling it, the narrator is a delivery mechanism and the craft goes into making it disappear &mdash; move 9. If it <strong>does</strong> matter, the narrator becomes a character you have to build before you can write a sentence &mdash; moves 10 and 11. Those are opposite disciplines, and choosing wrong costs you a chapter at best, as the next move shows.</p>
+      <p>Note also &ldquo;take a stab at it&rdquo;. The answer is not arrived at by thinking; it is arrived at by writing a chapter and reading it back. Thinking narrows the options. Drafting settles them.</p>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>American transparent</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">When the narrator should vanish &mdash; and a diagnosis worth copying</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>He wrote the first chapter of <em>American Gods</em> in first person, told by Shadow. Got to the end of it and thought: that doesn&rsquo;t work. Then stepped back and asked <b>why</b> it didn&rsquo;t work &mdash; and the answer was that you are inside his head, yet he is emotionally closed off from the reader.</p>
+
+      <p>The design required the closure. Shadow starts in prison, shut down; he is told his wife is dead and everything stops; he is numb, dead inside, and the book is the slow business of waking up, going all the way down into death and coming back. <strong>So the technique and the character were fighting each other.</strong> First person promises interiority; a numb narrator has none to give. The reader gets locked in a room with someone who won&rsquo;t speak.</p>
+      <p>What&rsquo;s worth stealing is the <em>move</em> rather than the conclusion: he didn&rsquo;t simply try something else until one felt better. He asked why the first attempt failed, and the answer named a structural conflict &mdash; which then told him what to do instead. <strong>&ldquo;This isn&rsquo;t working&rdquo; is a feeling. &ldquo;This isn&rsquo;t working because X fights Y&rdquo; is a solution.</strong></p>
+      <p>The replacement he calls <strong>American transparent</strong>: the author is invisible, the words and characters are there, and you do nothing to draw attention to yourself. His examples are Elmore Leonard, who did it beautifully, and Stephen King when he flies. And the line that rescues it from sounding like an absence of style &mdash; <em>a lot of the craft of the narrative voice comes in disappearing into the text.</em> Invisible prose is not prose with the craft removed. It is craft spent entirely on not being noticed.</p>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Invent the narrator</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">How <em>Stardust</em> got its voice</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span><em>Stardust</em> has a narrative voice, and the writer is a character &mdash; a completely different kind of writer from him. In his head, the narrator of <em>Stardust</em> is writing it <b>long before there is a fantasy genre</b>: just an adult novelist writing a fairy tale for adults, as people did in the teens, twenties and thirties. He liked the idea that this writer was possibly a woman. So the voice is very formal, slightly stilted, lusher, a little antique &mdash; completely different from <em>Neverwhere</em>, though both are third person.</p>
+
+      <p>This is the most directly usable technique in the lesson. Instead of asking the unanswerable question &mdash; <em>what should this book sound like?</em> &mdash; he invents <strong>a person who is writing it</strong>, gives them a period, a sensibility and a gender, and then writes as them. An impossible aesthetic decision becomes an easy casting decision, and it stays consistent for three hundred pages because you can keep asking &ldquo;would she write that?&rdquo;</p>
+      <p>Note what &ldquo;before there was a fantasy genre&rdquo; buys him: a narrator who does not know they are writing fantasy cannot wink, cannot nod to the conventions, and cannot be ironic about the material &mdash; which is exactly the register a fairy tale needs and which a modern narrator finds almost impossible to hold.</p>
+      <p>And <strong>&ldquo;slightly stilted&rdquo; is deliberate.</strong> He chose a flaw and applied it consistently, which is move 1 turned inside out: if style is the stuff you get wrong, a project&rsquo;s style can be the stuff you get wrong <em>on purpose</em>, in one consistent direction.</p>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>A child&rsquo;s height</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who"><em>The Ocean at the End of the Lane</em>, and a graduated point of view</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>A first-person narrative, so the voice of the narrator becomes the important thing. He wanted it told by a man in his mid-forties, remembering what happened when he was seven &mdash; the story coming back to him. Told from an adult perspective, but <b>the deeper he goes into memory, the more it has to be from a kid&rsquo;s height and a kid&rsquo;s eye</b>. Not a particularly writerly style: the voice of somebody holding your hand, looking you in the eye, saying <em>let me tell you what happened to me.</em></p>
+
+      <p>Two techniques, both concrete.</p>
+      <p><strong>&ldquo;A kid&rsquo;s height&rdquo; is a literal instruction about what is in frame.</strong> Tabletops seen from underneath, adults as legs and voices above you, a garden that is enormous, distances that take a long time. Not childish diction &mdash; childish <em>vantage</em>. It is a camera position, and it does more for the effect than any amount of simplified vocabulary.</p>
+      <p><strong>The shift is graduated, not binary.</strong> Adult at the surface, child deeper in. That is a structural device rather than a mood: the prose can start composed and retrospective and lose its adult framing as the memory takes over, which is also, conveniently, exactly how remembering feels.</p>
+      <p>And &ldquo;not a particularly writerly style&rdquo; is the constraint that makes the confiding voice work. Fine writing announces a writer. This voice has to sound like a person talking to you, because the next move depends on you believing it.</p>
+    </article>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>Then let go</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">The trick he calls dangerous</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>He has used this confiding first-person voice for years &mdash; in the graphic novel <em>Violent Cases</em> at the start of his career, in <em>Mr. Punch</em>, in a number of short stories. &ldquo;It&rsquo;s incredibly dangerous, if done well, in that it&rsquo;s convincing.&rdquo; You really are saying: <em>I&rsquo;m not going to lie to you. I&rsquo;m going to tell you true things. Just hold my hand. We&rsquo;re going to walk together, you and I, into a dark place, but I&rsquo;m here. It&rsquo;s all safe.</em> And then you walk them into the dark place, <b>let go of their hand, and run away</b>.</p>
+
+      <p>The mechanism is worth taking apart, because it is an unusually clean example of technique producing emotion.</p>
+      <p><strong>The intimacy is real; the safety is not.</strong> A confiding first-person voice reads like testimony rather than fiction, so it buys trust very cheaply &mdash; the reader relaxes the guard they hold up against a story. That relaxed guard is the whole apparatus. The horror lands because the contract is broken from inside a form that promised it wouldn&rsquo;t be.</p>
+      <p>Which also tells you the conditions. It only works if <strong>the promise was kept sincerely first</strong> &mdash; a narrator who is shifty from page one has nothing to betray, and you get a twist instead of a wound. And it works roughly once per reader per book, since the reader who has been dropped will not take your hand the same way again.</p>
+      <p>This is <a href="../03-storytelling/index.html">topic 03</a>&rsquo;s argument arriving as a technique. There, fiction was &ldquo;telling the truth with things that never happened&rdquo; and honesty was the working method. Here is what that looks like at sentence level: the voice has to be <em>actually</em> trustworthy for long enough that letting go costs the reader something.</p>
+      <p>He signs off by saying that if somebody wanted to imitate him, that would be a fun style to go in and imitate &mdash; which, after arc A, is an invitation rather than a warning. Imitate it. It goes on the heap with everything else.</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Book</th><th>Who&rsquo;s telling it</th><th>What that buys</th></tr></thead>
+          <tbody>
+            <tr><td class="bk">American Gods<em>third person</em></td><td>Nobody &mdash; the author disappears</td><td>A protagonist who is numb can be watched from outside. First person would lock the reader in with someone who has nothing to give.</td></tr>
+            <tr><td class="bk">Stardust<em>third person</em></td><td>An invented novelist, writing before fantasy existed</td><td>Formal, slightly stilted, antique &mdash; a narrator who can&rsquo;t wink at the conventions because they haven&rsquo;t been invented.</td></tr>
+            <tr><td class="bk">Ocean at the<br>End of the Lane<em>first person</em></td><td>A man in his forties, remembering being seven</td><td>Adult framing at the surface, a child&rsquo;s vantage deeper in &mdash; and a confiding voice the reader will take the hand of.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; cast the narrator</span>
+        <p>For whatever you&rsquo;re working on, answer in writing before the next session: <strong>who is telling this, and does it matter?</strong> If it matters, cast them &mdash; age, period, what they think of the events, why they&rsquo;re telling you. A paragraph is enough.</p>
+        <p>Then write the same page twice: once transparent, once in their voice. You will know within a page which book you are writing, and that is a cheaper way to find out than Gaiman&rsquo;s chapter of <em>American Gods</em>.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">&ldquo;Style is the stuff you get wrong&rdquo; &mdash; whose line?</span><span class="a">Gaiman attributes it to Jerry Garcia, then admits the only place he could ever find it was himself quoting it. Attribute it to Gaiman.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why would perfect execution have no style?</span><span class="a">Perfection is invisible and identical &mdash; play it exactly right and nobody can tell you apart. Style is the deviation you can&rsquo;t remove, made consistent by repetition.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does a beginner sound like?</span><span class="a">Not like <em>somebody</em> &mdash; like <em>everybody</em>. Imitate one writer and you make a weak copy; imitate thirty and the blend is where you appear.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did he find in the attic manuscript?</span><span class="a">About a page and a half, near the end, that read like him. The rest read like every children&rsquo;s author he&rsquo;d ever read, coming back out again.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What&rsquo;s the exacting reading of that story?</span><span class="a">A page and a half in a whole book &mdash; call it 2%. You don&rsquo;t acquire a voice you lack; you already have it at 2%, and the work is raising the percentage.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Chuck Jones on bad drawings?</span><span class="a">You have a great many bad drawings in you and your job is to get them out so the good ones can follow. They&rsquo;re not the price of good work &mdash; they&rsquo;re the route to it.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why can&rsquo;t you clear them out deliberately?</span><span class="a">Because deliberate badness never finds the edge of your ability. You only learn where your reach ends by reaching as far as you can. At the time, every one felt like the good one.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What changed when he started finishing things?</span><span class="a">The improvement became &ldquo;quantum&rdquo; &mdash; Terry Pratchett&rsquo;s favourite word. Before that: a hundred-odd first pages that sputtered out by page three.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The learning hierarchy?</span><span class="a">You learn more from finishing a failure than from writing a success &mdash; and far more than from beginning something fantastic that stops.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does a brilliant first page teach so little?</span><span class="a">It only exercises the skills of beginning. Structure, the middle, consequence, endings and &ldquo;this premise won&rsquo;t hold a story&rdquo; all live after page three.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Voice versus attitude?</span><span class="a">Voice is per-project craft &mdash; diction, register, person. Attitude is what you can&rsquo;t help: what&rsquo;s at stake, what&rsquo;s funny, what you won&rsquo;t do to a character. That&rsquo;s the constant.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Do you need to protect your voice by choosing the right genre?</span><span class="a">No. Hard-boiled detective, space opera, doctor-nurse romance &mdash; it turns up anyway, because it&rsquo;s the stuff that&rsquo;s going to be there whatever you write.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The three questions before drafting?</span><span class="a">What are the most important things about this project? First person or third? Who&rsquo;s telling it &mdash; and does it matter who&rsquo;s telling it?</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why did first-person <em>American Gods</em> fail?</span><span class="a">You&rsquo;re inside the head of a man who is emotionally closed off. First person promises interiority; a numb narrator has none to give. Technique fought character.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What&rsquo;s the difference between &ldquo;it doesn&rsquo;t work&rdquo; and a diagnosis?</span><span class="a">&ldquo;This isn&rsquo;t working&rdquo; is a feeling. &ldquo;This isn&rsquo;t working because X fights Y&rdquo; names the conflict and tells you what to do instead.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">American transparent?</span><span class="a">The author is invisible &mdash; nothing draws attention to itself. Elmore Leonard, and Stephen King when he flies. The craft goes into disappearing into the text.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How did <em>Stardust</em> get its voice?</span><span class="a">He invented the novelist writing it &mdash; someone working before the fantasy genre existed, possibly a woman. Formal, slightly stilted, antique. A casting decision instead of an aesthetic one.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does &ldquo;a kid&rsquo;s height&rdquo; actually mean?</span><span class="a">A camera position, not childish diction &mdash; tabletops from below, adults as legs and voices, enormous distances. And the shift is graduated: adult at the surface, child deeper into the memory.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The dangerous trick, and its two conditions?</span><span class="a">Build real trust with a confiding voice, walk them into the dark, let go and run. It needs the promise kept sincerely first &mdash; and it works about once per reader.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>The Garcia quote.</strong> Gaiman has already done this check and reported the result &mdash; the only source he could find was himself. Don&rsquo;t repeat it as Garcia&rsquo;s. Compare the Chesterton line in <a href="../03-storytelling/index.html">topic 03</a>, which went the same way.</li>
+        <li><strong>The Chuck Jones number.</strong> Given here as a million; the version usually told about Jones and his teacher puts it at a hundred thousand. Quote it loosely.</li>
+        <li><strong>The attic children&rsquo;s book</strong> is described as unpublished and staying that way. If a title ever surfaces, this account is the primary source for it.</li>
+        <li><strong>&ldquo;Quantum&rdquo;</strong> as a Pratchett favourite is offered in passing; it&rsquo;s a running joke through Discworld, but the attribution here is Gaiman&rsquo;s recollection of his friend&rsquo;s habit rather than a citation.</li>
+        <li><strong>Which lesson this is</strong> in the class running order &mdash; not stated in the lesson, same as topics 03 and 05.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the lesson:</strong> style as the stuff you get wrong and the unsourced quote; sounding like everybody; the attic manuscript and its page and a half; Chuck Jones; that you can&rsquo;t write the bad ones on purpose; the award-winning arithmetic; finishing things and the &ldquo;quantum&rdquo; jump; the learning hierarchy; attitude as the constant beneath different voices; the three questions; the <em>American Gods</em> first-person failure and its diagnosis; American transparent, Elmore Leonard and Stephen King; the invented novelist behind <em>Stardust</em>; the mid-forties narrator and a kid&rsquo;s height in <em>The Ocean at the End of the Lane</em>; and the hand-holding trick, <em>Violent Cases</em> and <em>Mr. Punch</em>.</p>
+      <p><strong>Mine:</strong> the three-arc structure and numbering; reading the page and a half as a 2% ratio and what that implies; the explanation of why the bad work must be attempted sincerely; why a first page trains one skill a hundred times; naming the voice/attitude split explicitly and drawing out that attitude can&rsquo;t be imitated; the &ldquo;feeling versus diagnosis&rdquo; framing; calling the <em>Stardust</em> method a casting decision, and noting that a pre-genre narrator can&rsquo;t wink; reading &ldquo;a kid&rsquo;s height&rdquo; as a camera position and the shift as graduated; the mechanism of the hand-holding trick and its two conditions; the three-book table; every drill; the quiz; the cross-links to topics 03 and 05; and this list.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lesson.</strong> Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; the lesson on voice and style. Third from this class here, after <a href="../03-storytelling/index.html">topic 03</a> (what a story is for) and <a href="../05-sources-of-inspiration/index.html">topic 05</a> (where material comes from).</li>
+        <li><strong>His own books, as discussed:</strong> <em>American Gods</em>, <em>Stardust</em>, <em>Neverwhere</em>, <em>The Ocean at the End of the Lane</em>, <em>Coraline</em>, and the graphic novels <em>Violent Cases</em> and <em>Mr. Punch</em>.</li>
+        <li><strong>Writers named as influences or examples:</strong> R. A. Lafferty, Harlan Ellison, Roger Zelazny, Ursula K. Le Guin, Noel Langley, Roald Dahl, Elmore Leonard, Stephen King, Raymond Chandler (by way of Marlowe), and Terry Pratchett for a favourite word.</li>
+        <li><strong>Quoted:</strong> Chuck Jones on bad drawings; Jerry Garcia on style, with the caveat above.</li>
+      </ul>
+      <p class="endnote">Topic 09 of the study notes: Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; the lesson on finding your voice &mdash; written up 23 September 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "baddrawings.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "baddrawings.voice.v1", RTK = "baddrawings.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>The Understory</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+table.week td.lev{ font-family:var(--f-mono); font-size:.76rem; color:var(--accent-ink); white-space:nowrap; }
+
+/* ---------- what-if chain ---------- */
+.chain{ margin-block:1.6rem; display:flex; flex-direction:column; }
+.chain .step{ display:grid; grid-template-columns:1.7rem minmax(0,1fr); gap:.8rem; padding-block:.7rem; border-top:1px solid var(--line-soft); }
+.chain .step:first-child{ border-top:0; padding-top:0; }
+.chain .step .dot{
+  font-family:var(--f-mono); font-size:.66rem; color:var(--muted);
+  border:1px solid var(--line); border-radius:2px; height:1.7rem; display:grid; place-items:center;
+}
+.chain .step.out .dot{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.chain .step p{ margin:0; }
+.chain .step .q{ font-family:var(--f-mono); font-size:.74rem; color:var(--accent-ink); margin-bottom:.15rem; }
+.chain .step .a{ font-size:.98rem; line-height:1.55; }
+
+/* ---------- the four drivers ---------- */
+.quad{ margin-block:1.5rem; display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+@media (max-width:480px){ .quad{ grid-template-columns:1fr; } }
+.quad .q4{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.8rem .95rem; }
+.quad .q4 b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.25rem; line-height:1.15; color:var(--accent-ink); }
+.quad .q4 span{ display:block; margin-top:.3rem; font-size:.9rem; color:var(--muted); line-height:1.45; }
+
+/* ---------- the magic ratio ---------- */
+.ratio5{ margin-block:1.4rem; display:flex; align-items:center; gap:.45rem; flex-wrap:wrap; }
+.ratio5 i{ width:1.15rem; height:1.15rem; border-radius:50%; display:inline-block; background:var(--accent); }
+.ratio5 i.neg{ background:var(--flag); margin-left:.5rem; }
+.ratio5 span{ font-family:var(--f-mono); font-size:.74rem; color:var(--muted); margin-left:.6rem; }
+
+/* ---------- personality table ---------- */
+table.week td.type{ font-family:var(--f-display); font-size:1.1rem; line-height:1.2; color:var(--accent-ink); white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>The Understory</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 12 &middot; Conflict</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 12 &middot; Amanda Ripley&rsquo;s MasterClass</p>
+    <h1>It&rsquo;s not the conflict. <em>It&rsquo;s how you handle it.</em></h1>
+    <p class="standfirst">A journalist who spent years with gang-violence interrupters, former guerrilla fighters and divorce lawyers, asking how you get out of conflict &mdash; and being told that was the wrong question. The whole class in sixteen moves: a kind of listening people can actually detect, the fight underneath the fight, the first five minutes, four conflict personalities and the one that&rsquo;s dangerous, what turns conflict toxic, and what a bus driver does when two passengers threaten each other.</p>
+    <div class="metarow">
+      <span><b>16 moves</b> in five arcs</span>
+      <span>MasterClass &mdash; <b>Amanda Ripley</b></span>
+      <span>The whole class, <b>about an hour</b></span>
+      <span>Notes taken <b>24 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The sixteen moves">
+    <p class="arclabel">The reframe</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> Not the conflict</a></li>
+    </ol>
+    <p class="arclabel">Listening</p>
+    <ol>
+      <li><a href="#m2"><span class="n">2</span> Performing listening</a></li>
+      <li><a href="#m3"><span class="n">3</span> The understory</a></li>
+      <li><a href="#m4"><span class="n">4</span> Looping</a></li>
+      <li><a href="#m5"><span class="n">5</span> Who listens first?</a></li>
+      <li><a href="#m6"><span class="n">6</span> Your own understory</a></li>
+    </ol>
+    <p class="arclabel">The first five minutes</p>
+    <ol>
+      <li><a href="#m7"><span class="n">7</span> Slow it down</a></li>
+    </ol>
+    <p class="arclabel">Four personalities</p>
+    <ol>
+      <li><a href="#m8"><span class="n">8</span> The avoider</a></li>
+      <li><a href="#m9"><span class="n">9</span> The peacemaker</a></li>
+      <li><a href="#m10"><span class="n">10</span> The fighter</a></li>
+      <li><a href="#m11"><span class="n">11</span> The conflict entrepreneur</a></li>
+      <li><a href="#m12"><span class="n">12</span> Shift ten percent</a></li>
+    </ol>
+    <p class="arclabel">Toxic and healthy</p>
+    <ol>
+      <li><a href="#m13"><span class="n">13</span> High conflict</a></li>
+      <li><a href="#m14"><span class="n">14</span> Fire starters</a></li>
+      <li><a href="#m15"><span class="n">15</span> Build it in advance</a></li>
+      <li><a href="#m16"><span class="n">16</span> Open the doors</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;16 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">This is the practical sequel to <a href="../01-communication/index.html">topic 01</a>. There, the ancients supplied the principles &mdash; nobody is wrong on purpose, pause before you speak, say the difficult thing kindly. Here is someone who went and watched people in the worst conflicts on earth, and came back with the procedures. Almost every one of them is counterintuitive, which is her central point: in bad conflict, the instinctive move makes it worse, so the right move has to be practised in advance.</p>
+
+    <div class="arc"><h2>Arc A &middot; The reframe</h2><span class="rule"></span><span class="cnt">1 move</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>It&rsquo;s not the conflict</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The thesis, and how she arrived at it</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Conflict keeps you up at night &mdash; the toxic coworker, the same fight with your partner again, the avoidance that turns into resentment, the directness that makes people find you hard to take. But it&rsquo;s not conflict that&rsquo;s the problem; it&rsquo;s the way you handle it. Your instincts are probably wrong. <b>In really dysfunctional conflict, any intuitive thing you do will make it worse</b> &mdash; so you have to do counterintuitive things, which requires practice. You can&rsquo;t improvise your way through.</p>
+
+      <p>Her route to that position is the most persuasive part. After two decades as a journalist, and a sense after 2016 that covering conflict the usual way either made it worse or changed nothing, she spent time with people who understand conflict from inside: gang-violence interrupters, former guerrilla fighters, divorce lawyers. She kept asking how you <em>get out</em> of conflict. They kept telling her it was the wrong question. <strong>We need conflict. It&rsquo;s how we get stronger, and how we challenge each other.</strong></p>
+      <p>That became her book <em>High Conflict</em> &mdash; about how people move from toxic conflict into healthy conflict &mdash; and her organisation, Good Conflict. And the line that best summarises the reframe: <strong>companies with zero conflict also have zero innovation.</strong> The clash of ideas is how real problems surface, how frustration gets a healthy outlet, and how people are allowed to be wrong.</p>
+      <p>So the goal of everything that follows is not <em>less</em> conflict. It&rsquo;s the <em>useful kind</em>. <a href="../10-building-a-story/index.html">Topic 10</a> made the same point about fiction &mdash; you have to have the conflict first &mdash; and it turns out to be true off the page as well.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The opening statistic &mdash; US businesses losing <b>$2.7 billion a day</b> to mismanaged conflict and incivility, attributed to the Society for Human Resource Management &mdash; is the kind of number that travels far from its method. I couldn&rsquo;t confirm the figure or how it was estimated, so treat it as illustrative. Nothing in the class depends on it.</p>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Listening, and the fight underneath</h2><span class="rule"></span><span class="cnt">5 moves</span></div>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>Performing listening</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">Why nodding isn&rsquo;t listening, and what is</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Most of us think we&rsquo;re good listeners, and we&rsquo;re not. She interviewed people for over ten years before realising she was <b>performing listening</b> &mdash; doing the things that looked like listening while thinking about her next question, or whether this would make the story, or lunch. Nodding at the right moments, furrowing the brow, laughing when appropriate: that isn&rsquo;t listening, and people can tell. The real way to prove you&rsquo;re listening is through your words, because you can&rsquo;t fake that.</p>
+
+      <p>The shift is from <strong>behaviour to evidence</strong>. A nod is a performance anyone can give while thinking about something else. An accurate summary of what someone just said is proof, because you cannot produce one without having actually processed it. That&rsquo;s why she says the words can&rsquo;t be faked: they&rsquo;re the only listening signal with a cost.</p>
+      <p>She also mentions research showing that people rank <strong>AI chatbots as better listeners than humans</strong> &mdash; and is clear this isn&rsquo;t a reason to outsource listening. It&rsquo;s an indictment of how badly people do it. Which connects to the question you asked in <a href="../07-love-and-relationships/index.html">topic 07</a>: a reply that proves it understood you feels like being heard, whoever produced it. The skill being rewarded is the proof.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>She doesn&rsquo;t cite the study. The one most widely reported (PNAS, 2024) found something more interesting than the headline: people felt <b>more heard by AI-written responses</b> &mdash; until they were told an AI had written them, at which point the effect dropped. If that&rsquo;s the research she means, it supports her conclusion: people want the evidence of understanding, and they want it from someone who was actually there. Check the paper before repeating either version.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>The understory</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">The thing under the thing</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Listening in a way people can see and trust lets you start to glimpse the <b>understory</b> of the conflict &mdash; what are we really fighting about? Then you can have <em>that</em> fight, instead of getting sucked into tangential arguments. At work, turf battles, power struggles and petty feuds usually mean nobody has got to the understory. If you don&rsquo;t, you&rsquo;re doomed to repeat it: a string of nonsense fights, and never the one you actually need &mdash; the one that could make you stronger, and even closer.</p>
+
+      <p>She names what the understory usually turns out to be, and it&rsquo;s worth memorising as a set of four, because it converts &ldquo;what&rsquo;s really going on?&rdquo; from a vague question into a checklist:</p>
+
+      <div class="quad">
+        <div class="q4"><b>Respect &amp; recognition</b><span>Am I being seen, credited, taken seriously?</span></div>
+        <div class="q4"><b>Power &amp; control</b><span>Who decides? Was I consulted? Can I affect this?</span></div>
+        <div class="q4"><b>Care &amp; concern</b><span>Do you actually care what happens to me &mdash; or to this?</span></div>
+        <div class="q4"><b>Stress &amp; overwhelm</b><span>Is this about the issue, or about everything else I&rsquo;m carrying?</span></div>
+      </div>
+
+      <p>The fight about the dishes is almost never about the dishes. It is usually about one of these four, and the dishes are simply where it surfaced. Argue the dishes and you win nothing even if you win; name the understory and you&rsquo;re finally having the conversation that can end the pattern.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; classify the recurring fight</span>
+        <p>Take the argument you&rsquo;ve had most often &mdash; with anyone, about anything. Write down the surface topic, then assign it <strong>one</strong> of the four. If you can&rsquo;t choose, ask which one would make the argument stop if it were addressed.</p>
+        <p>Then ask the harder question: have you ever talked about <em>that</em> one directly? Usually not &mdash; which is why the surface fight keeps coming back.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Looping</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">The single technique the whole class rests on</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Looping was developed by the Center for Understanding in Conflict to help people in really ugly conflict listen to each other &mdash; and <em>prove</em> they were listening. It gets you to the understory because it slows the conflict down, so nobody says things they regret; it helps you actually understand, because people rarely say what they mean straight away; and it shows the other person that even as you disagree, you&rsquo;re trying to understand them. &ldquo;And that is no small thing.&rdquo;</p>
+
+      <div class="rules">
+        <div class="r">
+          <span class="num">1</span>
+          <div><h4>Listen for what seems most important to them</h4><p>Not to you &mdash; to them. <em>What words do they repeat? What metaphors do they use?</em> That&rsquo;s where it shows.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">2</span>
+          <div><h4>Distil it into the most elegant words you can</h4><p><em>Your</em> words, not theirs. Parroting their sentence back proves you can hear; restating it proves you understood.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">3</span>
+          <div><h4>Play it back</h4><p>Offer it as a question, not a verdict &mdash; &ldquo;so it felt like you were being steamrolled?&rdquo;</p></div>
+        </div>
+        <div class="r">
+          <span class="num">4</span>
+          <div><h4>Check whether you got it right</h4><p><em>The step most people forget.</em> Without it, you&rsquo;ve summarised; with it, you&rsquo;ve listened.</p></div>
+        </div>
+      </div>
+
+      <p>She describes the effect physically: <strong>their shoulders drop</strong>, because someone is finally trying to understand them. And sometimes your playback helps them work out what they actually meant &mdash; so the two of you are co-creating the conversation and arriving somewhere closer to the truth than a tennis match of positions lobbed past each other.</p>
+      <p>Two relatives elsewhere in these notes. <a href="../01-communication/index.html">Topic 01</a>&rsquo;s steelman is the same move for arguments &mdash; restate their case at its strongest, then check &ldquo;is that fair?&rdquo;. And <a href="../06-reading-hard-books/index.html">topic 06</a>&rsquo;s last rule for reading a hard book is the same move for authors &mdash; you haven&rsquo;t earned a disagreement until you can say what they meant. Looping is the version you can do out loud, in real time, to a person who is upset with you.</p>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Who listens first?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">What skipping the loop costs, and the fear that stops people doing it</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Someone brings a colleague a complaint; the colleague feels defensive and jumps in to explain, with information the other person doesn&rsquo;t have. Mistake already made: the person who complained doesn&rsquo;t feel heard, so they get louder, so now they aren&rsquo;t listening either. One beat &mdash; not forever, one beat &mdash; to put what you heard into your own words and check, and they might have been able to listen to you. <b>People will not listen until they feel heard. It&rsquo;s like a game of chicken: who is going to listen first?</b></p>
+
+      <p>The game-of-chicken framing is exact. Both people are waiting to be heard before they&rsquo;ll listen, so the deadlock only breaks if someone goes first &mdash; and going first feels like losing. It isn&rsquo;t. The person who loops first is the only one who has changed what the other person is able to do next.</p>
+
+      <h3>The executive who was right on the facts</h3>
+      <p>Her worked example: staff at a small organisation trying to unionise told their executive they demanded a seat at the table &mdash; a say in hiring and in the mission. She replied that that&rsquo;s not how unions work, and asked whether they&rsquo;d read the law. <strong>She was right on the facts, and it only escalated the us-versus-them.</strong> Through looping she eventually let go of her grip on the facts, let them talk, summarised in her own words and checked. At no point did she say she agreed. Over time the meetings emptied, and the push to form a union faded &mdash; which Ripley is careful to say is neither always what happens nor always the right outcome. What people most needed was to feel heard. Once they did, they could let go of other things.</p>
+      <p>And the fear that stops people looping is named directly: <strong>that summarising will be mistaken for agreeing.</strong> It isn&rsquo;t. People know the difference, and they feel heard anyway.</p>
+
+      <h3>At home, and getting it wrong on purpose</h3>
+      <p>Your spouse comes home: too much to do, a meeting that ran twice as long, and it made them feel like they didn&rsquo;t matter. That&rsquo;s the key line. So: <em>&ldquo;You felt like you were totally steamrolled &mdash; is that right?&rdquo;</em> And they say no, not steamrolled &mdash; more that their schedule doesn&rsquo;t matter to people. So you loop again: <em>your priorities matter less than theirs?</em> &mdash; <em>&ldquo;Yeah. Exactly.&rdquo;</em> The first loop was wrong, and that was fine: <strong>the correction is how you found the understory.</strong> Being slightly wrong out loud gets you there faster than being silently right.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; loop something small, daily</span>
+        <p>Her own instruction: use it every day, not just in conflict &mdash; that&rsquo;s how you get good enough to do it under pressure. Once a day this week, when someone tells you something that matters to them, play back the most important part in your own words and ask if you got it right.</p>
+        <p>Count how often the first attempt is wrong. It will be more than you expect, and each time it is, you&rsquo;ve just found out something you would have missed.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Your own understory</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Job one, and the 1% that belongs to you</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The understory most people overlook is their own &mdash; &ldquo;it might be job one in conflict&rdquo;. Why am I feeling this way? Is it respect, power, care, stress? Sometimes it&rsquo;s trivial: no sleep, no coffee. Sometimes it&rsquo;s deeper &mdash; a conflict you&rsquo;ve had over and over, partly your own baggage. She knows she has an issue with not feeling heard, going back a long way; knowing it means she&rsquo;s less trapped by the reaction &mdash; less likely to believe everything she thinks.</p>
+
+      <p>That last phrase deserves underlining: <strong>&ldquo;less likely to believe everything I think.&rdquo;</strong> Knowing your own trigger doesn&rsquo;t stop the reaction. It stops you mistaking the reaction for information about the other person. The heat is real; the conclusion it offers you isn&rsquo;t necessarily.</p>
+
+      <h3>The nose ring</h3>
+      <p>A friend&rsquo;s youngest daughter came home from college with a nose ring. The friend responded badly, and the daughter was hurt. Afterwards the friend asked herself why &mdash; and realised it wasn&rsquo;t the nose ring at all. She was fine with the nose ring. It was that <strong>she hadn&rsquo;t been consulted</strong>: with all her children gone, they were making big, permanent decisions without her, and she suddenly felt irrelevant. Power and control, and care, underneath a piece of jewellery. She went back and told her daughter exactly that &mdash; and the vulnerability didn&rsquo;t just repair things, it left them closer.</p>
+
+      <h3>The 1%</h3>
+      <p>Then the most practically useful idea in the arc: <strong>focus on your own contribution, because it&rsquo;s the only part you control.</strong> Maybe the other person owns 99% of the conflict. The 1% is yours &mdash; and often it&rsquo;s something like having failed, for years, to speak up about something, which quietly made room for their behaviour. Changing it won&rsquo;t fix everything, and won&rsquo;t necessarily change them. It will ripple through the whole conflict, because you&rsquo;re part of the system it runs on.</p>
+      <p>The years-of-not-speaking-up version is <a href="../01-communication/index.html">topic 01</a>&rsquo;s Marcus Aurelius, from the other end: the conversation you avoided is often your 1%.</p>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; The first five minutes</h2><span class="rule"></span><span class="cnt">1 move</span></div>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Slow it down</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">The window where the conflict can still go either way</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The first five minutes are crucial. As soon as you feel it &mdash; a knot in your stomach, your heart rate climbing, the other person suddenly more animated &mdash; that&rsquo;s your best shot at slowing it down. Step back and say: <em>let me make sure I&rsquo;m understanding you. Is this what you mean? Is that right?</em> It slows the conflict without requiring you to think too hard under pressure.</p>
+
+      <p>That&rsquo;s looping from <a href="#m4">move 4</a>, used as a brake &mdash; and it&rsquo;s chosen for this moment precisely because it needs no improvisation. Then four tactics, each of which she states plainly:</p>
+
+      <div class="rules">
+        <div class="r">
+          <span class="num">1</span>
+          <div><h4>Remove the audience</h4><p>In a meeting or on social media, shift to one-on-one. <em>It&rsquo;s much harder to humiliate people if no one&rsquo;s watching</em> &mdash; and humiliation is what turns conflict toxic (move 14).</p></div>
+        </div>
+        <div class="r">
+          <span class="num">2</span>
+          <div><h4>Buy time</h4><p>Slow it down so you can both reach your higher selves. Take a walk instead of continuing. Get your mind out of the marinade of anger for a while.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">3</span>
+          <div><h4>Go to bed angry</h4><p>&ldquo;One of the worst pieces of relationship advice I&rsquo;ve ever gotten is to not go to bed angry.&rdquo; Fighting to the bitter end at midnight, both exhausted, is a very bad idea. <em>Take the break; you&rsquo;ll be a different person in the morning.</em></p></div>
+        </div>
+        <div class="r">
+          <span class="num">4</span>
+          <div><h4>Control the medium</h4><p>Never have a fraught conversation over email, Slack, text or DMs. Fighting over text is <em>fighting with one hand behind your back</em>. Any rush of <em>how dare they</em> is a red alert not to hit reply-all.</p></div>
+        </div>
+      </div>
+
+      <p>Tactics two and three are <a href="../01-communication/index.html">topic 01</a>&rsquo;s Seneca, adapted for the twenty-first century: the greatest remedy for anger is delay, and &ldquo;go to bed angry&rdquo; is that sentence applied to a marriage. Tactic one is topic 01&rsquo;s rule that feedback goes to the person who did the thing &mdash; not to the room.</p>
+
+      <h3>When your boss humiliates you in public</h3>
+      <p>Her answer is the whole arc in miniature. Your in-the-moment response is probably not your best one, so wait, and come back to it <strong>one-on-one, prepared</strong>. Often the most effective thing is simply to acknowledge that you were taken aback &mdash; revealing how it landed can be enough. Humiliating them back would feel satisfying and would make things worse.</p>
+      <p>And she is emphatic about what this is not: <strong>it isn&rsquo;t backing down.</strong> One-on-one, not by text, in a calmer state &mdash; that&rsquo;s how you raise your odds of getting what you want. It&rsquo;s a way to get what you want, not a way to surrender what you hold dear.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; write the first sentence now</span>
+        <p>You won&rsquo;t compose anything good with your heart rate up, so write it in advance: the <strong>exact sentence</strong> you&rsquo;ll use when you feel a conflict start. Something like <em>&ldquo;Hang on &mdash; let me make sure I&rsquo;ve got what you mean.&rdquo;</em> Say it aloud a few times so it&rsquo;s yours.</p>
+        <p>Then one rule for the medium, written down: <em>if I feel &ldquo;how dare they&rdquo;, I don&rsquo;t reply in writing.</em> Rules made calm are the only ones that survive being angry.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; Four conflict personalities</h2><span class="rule"></span><span class="cnt">5 moves</span></div>
+
+    <p>She sees four types most often, and there are two reasons to know them: to recognise <strong>your own comfort zone</strong>, and to know <strong>who you&rsquo;re dealing with</strong>, because each needs a different playbook. Nobody is purely one &mdash; you might be a peacemaker at work and a fighter online, avoidant at home and a mediator at the office. Usually one or two are defaults, learned as children because they worked then, and which may or may not work now.</p>
+
+    <div class="tablewrap">
+      <table class="week">
+        <thead><tr><th>Type</th><th>In conflict, they&hellip;</th><th>The hidden cost</th><th>The move</th></tr></thead>
+        <tbody>
+          <tr><td class="type">Avoider</td><td>Walk away, agree, or go quiet and hope it passes.</td><td>People assume you agree. Resentment builds; you&rsquo;re seen as passive.</td><td>Start with tiny conflicts. <em>&ldquo;I&rsquo;m confused &mdash; help me understand.&rdquo;</em></td></tr>
+          <tr><td class="type">Peacemaker</td><td>Sense tension early and swoop in to calm it.</td><td>Your own needs go on the back burner; you become everyone&rsquo;s referee and burn out.</td><td>Ask what you need and what you control. Let people fight their own battles.</td></tr>
+          <tr><td class="type">Fighter</td><td>Come alive, know what&rsquo;s right, enjoy the argument.</td><td>Compliance, rarely commitment. People go quiet and hold things back.</td><td>Get curious about the information you&rsquo;re missing. Listen tactically.</td></tr>
+          <tr><td class="type">Conflict entrepreneur</td><td>Inflame conflict for attention, power or belonging.</td><td>Real damage &mdash; they recruit allies, and it never ends.</td><td>Don&rsquo;t comply, don&rsquo;t fight fire with fire. Distance, dig under, redirect.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>The avoider</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">The most common type, and a reasonable survival strategy</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Avoiders are very uncomfortable in conflict &mdash; &ldquo;a little bit allergic to it&rdquo;. Most people are somewhat avoidant in most situations, and that&rsquo;s honestly a pretty good survival technique. But ignored toxic situations don&rsquo;t go away, and the residue stays with you. About half of employees say they deal with toxic situations at work by ignoring them &mdash; and at work, avoiding means people think you agree when you don&rsquo;t, you slowly come to resent it, and you get overlooked.</p>
+
+      <p><strong>If you are one, start absurdly small.</strong> Your friend wants pizza, you want Thai, and normally you&rsquo;d just go with pizza. This is your moment: <em>&ldquo;I had pizza yesterday &mdash; let&rsquo;s do Thai.&rdquo;</em> Her framing is exposure therapy: small, safe doses build the muscles you&rsquo;ll need when it matters.</p>
+      <p>At work, her example is a deadline someone moved up while acting as though it had always been that date. The avoider goes along with it and seethes. Instead, by phone or in person:</p>
+
+      <blockquote class="pull"><p>&ldquo;I&rsquo;m confused, because I thought the deadline was X, and now you&rsquo;re saying it&rsquo;s Y. Help me understand.&rdquo;</p><cite>The avoider&rsquo;s starter sentence</cite></blockquote>
+
+      <p>It&rsquo;s worth noticing how well built that sentence is. It names the discrepancy exactly, but frames it as <strong>your confusion rather than their fault</strong>, and ends with a request instead of an accusation. It&rsquo;s conflict with the stakes removed &mdash; which is exactly the dose an avoider can manage.</p>
+
+      <h3>If you&rsquo;re dealing with one</h3>
+      <ul>
+        <li><strong>Notice and praise</strong> any small step they take into conflict. Reward anything outside their comfort zone.</li>
+        <li><strong>Lower the stakes</strong> of everyday disagreement. Make it normal &mdash; <em>&ldquo;Oh, interesting, I saw it totally differently. Tell me more.&rdquo;</em> Let disagreement visibly light you up rather than shut you down.</li>
+        <li><strong>Go first.</strong> Admit your own mistake; apologise if you genuinely can. Show that friction isn&rsquo;t a threat.</li>
+        <li><strong>Read the tea leaves, then invite dissent out loud</strong> &mdash; <em>&ldquo;I really want to hear any reason we might not want to go in this direction.&rdquo;</em> Unspoken disagreement festers, and can surface later as quiet undermining.</li>
+      </ul>
+      <p>Behind all of it, the observation of a leader she worked with: in many conflicts, <strong>making people feel heard and understood is at least half of what they want</strong> &mdash; even if they never get the rest.</p>
+      <p>And a link worth noticing: <a href="../10-building-a-story/index.html">topic 10</a>&rsquo;s young writers, &ldquo;peaceable souls&rdquo; whose stories swerve away from every collision, are avoiders on the page. Same instinct, same cure &mdash; let the small conflict happen.</p>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>The peacemaker</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">A gift that turns into a job nobody gave you</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The peacemaker or mediator tries to make conflict better &mdash; maybe you were the comedian in your family, the one who calmed people down. You get very good at sensing trouble before it happens and swooping in to make sure everyone&rsquo;s okay. Often that&rsquo;s brilliant; we need mediators. But it can mean your own feelings go on the back burner, you never really stand up for what you care about, and you take on more than you should. You can&rsquo;t fix everything. You can&rsquo;t change people. It isn&rsquo;t always yours to mediate, and eventually you burn out.</p>
+
+      <p>The peacemaker&rsquo;s failure is the hardest to see, because <strong>it looks exactly like virtue</strong>. Nobody complains about the person who smooths things over &mdash; until the peacemaker is exhausted, or resentful, or discovers that everyone now expects them to referee every dispute in the family or the office.</p>
+      <p>Her questions for getting out are simple: <em>Am I speaking up for my own needs? Am I letting there be conflict in the room, and being okay with it? What do I need? What can I control, and what can&rsquo;t I?</em> And the permission a peacemaker needs to hear: it isn&rsquo;t your job to fix all the things. People need to fight their own battles.</p>
+
+      <blockquote class="pull"><p>&ldquo;Peace at any cost isn&rsquo;t peace. It&rsquo;s just postponement.&rdquo;</p><cite>Amanda Ripley</cite></blockquote>
+
+      <p>That line is <a href="../01-communication/index.html">topic 01</a>&rsquo;s argument against silence &mdash; deferral, with interest &mdash; compressed into eight words. The conflict a peacemaker smooths over hasn&rsquo;t gone anywhere. It has been scheduled for later, usually at a worse time.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the control sort</span>
+        <p>List every conflict you&rsquo;re currently trying to manage that isn&rsquo;t yours &mdash; between relatives, between colleagues, inside someone else&rsquo;s career. For each, write one word: <strong>mine</strong> or <strong>theirs</strong>.</p>
+        <p>For every <em>theirs</em>, write the sentence that hands it back: <em>&ldquo;I think this is really between the two of you.&rdquo;</em> You don&rsquo;t have to say them all this week. Say one.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>The fighter</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">Her own type &mdash; right on the facts, and missing something</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>She relates to this one: growing up in New Jersey, with a lot of conflict at home, she leaned in &mdash; &ldquo;a little social justice warrior that nobody asked for&rdquo;. Fighters have a critical role; sometimes they&rsquo;re exactly what&rsquo;s needed. They come alive in conflict, know what&rsquo;s right, fight for justice, and sometimes enjoy it. But sometimes it&rsquo;s a form of bullying &mdash; a lot of people go silent when the fighter enters the room.</p>
+
+      <p>At work the fighter is good with facts, persuasive, quick, energised by disagreement, and very much wants to win &mdash; and it can look like winning. Her diagnosis of why it isn&rsquo;t is the most useful sentence in this move:</p>
+
+      <blockquote class="pull"><p>&ldquo;The fighter might get a lot of compliance, but rarely commitment.&rdquo;</p><cite>Amanda Ripley</cite></blockquote>
+
+      <p>The fighter&rsquo;s scoreboard measures the wrong thing. Winning the argument is visible; what it costs &mdash; people withholding information, effort, and the objections they&rsquo;ve learned not to raise &mdash; is invisible, and it accumulates. <strong>Even when you&rsquo;re right on the facts, there is hidden information underneath, and dominating guarantees you never hear it until it&rsquo;s too late.</strong> The union executive in <a href="#m5">move 5</a> was a fighter who was right on the facts.</p>
+      <p>The fix isn&rsquo;t to stop fighting or to surrender what you believe &mdash; she&rsquo;s clear that won&rsquo;t happen for a fighter at heart. It&rsquo;s curiosity, and tactical listening: <em>you think you know the answer. You don&rsquo;t. There&rsquo;s more here. See if you can figure out what it is.</em></p>
+      <p>Map this onto <a href="../01-communication/index.html">topic 01</a>&rsquo;s two filters and it fits exactly: the fighter is the <em>impulsive</em> filter and the avoider is the <em>cautious</em> one. Different vocabulary, the same two failure modes.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>She quotes &ldquo;an old saying&rdquo; &mdash; <em>the biggest mistake in communication is thinking it happened</em>. It&rsquo;s usually credited to George Bernard Shaw, but there&rsquo;s no good source in his writing; the earliest known version is usually traced to William H. Whyte in <em>Fortune</em>, in 1950. She sensibly calls it an old saying &mdash; it&rsquo;s the third such misattribution in a row here, after Garcia in <a href="../09-finding-your-voice/index.html">topic 09</a> and Western Union in <a href="../10-building-a-story/index.html">topic 10</a>.</p>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>The conflict entrepreneur</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">The dangerous one &mdash; and why the usual rules fail</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>By far the most dangerous type. Someone who inflames conflict for their own ends &mdash; sometimes profit, more often attention, a sense of power, or a sense of belonging. It energises them. They always feel like the victim; they always feel humiliated. They&rsquo;re often good at recruiting allies, so they can do real damage. Usually there&rsquo;s some internal pain they haven&rsquo;t dealt with, and they&rsquo;re spreading it around. They&rsquo;re addicted to revenge. And nobody who is one feels like they are &mdash; it&rsquo;s always someone else.</p>
+
+      <p>People make one of two mistakes with them, and both are the intuitive response: they <strong>comply</strong> &mdash; roll over, because this person seems so upset and might be right &mdash; or they <strong>fight fire with fire</strong>, calling them out and shaming them. Neither works, because the conflict isn&rsquo;t a problem to them. It&rsquo;s the point.</p>
+      <p>Her three counterintuitive moves:</p>
+      <ol>
+        <li><strong>Distance yourself if you can.</strong> Unfollow them. If they&rsquo;re your lawyer, find a new lawyer.</li>
+        <li><strong>If you can&rsquo;t, find out what&rsquo;s underneath</strong> &mdash; which means, counterintuitively, spending <em>a little more</em> time with them, not less. Just enough to learn what they actually want.</li>
+        <li><strong>Find what else they care about</strong> &mdash; nobody is only one thing. Maybe it&rsquo;s which parking space they get. Something you can care about too, or give them, so some of the energy goes somewhere else.</li>
+      </ol>
+      <p>At work they&rsquo;re hard to spot at first, because they may be doing things that are genuinely good and noble. <strong>The tell is that it never ends.</strong> The conflict is what makes them come alive. Sometimes the answer is to counsel them out of the role, or let them go &mdash; carefully, because they tend to be litigious, and you don&rsquo;t want to go to war with them.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>This label is powerful, which makes it easy to misuse. <b>Someone raising a real grievance persistently is not a conflict entrepreneur</b> &mdash; persistence is often what a real grievance requires. Her own test is the one to hold on to: the problem is when it <em>never ends</em>, because resolution would cost them the thing they&rsquo;re getting from the fight. And her other line cuts both ways &mdash; since no one who is one believes they are, the most useful version of the question is not &ldquo;who&rsquo;s the entrepreneur here?&rdquo; but &ldquo;is any of this me?&rdquo;</p>
+    </article>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>Shift ten percent</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">Not a new personality &mdash; a small adjustment</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You&rsquo;ve probably identified your type. None of us is just one &mdash; she&rsquo;s part fighter, part mediator, depending on work or home, who she&rsquo;s with, her mood, how much she ate for lunch. But there&rsquo;s a default, and that&rsquo;s what to question: is it serving you? If not, consider shifting <b>just ten percent</b> in one direction or another.</p>
+
+      <p>Her example: a fighter received a message that rebuked her, with her boss copied in. She was right on the facts, and her instinct was to reply in kind and argue them. Instead she went to the person directly and said it had hurt her feelings, and could they talk about it. <strong>A little vulnerable</strong> &mdash; a shift from her usual mode &mdash; and disarming, because vulnerability tends to invite it back. It didn&rsquo;t escalate, and they ended up slightly more connected than before.</p>
+      <p>Look at how much is packed into that one ten-percent move. She <strong>changed the medium</strong> (a written message to a direct conversation), <strong>removed the audience</strong> (the copied-in boss), and <strong>led with vulnerability</strong> &mdash; which is exactly the feedback skill from <a href="../01-communication/index.html">topic 01</a>, move 7. Three tactics, one sentence.</p>
+      <p>And the principle behind &ldquo;ten percent&rdquo;: <strong>small moves made consistently compound.</strong> Nobody changes their conflict personality. People change what they do in the first sentence, over and over, until the default shifts.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; three contexts, one shift</span>
+        <p>Write your default type in three places: <strong>at work, at home, online</strong>. They&rsquo;re often different, which is useful information in itself.</p>
+        <p>Pick the one context where your default is costing you most, and write down the ten-percent version &mdash; for a fighter, one vulnerable sentence; for an avoider, one stated preference; for a peacemaker, one fight left to its owners. Do it once this week.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc E &middot; Toxic and healthy</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m13">
+      <div class="movehead">
+        <span class="n">13</span>
+        <h2>High conflict</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m13">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="13"> Done</label>
+        </div>
+      </div>
+      <p class="who">What conflict looks like once it turns toxic</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>NASA knows a surprising amount about conflict. On Skylab 4 in 1973, three astronauts arrived with a huge to-do list and no time to acclimatise. One got sick and it wasn&rsquo;t reported. Then, during a scheduled briefing, ground control got silence for a full ninety-minute orbit. What had actually happened was that the exhausted crew had lost track of who was supposed to be listening. But on the ground it looked like they&rsquo;d cut contact &mdash; and word spread of a mutiny in space.</p>
+
+      <p>Her lesson from it is the headline of the arc: <strong>conflict is inevitable, and avoiding it or trying to dominate it pressurises it</strong>, until it blows up or goes sideways in ways nobody anticipates. The best way to avoid dysfunctional conflict is to <strong>cultivate healthy conflict on purpose, in advance</strong> &mdash; which is what <a href="#m15">move 15</a> is about.</p>
+
+      <h3>What &ldquo;high conflict&rdquo; means</h3>
+      <p>Conflict that escalates until it becomes <strong>us versus them, good versus evil</strong>. In that state, the research says, we make many more mistakes: every cognitive bias gets worse, we come to feel not just right but morally superior, the other side seems increasingly unreasonable, and eventually the only answer seems to be annihilation of one kind or another. In every high conflict she&rsquo;s studied &mdash; civil wars, gang violence, ugly divorces, broken workplaces &mdash; two things happen: <strong>you start harming the thing you went into the fight to protect</strong>, and you start mimicking your opponent&rsquo;s worst behaviour without noticing.</p>
+      <p>And it&rsquo;s addictive, for a reason worth understanding: in anxious times, <strong>it feels safer to be angry than afraid, and to be contemptuous than wrong.</strong> High conflict offers certainty in exchange for your judgement. At work, a sure sign is the fight going public &mdash; social media, anonymous attacks, the press &mdash; and the talented people leaving, because nobody wants to live like that. In her experience about 80% of the people stuck in high conflict want out and don&rsquo;t know how, whether they&rsquo;re in a gang or in Congress.</p>
+
+      <h3>The one signal that matters</h3>
+      <p>Anger isn&rsquo;t it. <strong>Anger is actually okay</strong> &mdash; it&rsquo;s a signal. If you&rsquo;re angry with me, you probably want me to be different or better. The signature of high conflict is <strong>contempt, or disgust</strong> &mdash; the most reliable predictors of divorce &mdash; and people can feel it even when you think you&rsquo;re hiding it, and respond in kind.</p>
+
+      <blockquote class="pull"><p>&ldquo;If you&rsquo;re angry with me, it probably means you want me to be different or better. But if you hate me, it means you&rsquo;ve given up on me &mdash; and I can feel that.&rdquo;</p><cite>Amanda Ripley</cite></blockquote>
+
+      <p class="flag"><span class="block-label">Watch for</span>The Skylab 4 &ldquo;mutiny&rdquo; is a <b>contested story</b>. The popular version has the crew deliberately switching off the radio to take a day for themselves; other accounts, closer to hers, describe a mix-up, and the crew themselves rejected the word mutiny. Her lesson doesn&rsquo;t depend on which is true &mdash; it works either way &mdash; but check a history of the mission before repeating the details as fact. The divorce finding is <b>John Gottman&rsquo;s</b> research on contempt.</p>
+    </article>
+
+    <article class="move" id="m14">
+      <div class="movehead">
+        <span class="n">14</span>
+        <h2>Fire starters</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m14">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="14"> Done</label>
+        </div>
+      </div>
+      <p class="who">Humiliation and splitting &mdash; the two forces that make conflict toxic</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Two forces drive most high conflicts, and she calls them fire starters because they take a potentially useful conflict and blow it up: <b>humiliation</b> and <b>splitting</b>.</p>
+
+      <h3>Humiliation</h3>
+      <p>Being publicly brought low &mdash; she mimes it: you were up here, and now you&rsquo;re down here. The number one rule at work is never to diminish someone, especially in front of others, in a way that goes to the core of how they see their own value. <strong>&ldquo;Humiliating your opponent is like handing them a trunk full of weapons.&rdquo;</strong> You can do it; just know it will probably make the conflict worse. She cites Nelson Mandela: there is no one more dangerous than one who has been humiliated &mdash; even if you humiliated him rightly.</p>
+      <p>That&rsquo;s the reason behind <a href="#m7">move 7</a>&rsquo;s first tactic. <em>Remove the audience</em> isn&rsquo;t etiquette; it&rsquo;s taking away the fuel for the most dangerous fire starter there is.</p>
+
+      <h3>Splitting</h3>
+      <p>What humans do when frightened or uncertain: split the world cleanly into good and evil &mdash; &ldquo;and guess which side we&rsquo;re always on.&rdquo; At work it shows up as camps: union workers versus management, reporters versus editors, nurses versus doctors. When those groups become segregated and stop knowing each other, dysfunctional conflict is usually close.</p>
+      <p>Her fix is structural rather than rhetorical, which is what makes it good: <strong>mix the groups up, sometimes literally.</strong> Some organisations rotate people through different roles and divisions on purpose, because once you&rsquo;ve done someone&rsquo;s job you have empathy for it &mdash; and when you go back, it&rsquo;s harder to dismiss or demonise the people doing it.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The Mandela line is widely attributed to him, but I couldn&rsquo;t pin down where he said or wrote it. Treat it as attributed rather than sourced.</p>
+    </article>
+
+    <article class="move" id="m15">
+      <div class="movehead">
+        <span class="n">15</span>
+        <h2>Build healthy conflict in advance</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m15">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="15"> Done</label>
+        </div>
+      </div>
+      <p class="who">What good conflict feels like, and the habits that make it possible</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Healthy conflict is curious, flexible, and focused on solving a problem rather than defeating an opponent. It can still be uncomfortable and stressful, but you come out understanding something you didn&rsquo;t know &mdash; about yourself, the other person, or the world. There&rsquo;s a sense of <b>movement</b> instead of being stuck: not the same negative emotions over and over, but a whole galaxy of them, including flashes of surprise, even humour.</p>
+
+      <p>&ldquo;Movement&rdquo; is the useful test. If a conflict has been producing the same feelings, in the same order, for months, it isn&rsquo;t healthy &mdash; however polite it is. If something new keeps surfacing, it probably is, however uncomfortable it feels.</p>
+
+      <h3>At work</h3>
+      <ul>
+        <li><strong>Tell the stories.</strong> Organisations with healthy conflict tell stories about good conflicts from their past &mdash; especially to new people, and especially the times a junior employee raised a disagreement that led to a far better outcome.</li>
+        <li><strong>Leaders model it</strong> &mdash; flexibility, curiosity, forgiveness, grace, humour &mdash; so saying the hard thing feels possible.</li>
+        <li><strong>Share your landmines in advance.</strong> She cites Adam Grant&rsquo;s work on colleagues telling each other beforehand what makes their blood boil &mdash; missed deadlines, curt emails, being told things they already know, being circumvented. You won&rsquo;t necessarily comply, but you&rsquo;ll know where the mines are.</li>
+        <li><strong>Hold conflict meetings.</strong> Her own small company has regular meetings just for disagreement, with standing questions &mdash; <em>Where are you torn? What are you worried about?</em> &mdash; so conflict can surface before it&rsquo;s combustible.</li>
+      </ul>
+
+      <h3>At home</h3>
+      <p>Harder, she says, because home is where we most need to feel someone has our back. Healthy family conflict doesn&rsquo;t necessarily end in resolution &mdash; families will always disagree about some things. What matters is that you can <strong>make each other feel heard, even while you continue to profoundly disagree</strong>. The research on healthy families finds they don&rsquo;t have fewer conflicts; their conflicts leave them closer, not further apart.</p>
+
+      <h3>The magic ratio</h3>
+      <p>John and Julie Gottman, who studied thousands of couples, found that couples with roughly <strong>five positive interactions for every negative one in conflict</strong> tend to be more resilient &mdash; the positives act as a buffer, so conflict doesn&rsquo;t wound so easily.</p>
+
+      <div class="ratio5" role="img" aria-label="Five positive interactions for every one negative">
+        <i></i><i></i><i></i><i></i><i></i><i class="neg"></i><span>five to one &mdash; in conflict</span>
+      </div>
+
+      <p>Her first reaction was that it sounded like a lot &mdash; until she noticed how many small, fleeting interactions could simply be made more positive. Some organisations she works with audit their ratio. The builders are small and specific: acknowledging someone who went above and beyond; helping when it isn&rsquo;t required; remembering what someone was dealing with and texting to ask how it went; <strong>a thank-you note that says exactly what you&rsquo;re thanking them for</strong>. At home it depends on what each person needs &mdash; words and recognition for some, favours for others, simply time for others. Her husband, up at five, sometimes sets the coffee maker so all she has to do is press go, and leaves a sticky note with a smiley face. It works every time.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The Gottmans&rsquo; five-to-one is specifically a ratio <b>during conflict</b> &mdash; she says so &mdash; but it&rsquo;s widely quoted without that qualifier, as though it were about relationships in general.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; two questions and a note</span>
+        <p>Borrow her conflict-meeting questions for your own week, with a colleague or at home: <strong>Where are you torn? What are you worried about?</strong> Ask them when nothing is on fire &mdash; that&rsquo;s the point.</p>
+        <p>Then write one thank-you note that names <em>exactly</em> what you&rsquo;re thanking someone for. Specific enough that it couldn&rsquo;t be sent to anyone else.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m16">
+      <div class="movehead">
+        <span class="n">16</span>
+        <h2>Open the doors</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m16">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="16"> Done</label>
+        </div>
+      </div>
+      <p class="who">When it explodes anyway &mdash; and how the class ends</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>On a city bus with her nine-year-old son, two strangers behind them started fighting about whether the window should be open. It escalated fast &mdash; &ldquo;I will cut you,&rdquo; &ldquo;Let&rsquo;s go.&rdquo; Full mama bear: she turned round and yelled at them. They got off at the next stop, and then her son started yelling at <em>her</em> &mdash; it had frightened him to watch her escalate it. Later she met a city bus driver who deals with this almost daily and has learned by trial and error. She had broken every rule he had.</p>
+
+      <p>Here is what he does, in order:</p>
+
+      <div class="chain">
+        <div class="step">
+          <span class="dot">&#9679;</span>
+          <div><p class="q">Pull over and open all the doors</p><p class="a">People in conflict need to know there&rsquo;s a way out. Even in high conflict, some small voice is asking <em>how do I get out of this and still save face?</em> Give them the exit.</p></div>
+        </div>
+        <div class="step">
+          <span class="dot">?</span>
+          <div><p class="q">&ldquo;What&rsquo;s going on back there?&rdquo;</p><p class="a">Over the intercom &mdash; asked as if he really wants to know.</p></div>
+        </div>
+        <div class="step">
+          <span class="dot">?</span>
+          <div><p class="q">&ldquo;What would you like to do about it?&rdquo;</p><p class="a">When they start yelling back. It hands them agency instead of a verdict.</p></div>
+        </div>
+        <div class="step out">
+          <span class="dot">&#9632;</span>
+          <div><p class="q">Then a choice</p><p class="a">One of you can come up here and keep me company while I get everyone safely where they&rsquo;re going &mdash; or I call someone and we all wait.</p></div>
+        </div>
+      </div>
+
+      <p>Every step does something she&rsquo;s already taught. The open doors are the exit that stops people feeling trapped &mdash; and <strong>trapped is when you get panic and antisocial behaviour</strong>. The first question is genuine curiosity, the bus-driver&rsquo;s version of looping. The second hands control back instead of imposing it. And the choice lets both men step down without losing face, which matters because humiliation (<a href="#m14">move 14</a>) is what would have kept it going. Her mama-bear response, by contrast, was the fighter&rsquo;s: righteous, understandable, and escalating.</p>
+      <p>At home or at work, <strong>opening the doors is a question</strong> &mdash; <em>&ldquo;Help me understand, how did we get here?&rdquo;</em> &mdash; or a break &mdash; <em>&ldquo;Would it be okay if we stopped for half an hour and came back?&rdquo;</em> Anything that interrupts the spiral and shows there&rsquo;s another path. And the people in charge have to model it repeatedly: ask for feedback, take it in, admit when they&rsquo;re wrong. That tells everyone else the stakes are not life or death.</p>
+
+      <h3>Ownership, and social capital</h3>
+      <p>The last practical instruction: <strong>take ownership of your contribution</strong>. Often, at work, that means recognising how your earlier silence let something go down a bad path. It isn&rsquo;t all your fault &mdash; but conflict in a group is a system, and the one thing you can change is your own behaviour, which disturbs the equilibrium for everyone. When you acknowledge even a small mistake, it becomes easier for others to acknowledge theirs.</p>
+      <p>And the preventive one: <strong>social capital</strong>, &ldquo;the currency of human connection&rdquo;, the thing that makes people feel seen and less alone. Time pressure and remote work have thrown the balance sheet out, so it has to be built on purpose &mdash; and genuinely. Find anything you can connect on that isn&rsquo;t work: you both have a dog, you both garden. Those are the touchpoints you come back to when things get hard.</p>
+
+      <blockquote class="pull"><p>&ldquo;Conflict feels like a failure, but it&rsquo;s usually a starting point.&rdquo;</p><cite>Amanda Ripley &mdash; her golden rule</cite></blockquote>
+
+      <p>She closes where she opened. You can&rsquo;t stop conflict &mdash; it always finds you. But it isn&rsquo;t something that just happens to you; it&rsquo;s something you can shape. The next time you feel that familiar heat rising, in a meeting, at home, online, you&rsquo;ll have choices you didn&rsquo;t have before.</p>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Her central claim about conflict?</span><span class="a">It&rsquo;s not the conflict that&rsquo;s the problem, it&rsquo;s how you handle it. In dysfunctional conflict the intuitive move makes it worse, so the right one has to be practised.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did the gang interrupters and divorce lawyers tell her?</span><span class="a">&ldquo;How do you get out of conflict?&rdquo; is the wrong question. We need conflict &mdash; it&rsquo;s how we get stronger. Zero conflict, zero innovation.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What&rsquo;s wrong with nodding and furrowing your brow?</span><span class="a">It&rsquo;s performing listening &mdash; anyone can do it while thinking about lunch. The proof is in your words: an accurate summary can&rsquo;t be faked.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the understory?</span><span class="a">The thing under the thing &mdash; what you&rsquo;re really fighting about. Skip it and you&rsquo;re doomed to repeat the conflict as a string of nonsense fights.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The four usual drivers underneath?</span><span class="a">Respect and recognition; power and control; care and concern; stress and overwhelm.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The steps of looping?</span><span class="a">Listen for what matters most to them; distil it in your own best words; play it back; and check you got it right &mdash; the step people forget.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Does looping mean agreeing?</span><span class="a">No. The executive never said &ldquo;I agree&rdquo;. People know the difference &mdash; and they feel heard anyway.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is it a game of chicken?</span><span class="a">People won&rsquo;t listen until they feel heard, so both wait. Whoever loops first is the only one who changes what the other can do next.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What was the nose ring really about?</span><span class="a">Not being consulted &mdash; feeling irrelevant once the children had gone. She told her daughter so, and they ended up closer.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">If they own 99% of the conflict?</span><span class="a">Work on your 1% &mdash; often years of not speaking up. It won&rsquo;t fix everything, but it ripples through the system.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Four tactics for the first five minutes?</span><span class="a">Remove the audience. Buy time. Go to bed angry. Control the medium &mdash; never fight over text.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The avoider&rsquo;s starter sentence?</span><span class="a">&ldquo;I&rsquo;m confused, because I thought it was X and now you&rsquo;re saying Y. Help me understand.&rdquo; Discrepancy as your confusion, not their fault.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The peacemaker&rsquo;s trap, in her words?</span><span class="a">&ldquo;Peace at any cost isn&rsquo;t peace. It&rsquo;s just postponement.&rdquo;</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does the fighter get, and not get?</span><span class="a">A lot of compliance, rarely commitment. People go quiet and hold back the information the fighter most needs.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Two wrong responses to a conflict entrepreneur?</span><span class="a">Complying, or fighting fire with fire. Instead: distance yourself, find what&rsquo;s underneath, find what else they care about.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How do you tell a conflict entrepreneur from someone with a real grievance?</span><span class="a">It never ends &mdash; resolution would cost them what the fight gives them. And nobody who is one thinks they are.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is high conflict addictive?</span><span class="a">In anxious times it feels safer to be angry than afraid, and contemptuous than wrong.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Anger or contempt &mdash; which is the warning sign?</span><span class="a">Contempt, or disgust. Anger means you want me to be better; hate means you&rsquo;ve given up on me.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The two fire starters?</span><span class="a">Humiliation &mdash; handing your opponent a trunk full of weapons &mdash; and splitting the world into good and evil. Fixes: remove the audience; mix the groups up.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The magic ratio?</span><span class="a">About five positive interactions to one negative, during conflict (the Gottmans). Built from small, specific acts.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does the bus driver do first, and why?</span><span class="a">Pulls over and opens all the doors. People need an exit and a way to save face &mdash; trapped is when you get panic.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Her golden rule?</span><span class="a">Conflict feels like a failure, but it&rsquo;s usually a starting point.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>$2.7 billion a day</strong>, attributed to the Society for Human Resource Management &mdash; I couldn&rsquo;t confirm the figure or its method.</li>
+        <li><strong>&ldquo;About 53% of employees&rdquo;</strong> ignore toxic situations at work &mdash; no source given in the class.</li>
+        <li><strong>AI chatbots ranked as better listeners</strong> &mdash; she doesn&rsquo;t cite the study. The widely reported one (PNAS, 2024) found the effect reverses once people know the reply came from an AI. Check which she means.</li>
+        <li><strong>&ldquo;The biggest mistake in communication is thinking it happened&rdquo;</strong> &mdash; usually credited to Shaw; the earliest known version is usually traced to William H. Whyte (1950).</li>
+        <li><strong>Skylab 4</strong> &mdash; a contested story; accounts differ on whether the silence was deliberate.</li>
+        <li><strong>The Mandela line on humiliation</strong> &mdash; widely attributed, source not found.</li>
+        <li><strong>Adam Grant on sharing what makes your blood boil</strong> &mdash; given as she describes it; I couldn&rsquo;t identify the specific study.</li>
+        <li><strong>&ldquo;80% want to get out&rdquo;</strong> is her professional estimate, not a survey figure.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the class:</strong> everything she teaches &mdash; the reframe and her route to it; performing listening and proving it with words; the understory and its four drivers; looping, its steps and the Center for Understanding in Conflict; the game of chicken, the union executive and the spouse example; your own understory, the nose ring and the 1%; the first five minutes and its tactics, including going to bed angry and the boss who humiliates you; the four personalities and her advice for each; shifting ten percent and the fighter&rsquo;s email; Skylab 4, high conflict, contempt versus anger; humiliation, splitting and rotation; healthy conflict, the workplace habits, Adam Grant, conflict meetings, the magic ratio and the coffee maker; the bus driver; ownership, social capital, and the golden rule.</p>
+      <p><strong>Mine:</strong> the five-arc structure; &ldquo;behaviour versus evidence&rdquo; and why a summary can&rsquo;t be faked; the one-line glosses on the four drivers; the reading of the corrected loop as the way you find the understory; &ldquo;less likely to believe everything I think&rdquo; as the point of knowing your triggers; the personality table; reading &ldquo;help me understand&rdquo; as confusion rather than blame; the fighter&rsquo;s scoreboard; the misuse warning on &ldquo;conflict entrepreneur&rdquo; and the &ldquo;is any of this me?&rdquo; version; spotting three tactics inside the ten-percent example; &ldquo;movement&rdquo; as the test of healthy conflict; mapping each bus-driver step to earlier moves; every drill; the quiz; the cross-links to topics 01, 06, 07 and 10; and this list.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The class.</strong> Amanda Ripley&rsquo;s MasterClass on conflict &mdash; the whole class.</li>
+        <li><strong>Her work:</strong> <em>High Conflict: Why We Get Trapped and How We Get Out</em> (2021), and the organisation Good Conflict, which she co-founded.</li>
+        <li><strong>Named in the class:</strong> the Center for Understanding in Conflict, where looping comes from; John and Julie Gottman on contempt and the five-to-one ratio; Adam Grant; the Skylab 4 mission; Nelson Mandela, as attributed.</li>
+        <li><strong>Related here:</strong> <a href="../01-communication/index.html">01</a> &mdash; the steelman, Seneca&rsquo;s delay, the cautious and impulsive filters, leading with vulnerability; <a href="../06-reading-hard-books/index.html">06</a> &mdash; understand before you disagree; <a href="../07-love-and-relationships/index.html">07</a> &mdash; needed resistance, and your AI question; <a href="../10-building-a-story/index.html">10</a> &mdash; fiction needs conflict too.</li>
+      </ul>
+      <p class="endnote">Topic 12 of the study notes: Amanda Ripley&rsquo;s MasterClass on conflict, written up 24 September 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "understory.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "understory.voice.v1", RTK = "understory.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

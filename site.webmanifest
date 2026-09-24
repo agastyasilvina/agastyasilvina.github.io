@@ -1,0 +1,9 @@
+{
+  "name": "Terminal Portfolio",
+  "short_name": "Terminal",
+  "description": "Agastya's silvina Portfolio.",
+  "start_url": "/",
+  "theme_color": "#1d2a35",
+  "background_color": "#1d2a35",
+  "display": "standalone"
+}

@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Rich Life</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- buckets bar ---------- */
+.buckets{ margin-block:1.7rem; }
+.bar{ display:flex; height:2.6rem; border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+.bar span{ display:grid; place-items:center; font-family:var(--f-mono); font-size:.66rem; color:var(--bg); letter-spacing:.04em; }
+.bar .s1{ background:var(--accent); flex:55; }
+.bar .s2{ background:var(--accent-ink); flex:10; }
+.bar .s3{ background:var(--bronze); flex:8; }
+.bar .s4{ background:var(--flag); flex:27; }
+.bkey{ display:grid; grid-template-columns:repeat(auto-fit,minmax(12rem,1fr)); gap:.55rem 1.2rem; margin-top:.8rem; font-size:.92rem; }
+.bkey div{ display:flex; gap:.55rem; align-items:baseline; line-height:1.45; }
+.bkey i{ flex:none; width:.7rem; height:.7rem; border-radius:1px; margin-top:.35rem; }
+.bkey .k1{ background:var(--accent); } .bkey .k2{ background:var(--accent-ink); }
+.bkey .k3{ background:var(--bronze); } .bkey .k4{ background:var(--flag); }
+@media (max-width:520px){ .bar span{ font-size:.58rem; } }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+table.week td.num{ font-family:var(--f-mono); font-size:.86rem; white-space:nowrap; }
+table.week td.win{ color:var(--accent-ink); }
+table.week td.lose{ color:var(--flag); }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Rich Life</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 02 &middot; Money</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">I Will Teach You To Be Rich &middot; Ramit Sethi, via a video summary</p>
+    <h1>Spend extravagantly on what you love &mdash; <em>cut mercilessly on what you don&rsquo;t.</em></h1>
+    <p class="standfirst">Fourteen rules, and one claim underneath all of them: money is 95% psychology and 5% strategy, which is why advice that is arithmetically correct keeps failing in real lives. Almost every rule here is a way of removing a decision from your future self rather than a way of getting the sums right. Here they are unpacked &mdash; what each one actually asks of you, which numbers survive checking, and the drill that turns it into a system.</p>
+    <div class="metarow">
+      <span><b>14 rules</b> in five arcs</span>
+      <span>Source: <b>Ramit Sethi</b>, <em>I Will Teach You To Be Rich</em> (2nd ed., 2019)</span>
+      <span>Notes taken <b>20 Sep 2026</b></span>
+      <span>Figures in <b>US dollars</b>, as spoken</span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The fourteen rules">
+    <p class="arclabel">Out of your own way</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The 85% solution</a></li>
+      <li><a href="#m2"><span class="n">2</span> Conscious spending plan</a></li>
+      <li><a href="#m3"><span class="n">3</span> Start early</a></li>
+      <li><a href="#m4"><span class="n">4</span> Big wins, not small</a></li>
+    </ol>
+    <p class="arclabel">Build the system</p>
+    <ol>
+      <li><a href="#m5"><span class="n">5</span> Automate everything</a></li>
+      <li><a href="#m6"><span class="n">6</span> Boring investing</a></li>
+      <li><a href="#m7"><span class="n">7</span> Separate accounts</a></li>
+      <li><a href="#m8"><span class="n">8</span> Spending frameworks</a></li>
+    </ol>
+    <p class="arclabel">Repair and aim</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> Get rid of debt</a></li>
+      <li><a href="#m10"><span class="n">10</span> Fix the budget</a></li>
+      <li><a href="#m11"><span class="n">11</span> Define your rich life</a></li>
+    </ol>
+    <p class="arclabel">The big purchases</p>
+    <ol>
+      <li><a href="#m12"><span class="n">12</span> Buying a car</a></li>
+      <li><a href="#m13"><span class="n">13</span> Buying vs renting</a></li>
+    </ol>
+    <p class="arclabel">Carry it out</p>
+    <ol>
+      <li><a href="#m14"><span class="n">14</span> Ten principles</a></li>
+      <li><a href="#practice"><span class="n">&#9679;</span> The setup week</a></li>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;14 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Your browser speaks the page &mdash; each rule has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top. Good for a second pass on the commute.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">The order matters more than it looks. Rules 1&ndash;4 are about getting yourself to act at all, because the most common financial mistake is not a bad choice but an unmade one. Rules 5&ndash;8 build the machine that runs without you. Rules 9&ndash;11 deal with the damage already done and set the target. Rules 12&ndash;13 are the two purchases big enough to undo everything above. Rule 14 is the whole thing compressed into ten lines you can keep somewhere visible.</p>
+
+    <div class="arc"><h2>Arc A &middot; Out of your own way</h2><span class="rule"></span><span class="cnt">4 rules</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>Eighty-five per cent beats perfect</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">Ramit&rsquo;s <b>85% Solution</b></p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Weight loss: we all know what to do &mdash; eat less, exercise more. Instead we argue keto versus paleo while sitting on the couch eating pizza. Money is the same. You don&rsquo;t need it perfect, you need it 85% right. The person who opens an account today and puts in $50 beats the person who spends two years researching.</p>
+
+      <p>The diet comparison is doing real work, so it is worth stating precisely. Nobody is stuck because they lack the information; they are stuck because the research phase is more comfortable than the doing phase and looks, from the inside, identical to progress. Comparing interest rates across six banks feels like financial responsibility. It is procrastination with a spreadsheet open.</p>
+      <p>What makes the argument sharp is that the gap between the perfect option and the decent option is almost always smaller than the gap between the decent option and nothing. A savings account paying slightly less than the best available still pays. An index fund that is not the cheapest on the market still compounds. <strong>Zero pays zero</strong>, and zero is what you get while comparing.</p>
+      <p>So the instruction is to deliberately accept a worse answer in exchange for having one today, and then to stop reopening the question. The 85% is not a tolerance for sloppiness &mdash; it is a decision to spend your limited attention on the handful of choices that actually move the number, which is rule 4.</p>
+
+      <blockquote class="pull"><p>Getting 85% right beats getting 0% right, every single time.</p><cite>The 85% Solution</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Ramit Sethi, <em>I Will Teach You To Be Rich</em></b> &mdash; the 85% Solution is set out in the opening chapters as the book&rsquo;s governing attitude, and everything later is built to be good enough rather than optimal. The underlying idea is older: <b>Herbert Simon&rsquo;s</b> <span class="term">satisficing</span> (1956) &mdash; that in most real decisions, searching for the best option costs more than the difference between the best and the first acceptable one.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; close one open loop</span>
+        <p>Name the money decision you have been &ldquo;researching&rdquo; for more than two weeks. Write down the option you would pick if someone forced you to choose in the next ten minutes. That is your 85% answer, and it is almost certainly right enough.</p>
+        <p>Do it today, in the smallest possible size &mdash; open the account, transfer $50, place the first order. Size is adjustable later; the start date is not.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>The conscious spending plan</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">Ramit&rsquo;s replacement for budgeting</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You can still spend extravagantly on the things you love. You don&rsquo;t need to be cheap, cut your morning coffee, or track every expense. Decide in advance where the money goes &mdash; rent, saving, investing, going out &mdash; and once you&rsquo;ve decided, you&rsquo;re free. No more guilt, because you already planned for it.</p>
+
+      <p>This is the load-bearing rule of the whole system, and it is not a budget. A budget is a record of what you did, read afterwards, usually with guilt. A conscious spending plan is a set of decisions taken once, in advance, at the level of percentages rather than transactions &mdash; after which individual purchases stop being decisions at all.</p>
+      <p>The trade is explicit: <strong>to spend extravagantly on what you love, you have to cut mercilessly on what you don&rsquo;t.</strong> Not trim. Cut. The asymmetry is the point, because a little less of everything leaves you with a life that is slightly worse in every direction, whereas a lot less of a few things you never cared about is invisible.</p>
+
+      <div class="buckets">
+        <span class="block-label">The four buckets, as percentages of take-home pay</span>
+        <div class="bar" role="img" aria-label="Fixed costs 50 to 60 per cent, investments 10 per cent, savings 5 to 10 per cent, guilt-free spending the remainder">
+          <span class="s1">Fixed 50&ndash;60%</span><span class="s2">Invest 10%</span><span class="s3">Save 5&ndash;10%</span><span class="s4">Guilt&#8209;free</span>
+        </div>
+        <div class="bkey">
+          <div><i class="k1"></i><span><b>Fixed costs.</b> Rent, bills, groceries, debt minimums, transport. The boring irreducibles.</span></div>
+          <div><i class="k2"></i><span><b>Long-term investments.</b> Pension and investment accounts. Ten per cent is the floor, not the target.</span></div>
+          <div><i class="k3"></i><span><b>Savings goals.</b> Dated, named things &mdash; a holiday, a wedding, a deposit, next year&rsquo;s emergency.</span></div>
+          <div><i class="k4"></i><span><b>Guilt-free spending.</b> Whatever is left, typically 20&ndash;35%. Restaurants, clothes, nonsense. No justification required.</span></div>
+        </div>
+      </div>
+
+      <h3>Why John&rsquo;s restaurant habit is not a problem</h3>
+      <p>The worked example in the video is a friend who eats at good restaurants four nights a week. From the outside that is a person wasting money. What you cannot see from the outside is the rest of the ledger: he owns no car and takes public transport everywhere, he works long hours and is barely home, so he lives in a cheap flat he has never bothered to decorate. Three large costs most people carry, deleted &mdash; not out of discipline, but because he genuinely does not care about them.</p>
+      <p>And critically, the restaurants are paid for last. Before any of it, his system has already moved money to his pension, his investments, his savings and his fixed costs automatically. What remains is, by construction, spendable. That is what makes it guilt-free: not an attitude, an order of operations.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The video gives percentages for three buckets and never states the fourth. Guilt-free spending is the remainder &mdash; Ramit&rsquo;s published figure is <b>20&ndash;35%</b>, which is what the bar above shows. If your four buckets do not total 100%, you have not made a plan, you have made a wish.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Sethi, <em>I Will Teach You To Be Rich</em></b> &mdash; the Conscious Spending Plan chapter, the book&rsquo;s central tool, presented explicitly as the alternative to budgeting on the grounds that budgets are backward-looking and nobody sustains them. The percentages are rules of thumb on take-home pay, and Sethi expects them to be adjusted rather than obeyed.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the three-column pass</span>
+        <ol>
+          <li>Print or export <strong>last month&rsquo;s bank and card statements</strong>. One month is enough; do not go hunting for a representative month.</li>
+          <li>Mark every line with one of three marks: <strong>love it</strong>, <strong>neutral</strong>, <strong>don&rsquo;t care</strong>. Judge the feeling you had, not whether it was sensible.</li>
+          <li>Total the <strong>don&rsquo;t care</strong> column. That number is your raise. Redirect it &mdash; to investing, to savings, or to more of the things in column one.</li>
+        </ol>
+        <p>Then write the four percentages down somewhere you will see them again. A plan you cannot recite is not operating.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Start early &mdash; the maths is violent</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">Compound interest, via Sally and Dan</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Sally invests $200 a month from 25 to 35, then stops forever. Dan starts at 35 and invests $200 a month until 65. Who has more at 65? Sally &mdash; by about $80,000. She invested for ten years, he invested for thirty, and she still wins, because she started earlier.</p>
+
+      <p>The story is arranged to be counter-intuitive and it is: Sally puts in <strong>$24,000</strong> across ten years and stops; Dan puts in <strong>$72,000</strong> across thirty. Three times the money, and he still ends up behind. The reason is that Sally&rsquo;s contributions spend an extra decade compounding on top of themselves, and compounding is exponential &mdash; the last doublings are enormous, so the years that matter most are the earliest ones, which is exactly when the amounts feel too small to bother with.</p>
+
+      <p>Worth running the numbers rather than taking them, because the answer depends entirely on the return you assume. At the 8% the video implies, Sally wins comfortably. Below about 6.5%, she does not win at all.</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Annual return</th><th>Sally at 65</th><th>Dan at 65</th><th>Difference</th></tr></thead>
+          <tbody>
+            <tr><td class="day">5%</td><td class="num">$138,752</td><td class="num">$166,452</td><td class="num lose">Dan by $27,699</td></tr>
+            <tr><td class="day">6%</td><td class="num">$197,395</td><td class="num">$200,903</td><td class="num lose">Dan by $3,508</td></tr>
+            <tr><td class="day">7%</td><td class="num">$280,968</td><td class="num">$243,994</td><td class="num win">Sally by $36,974</td></tr>
+            <tr><td class="day">8%</td><td class="num">$400,130</td><td class="num">$298,072</td><td class="num win">Sally by $102,058</td></tr>
+            <tr><td class="day">10%</td><td class="num">$812,718</td><td class="num">$452,098</td><td class="num win">Sally by $360,621</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="flag"><span class="block-label">Check this</span>The quoted &ldquo;$80,000 more&rdquo; lands around a <b>7.7%</b> return &mdash; reasonable for US equities historically, but it is an assumption doing the work, not a law. At 5&ndash;6% the story reverses and the person who invested three times as much wins, as you would expect. The honest version of the lesson is narrower than the headline: <b>early money is worth multiples of late money, and the multiple is set by the return.</b> Do not repeat the $80,000 figure as though it were arithmetic.</p>
+
+      <p>The narrower version is still decisive, and it has a second half the video states well: you cannot buy back time. Every other input &mdash; how much you earn, how much you save, which fund &mdash; can be improved later. The start date is the one variable that is permanently fixed the moment it passes.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span>The Sally-and-Dan setup is a standard compound-interest illustration that circulates in many forms; <b>Sethi</b> uses the same shape to open the investing material, and Burton Malkiel&rsquo;s <b><em>A Random Walk Down Wall Street</em></b> runs a near-identical two-investor comparison. Figures above computed directly: monthly contributions, monthly compounding, no fees, no tax, no inflation adjustment.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; make the start date today</span>
+        <p>Do not calculate the optimal contribution. Open the investment account now and set a standing transfer for whatever amount you would not notice &mdash; $20 is fine, the number is nearly irrelevant at this stage. The purpose of this month&rsquo;s contribution is to exist. Raise it after the next pay rise, and every one after that.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Big wins, not small ones</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">Where the leverage actually is</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>People obsess over $5 coffees and Netflix, and have never once negotiated their salary or asked their landlord for lower rent. Skipping a $5 coffee daily saves about $1,825 a year &mdash; but you have to give something up every day for a year. One salary negotiation is worth $5,000 to $15,000, and it compounds for the rest of your career.</p>
+
+      <p>Both numbers check out: $5 &times; 365 is $1,825, and that is not nothing. The difference is what each one costs you to get. The coffee saving requires 365 separate acts of self-denial, each one a small withdrawal from the same limited account of willpower that rules 5 and 8 exist to protect. The salary negotiation requires one uncomfortable conversation, once.</p>
+      <p>And the two are not the same kind of money. A raise does not arrive once &mdash; it raises the base that every future raise, bonus and pension contribution is calculated from, for the remainder of your working life. Early-career negotiations are worth far more than their face value for exactly the reason rule 3 gives.</p>
+
+      <div class="figs">
+        <div class="fig"><b>$1,825</b><span>a year of no coffee</span></div>
+        <div class="fig"><b>$5k&ndash;15k</b><span>one salary conversation</span></div>
+        <div class="fig"><b>&times; every year</b><span>and it compounds</span></div>
+      </div>
+
+      <p>The big wins are a short list, and it is the same list for almost everybody: <strong>what you earn, what you pay in rent or mortgage, what rate your debt carries, what fees your investments charge, and the handful of five-figure purchases you make in a decade.</strong> Five to ten decisions. Get those right and the coffee genuinely does not matter &mdash; which is the liberating half of the rule, not the scolding half.</p>
+
+      <div class="script">
+        <div class="line"><span class="k bad">Weak ask</span><q>I was wondering if there might be any room to look at my salary at some point?</q></div>
+        <div class="line"><span class="k good">Stronger</span><q>I&rsquo;d like to talk about my compensation. Here&rsquo;s what I&rsquo;ve delivered this year &mdash; what would it take to get to <em>[specific number]</em>?</q></div>
+        <div class="line"><span class="k bad">Weak ask</span><q>Is there any chance you could lower the rent?</q></div>
+        <div class="line"><span class="k good">Stronger</span><q>I&rsquo;d like to stay another two years. Comparable flats nearby are going for <em>[figure]</em>. Can we agree <em>[figure]</em> and sign now?</q></div>
+      </div>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Sethi</b> calls these Big Wins and builds a whole chapter around salary negotiation, on the argument that earning more has no ceiling while cutting does &mdash; the same point that returns as rule 10. The specific preference for one large structural change over many small behavioural ones is also the standard finding in habit research: recurring decisions fail, one-off structural changes hold.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; find your one big win</span>
+        <ol>
+          <li>Write down your <strong>five largest annual expenses</strong>, in order, with real figures. Not categories &mdash; amounts.</li>
+          <li>Next to each, write the single sentence you would have to say to reduce it, and to whom.</li>
+          <li>Pick the one with the largest number and the least awkward sentence. Book it this week.</li>
+        </ol>
+        <p>If the biggest line is your income being too small rather than an expense being too large, that is still the answer &mdash; it just points at rule 10.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Build the system</h2><span class="rule"></span><span class="cnt">4 rules</span></div>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Automate everything</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">Systems over willpower</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You are lazy. I am lazy. Everyone is lazy &mdash; it&rsquo;s not an insult, it&rsquo;s human nature. You think you&rsquo;ll manually transfer to savings every month? Remember to invest on the 15th? You won&rsquo;t. Ramit: &ldquo;you might care now, but in two weeks it&rsquo;ll be back to Twitter and Netflix. Nobody really cares about managing their money. Hell, I don&rsquo;t even care.&rdquo;</p>
+
+      <p>The insult is the argument. Every plan that requires you to remember something monthly is a plan that will work for two months, and the failure is not a character flaw to be corrected &mdash; it is the predictable behaviour of a normal person with a job. The correct response is not to try harder but to arrange things so that trying is unnecessary.</p>
+      <p>So the money moves on its own, in a fixed order, triggered by payday rather than by intention. Your pay arrives; transfers fire a day or two later; what is left in the spending account is, by definition, spendable. The question &ldquo;can I afford this?&rdquo; is answered by a balance rather than by a calculation, which is the same trick rule 7 uses and the reason the two work best together.</p>
+
+      <p>Note what this inverts. Most people spend through the month and discover the result afterwards &mdash; the <em>where did it all go</em> conversation with a bank app. Here the allocation happens first and the discovery never happens, because there is nothing left to discover.</p>
+
+      <h3>The transfer ladder</h3>
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>When</th><th>What fires</th><th>Why then</th></tr></thead>
+          <tbody>
+            <tr><td class="day">Payday</td><td>Salary lands in the spending account</td><td>The single inbound point</td></tr>
+            <tr><td class="day">+1 day</td><td>Investments and pension top-up</td><td>First, so it is never the remainder</td></tr>
+            <tr><td class="day">+1 day</td><td>Transfer to savings, at a different bank</td><td>Out of sight before it is spent</td></tr>
+            <tr><td class="day">+2 days</td><td>Rent, bills, debt payments, subscriptions</td><td>After the money has certainly cleared</td></tr>
+            <tr><td class="day">Rest of month</td><td>Whatever remains is guilt-free</td><td>No tracking, no permission-seeking</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>An hour to set up, once. After that the system runs whether or not you are interested in money that month &mdash; which, as the quote cheerfully admits, you will not be.</p>
+
+      <blockquote class="pull"><p>If you rely on willpower, you will fail. If you rely on systems, you will win.</p><cite>Rule 5, stated plainly</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Sethi</b> devotes a chapter to the automated money flow and treats it as the book&rsquo;s single highest-value hour of work. The behavioural evidence is strong and specific: <b>Thaler &amp; Benartzi&rsquo;s Save More Tomorrow</b> (<em>Journal of Political Economy</em>, 2004) raised participants&rsquo; savings rates dramatically by making increases automatic and opt-out rather than opt-in, and automatic enrolment has since become standard pension policy in several countries on exactly this finding.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the one-hour setup</span>
+        <ol>
+          <li>List every outbound payment that should happen monthly, with amounts and a date relative to payday.</li>
+          <li>Set each one up as a <strong>standing order or automatic transfer</strong>, not a reminder. A reminder is a decision you have merely postponed.</li>
+          <li>Set investments to fire <strong>before</strong> bills, so they are a fixed cost rather than a leftover.</li>
+          <li>Diary a <strong>fifteen-minute review once a quarter</strong>. That is the only recurring commitment the system is allowed to make.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Boring investing wins</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Low-cost index funds, as recommended by <b>Warren Buffett</b></p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Plenty of high earners have no investments: &ldquo;I don&rsquo;t have time to follow the stock market,&rdquo; or &ldquo;stocks go down, I don&rsquo;t want to lose money.&rdquo; Buffett&rsquo;s answer for those people is low-cost index funds. An index fund matches an index &mdash; buy an S&amp;P 500 fund and you own a slice of all 500 companies. No picking winners. Fees around 0.03% to 0.2%.</p>
+
+      <p>An index is just a defined list of companies; the S&amp;P 500 is roughly the 500 largest listed in the United States. A fund that tracks it buys all of them in proportion, so your return is the market&rsquo;s return minus a very small fee. Nobody is deciding anything. That is the product.</p>
+      <p>The comparison is with actively managed funds, where a manager picks holdings intended to beat the market and charges considerably more for the attempt. The difficulty is not that managers are stupid &mdash; it is that the fee is certain and the outperformance is not. A fund charging 1% must beat the index by 1% every year merely to draw level, and most do not manage it over any long period.</p>
+
+      <div class="figs">
+        <div class="fig"><b>0.03&ndash;0.2%</b><span>typical index fund fee</span></div>
+        <div class="fig"><b>~1%+</b><span>typical active fund fee</span></div>
+        <div class="fig"><b>500</b><span>companies in one purchase</span></div>
+      </div>
+
+      <h3>Which answer sounds better at a party</h3>
+      <div class="script">
+        <div class="line"><span class="k bad">Option A</span><q>Bought Tesla last week, flipped it for a quick profit. Now I&rsquo;m looking at some crypto plays.</q></div>
+        <div class="line"><span class="k good">Option B</span><q>I buy the same index fund every month. I haven&rsquo;t changed anything in five years.</q></div>
+      </div>
+      <p>Option A is the interesting answer, and it costs research, attention and nerve &mdash; from the same people who opened this rule by saying they had no time. Option B costs one decision and then nothing, forever. The video&rsquo;s point is that boring is not the compromise version of investing; for anyone who is not doing this professionally, boring <em>is</em> the strategy.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>&ldquo;Buy an S&amp;P 500 fund&rdquo; is US-specific advice repeated worldwide. Outside the US it means putting everything into one foreign country&rsquo;s stock market, in a currency you do not spend, sometimes with unhelpful tax treatment. The transferable rule is <b>broad, low-cost, automatic and left alone</b> &mdash; which for most people elsewhere means a global index fund, and inside whatever tax wrapper your country gives you. The word &ldquo;pension&rdquo; in the video suggests the summary itself is already translating for a non-US audience.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Warren Buffett&rsquo;s 2013 letter to Berkshire shareholders</b> describes the instructions in his own will: put 10% in short-term government bonds and <b>90% in a very low-cost S&amp;P 500 index fund</b>, advice he gives explicitly for people who are not investment professionals. He also won a well-publicised ten-year bet (2008&ndash;2017) that an S&amp;P 500 index fund would beat a selection of hedge funds after fees; it did, comfortably. <b>SPIVA</b>, the long-running scorecard published by S&amp;P, has found for years that the large majority of active funds trail their benchmark over ten- and fifteen-year windows.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; one fund, one order, then nothing</span>
+        <p>Pick a single broad, low-cost index fund inside a tax-advantaged account. Set a monthly automatic purchase. Then <strong>remove the app from your phone</strong> &mdash; the checking is the failure mode, because checking leads to adjusting and adjusting is what the fees and the mistakes live in. Look once a year, when you raise the contribution.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Separate your accounts</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Mental accounting, made physical</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Two accounts &mdash; spending and savings &mdash; ideally at two different banks. Why? Psychology. If your friends invite you out and you see $30 left, you say no or suggest somewhere cheaper. If it is all in one account you see plenty, you spend freely, and the money you saved for a holiday pays for last night&rsquo;s drinks.</p>
+
+      <p>One pot of money is ambiguous, and ambiguity gets resolved in favour of whatever you feel like doing. The holiday fund and the rent buffer and this weekend look identical when they are the same number on the same screen, so the money gets spent by whichever intention is loudest on Friday night &mdash; and it is never the holiday.</p>
+      <p>Splitting the accounts removes the ambiguity without requiring any discipline. The spending account&rsquo;s balance becomes a genuine answer to &ldquo;can I do this?&rdquo;, and behaviour adjusts to it automatically: you suggest somewhere cheaper, or next week instead. Nothing was resisted. The information was simply correct at the moment of the decision.</p>
+      <p>Two banks rather than two accounts at one bank, because the friction is the feature. Money you can move in four seconds from the same app is not really separate; a different login, a day&rsquo;s transfer delay and no card attached is enough distance to make raiding it a decision rather than a reflex.</p>
+
+      <p>And the objection the video anticipates is worth keeping: <em>I&rsquo;ve only got $300, why bother?</em> Because the amount is not the point. You are installing the habit while the stakes are low enough that getting it wrong costs nothing. The habit has to already exist by the time there is $10,000 or $50,000 sitting in it.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Richard Thaler&rsquo;s</b> work on <span class="term">mental accounting</span> (&ldquo;Mental Accounting Matters&rdquo;, <em>Journal of Behavioral Decision Making</em>, 1999, and earlier work from 1985) describes exactly this: people treat money as belonging to labelled, non-interchangeable pots, and spend very differently depending on the label &mdash; even though money is fungible and, economically, the labels should not matter at all. Separate accounts weaponise the bias instead of fighting it. <b>Sethi</b> gives the same advice operationally, and adds the high-yield savings account and no debit card.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; open it this week</span>
+        <ol>
+          <li>Open a <strong>savings account at a different bank</strong> from your everyday one. High yield if available, and check the fees.</li>
+          <li><strong>Do not attach a debit card.</strong> Do not add it to the app you look at daily. Hard to reach is the entire design.</li>
+          <li>Move something in today, even $20, and set the automatic transfer from rule 5.</li>
+          <li>Optional, and worth it: a second savings pot per named goal, so &ldquo;deposit&rdquo; and &ldquo;holiday&rdquo; cannot quietly fund each other.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Spending frameworks</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Rules that decide so you don&rsquo;t have to</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Every purchase becomes a debate: should I buy this, is it worth it, maybe I should wait. That battle is exhausting and you feel guilty either way &mdash; guilty for spending, or deprived for not. The fix is rules that decide for you. Ramit buys any book without thinking, because one good idea is worth more than the price.</p>
+
+      <p>The hidden cost of an unplanned purchase is not the money, it is the deliberation &mdash; repeated dozens of times a month, and resolved either way with a residue of guilt. A framework converts a recurring judgement into a standing decision made once, in advance, calmly. After that the purchase is not evaluated; it is simply executed.</p>
+      <p>The book example is the clearest case because the asymmetry is so extreme. A book costs a trivial amount; a single useful idea from it can be worth thousands. Deliberating over which books are worth buying costs more attention than the entire category is worth, so the correct policy is <strong>buy it, always, immediately</strong> &mdash; and accept that most will be mediocre.</p>
+      <p>The second example is structural rather than trivial: economy on short flights, business on anything over six hours. Notice it contains both a splurge and a cut, which is what stops a framework from becoming a blanket permission slip. A rule that only ever says yes is not a framework, it is a habit with better branding.</p>
+
+      <div class="script">
+        <div class="line"><span class="k good">Always</span><q>I buy any book I&rsquo;m curious about, immediately, no deliberation.</q></div>
+        <div class="line"><span class="k good">Always</span><q>I pay for convenience whenever it saves me more than an hour.</q></div>
+        <div class="line"><span class="k good">Always</span><q>I buy quality when it comes to shoes and coats &mdash; things I use daily and keep for years.</q></div>
+        <div class="line"><span class="k bad">Never</span><q>&hellip;and no rule anywhere that says what I stop buying.</q></div>
+      </div>
+
+      <p class="flag"><span class="block-label">Watch for</span>Frameworks are only safe sitting on top of rule 5. If investments, savings and bills have already left the account automatically, a generous rule can only consume guilt-free money and the damage is capped by arithmetic. Without that, &ldquo;I always buy X without thinking&rdquo; is just a licence, and the thing it eats is your savings.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Sethi</b> frames these as money rules written in advance so that individual purchases stop being negotiations. The general mechanism is what psychologists call an <span class="term">implementation intention</span> &mdash; an if-then rule fixed ahead of time, shown by <b>Peter Gollwitzer&rsquo;s</b> research (from 1999 onward) to produce far better follow-through than intention alone, because the decision is no longer made in the moment of temptation.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; write three rules, and one cut</span>
+        <p>Pick two or three categories where you want to spend without ever debating it again, and write them as sentences beginning <strong>&ldquo;I always&hellip;&rdquo;</strong>. Then write one beginning <strong>&ldquo;I never&hellip;&rdquo;</strong> &mdash; the category you will stop buying entirely to pay for the others. Put all four somewhere you will actually see them. Revisit in six months, not sooner; a rule you renegotiate monthly is not a rule.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; Repair and aim</h2><span class="rule"></span><span class="cnt">3 rules</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Get rid of the debt first</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">Five steps, and a choice of method</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Credit card debt, student loans, whatever it is &mdash; deal with it first. You can&rsquo;t invest aggressively while paying 20% interest on a card. The maths doesn&rsquo;t work.</p>
+
+      <p>The arithmetic is the whole argument and it is not close. Paying down a balance charging 20% is a guaranteed, tax-free, risk-free 20% return &mdash; roughly triple what you can reasonably expect from the stock market, with none of the uncertainty. There is no investment available to a normal person that competes with clearing an expensive card, which is why this rule sits ahead of the investing ones in practice even though it appears later in the list.</p>
+
+      <h3>The five steps</h3>
+      <ol>
+        <li><strong>Write down exactly what you owe.</strong> Every debt, with three numbers each: total balance, interest rate, minimum payment. Most people have never seen this on one page, and the not-knowing is doing more emotional damage than the debt.</li>
+        <li><strong>Choose which to attack first.</strong> Minimums on everything, and all spare money at one target &mdash; either the smallest balance (snowball) or the highest rate (avalanche). Pick one and start; the choice matters far less than the starting.</li>
+        <li><strong>Phone and ask for a lower rate.</strong> Say other cards are offering you better and you would rather stay. Sometimes no, sometimes yes &mdash; and a yes is money for a five-minute call.</li>
+        <li><strong>Decide where the extra payment comes from.</strong> Something cut, something sold, or savings beyond your buffer. It has to come from somewhere specific, not from &ldquo;being careful&rdquo;.</li>
+        <li><strong>Start this week.</strong> Not when the plan is perfect. You can adjust the method later; you cannot recover the months spent planning.</li>
+      </ol>
+
+      <h3>Snowball or avalanche</h3>
+      <p>The avalanche &mdash; highest interest rate first &mdash; is mathematically optimal and will always cost you less in total. The snowball &mdash; smallest balance first &mdash; is mathematically worse and clears whole debts sooner, which produces a visible win early and makes people more likely to keep going. The video picks the snowball on the grounds that money is psychology rather than maths, and the evidence is genuinely on its side.</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Method</th><th>Attack first</th><th>Strength</th><th>Weakness</th></tr></thead>
+          <tbody>
+            <tr><td class="day">Snowball</td><td>Smallest balance</td><td>Early visible wins; momentum; fewer separate debts to track</td><td>Costs more in interest overall</td></tr>
+            <tr><td class="day">Avalanche</td><td>Highest rate</td><td>Cheapest possible route out</td><td>The first target can take months, with nothing to show</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>If the gap in rates is large &mdash; a 24% card against a 4% student loan &mdash; take the avalanche, because the difference is real money. If your balances are similar, take the snowball and buy yourself the momentum.</p>
+
+      <div class="script">
+        <div class="line"><span class="k">The call</span><q>I&rsquo;ve been a customer for <em>[time]</em> and I&rsquo;ve been offered <em>[rate]</em> elsewhere. I&rsquo;d rather stay with you &mdash; can you lower my APR?</q></div>
+        <div class="line"><span class="k">If no</span><q>Who can I speak to who is able to authorise that?</q></div>
+        <div class="line"><span class="k">If still no</span><q>Fine &mdash; what would I need to do to qualify for a lower rate, and when can I ask again?</q></div>
+      </div>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Sethi</b> sets out the same sequence and is emphatic about phoning to negotiate rates. The snowball was popularised by <b>Dave Ramsey</b>, and it has held up when tested: <b>Gal &amp; McShane</b>, &ldquo;Can Small Victories Help Win the War? Evidence from Consumer Debt Management&rdquo; (<em>Journal of Marketing Research</em>, 2012), found that closing accounts &mdash; rather than paying down the largest balances &mdash; predicted who successfully eliminated their debt. The optimal plan you abandon loses to the suboptimal plan you finish.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the one-page debt table</span>
+        <p>Write every debt on one page with balance, rate and minimum, and total it. Circle the target. Make the call in step 3 today, before the enthusiasm fades &mdash; it is the only step that can pay off in the next ten minutes.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>When the numbers don&rsquo;t work</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">Four options, in order of preference</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You&rsquo;ve set up the conscious spending plan and the numbers just don&rsquo;t work &mdash; there isn&rsquo;t enough left for guilt-free spending. Four options.</p>
+
+      <p>This is the rule that stops rule 2 collapsing the first time it meets an actual pay cheque, and the order is the useful part.</p>
+
+      <ol>
+        <li><strong>Cut investing or saving.</strong> Available, and to be avoided unless there is genuinely nothing else, because it is the one option that takes money from a future you cannot compensate later &mdash; see rule 3. Treat it as the emergency lever, not the convenient one.</li>
+        <li><strong>Cut fixed costs.</strong> The first place to look. Subscriptions you pay for and barely use. Debt interest you have never tried to negotiate. And the large one nobody wants to touch: if rent is eating most of your income, moving somewhere cheaper is unpleasant and occasionally the only thing that works.</li>
+        <li><strong>Run the envelope system.</strong> Allocate a set amount to each category &mdash; groceries, eating out, entertainment &mdash; and when it is gone, it is gone. Crude, effortful, and effective precisely because the constraint is visible rather than notional.</li>
+        <li><strong>Earn more.</strong> Ask what it would take to become a top performer and then do that; or take a better-paid job elsewhere; or add freelance work on the side.</li>
+      </ol>
+
+      <blockquote class="pull"><p>There&rsquo;s a limit to how much you can cut. There&rsquo;s no limit to how much you can earn.</p><cite>Rule 10, and again as principle 4</cite></blockquote>
+
+      <p>The recommendation is to work option 2 first because it is fast and entirely within your control, then move to option 4, which is slower but uncapped. Options 1 and 3 are situational: one borrows from your future, the other spends your attention. Both are fine temporarily and neither is a plan.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Sethi</b> repeatedly argues that frugality has a floor and earnings do not, and his books and courses lean heavily toward the earning side &mdash; negotiation, promotion, freelancing. The <span class="term">envelope system</span> is much older, a Depression-era household practice of physically dividing cash into labelled envelopes; the modern app versions are the same idea with the friction restored artificially.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the subscription audit</span>
+        <p>Open your card statement and list every recurring charge. For each: <strong>used in the last month, yes or no?</strong> Cancel every no, now, while the list is in front of you. Then pick the single largest fixed cost on the page and spend fifteen minutes finding out whether it is negotiable. Most people find between $30 and $100 a month in under half an hour &mdash; and unlike skipping coffee, you only have to find it once.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Define your rich life</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">The target the whole system is aimed at</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Ask people why they want more money and they say freedom and security. Those are fine answers, but they&rsquo;re not clear. You need to define your rich life &mdash; for some it&rsquo;s travelling, for others time with family, for others the freedom to quit a job they hate. If you don&rsquo;t define it specifically, you&rsquo;ll chase someone else&rsquo;s version of rich, and that&rsquo;s a race you&rsquo;ll never win.</p>
+
+      <p>&ldquo;Freedom&rdquo; and &ldquo;security&rdquo; fail as goals for a practical reason: no amount satisfies them. Neither has a number attached, so no sum you reach ever registers as arrival, and the target moves upward with your income forever. Specificity is what converts a feeling into something that can be achieved and then stopped.</p>
+      <p>The second failure mode is borrowing. Without your own definition you default to the visible one &mdash; the house, the car, the upgrade everyone around you is making &mdash; and you can spend a career funding a life you never actually chose, at considerable expense, with no moment at which it feels like enough.</p>
+
+      <h3>Turning it into a number</h3>
+      <ol>
+        <li><strong>Write the life.</strong> Concretely: what you are doing on an ordinary Tuesday, where you live, who you are with, what you have stopped doing.</li>
+        <li><strong>Cost it monthly.</strong> What does that life require per month, in today&rsquo;s money?</li>
+        <li><strong>Work backwards.</strong> Use an investment calculator to find the monthly contribution that reaches it by your date.</li>
+        <li><strong>Then raise the income</strong> to fund that contribution &mdash; which is rule 10, now with a reason attached.</li>
+      </ol>
+
+      <p class="flag"><span class="block-label">Check this</span>The video says to assume around <b>8%</b> returns. That is a nominal figure taken from long-run US stock market history, and inflation is not in it. At 2&ndash;3% inflation the same assumption is nearer <b>5&ndash;6% in real terms</b>, and your target is expressed in today&rsquo;s money &mdash; so use a real rate, or you will plan a life you can afford on paper and not in the shops. Run the number twice, at 5% and at 7%, and treat the gap as the honest width of the forecast.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span>&ldquo;Your Rich Life&rdquo; is <b>Sethi&rsquo;s</b> signature phrase and the organising idea of the second edition &mdash; the money system exists to fund a specific life, and is pointless without one. The warning about borrowed targets is the old economics of <span class="term">relative consumption</span>: <b>Richard Easterlin&rsquo;s</b> work from 1974 onward found that satisfaction tracks income relative to the people around you far more closely than absolute income &mdash; which is precisely the race the rule tells you not to enter.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; one paragraph, one number</span>
+        <p>Write a single paragraph describing an ordinary day in your rich life. No abstractions &mdash; if the word &ldquo;freedom&rdquo; appears, replace it with the thing freedom would let you do. Then put a monthly cost on it, and run the calculator at 5% and 7%. You now have a target, a range, and a monthly figure to aim the rest of the system at.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; The big purchases</h2><span class="rule"></span><span class="cnt">2 rules</span></div>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>Buying a car the smart way</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">Budget, pick, negotiate, maintain</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Four things: budgeting, picking, negotiating, maintaining. The price is not the only cost &mdash; insurance, fuel, maintenance, and city parking. Ramit bought at the end of December, contacted 17 dealers, told each the exact car and that he was ready within two weeks, then called them back with the lowest price and let them beat it.</p>
+
+      <h3>1. Budget for the whole cost</h3>
+      <p>The sticker price is the part everyone negotiates and the smallest part of what the car takes from you. Insurance, fuel, servicing, tyres, tax and &mdash; in a city &mdash; monthly parking run for as long as you own it. Take the figure to your conscious spending plan and ask what monthly number the fixed-costs bucket can actually carry, then work back to a purchase price from there.</p>
+
+      <h3>2. Pick on four criteria</h3>
+      <ol>
+        <li><strong>Something you enjoy driving</strong>, within that budget. You will have it for years; joylessness is a real cost.</li>
+        <li><strong>Reliability.</strong> Repeated repairs dwarf whatever you saved at purchase.</li>
+        <li><strong>Resale value.</strong> Some models hold value and some fall off a cliff; this is often a larger sum than the discount you negotiate.</li>
+        <li><strong>Fuel efficiency</strong>, since it is a bill you pay weekly for the life of the car.</li>
+      </ol>
+
+      <h3>3. Negotiate by making them compete</h3>
+      <p>This is the genuinely transferable part. Two structural advantages, used together. <strong>Timing:</strong> he bought at the end of December, when salespeople are chasing year-end quotas and a marginal deal is worth more to them than the margin on it. <strong>Process:</strong> he contacted seventeen dealers, specified the exact car, and made clear he was buying within two weeks &mdash; then collected offers, rang each back with the lowest number received, and invited them to beat it.</p>
+      <p>What that does is move the negotiation out of the showroom, where every advantage is theirs, into a sealed-bid auction conducted on your terms. He visited exactly one dealership: the one that won. Nobody got to run a four-hour close on him, because he was never in the building.</p>
+
+      <div class="script">
+        <div class="line"><span class="k">The email</span><q>I&rsquo;m buying <em>[exact model, trim, colour]</em> within two weeks, paying outright. Please send your best out-the-door price including all fees. I&rsquo;m asking several dealers and going with the lowest.</q></div>
+        <div class="line"><span class="k">The call back</span><q>Best I have so far is <em>[figure]</em> out the door. Can you beat it? If you can, I&rsquo;ll come in today.</q></div>
+        <div class="line"><span class="k bad">Never</span><q>What monthly payment could you do for me?</q></div>
+      </div>
+      <p>The last line matters: negotiating the monthly payment rather than the total price is how a longer term and a worse deal get sold as a smaller number. Agree the out-the-door total first, financing second, and treat them as separate conversations.</p>
+
+      <h3>4. Maintain it like you are already selling it</h3>
+      <p>Keep a record of every service &mdash; oil changes, tyres, everything, with dates and receipts. When you sell, the first thing a buyer probes is history, and an undocumented car is negotiated down on suspicion alone. A folder costs nothing and defends the resale value you chose the car for in the first place.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Sethi</b> tells the seventeen-dealer story as a worked example of a Big Win: one afternoon of emails against thousands saved. The end-of-quarter and end-of-year timing is standard advice in consumer-motoring guides for the same quota reason, and the fax-and-email tactic of soliciting competing out-the-door quotes long predates the book.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; before any large purchase</span>
+        <p>Write down the <strong>total annual cost of ownership</strong>, not the price. Then send the same email to at least five sellers and let the replies compete. It works for cars, and equally for insurance renewals, broadband, phone contracts and tradespeople &mdash; any market where the seller expects you to negotiate alone and in person.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m13">
+      <div class="movehead">
+        <span class="n">13</span>
+        <h2>Buying a house versus renting</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m13">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="13"> Done</label>
+        </div>
+      </div>
+      <p class="who">Three tests before the biggest purchase of your life</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>A lot of young people think buying a house is the first thing to do after college &mdash; no investment plan, no pension, just a house, because everyone says it&rsquo;s the best investment you can make.</p>
+
+      <h3>Test 1 &mdash; can you actually afford it?</h3>
+      <p>Three numbers, all of which have to pass:</p>
+      <div class="figs">
+        <div class="fig"><b>&times;2.5</b><span>price vs annual income</span></div>
+        <div class="fig"><b>20%</b><span>deposit saved</span></div>
+        <div class="fig"><b>30%</b><span>of gross, all-in monthly</span></div>
+      </div>
+      <p>On a $50,000 income that is a maximum price of <strong>$125,000</strong>, a deposit of <strong>$25,000</strong>, and total monthly housing costs &mdash; mortgage, taxes, insurance and maintenance together, not just the mortgage &mdash; of no more than <strong>$1,250</strong>. If you cannot hit those, the answer is not a longer mortgage; it is that you are not ready yet.</p>
+      <p>And the trap the video names is the one that catches almost everyone: <em>I pay $1,000 rent, so I can afford a $1,000 mortgage.</em> No. Buyers reliably buy something nicer than they rented, so the payment rises before anything else happens. Then add property tax, insurance and maintenance, and the $1,000 is $1,500. And when the toilet breaks it is yours &mdash; the landlord was providing insurance against repairs that you had not been pricing.</p>
+
+      <h3>Test 2 &mdash; are you staying ten years?</h3>
+      <p>Buying and selling are both expensive: agent commission, stamp duty or transfer tax, legal fees, moving costs. Those are paid up front and recovered only slowly, so a short hold can leave you worse off than renting even if prices rose. Below roughly a decade, renting is usually the better financial decision &mdash; and the honest answer to &ldquo;will I still be here in ten years?&rdquo; is more often no than people admit when they are standing in a kitchen they like.</p>
+
+      <h3>Test 3 &mdash; is it even the better investment?</h3>
+      <p>The video&rsquo;s least popular point, and the one with the most behind it: a $350,000 house does not cost $350,000. Add thirty years of mortgage interest, insurance, maintenance, tax and fees and the true outlay is nearer <strong>$800,000</strong>. Renting avoids most of those costs, and the difference &mdash; if it is actually invested rather than spent &mdash; compounds in the background. Sethi rents himself, while keeping a separate savings account for a future deposit, because he has run his own numbers and they say so for now.</p>
+      <p>The unavoidable caveat is that renting only wins if the gap is genuinely invested every month. For most people a mortgage is forced saving, and forced saving beats intended saving &mdash; which is rule 5 arguing quietly for the other side.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The 2.5&times;-income rule is American and dated. In London, Sydney, Auckland or Vancouver it rules out essentially every property, and treating it as a gate means never buying. Treat it as a <b>warning light</b>: the further past 2.5&times; you go, the more of your life the house is claiming, and the more the decision depends on prices continuing to rise. The 30%-of-gross test travels better &mdash; use that one as the hard limit.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Sethi</b> devotes a chapter to big-ticket purchases and is notably sceptical of the house-as-investment assumption. The long-run data supports the scepticism: <b>Robert Shiller&rsquo;s</b> US house price index, published with <em>Irrational Exuberance</em> (2nd ed., 2005), shows real house prices roughly flat over the century before the 2000s boom, once inflation is removed &mdash; very far from the returns available from equities over the same period. The <em>New York Times</em>&rsquo; rent-versus-buy calculator is the standard tool for running your own version, and it asks for exactly the costs people leave out.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; run it properly before you fall in love</span>
+        <ol>
+          <li>Total the <strong>real monthly cost</strong> of a house you are considering: mortgage, tax, insurance, and 1% of value a year for maintenance.</li>
+          <li>Compare with rent on an equivalent place, and invest the difference on paper for ten years.</li>
+          <li>Ask honestly: <strong>am I here in ten years?</strong> If not, rent, and put the deposit in its own named account.</li>
+        </ol>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc E &middot; Carry it out</h2><span class="rule"></span><span class="cnt">the ten principles</span></div>
+
+    <article class="move" id="m14">
+      <div class="movehead">
+        <span class="n">14</span>
+        <h2>Ten principles for a rich life</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m14">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="14"> Done</label>
+        </div>
+      </div>
+      <p class="who">The whole system, compressed</p>
+
+      <ol>
+        <li><strong>Spend extravagantly on what you love, cut mercilessly on what you don&rsquo;t.</strong> Not spending less &mdash; spending intentionally. The cuts are what buy the splurges.</li>
+        <li><strong>Focus on the big wins.</strong> The five to ten decisions that move the number: salary, rent, debt rates, fees, the occasional large purchase. The rest is noise.</li>
+        <li><strong>Investing should be boring.</strong> If it is exciting, you are probably doing it wrong. Set it up, automate it, leave it alone.</li>
+        <li><strong>There is a limit to cutting, none to earning.</strong> At some point there is nothing left to cut, and the other side of the ledger has no ceiling.</li>
+        <li><strong>Listen politely to money advice, then follow your plan.</strong> Friends and family will offer tips. Their situation is not yours and their plan is usually not written down.</li>
+        <li><strong>Create spending frameworks.</strong> Rules decided once, in advance, so no purchase has to be argued about twice.</li>
+        <li><strong>Stop searching for advanced tips.</strong> The advanced move is mastering the basics and doing them consistently. Hunting for a cleverer technique is rule 1&rsquo;s procrastination wearing a better suit.</li>
+        <li><strong>Nobody is coming to rescue you.</strong> Not the government, not your parents, not the lottery. The control is yours, which is the uncomfortable half and the encouraging half at once.</li>
+        <li><strong>Your rich life will look different from everyone else&rsquo;s.</strong> That is the point, not a problem to be resolved.</li>
+        <li><strong>Once the system runs, stop watching the numbers.</strong> The reason to get money right is to stop thinking about money. Go and live outside the spreadsheet.</li>
+      </ol>
+
+      <blockquote class="pull"><p>The point of getting your money right is so you can stop thinking about money.</p><cite>Principle 10 &mdash; the one the other nine are for</cite></blockquote>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; pick three</span>
+        <p>Choose the three principles that landed hardest &mdash; usually the ones that stung slightly. Write them somewhere you will see them daily: the back of a card in your wallet, a note on the fridge, the lock screen. Not all ten. Ten is a list; three is a decision.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">practice &amp; revision</span></div>
+
+    <article class="move" id="practice">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>The setup week</h2>
+      </div>
+      <p>Almost all of this is one-time work. A week of short evenings gets the machine running, after which the system needs about fifteen minutes a quarter.</p>
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Day</th><th>Do this</th><th>Rule</th></tr></thead>
+          <tbody>
+            <tr><td class="day">Mon</td><td>Mark up last month&rsquo;s statements &mdash; love it / neutral / don&rsquo;t care. Total the third column.</td><td>2</td></tr>
+            <tr><td class="day">Tue</td><td>Write the four bucket percentages. Cancel every unused subscription while the statement is open.</td><td>2, 10</td></tr>
+            <tr><td class="day">Wed</td><td>One page listing every debt: balance, rate, minimum. Phone the most expensive one and ask for a lower rate.</td><td>9</td></tr>
+            <tr><td class="day">Thu</td><td>Open the savings account at a second bank. No debit card. Move something in.</td><td>7</td></tr>
+            <tr><td class="day">Fri</td><td>The hour: set up every automatic transfer, investments firing before bills.</td><td>5</td></tr>
+            <tr><td class="day">Sat</td><td>Write the rich-life paragraph and cost it. Run the calculator at 5% and 7%.</td><td>11</td></tr>
+            <tr><td class="day">Sun</td><td>Write three &ldquo;I always&hellip;&rdquo; rules and one &ldquo;I never&hellip;&rdquo;. Pick the three principles for the wallet card.</td><td>8, 14</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The one thing that cannot wait for the week to be tidy is the first investment contribution &mdash; rule 3 is the only rule here with a deadline, and the deadline was several years ago.</p>
+    </article>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the 85% Solution?</span><span class="a">Take the good-enough option today rather than the optimal one eventually. 85% beats 0%, and 0% is what researching pays.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The four buckets and their percentages?</span><span class="a">Fixed costs 50&ndash;60%, long-term investments 10%, savings goals 5&ndash;10%, guilt-free spending the remainder (about 20&ndash;35%). Of take-home pay.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is John&rsquo;s four-nights-a-week restaurant habit fine?</span><span class="a">No car, cheap undecorated flat, barely home &mdash; three big costs deleted because he doesn&rsquo;t care about them. And pension, investments and savings leave automatically first, so what he spends is by definition spare.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Sally and Dan &mdash; who wins, and what does it depend on?</span><span class="a">Sally, who invested $24k in her twenties, beats Dan, who invested $72k later &mdash; but only above about 6.5% returns. At 5% Dan wins. The lesson holds; the $80,000 figure is an assumption, not arithmetic.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Coffee versus salary, in numbers?</span><span class="a">$5 a day skipped = $1,825 a year, paid for with 365 acts of denial. One negotiation = $5,000&ndash;15,000 a year, and it compounds across your career.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is a big win? Name the list.</span><span class="a">Salary, rent or mortgage, debt interest rates, investment fees, and the few five-figure purchases. Five to ten decisions total.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why automate rather than decide monthly?</span><span class="a">Willpower is finite and attention wanders in about two weeks. Systems survive not caring; intentions don&rsquo;t. Investments fire before bills so they are a fixed cost, not a leftover.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is an index fund, and why the fee matters?</span><span class="a">A fund that simply holds everything in an index &mdash; the S&amp;P 500 is the ~500 largest US companies. No manager picking. Fees 0.03&ndash;0.2% against 1%+ active, and an active fund must beat the market by its fee every year just to draw level.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did Buffett put in his will, and why is it quoted here?</span><span class="a">90% in a very low-cost S&amp;P 500 index fund, 10% short-term government bonds &mdash; 2013 Berkshire letter. Advice aimed explicitly at non-professionals.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why two banks rather than two accounts?</span><span class="a">Friction is the feature. A separate login, a transfer delay and no card make raiding savings a decision rather than a reflex. The spending balance then answers &ldquo;can I afford this?&rdquo; honestly.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does a spending framework remove?</span><span class="a">The repeated internal debate, and the guilt that follows either answer. Decide once, in advance &mdash; &ldquo;I always buy books&rdquo;, &ldquo;business class over six hours&rdquo;. Each one needs a matching cut.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The five debt steps?</span><span class="a">1. List every debt with balance, rate, minimum. 2. Pick snowball or avalanche. 3. Phone and negotiate the rate. 4. Decide where the extra payment comes from. 5. Start this week.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Snowball or avalanche &mdash; which, and why?</span><span class="a">Avalanche (highest rate) is cheaper; snowball (smallest balance) is likelier to be finished, and finishing is what predicts getting out. Big rate gaps &rarr; avalanche. Similar balances &rarr; snowball.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Four options when the plan doesn&rsquo;t balance, in order?</span><span class="a">Cut fixed costs first, then earn more. Envelope system if you need a visible constraint. Cutting investments is the emergency lever only.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why are &ldquo;freedom&rdquo; and &ldquo;security&rdquo; bad goals?</span><span class="a">No number attached, so nothing ever counts as arriving and the target rises with income. Without your own definition you fund someone else&rsquo;s.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The car negotiation, in one move?</span><span class="a">Take it out of the showroom. Email many dealers with the exact car and a two-week deadline, collect out-the-door prices, ring back with the lowest and let them beat it. Buy at year end. Never negotiate the monthly payment.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The three house tests?</span><span class="a">Price under 2.5&times; income with 20% down and all-in monthly costs under 30% of gross; staying at least ten years; and whether it actually beats renting-and-investing once interest, tax, insurance and maintenance are counted.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why isn&rsquo;t a $350,000 house $350,000?</span><span class="a">Thirty years of interest, insurance, maintenance, tax and fees put the true cost nearer $800,000. Renting avoids most of it &mdash; but only wins if the difference is genuinely invested.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is principle 10, and why is it last?</span><span class="a">Once the system runs, stop watching the numbers &mdash; the point of getting money right is to stop thinking about money. It is what the other nine are for.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check against the book</h2>
+      </div>
+      <p>This page is built from a video summary, not from the book, so some of it is a summariser&rsquo;s compression rather than Sethi&rsquo;s own framing. Worth confirming:</p>
+      <ul>
+        <li><strong>&ldquo;Money is 95% psychology, 5% strategy.&rdquo;</strong> The sentiment is thoroughly Sethi; the precise split is the video&rsquo;s phrasing and gets quoted in several forms elsewhere. Do not attribute the numbers as a quotation.</li>
+        <li><strong>The guilt-free percentage.</strong> Never stated in the video. 20&ndash;35% is Sethi&rsquo;s published figure &mdash; confirm it, since the four buckets have to total 100%.</li>
+        <li><strong>The $80,000 gap.</strong> Reproduced here at several return rates: it needs roughly 7.7% to land. Check what rate the book assumes before repeating it.</li>
+        <li><strong>The 17 dealers.</strong> Number as given in the video; worth checking against the book&rsquo;s telling, along with whether the end-of-December timing was his or the summariser&rsquo;s addition.</li>
+        <li><strong>The 2.5&times; income rule.</strong> Confirm whether Sethi states it as a rule or a rough test &mdash; it behaves very differently in non-US housing markets.</li>
+        <li><strong>The $350,000 &rarr; $800,000 figure.</strong> Depends entirely on interest rate and term. Run it for a rate you would actually be offered rather than taking the multiple.</li>
+        <li><strong>Which edition.</strong> The first edition is 2009 and the second 2019; the Conscious Spending Plan and Rich Life framing are much more prominent in the second.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+
+      <h3>Primary</h3>
+      <ul>
+        <li><strong>Ramit Sethi, <em>I Will Teach You To Be Rich</em></strong> (2nd ed., Workman, 2019) &mdash; everything above is a compression of this. The 85% Solution, Big Wins, the Conscious Spending Plan, automation, index funds, negotiating rates, the car story and the rent-versus-buy scepticism are all his.</li>
+      </ul>
+
+      <h3>Behind the claims</h3>
+      <ul>
+        <li><strong>Warren Buffett, 2013 letter to Berkshire Hathaway shareholders</strong> &mdash; the instructions in his will: 10% short-term government bonds, 90% a very low-cost S&amp;P 500 index fund. Also his 2008&ndash;2017 bet against a basket of hedge funds, won by the index fund after fees.</li>
+        <li><strong>SPIVA scorecards (S&amp;P Dow Jones Indices)</strong> &mdash; the long-running measurement that most active funds trail their benchmarks over ten- and fifteen-year periods.</li>
+        <li><strong>Richard Thaler, &ldquo;Mental Accounting Matters&rdquo;</strong> (<em>Journal of Behavioral Decision Making</em>, 1999) &mdash; why separate accounts change behaviour when the money is identical.</li>
+        <li><strong>Thaler &amp; Benartzi, &ldquo;Save More Tomorrow&rdquo;</strong> (<em>Journal of Political Economy</em>, 2004) &mdash; automation and opt-out defaults beating intention, the evidence under rule 5.</li>
+        <li><strong>Gal &amp; McShane, &ldquo;Can Small Victories Help Win the War?&rdquo;</strong> (<em>Journal of Marketing Research</em>, 2012) &mdash; closing small accounts predicts escaping debt better than attacking large balances; the case for the snowball.</li>
+        <li><strong>Peter Gollwitzer on implementation intentions</strong> (from 1999) &mdash; if-then rules fixed in advance outperform good intentions, which is what a spending framework is.</li>
+        <li><strong>Robert Shiller, <em>Irrational Exuberance</em></strong> (2nd ed., 2005) &mdash; the long-run US house price series showing real prices roughly flat for a century before the 2000s boom.</li>
+        <li><strong>Herbert Simon on satisficing</strong> (1956) &mdash; the formal version of the 85% Solution: searching for the best option usually costs more than the difference between best and good enough.</li>
+        <li><strong>Burton Malkiel, <em>A Random Walk Down Wall Street</em></strong> &mdash; the two-investor compounding comparison in its standard form, and the index-fund case at length.</li>
+        <li><strong>Richard Easterlin</strong> (1974 onward) &mdash; satisfaction tracks relative rather than absolute income; the reason an undefined rich life is unwinnable.</li>
+      </ul>
+
+      <h3>Not from the book</h3>
+      <ul>
+        <li>The <strong>rate table</strong> under rule 3, the <strong>transfer ladder</strong> under rule 5, the negotiation <strong>scripts</strong>, the <strong>setup week</strong> and every <strong>Watch for</strong> box are mine, added where the summary asserted something without showing the working.</li>
+      </ul>
+      <p class="endnote"><b>Study notes, not financial advice.</b> Topic 02 of the study notes: a video summary of Ramit Sethi&rsquo;s <em>I Will Teach You To Be Rich</em>, written up 20 September 2026. Figures have been recomputed rather than repeated. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "richlife.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "richlife.voice.v1", RTK = "richlife.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|The call|Where it comes from|Check this|Drill|Tap to reveal)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

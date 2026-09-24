@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Close-Up Magic</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- wants table ---------- */
+table.week td.who{ font-family:var(--f-display); font-size:1.05rem; line-height:1.2; color:var(--accent-ink); white-space:nowrap; }
+table.week td.who em{ display:block; font-family:var(--f-mono); font-size:.64rem; font-style:normal; color:var(--muted); margin-top:.2rem; letter-spacing:.05em; white-space:normal; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Close-Up Magic</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 11 &middot; Short stories</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 11 &middot; Neil Gaiman&rsquo;s MasterClass</p>
+    <h1>A short story is <em>close-up magic.</em></h1>
+    <p class="standfirst">The lesson opens by finishing topic 10&rsquo;s argument on a real book &mdash; the first chapter of <em>The Graveyard Book</em>, read as a map of who wants what &mdash; then turns to the short story: why it&rsquo;s a conjuring trick rather than a grand illusion, the best advice Roger Zelazny ever gave him, a complete story in exactly one hundred words, and why short fiction is where you learn to write at all.</p>
+    <div class="metarow">
+      <span><b>10 moves</b> in three arcs</span>
+      <span>MasterClass &mdash; <b>Neil Gaiman</b></span>
+      <span>Continues <b><a href="../10-building-a-story/index.html">topic 10</a></b> directly</span>
+      <span>Notes taken <b>23 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The ten moves">
+    <p class="arclabel">Wants in motion</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> A hand in the darkness</a></li>
+      <li><a href="#m2"><span class="n">2</span> Out of the crib</a></li>
+      <li><a href="#m3"><span class="n">3</span> Everybody wants something</a></li>
+    </ol>
+    <p class="arclabel">What a short story is</p>
+    <ol>
+      <li><a href="#m4"><span class="n">4</span> Close-up magic</a></li>
+      <li><a href="#m5"><span class="n">5</span> Stories that stay</a></li>
+      <li><a href="#m6"><span class="n">6</span> The last chapter</a></li>
+    </ol>
+    <p class="arclabel">How to write one</p>
+    <ol>
+      <li><a href="#m7"><span class="n">7</span> Paying by the word</a></li>
+      <li><a href="#m8"><span class="n">8</span> Where the penny drops</a></li>
+      <li><a href="#m9"><span class="n">9</span> One thing</a></li>
+      <li><a href="#m10"><span class="n">10</span> Take the boat out</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;10 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">Topic 10 ended on a rule: characters want things, the wants collide, and characters get what they need rather than what they want. This lesson starts by showing that rule running inside a real opening chapter &mdash; then spends the rest of its time on the form where the rule has the least room to hide: the short story. Much of it is him reading his own work aloud; this page describes those passages rather than reproducing them.</p>
+
+    <div class="arc"><h2>Arc A &middot; Wants in motion &mdash; <em>The Graveyard Book</em>, chapter one</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>A hand in the darkness</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The villain&rsquo;s want, established in a paragraph</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>What characters want and what they need always drive every story &mdash; how a character behaves, what&rsquo;s going to happen, how they interact with everyone else. He picks up <em>The Graveyard Book</em>, which he hasn&rsquo;t talked about before, and reads the opening: <em>there was a hand in the darkness, and it held a knife.</em> Very quickly we know we are dealing with a man, called the man Jack, walking around a house with a knife.</p>
+
+      <p>He reads on for two short paragraphs, and by the end of them the reader knows two things, in this order: <strong>what the man Jack has done</strong> &mdash; killed the family in the house, the mother, the father, the older child &mdash; and <strong>what he wants</strong>: one more. The baby.</p>
+      <p>Notice the economy. Topic 10&rsquo;s orientation questions &mdash; <em>who is this, what are they doing, why should I care?</em> &mdash; are answered in about a hundred words, and the book is already into stakes. There is no mystery about the villain&rsquo;s intent. The suspense is entirely about whether the want will be satisfied, which is a far stronger engine than hiding it would be.</p>
+      <p>And note what comes first: the deed, then the want. By the time you learn what he wants, you already know exactly what he&rsquo;s capable of, so the want arrives carrying all the fear it needs.</p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>The baby who wants out of the crib</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">The want that foils the villain without knowing he exists</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The problem is, the baby isn&rsquo;t going to be there &mdash; because when we meet the baby, what the baby wants is to get out of his crib. He has always been a wanderer and a climber. Woken by a crash downstairs, he gets bored and decides he can scale the side. <b>He isn&rsquo;t trying to escape.</b> He just heads off &mdash; bumps down the stairs on his bottom, out of the door the man Jack left open when he crept in, and up the hill.</p>
+
+      <p>This is the most instructive move in the chapter, and it&rsquo;s easy to read past. The baby&rsquo;s want is <strong>completely innocent and completely unrelated</strong> to the villain&rsquo;s. He doesn&rsquo;t know there is a killer in the house; the crash that wakes him is the killing, and to him it is just a noise. Two wants that don&rsquo;t know about each other collide, and the smaller one wins.</p>
+      <p>And look at where the escape route comes from: <strong>the door the man Jack himself left open.</strong> The rescue isn&rsquo;t luck imposed from outside the story &mdash; it&rsquo;s the consequence of what two characters wanted and did. That is precisely why it doesn&rsquo;t feel like a cheat, which was the second half of topic 10&rsquo;s definition of a story. A baby saved by coincidence would feel arranged. A baby saved by being exactly the sort of baby the book has just described feels inevitable.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Everybody wants something different</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">A whole first chapter built from colliding wants</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>In the graveyard, two ghosts, Mr and Mrs Owens, find the baby. &ldquo;Now we have two ghosts in a graveyard and a baby, and we know that one of them wants to get involved and one of them doesn&rsquo;t.&rdquo; The man Jack arrives; they hesitate, about to leave the child &mdash; until the mother&rsquo;s ghost appears, begging them to protect her son. Then a stranger called Silas deals with the man Jack and sends him away. The dead of the whole graveyard meet to argue about what to do. And the chapter ends with a child adopted by the inhabitants of a graveyard.</p>
+
+      <p>He walks through it as a list of wants, and laid out as one it is a small masterclass in topic 10&rsquo;s recipe:</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Who</th><th>What they want</th><th>Why it matters</th></tr></thead>
+          <tbody>
+            <tr><td class="who">The man Jack<em>the villain</em></td><td>To kill the baby.</td><td>Fully known from the first page &mdash; the engine of the chapter.</td></tr>
+            <tr><td class="who">The baby</td><td>To get out of the crib. Right now he&rsquo;s perfectly happy.</td><td>His <em>need</em> is to be looked after, &ldquo;even if it doesn&rsquo;t know that it wants to be&rdquo; &mdash; topic 10&rsquo;s want/need split in a toddler.</td></tr>
+            <tr><td class="who">Mrs Owens</td><td>To protect him.</td><td>Collides with her own husband before it collides with anyone else.</td></tr>
+            <tr><td class="who">Mr Owens</td><td>Not to be involved: the child is alive, so &ldquo;it is not our question&rdquo;.</td><td>The first mutual exclusion is inside a marriage, which is where readers recognise it fastest.</td></tr>
+            <tr><td class="who">The mother&rsquo;s ghost</td><td>For her son to be protected.</td><td>Tips the Owenses from hesitating to committing.</td></tr>
+            <tr><td class="who">The graveyard<em>the convocation of the dead</em></td><td>Not to have to deal with a live baby. &ldquo;You&rsquo;re in a graveyard. Why would you want that?&rdquo;</td><td>A crowd with a single want &mdash; the deadlock against Mrs Owens.</td></tr>
+            <tr><td class="who">The Lady on the Grey<em>Death, on her pale horse</em></td><td>Not a want &mdash; a verdict: the dead should have charity.</td><td>Breaks the deadlock from outside it.</td></tr>
+            <tr><td class="who">Silas<em>neither living nor dead</em></td><td>To be the child&rsquo;s guardian &mdash; bringing food from the world of the living.</td><td>Solves the practical objection nobody else could.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>One pattern worth pulling out: the central deadlock &mdash; Mrs Owens against the whole graveyard &mdash; is <strong>resolved by two characters who weren&rsquo;t part of it</strong>. Death arrives with a principle; Silas arrives with an offer. Neither side of the argument wins by argument. That is a very usable shape for any stalemate you&rsquo;ve written yourself into.</p>
+
+      <blockquote class="pull"><p>&ldquo;Every time one character wants something and another character wants something mutually exclusive, and they collide &mdash; every time that happens, you have a story.&rdquo;</p><cite>Neil Gaiman</cite></blockquote>
+
+      <p>And at the end of chapter one, the what&rsquo;s-going-to-happen game from <a href="../10-building-a-story/index.html">topic 10</a> is fully loaded: <em>who is this child, and what is he going to be when he grows up?</em> That question is the whole book, and it has been built entirely out of wants.</p>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; What a short story is</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Close-up magic</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">The governing image for the rest of the lesson</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>A good short story is a magic trick &mdash; close-up magic. Not the grand illusion where five people go into a box, there are fireworks and they&rsquo;re gone. It&rsquo;s the one where somebody shows you their hands are empty, covers them, and when they reveal them again there&rsquo;s a rose. <em>How did they do that? Was the rose always there? The rose must have been there.</em></p>
+
+      <p>The last three sentences are the ones that matter, because they describe what a good ending does to a reader. <strong>&ldquo;Was the rose always there?&rdquo;</strong> is the moment the reader replays the story in their head and realises the answer was planted all along. That is topic 10&rsquo;s &ldquo;not cheated&rdquo;, scaled down to a form where there&rsquo;s no room to hide anything: the reveal has to have been present, or the trick is a fraud.</p>
+      <p>&ldquo;Close-up&rdquo; is doing work too. A stage illusionist has distance, lighting and a hundred people to misdirect. A close-up magician is a foot from your face. In a short story every word is under that kind of scrutiny &mdash; there&rsquo;s no spectacle to cover a clumsy move, which is the whole difficulty and the whole appeal.</p>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Stories that stay</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">His introduction to <em>M Is for Magic</em>, described</p>
+
+      <p>He reads the whole introduction to <em>M Is for Magic</em>, a collection of his short stories for younger readers. Rather than reproduce it, here is what it says, in order:</p>
+      <ul>
+        <li><strong>Short stories fit the time a child actually has</strong> &mdash; a break, after lunch, a train. They set up, take you somewhere new, and deliver you back to school or home in half an hour.</li>
+        <li><strong>Stories read at the right age never quite leave.</strong> You forget the title, the author, even what happened, and they still haunt the rarely-visited rooms of your mind.</li>
+        <li><strong>Horror stays hardest.</strong> A story he read at nine ended with a room full of snails &mdash; probably man-eating &mdash; crawling slowly towards someone. He still gets the same creeps.</li>
+        <li><strong>Fantasy gets into your bones.</strong> There&rsquo;s a view of a village, hills and distant mountains that he can&rsquo;t pass without <em>The Lord of the Rings</em> surfacing.</li>
+        <li><strong>Science fiction puts you inside an alien head</strong>, which reminds you how little divides one person from another.</li>
+        <li>So short stories are tiny windows into other minds &mdash; <em>journeys to the far side of the universe, and back in time for dinner.</em></li>
+      </ul>
+      <p>Then the part that ties straight into this series. He&rsquo;d been writing them for almost twenty-five years, and at the start they were how he learned the craft, because <strong>the hardest thing for a young writer is to finish something</strong> &mdash; and a short story is something you can finish. That is <a href="../09-finding-your-voice/index.html">topic 09</a>&rsquo;s attic full of first pages, answered in an introduction written years before this class.</p>
+      <p>His favourite short-story writers as a boy he calls <strong>close-up conjurers</strong>: Saki, Harlan Ellison, John Collier, Shirley Jackson, Ray Bradbury &mdash; people who could make you laugh and break your heart in a handful of pages with just twenty-six letters and some punctuation. And a small consolation specific to the form: in a book of short stories, you don&rsquo;t have to like them all. Another one will be along shortly.</p>
+      <p>The title is a tribute. Bradbury had gathered stories he thought younger readers would like into <em>R Is for Rocket</em> and <em>S Is for Space</em>; doing the same thing, Gaiman asked Bradbury whether he&rsquo;d mind <em>M Is for Magic</em>. He didn&rsquo;t.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>In a list of mid-century writers he read as a boy &mdash; Saki, Collier, Bradbury &mdash; the Jackson is <b>Shirley Jackson</b>, of &ldquo;The Lottery&rdquo; and <em>The Haunting of Hill House</em>. Not Shelley Jackson, a real but much later writer whose name is easy to confuse with hers.</p>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>The last chapter of a novel you didn&rsquo;t write</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Roger Zelazny&rsquo;s advice, and why it works</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>He loved Roger Zelazny&rsquo;s stories from nine or ten &mdash; the angst-ridden or super-competent people at the end of their tether, the poet&rsquo;s precision with the right word in the right place. He didn&rsquo;t really get to talk to him until he was thirty, at the World Fantasy Convention in Tucson, and asked him to talk about writing short stories, since he did it better than anyone. Zelazny thought, and said:</p>
+
+      <blockquote class="pull"><p>&ldquo;All my best short stories are the last chapter of a novel I didn&rsquo;t write.&rdquo;</p><cite>Roger Zelazny, as Gaiman remembers it</cite></blockquote>
+
+      <p>Gaiman&rsquo;s gloss is the useful part. In short fiction you want the reader to feel &mdash; true or not &mdash; that these characters didn&rsquo;t begin to exist when the story did. Things have happened to them. Things have brought them here. And now we&rsquo;re at the point of heightened emotion, where the plot finally kicks in: <strong>the unravelling, the denouement, the last chapter.</strong></p>
+      <p>The technique is <strong>implied history</strong>. You start at the climax and let the reader infer everything before it, which does two jobs at once: it saves words, and it makes characters feel real, because real people arrive in any scene carrying a past. His own reason for loving it is candid: &ldquo;I am fundamentally lazy.&rdquo; Write the eight thousand words; skip the hundred and thirty thousand.</p>
+      <p>A small satisfying connection: Zelazny is on the list of writers Gaiman imitated when he &ldquo;sounded like everybody&rdquo; in <a href="../09-finding-your-voice/index.html">topic 09</a>. Here, the same influence turns up as the source of the best technical advice in the lesson.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the novel underneath</span>
+        <p>Before writing a short story, list <strong>five things that happened to these characters before page one</strong> &mdash; a betrayal, a debt, an old promise, a death, a habit. Specific, not vague.</p>
+        <p>Then write the story <strong>without stating any of the five</strong>. They should leak into what people say, what they avoid, what they do without explanation. If a reader could guess at least two of them, you&rsquo;ve written the last chapter of a novel.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; How to write one</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>You&rsquo;re paying by the word</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">The first principle he starts every short story from</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>For any writer writing a short story, the first place he starts is the idea that <b>instead of being paid by the word, you are paying by the word</b>. The fewer words you can use to tell the story, the better. Compression, economy &mdash; all of these are good.</p>
+
+      <p>It&rsquo;s a small reframing that changes every decision. Paid by the word, every extra sentence is income; paying by the word, every sentence has to be worth what it costs. The question stops being &ldquo;is this sentence good?&rdquo; and becomes <strong>&ldquo;would I pay for this one?&rdquo;</strong> &mdash; which rules out the pleasant, harmless, decorative ones that a good sentence test lets through.</p>
+      <p>It&rsquo;s <a href="../05-sources-of-inspiration/index.html">topic 05</a>&rsquo;s Lou Reed lesson made into an editing rule: in a song there are so few words that each one carries weight, and the constraint is what teaches you. The short story is the prose form where you can impose that constraint on yourself.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the invoice</span>
+        <p>Take a finished page and imagine each sentence costs you money. Strike every sentence you wouldn&rsquo;t pay for &mdash; not the bad ones, the <em>unnecessary</em> ones. Then read what remains aloud.</p>
+        <p>Most people find they can cut a fifth of a page without losing anything the reader would miss, and that the page moves faster for it.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Where does the penny drop?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">A complete story in exactly one hundred words</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>He has written stories as short as a hundred words &mdash; technically one of exactly a hundred words, <em>Nicholas Was&hellip;</em>, collected in <em>Smoke and Mirrors</em>. He reads it. It&rsquo;s very short, but he learned from it: about compression, and <b>how to make the penny drop</b>. Part of the fun is working out where in the story you realise that Nicholas is Santa Claus &mdash; where you learn that this is the punishment of Father Christmas.</p>
+
+      <p>You can read it in <em>Smoke and Mirrors</em>; it isn&rsquo;t reproduced here. What matters for study is how it&rsquo;s built, and the mechanism is clean enough to describe without quoting it.</p>
+      <p>It takes the most familiar figure in the Western world and describes him <strong>entirely from an unfamiliar angle</strong> &mdash; as a man in torment, living among beings he can&rsquo;t talk to, forced out once a year against his will to perform a task at every child&rsquo;s bedside. Nothing in it is false to the legend. Every detail is simply reframed from the prisoner&rsquo;s side. Even the title runs straight into the first sentence, so it starts working before you&rsquo;re aware you&rsquo;re reading.</p>
+      <p>The result is that <strong>the penny drops at a different word for every reader</strong>. Some get it early and read the rest with dread; some get it only at the last line, which is &ldquo;Ho, ho, ho&rdquo;. Either way, the reader assembled the identity themselves &mdash; which is the rose from <a href="#m4">move 4</a>. The trick works because the answer was in plain sight the whole time, described in words you&rsquo;d never used for it.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; a hundred words, one penny</span>
+        <p>Pick something everyone knows &mdash; a fairy tale, a famous figure, a household object &mdash; and describe it in exactly <strong>one hundred words</strong>, from an angle nobody uses, without ever naming it.</p>
+        <p>Give it to someone and ask them to mark <strong>the word where they got it</strong>. If it&rsquo;s the first line, you&rsquo;ve given it away; if it&rsquo;s never, you&rsquo;ve hidden it too well. The target is somewhere in the last third.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>One thing</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">The discipline that makes compression possible</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The glory of a short story is that just one thing has to happen. In novels, lots of things happen &mdash; a novel has to be about lots and lots of different things. A short story really only has to be about one thing. You can say that one thing, and then you can stop, and get on to something else.</p>
+
+      <p>This is what makes <a href="#m7">move 7</a> achievable rather than merely admirable. You can&rsquo;t compress a story that&rsquo;s trying to do four things; every one of them needs its own setup. A story that does one thing can spend every word on it.</p>
+      <p>It also gives you a diagnostic for a short story that won&rsquo;t come right. If you find it needs two things to happen, it is almost always <strong>either two stories or the start of a novel</strong> &mdash; and the fix is to decide which, not to write faster.</p>
+      <p>&ldquo;Then you can stop&rdquo; is the permission to take seriously. A short story is allowed to end the moment its one thing has happened. Anything after is a novel clearing its throat.</p>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Take the boat out</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">Why short fiction is where you learn the craft</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>A lot of writers setting out assume they should go huge &mdash; a series of ten books, a mega-plot, a cast of thousands. That takes a great many skills, and even writers who&rsquo;ve done it had to learn book by book. What&rsquo;s lovely is short journeys: <b>taking your boat out, going around the headland, and coming back in time for tea</b>. Two thousand words, five thousand. A day, a weekend, a week. You can succeed, you can fail, you can learn &mdash; and the important thing is that you took the boat out.</p>
+
+      <p>The argument is really about the <strong>economics of learning</strong>. A novel is one experiment that takes a year to report back. A short story is an experiment that reports back in a weekend. Over the same year you run fifty tests instead of one, and each one ends &mdash; which, after <a href="../09-finding-your-voice/index.html">topic 09</a>, is the thing that actually teaches.</p>
+      <p>He lists what it&rsquo;s good for testing: an idea (&ldquo;can I make this happen?&rdquo;), a tone of voice (&ldquo;do I want to do that?&rdquo;), <em>something slightly mad</em>. And the permission to start anywhere &mdash; from the setup, from the end, from something that happens in the middle: go and meet that middle thing and follow it and see where it goes. That&rsquo;s <a href="../10-building-a-story/index.html">topic 10</a>&rsquo;s &ldquo;is it enough to start with?&rdquo; with the stakes removed. In a novel, starting from the wrong fragment costs you months. In a short story, the worst case is his closing line:</p>
+
+      <blockquote class="pull"><p>&ldquo;If it fails, it fails. It&rsquo;s okay. You&rsquo;ve lost three days. You&rsquo;ve lost a week. No big deal.&rdquo;</p><cite>Neil Gaiman</cite></blockquote>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; around the headland</span>
+        <p>This weekend: <strong>one short story, under three thousand words, finished</strong>. Start from whatever fragment you have &mdash; beginning, end or middle &mdash; and don&rsquo;t fix the other two in advance.</p>
+        <p>On Monday, write three lines: what you were testing, whether it worked, and what you learned. Do it four weekends running and read the twelve lines together. That page is your syllabus.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What do we know about the man Jack after two paragraphs, and in which order?</span><span class="a">First what he&rsquo;s done &mdash; killed the family &mdash; then what he wants: the baby. The deed arrives first, so the want carries all its fear.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does the baby want, and why does it matter?</span><span class="a">To get out of his crib. An innocent want, unrelated to the killer&rsquo;s &mdash; and it foils him. He isn&rsquo;t escaping; he just goes.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why doesn&rsquo;t the baby&rsquo;s escape feel like a cheat?</span><span class="a">It isn&rsquo;t luck. He leaves through the door the man Jack left open, being exactly the kind of baby the book just described.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What&rsquo;s the first mutual exclusion in the graveyard?</span><span class="a">Mrs Owens wants to protect the baby; Mr Owens says it&rsquo;s alive, so it&rsquo;s &ldquo;not our question&rdquo;. One wants in, one wants out.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does the baby need, as opposed to want?</span><span class="a">To be looked after &mdash; &ldquo;even if it doesn&rsquo;t know that it wants to be&rdquo;. Topic 10&rsquo;s want/need split in a toddler.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How is the graveyard&rsquo;s deadlock broken?</span><span class="a">From outside it: the Lady on the Grey says the dead should have charity, and Silas offers to be guardian. Neither side wins by argument.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">When do you have a story?</span><span class="a">Every time one character wants something, another wants something mutually exclusive, and they collide.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why &ldquo;close-up magic&rdquo; rather than a grand illusion?</span><span class="a">Empty hands, cover, reveal a rose. No spectacle to hide a clumsy move &mdash; every word is a foot from the reader&rsquo;s face.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does &ldquo;was the rose always there?&rdquo; test?</span><span class="a">Whether the ending was planted. The reader replays the story and finds the answer was present all along &mdash; &ldquo;not cheated&rdquo; at short-story scale.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Which kind of story &ldquo;stays with you hardest&rdquo;?</span><span class="a">Horror &mdash; the room of snails he read about at nine still gives him the creeps. Fantasy gets into your bones; SF puts you inside an alien head.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why were short stories how he learned the craft?</span><span class="a">The hardest thing for a young writer is to finish something, and a short story is something you can finish. Topic 09&rsquo;s lesson, from his own introduction.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Zelazny&rsquo;s advice?</span><span class="a">&ldquo;All my best short stories are the last chapter of a novel I didn&rsquo;t write.&rdquo; Start at the climax; let the reader infer the past.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does implied history do?</span><span class="a">Saves words, and makes characters feel real &mdash; they arrive carrying a past. Plus, as he admits, you skip the 130,000 words and write the 8,000.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Paid by the word, or paying?</span><span class="a">Paying. Every sentence has to be worth what it costs. The question stops being &ldquo;is this good?&rdquo; and becomes &ldquo;would I pay for this?&rdquo;</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How does <em>Nicholas Was&hellip;</em> make the penny drop?</span><span class="a">It describes the most familiar figure there is from an unfamiliar angle &mdash; nothing false, all reframed &mdash; so each reader realises who it is at a different word.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How many things does a short story have to be about?</span><span class="a">One. Say it, then stop. If it needs two, it&rsquo;s two stories or the start of a novel.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why not start with the ten-book epic?</span><span class="a">It needs skills you learn book by book. Take the boat out around the headland and back for tea instead &mdash; fifty short experiments a year, not one long one.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">And if the short story fails?</span><span class="a">&ldquo;You&rsquo;ve lost three days. You&rsquo;ve lost a week. No big deal.&rdquo;</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>Shirley Jackson</strong> is the Jackson in his list of boyhood favourites &mdash; mid-century, alongside Saki and Bradbury &mdash; not Shelley Jackson, a much later writer. Worth checking against the book.</li>
+        <li><strong>The Zelazny line</strong> is reported speech, remembered decades later &mdash; give it as &ldquo;Zelazny told Gaiman&rdquo;, not as a written quotation.</li>
+        <li><strong>The readings.</strong> Five passages from <em>The Graveyard Book</em>, the whole <em>M Is for Magic</em> introduction and all of <em>Nicholas Was&hellip;</em> are described here, not reproduced. The books are the place to read them.</li>
+        <li><strong>&ldquo;A lady on the gray&rdquo;</strong> is the Lady on the Grey &mdash; Death, capitalised, as a character.</li>
+        <li><strong>Which lesson this is</strong> in the class running order &mdash; it follows topic 10 without a break, but the lesson doesn&rsquo;t say.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the lesson:</strong> wants and needs driving every story; the <em>Graveyard Book</em> opening as the worked example &mdash; the man Jack, the baby who wants out of the crib, Mr and Mrs Owens, the mother&rsquo;s ghost, Silas, the convocation, the Lady on the Grey; &ldquo;every time&hellip; you have a story&rdquo;; the short story as close-up magic and the rose; the <em>M Is for Magic</em> introduction; Zelazny and the last chapter; being fundamentally lazy; paying by the word; <em>Nicholas Was&hellip;</em> and the penny dropping; one thing; taking the boat out; starting from setup, end or middle; and &ldquo;no big deal&rdquo;.</p>
+      <p><strong>Mine:</strong> the three-arc structure; deed-before-want; reading the baby&rsquo;s want as innocent, unrelated and enabled by the open door, and why that isn&rsquo;t a cheat; the wants table and the observation that the deadlock breaks from outside; &ldquo;was the rose always there?&rdquo; as the not-cheated test, and &ldquo;close-up&rdquo; as scrutiny; the link from the introduction back to finishing in topic 09; the Shirley Jackson correction; naming Zelazny&rsquo;s method <em>implied history</em>, and his appearance in topic 09; &ldquo;would I pay for this?&rdquo;; the account of how <em>Nicholas Was&hellip;</em> works without quoting it; &ldquo;two stories or the start of a novel&rdquo;; the economics-of-learning framing; every drill; the quiz; the cross-links.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lesson.</strong> Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; the lesson after <a href="../10-building-a-story/index.html">topic 10</a>, on wants in practice and the short story.</li>
+        <li><strong>Read from in the lesson:</strong> <em>The Graveyard Book</em> (2008), chapter one &mdash; modelled, by his own account, on Kipling&rsquo;s <em>The Jungle Book</em>, with a graveyard for a jungle; the introduction to <em>M Is for Magic</em> (2007); and <em>Nicholas Was&hellip;</em>, in <em>Smoke and Mirrors</em>.</li>
+        <li><strong>Named:</strong> Roger Zelazny; Ray Bradbury, whose <em>R Is for Rocket</em> and <em>S Is for Space</em> gave <em>M Is for Magic</em> its title; the close-up conjurers &mdash; Saki, Harlan Ellison, John Collier, Shirley Jackson, Bradbury; <em>The Lord of the Rings</em>.</li>
+        <li><strong>Related here:</strong> <a href="../10-building-a-story/index.html">10</a> for wants, needs and mutually exclusive characters; <a href="../09-finding-your-voice/index.html">09</a> for finishing things and Zelazny as an influence; <a href="../05-sources-of-inspiration/index.html">05</a> for compression via Lou Reed.</li>
+      </ul>
+      <p class="endnote">Topic 11 of the study notes: Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; the lesson on short stories &mdash; written up 23 September 2026. His readings of his own published work are described here rather than reproduced. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "closeup.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "closeup.voice.v1", RTK = "closeup.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

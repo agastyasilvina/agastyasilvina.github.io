@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Honest Lies</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+/* ---------- seasoning ratio ---------- */
+.ratio{ margin-block:1.6rem; }
+.ratio .bar{ display:flex; height:2.4rem; border:1px solid var(--line); border-radius:2px; overflow:hidden; }
+.ratio .bar span{ display:grid; place-items:center; font-family:var(--f-mono); font-size:.66rem; color:var(--bg); letter-spacing:.04em; }
+.ratio .bar .invented{ background:var(--flag); flex:88; }
+.ratio .bar .seasoning{ background:var(--accent); flex:12; }
+.ratio p{ font-family:var(--f-mono); font-size:.76rem; color:var(--muted); margin-top:.6rem; line-height:1.6; }
+@media (max-width:520px){ .ratio .bar span{ font-size:.58rem; } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Honest Lies</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 03 &middot; Storytelling</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">MasterClass &middot; Neil Gaiman teaches the art of storytelling</p>
+    <h1>Tell the truth &mdash; <em>with things that never happened.</em></h1>
+    <p class="standfirst">One argument, made six or seven different ways: fiction is lies, lies are how truth travels, and the lies only work if you were honest when you made them. The class introduction plus the opening lessons &mdash; Little Red Riding Hood, a nest of yellow jackets, a quote he invented and blamed on Chesterton, and the years he could imitate any writer alive while having nothing whatsoever to say. Here it is unpacked, sourced, with a drill on each one.</p>
+    <div class="metarow">
+      <span><b>13 moves</b> in five arcs</span>
+      <span>Teacher: <b>Neil Gaiman</b></span>
+      <span>Books used: <b>Coraline</b> &middot; <b>The Ocean at the End of the Lane</b></span>
+      <span>Notes taken <b>21 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The thirteen moves">
+    <p class="arclabel">What a story is for</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> Storytelling creatures</a></li>
+      <li><a href="#m2"><span class="n">2</span> Memorable lies</a></li>
+      <li><a href="#m3"><span class="n">3</span> Dragons can be beaten</a></li>
+    </ol>
+    <p class="arclabel">Where a book finds its subject</p>
+    <ol>
+      <li><a href="#m4"><span class="n">4</span> The yellow jackets</a></li>
+      <li><a href="#m5"><span class="n">5</span> The lie that carried them</a></li>
+    </ol>
+    <p class="arclabel">The long apprenticeship</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> As honest as you can</a></li>
+      <li><a href="#m7"><span class="n">7</span> A licence to ask</a></li>
+      <li><a href="#m8"><span class="n">8</span> Reading it wrong</a></li>
+    </ol>
+    <p class="arclabel">Showing too much</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> Voices, nothing to say</a></li>
+      <li><a href="#m10"><span class="n">10</span> Down the street naked</a></li>
+      <li><a href="#m11"><span class="n">11</span> Specific is universal</a></li>
+    </ol>
+    <p class="arclabel">Working the lie</p>
+    <ol>
+      <li><a href="#m12"><span class="n">12</span> The seven&#8209;year&#8209;old</a></li>
+      <li><a href="#m13"><span class="n">13</span> Truth as condiment</a></li>
+      <li><a href="#practice"><span class="n">&#9679;</span> A week of it</a></li>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;13 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Your browser speaks the page &mdash; each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top. Good for a second pass while your hands are busy.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">Gaiman opens with a metaphor he can feel getting away from him and rides it anyway: he wants to take you down to the tool shed, point at what is hanging on the walls &mdash; that is a dibber, that is a hoe, that is a spade &mdash; and then show you the mousetraps and the doomsday devices, the things that stop everything if you touch them. What actually follows in this first stretch is not a rack of tools. It is one claim, turned over and over: <strong>fiction is lies, lies are how truth gets carried, and the lies only work if you were honest making them.</strong> Moves 1&ndash;3 are what a story is for. Moves 4&ndash;5 are how a half-finished book found out what it was about. Moves 6&ndash;8 are the apprenticeship that told him he had been reading wrong for years. Moves 9&ndash;11 are the exposure he had to agree to. Moves 12&ndash;13 are the technique underneath all of it.</p>
+
+    <blockquote class="pull"><p>Hello, I&rsquo;m Neil Gaiman, and this is my master class.</p><cite>The end of the introduction &mdash; everything above it was the pitch</cite></blockquote>
+
+    <div class="arc"><h2>Arc A &middot; What a story is for</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>We are storytelling creatures</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The assumption the whole class stands on</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Human beings are storytelling creatures. We tell stories. Stories are vital. Stories are important. We can go back later to why they&rsquo;re vital, later to how they&rsquo;re important, later to how long they&rsquo;ve been around. The important thing to understand is that stories are part of us, and we convey truth with stories &mdash; which is the most gloriously giant contradiction you can ever imagine.</p>
+
+      <p>Notice what he refuses to do. Three times in a row he says the argument can wait: why they are vital, how they are important, how long they have been around &mdash; <em>later</em>. He is not making an evolutionary case or a psychological one. He is laying down a working assumption so the class can get on, and the assumption is not &ldquo;stories are nice&rdquo; but <strong>stories are the format truth arrives in</strong>.</p>
+      <p>The contradiction he flags is the real content, and it is worth holding on to because every later move is a consequence of it. We tell each other true things by describing events that did not occur. Not as decoration, not as a sugar coating on an argument that could have been made plainly &mdash; as the delivery mechanism itself. The lie is not the cost of the truth. The lie is <em>how</em> it moves.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span>The claim is old and well populated. <b>Kenneth Burke</b>, &ldquo;Literature as Equipment for Living&rdquo; (1938) &mdash; stories as tools you keep for situations you have not met yet. <b>Barbara Hardy</b>, &ldquo;Towards a Poetics of Fiction&rdquo; (1968) &mdash; narrative as &ldquo;a primary act of mind&rdquo;, not an art form layered on top of thinking. <b>Brian Boyd</b>, <em>On the Origin of Stories</em> (2009) and <b>Jonathan Gottschall</b>, <em>The Storytelling Animal</em> (2012) for the modern versions. Gaiman cites none of them, which is the right call for a first lesson &mdash; but if you want the &ldquo;why&rdquo; he keeps postponing, it is in those.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the story you were handed</span>
+        <p>Write down a story you were told before you were ten. Not a favourite &mdash; the first one that arrives.</p>
+        <p>Underneath it, write <strong>the one sentence of instruction it smuggled in</strong>. Not the moral printed at the end; the thing you actually took. Then ask whether anyone could have simply told you that sentence instead, and whether it would have stuck for thirty years.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>Memorable lies</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">The mechanism, demonstrated on <b>Little Red Riding Hood</b></p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>We are using lies. We&rsquo;re using memorable lies. We are taking people who do not exist and things that did not happen to those people in places that aren&rsquo;t, and we are using those things to communicate true things. Tell a child Little Red Riding Hood and one takeaway is always taken: there are people out there who may not mean you well. When they say &ldquo;where are you going, what are you doing&rdquo; &mdash; you may not want to tell them. They might get your grandmother eaten. Some wolves are hairy on the inside, and some wolves are hairy on the outside.</p>
+
+      <p>The definition is precise enough to work with: <strong>people who do not exist, things that did not happen to them, in places that aren&rsquo;t.</strong> Three separate falsehoods stacked, and the result is a true statement about strangers that a four-year-old will still be carrying at forty.</p>
+      <p>Then he does something easy to miss. Having claimed the story transmits truth, he immediately takes it apart in front of you: Little Red Riding Hood would walk in, look at the bed and say <em>that is a wolf</em>. She would not stand there asking about the eyes. And wolves cannot talk. He demolishes the plausibility of his own example &mdash; and the point survives, because <strong>the truth does not arrive in spite of the impossibility, it arrives without anyone checking</strong>. The reader knows the lie is a lie the entire time and takes the true thing anyway. That is the whole trick, and it means realism is not the price of being believed.</p>
+      <p>The takeaway he picks is also worth noting for what it is not. It is not &ldquo;obey your mother&rdquo; or &ldquo;stay on the path&rdquo;, the morals the story is usually flattened into. It is a piece of operational advice about information: <em>when someone asks where you are going, you may not want to answer.</em> Specific, usable, and not something children are generally told out loud.</p>
+
+      <blockquote class="pull"><p>Some wolves are hairy on the inside, and some wolves are hairy on the outside.</p><cite>And the outside ones are not the problem</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Charles Perrault</b>, &ldquo;Le Petit Chaperon Rouge&rdquo; (1697) &mdash; the oldest printed version, and it ends with the wolf winning. Perrault attaches a moral that is almost exactly Gaiman&rsquo;s reading: the dangerous wolves are the ones who are charming, quiet, polite and sweet, who follow young women home, and <em>those</em> gentle wolves are the most dangerous of all. Three hundred years early, and about people, not animals. The <b>Grimms</b> (1812) added the huntsman and the rescue. &mdash; On lies carrying truth: <b>Picasso</b>, &ldquo;art is a lie that makes us realise truth&rdquo; (1923); <b>Camus</b>, fiction as &ldquo;the lie through which we tell the truth&rdquo;; <b>Stephen King</b>, <em>On Writing</em> &mdash; &ldquo;fiction is the truth inside the lie&rdquo;.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>&ldquo;Hairy on the inside&rdquo; is not Gaiman&rsquo;s. It is <b>Angela Carter</b> &mdash; the grandmother&rsquo;s warning in <em>The Company of Wolves</em> (Carter&rsquo;s wolf stories in <em>The Bloody Chamber</em>, 1979, and the 1984 Neil Jordan film she co-wrote). He is almost certainly quoting knowingly, to an audience he expects to catch it, but the line gets repeated as his. Attribute it to Carter.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; build one backwards</span>
+        <p>Write one true sentence you actually believe about how people behave. Keep it small and unfashionable &mdash; the kind of thing you would hesitate to say at a table.</p>
+        <p>Now invent the shortest possible sequence of events that would make a reader arrive at that sentence <strong>without you stating it</strong>. People who do not exist, in a place that isn&rsquo;t. If you find yourself needing to write the sentence down at the end, the events are not doing their job yet.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Dragons can be beaten</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">The epigraph he made up and blamed on <b>G.K. Chesterton</b></p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>I began Coraline with a quote that wasn&rsquo;t from G.K. Chesterton, although I said it was. I said: fairy tales aren&rsquo;t true, fairy tales are more than true &mdash; not because they tell us that dragons exist, but because they tell us that dragons can be defeated. That, for me, was the important thing about Coraline. I wanted to tell my kids something that had taken me thirty years of living to figure out.</p>
+
+      <p>Two things are going on here and only one of them is the joke about the fake quotation.</p>
+      <p>The first is the sentence itself, which reframes what a frightening story does. Children already know about the monster; nobody has to introduce the idea. What the story supplies is the part they do not have &mdash; evidence that the thing can lose. On that reading a scary book for children is not an indulgence to be justified, it is the only form in which the reassurance can be delivered, because reassurance without a credible monster reassures nobody.</p>
+      <p>The second is the working method, and it is the more useful of the two. <strong>He knew what the book was for before he knew what the book was.</strong> One sentence, put at the front, doing the job of a brief: it took him thirty years to learn, he wanted his children to have it sooner, and so a novel got written. That is a far more tractable starting point than a premise or a character, because you can check every chapter against it.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span>The real <b>Chesterton</b> is <em>Tremendous Trifles</em> (1909), in the essay &ldquo;The Red Angel&rdquo;: fairy tales do not give the child his first idea of a bogey &mdash; the child has known the dragon intimately ever since he had an imagination. What the fairy tale gives him is his first clear idea of <em>the possible defeat</em> of the bogey; it provides a St George to kill the dragon. Gaiman&rsquo;s line is a compression of that, and a good one &mdash; which is presumably why it escaped and now circulates worldwide as a Chesterton quotation. He has owned up to it repeatedly, including here, and it keeps not sticking.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>He says <b>&ldquo;defeated&rdquo;</b>; the epigraph as printed in <em>Coraline</em> reads <b>&ldquo;beaten&rdquo;</b>. He is quoting himself from memory. If you are citing it, use the book.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; write the brief</span>
+        <p>For the thing you are working on now, write <strong>the one sentence the book is for</strong>. One sentence, no semicolons, no &ldquo;and also&rdquo;. Something you had to live to learn rather than something you read.</p>
+        <p>Then take your last three scenes and, for each, answer in a word or two how it earns that sentence. Any scene that cannot answer is either the wrong scene or evidence the sentence is wrong. Both are useful findings.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Where a book finds its subject</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>The yellow jacket nest</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">How the second half of <b>Coraline</b> got written</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>I&rsquo;d written a third of Coraline, then we moved to America, everything got busier, there was no free time and nobody was waiting for it &mdash; a publisher had told me it was absolutely and utterly unpublishable. Then I was walking with my children in the woods and trod on a yellow jacket nest. I shouted at them to get away and stayed exactly where I was, because if I ran after them the cloud would follow me and get to them. I waited till they were at the top of the hill, getting stung the whole time, then ran. I put all three of us in the bath and counted: about 39 stings for me, one or two each for them. My glasses had gone flying. Which meant the next day I had to go back.</p>
+
+      <div class="figs">
+        <div class="fig"><b>&#8531;</b><span>of the book written</span></div>
+        <div class="fig"><b>39</b><span>stings, counted in the bath</span></div>
+        <div class="fig"><b>1</b><span>trip back, the next morning</span></div>
+      </div>
+
+      <p>The anecdote is good, but the craft is entirely in the distinction he draws afterwards, and he draws it hard:</p>
+
+      <div class="script">
+        <div class="line"><span class="k bad">Not brave</span><p>Standing still in a cloud of wasps while your children run, taking thirty-nine stings. &ldquo;There was absolutely nothing brave about it.&rdquo;</p></div>
+        <div class="line"><span class="k good">Brave</span><p>Walking back to the same patch of ground the next morning, on purpose, to look for a pair of glasses. &ldquo;That was terrifying. That was brave.&rdquo;</p></div>
+      </div>
+
+      <p>The first was not a choice. There was one available move and he made it; fear had nothing to decide. The second was entirely optional, entirely informed, and nothing was chasing him. <strong>Courage is not what you do when there is no alternative &mdash; it is what you do when there is one, and you know exactly what it costs.</strong></p>
+      <p>Then the sentence the book had been waiting for: <em>being brave doesn&rsquo;t mean you&rsquo;re not scared &mdash; it means you&rsquo;re scared, and you do the right thing, and you do it anyway.</em> He calls what it gave him a <span class="term">handle</span>, which is exactly right. It is not a theme in the essay sense. It is a grip: something to hold the remaining two-thirds by.</p>
+      <p>And it converts straight into structure. Coraline&rsquo;s first crossing into the other flat is curiosity &mdash; she does not know. The second, after her parents are taken, is deliberate, informed, and unforced. <strong>The plot had to make her go back.</strong> Which is to say the glasses in the grass are not an illustration of the theme, they are the blueprint for act two: the return trip is the one that counts, and it has to be frightening or it proves nothing.</p>
+
+      <blockquote class="pull"><p>Standing there, getting stung, while my kids ran away, was not scary. Going back the next day to find my glasses &mdash; that was brave.</p><cite>The moment a half-finished book found out what it was about</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Coraline</b> (Bloomsbury / HarperCollins, 2002) &mdash; won the Hugo, Nebula and Bram Stoker awards for best novella. The two-crossing structure is on the page: the door is opened more than once, and the difference between the openings is the book. &mdash; The definition of courage is standard but rarely stated this cleanly: <b>Aristotle</b>, <em>Nicomachean Ethics</em> III, defines courage as requiring fear in the first place &mdash; a man who feels nothing is not brave but insensible. The much-quoted modern phrasing, &ldquo;courage is not the absence of fear but the judgement that something else is more important&rdquo;, is <b>Ambrose Redmoon</b> (1991), not Twain or Mandela whatever the internet says.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; sort your own two columns</span>
+        <p>Write two short lists. <strong>In danger</strong>: times something bad was happening to you and you reacted. <strong>Afraid</strong>: times nothing was happening yet, you had a choice, and you took the harder one anyway.</p>
+        <p>The first list is where anecdotes come from. The second list is where themes come from. If the thing you are writing has a climax drawn from list one, you have written an incident; the book is still looking for its second crossing.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>A giant lie that carried people</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">Twenty years of signing queues</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Every event I do, every signing I do, there is a woman in her late teens, in her twenties, now even in her thirties, with a battered school edition of Coraline. They stop and they tell me very quietly that the book saved their lives in their teens &mdash; when they were being abused, when their parents&rsquo; marriage was falling apart, bad things happening at school. They&rsquo;d tell themselves that if Coraline could get through what Coraline got through, they could get through that. But the best thing is: I told them a giant lie. A girl who doesn&rsquo;t exist, a door that doesn&rsquo;t exist, an other mother with buttons for eyes who definitely doesn&rsquo;t exist. None of it is true. But it helps. It carries them through. It is true.</p>
+
+      <p>Read what those readers actually did with the book, because it is not what people usually mean by comfort. They did not find it soothing. <strong>They used the plot as evidence.</strong> <em>If she got through that, I can get through this</em> is an argument with a worked example in it &mdash; and a worked example is the one thing advice cannot supply. &ldquo;You will survive this&rdquo; is a claim. A hundred and sixty pages in which someone does is a demonstration.</p>
+      <p>Which retroactively justifies how frightening the book is, and settles the argument about scary children&rsquo;s books in one move: the reassurance is only worth as much as the threat it is measured against. Make the other mother safe and the book proves nothing. The button eyes are load-bearing.</p>
+      <p>He lands on the contradiction from move 1, now with twenty years of evidence behind it: <em>everything in there was made up by me, it&rsquo;s not true. But it helps. It carries them through. It is true.</em> Same sentence, both ways, no resolution offered &mdash; because there isn&rsquo;t one, and that is the point.</p>
+      <p>One more thing, quietly in there. He does not say he wrote it for them. He wrote it for his own children, aimed at one sentence about dragons, from a wasp sting in a wood. The readers he is describing were not a target audience; they were a consequence of the thing being honestly made.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Bruno Bettelheim</b>, <em>The Uses of Enchantment</em> (1976) is the famous case for exactly this &mdash; children need the frightening version of the tale, and sanitised versions leave them without equipment. Treat it carefully: Bettelheim&rsquo;s clinical claims and his scholarship have both been seriously challenged (<b>Jack Zipes</b>, <em>Breaking the Magic Spell</em>, 1979, and the later questions about his credentials and his borrowings). The narrower claim &mdash; that a story works as a rehearsal you get to survive &mdash; stands without him.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; write for one person on their worst day</span>
+        <p>Pick a specific reader. Not a demographic &mdash; a person, at an age, in a room, on a bad evening. Someone you could name.</p>
+        <p>Now find the page in your draft that would matter to <em>them</em>, that night. If there isn&rsquo;t one, you are writing something to be admired rather than something to be used. Write that page next, and let it be as frightening as it needs to be &mdash; anything you soften, you also make useless.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; The long apprenticeship</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>As honest as you can make it</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">The only rule he states as a rule &mdash; and immediately qualifies</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>All fiction has to be as honest as you can make it. This, I believe. This may not be true for every other writer out there. It may not be true for any other writer out there, but it&rsquo;s true for this writer. You have to make it as honest as you can, because that&rsquo;s what people respond to. Any success I have achieved as a writer of fiction, I have achieved because I&rsquo;m an honest writer of fiction &mdash; because my people are real people, because you care about them.</p>
+
+      <p>Watch the hedge, because it is deliberate and it is the difference between a teacher and a guru. He states the law, then removes its universality in two sentences: <em>may not be true for every other writer, may not be true for any other writer, is true for this writer.</em> He is handing you a thing that worked for one person and declining to claim more. Everything else on this page should be read at that setting.</p>
+      <p>The word doing the work is <span class="term">honest</span>, and it needs pinning down because three obvious readings are all wrong. It does not mean <strong>accurate</strong> &mdash; the entire argument so far is that the events are invented. It does not mean <strong>confessional</strong> &mdash; that comes later, and is a means, not the thing. And it does not mean <strong>nice</strong>.</p>
+      <p>What it means is given by the sentence he attaches to it: <em>my people are real people, because you care about them.</em> Honesty is a property of the writing at the level of the individual choice &mdash; not making a character behave the way the plot needs them to, not resolving something because the chapter is running long, not giving someone a good line they would not have. Every dishonest sentence in fiction is a small convenience taken at a character&rsquo;s expense, and the reader feels each one as a slight loss of care. That is why it is a commercial argument as much as an artistic one, and he frames it that way: <em>that&rsquo;s what people respond to</em>.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Hemingway</b>, <em>A Moveable Feast</em> &mdash; &ldquo;all you have to do is write one true sentence. Write the truest sentence that you know.&rdquo; Same instruction, and the same slippery word. <b>John Gardner</b>, <em>The Art of Fiction</em> (1983) supplies the mechanism: fiction works as a &ldquo;vivid and continuous dream&rdquo;, and what breaks the dream is not implausibility but the author becoming visible &mdash; showing off, taking shortcuts, arranging. Dishonesty is the author&rsquo;s thumb on the scale, and the reader always sees the thumb.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the deletion test</span>
+        <p>Open your last finished scene and find the sentence you wrote <strong>to be admired</strong>. It is usually the best-sounding one. It is often a simile.</p>
+        <p>Delete it. Read the scene again. If nothing is lost, that sentence was you, visible in the frame. Repeat once per scene &mdash; there is almost always exactly one.</p>
+        <p>Then the harder half: find the moment a character did what was convenient rather than what they would have done. That one you cannot fix by deleting.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>A licence to ask questions</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">What he did about the rejections</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The hardest time for me was starting out as a very, very young writer. I wrote short stories and sent them to places that could conceivably publish them, and they all came back. Out and back, out and back. And I thought: okay, one of two things is true here. Either I&rsquo;m not good enough, or I don&rsquo;t understand the world &mdash; the stuff I don&rsquo;t get, the stuff I need to know. And I thought: okay, as of today I am now a freelance journalist specialising in publishing and fantasy and science fiction. I decided I was a journalist because that gives me licence to ask questions. Licence to go out into that world, meet everybody, find out who everybody is, what they do, how they read. To learn.</p>
+
+      <p>The diagnosis is a fork with two branches and he notices that only one of them is actionable. <em>Not good enough</em> is either false or unfixable today. <em>Don&rsquo;t understand the world</em> is a gap, and gaps can be walked into. He does not establish which one was true &mdash; he takes the branch you can do something about. That is a repeatable move well beyond writing.</p>
+      <p>Then the part worth stealing outright: <strong>he issued himself the credential.</strong> No commission, no masthead, no permission. &ldquo;As of today I am now a freelance journalist&rdquo; &mdash; and the reason given is not income or clips, it is <em>licence to ask questions</em>. A job title is a socially acceptable reason to phone a stranger and take an hour of their time, and the hour is the thing he was after. Every question a young writer would be embarrassed to ask becomes routine when the asking is the job.</p>
+      <p>Note also what he went to find out: <em>who everybody is, what they do, how they read.</em> Not who could help him. That is reconnaissance, not networking, and the difference shows up in what you come home with.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span>It worked, and the paper trail is public: through the 1980s Gaiman wrote journalism and interviews across British magazines, and the apprenticeship produced two commissioned books &mdash; a <b>Duran Duran</b> biography (1984) and <b><em>Don&rsquo;t Panic: The Official Hitchhiker&rsquo;s Guide to the Galaxy Companion</em></b> (1988) &mdash; before the fiction arrived. The interviewing also got him into the rooms where <em>Sandman</em> later became possible.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; issue yourself the title</span>
+        <p>Write down the question you would most like answered by someone already doing the thing you want to do, and the reason you have not asked it.</p>
+        <p>Now invent the smallest true title that makes asking normal &mdash; a newsletter with eleven subscribers, a blog, a podcast with no episodes yet, &ldquo;I&rsquo;m writing something about&hellip;&rdquo;. Make it true this week by doing the minimum that makes it true, then send <strong>three</strong> emails. Ask what they do and how they read. Do not ask for help.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>He had been reading it wrong</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Milford, with <b>Gwyneth Jones</b>, <b>Diana Wynne Jones</b> and <b>Mary Gentle</b></p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Then I got invited to my first writers&rsquo; workshop. I was sitting there with a bunch of fantastic writers &mdash; Gwyneth Jones, Diana Wynne Jones, Mary Gentle. And I realised very quickly that my reactions to stories were things like: I like this, I don&rsquo;t like this, this is good. That wasn&rsquo;t their reaction. They were responding on a much deeper level. They were reading different stories to what I was reading. I was reading as an audience. They were reading as craftspeople, as people who built these things. And I also realised I was wrong. I was wrong if I wanted to be a writer. And they were right. That experience, more than anything else, changed me.</p>
+
+      <p>&ldquo;They were reading different stories to what I was reading&rdquo; is the exact phrasing and it is better than the usual way of putting this. Not reading the same story more carefully &mdash; reading a different object. Where he saw events and people, they saw a machine: what is being withheld and for how long, whose scene this is, where the weight was put, what the writer tried and abandoned.</p>
+      <p>The second qualifier matters as much as the first. <em>I was wrong if I wanted to be a writer.</em> Audience-reading is not a defect; it is what books are for, and it is the response every writer is actually working to produce. It is simply the wrong instrument for the job of making one. Most people never acquire the second mode, and the ones who acquire it badly lose the first and spend their lives unable to enjoy anything.</p>
+      <p>The practical form of the upgrade is narrow and testable: <strong>can you say how a passage works without saying whether you liked it?</strong> &ldquo;This is good&rdquo; is a verdict and teaches nobody anything, including you. &ldquo;She has withheld the name for four pages and the paragraph gets shorter every time she nearly says it&rdquo; is a mechanism, and mechanisms can be borrowed.</p>
+
+      <blockquote class="pull"><p>They were reading different stories to what I was reading.</p><cite>The same pages. A different object.</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Milford</b> &mdash; the original writers&rsquo; conference was founded in Milford, Pennsylvania in 1956 by <b>Damon Knight</b>, <b>Judith Merril</b> and <b>James Blish</b>; Blish moved to England and the British <em>Milford SF Writers&rsquo; Conference</em> has run annually since 1972. Peer critique by working writers, no tutor at the front. It is the ancestor of Clarion and of most workshop culture since. &mdash; The skill itself has a standard text: <b>Francine Prose</b>, <em>Reading Like a Writer</em> (2006). <b>Samuel Delany</b>&rsquo;s criticism (<em>About Writing</em>, <em>The Jewel-Hinged Jaw</em>) is the harder, better version. &mdash; <b>Diana Wynne Jones</b> became a lasting friend and influence; the debt turns up across Gaiman&rsquo;s children&rsquo;s books and in what he has written about her since her death in 2011.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; ban the verdict</span>
+        <p>Take a chapter you love and reread it with a pen. Write twenty observations. <strong>Opinion words are forbidden</strong> &mdash; good, bad, beautiful, boring, loved, hated, clever.</p>
+        <p>Only mechanics: what is on the page, what is withheld, where the paragraph breaks fall, which sense is used, how long since we were told the weather, what a scene would lose if it started one line later. When the list stops being painful you have the second mode.</p>
+        <p>Do it once more with something you dislike. That one teaches faster, because the machinery is visible from outside.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; Showing too much</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Every voice, and nothing to say</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">The most exact self-diagnosis in the whole lesson</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Up until that point I had a facility with voices. I could do, essentially, impressions of other writers. I could write things that felt kind of like things that other writers would have written, and written well. But I didn&rsquo;t have anything to say. And that wasn&rsquo;t because I hadn&rsquo;t lived. That was because I wasn&rsquo;t really prepared to say anything true about who I was. I didn&rsquo;t want to be judged. I didn&rsquo;t want people reading any of my stories to know who I was, or what I thought, or to get in too close.</p>
+
+      <p>This is the sentence to keep. It separates two things that are almost always confused, and getting them the wrong way round costs people years.</p>
+      <p>The received explanation for having nothing to say is that you have not lived enough &mdash; go and have experiences, get older, travel, suffer a bit. He rules it out in seven words: <em>that wasn&rsquo;t because I hadn&rsquo;t lived.</em> The material was already there. <strong>The shortage was never of material. It was an unwillingness to spend it.</strong></p>
+      <p>And pastiche is what fills the gap in the meantime. Note that he is not describing incompetence &mdash; the impressions were good, the sentences were well made. That is precisely what makes it a trap: it produces publishable-looking work indefinitely, it improves with practice, and from the inside it feels like a career developing. <strong>Facility is what competence looks like when it is being used as cover.</strong> If you can write convincingly in four borrowed voices, you have a technical gift and a hiding place, and only you can tell which one is currently in use.</p>
+      <p>The three things he did not want readers to know are worth listing separately, because they escalate: <em>who I was</em>, <em>what I thought</em>, <em>to get in too close</em>. The first is biography, the second is opinion, and the third is the real one &mdash; proximity. He did not want to be near anybody on the page.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the two pages</span>
+        <p><strong>Page one:</strong> write a page in the voice you imitate best. Enjoy it; do it well. Notice how easy it is, and how quickly it arrives.</p>
+        <p><strong>Page two:</strong> the same event, the same characters, with <em>no</em> voice. No cadence borrowed from anyone, no stylistic signature, nothing you would be complimented on. Only what you know to be true about how that event would actually go.</p>
+        <p>Page two will be worse and it will be yours. The question is not which is better today &mdash; it is which one could still be improving in five years.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Walking down the street naked</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">The price, and what actually happened when he paid it</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You had to be willing to do the equivalent of walking down a street naked. You had to be able to show too much of yourself. You had to be just a little bit more honest than you were comfortable with. And if people judged you, if they felt they knew who you were, that was just something you were going to have to live with. What was strange is that once I started doing it, I was expecting to be judged, or shunned &mdash; and what I discovered was their opinions were: we really like this, we love this story, that&rsquo;s a good story. It felt huge. It felt personal. And I realised that&rsquo;s because I was being honest about me.</p>
+
+      <p>The useful part of this is not the metaphor, it is that he turns discomfort into an instrument. <em>A little bit more honest than you were comfortable with</em> is a reading you can take. You already know where the line is &mdash; the flinch is unmistakable &mdash; and the instruction is to go a short distance past it, deliberately, every time. <strong>Not far past. A little.</strong> The gauge is calibrated in exactly one unit and the unit is your own reluctance.</p>
+      <p>Now the honest accounting, because it is easy to read this as a promise and it is not one. He did not say the judgement would not come. He said: <em>if people judged you, that was something you were going to have to live with.</em> The agreement is made in advance and without terms. What came back happened to be warmth &mdash; <em>we love this story</em> &mdash; but that is the outcome he reports, not the deal he made. Anyone selling this as &ldquo;be vulnerable and you will be loved&rdquo; has dropped the clause that makes it work.</p>
+      <p>And the reason the warmth felt <em>huge</em> and <em>personal</em> is structural, not sentimental: praise for a borrowed voice lands on the voice. There is nobody home to receive it. Praise for something you actually meant reaches you, which is also exactly why it was frightening to send.</p>
+
+      <blockquote class="pull"><p>You had to be just a little bit more honest than you were comfortable with.</p><cite>Discomfort as a measuring instrument</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span>He has put this more sharply elsewhere &mdash; in the <b>&ldquo;Make Good Art&rdquo;</b> commencement address (University of the Arts, Philadelphia, 2012), it is stated as a rule of thumb: the moment you feel that, just possibly, you are walking down the street naked, exposing too much of your heart and your mind and what exists on the inside, showing too much of yourself &mdash; <em>that is the moment you may be starting to get it right</em>. Worth watching alongside this lesson; it is the same idea with the gauge made explicit.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the drawer paragraph</span>
+        <p>Write the paragraph you would not want one named person to read. Name them before you start &mdash; the whole point is that the reluctance is specific.</p>
+        <p>Put it in a drawer for a week without rereading it. Then read it cold and ask one question: <strong>is it embarrassing, or is it just true?</strong> Embarrassing usually means you were still performing, at a different angle. True goes in the book.</p>
+        <p>You do not have to publish it. You do have to be able to write it.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Specific is universal</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">Why strangers said <em>you wrote my childhood</em></p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Some things, when you get really specific, apply to so many of us. &hellip; Once it was published, over and over I had people coming up to me, writing to me, saying: you wrote my childhood. None of those things happened to me, my childhood wasn&rsquo;t like that, but you wrote about my childhood, you wrote about me. And I did &mdash; because I was writing about me, because I was being honest, because I was being specific. If you&rsquo;re specific, then what you say that&rsquo;s true applies to other people too.</p>
+
+      <p>Backwards, and the technical centre of the whole lesson. The intuition says that to reach many readers you should write something broad enough to cover them; the report from the signing queue says the opposite, and says it in the reader&rsquo;s own words: <em>none of those things happened to me &mdash; you wrote my childhood.</em></p>
+      <p>The mechanism is straightforward once stated. A general sentence &mdash; &ldquo;he had a difficult childhood&rdquo; &mdash; gives the reader a label, and a label can only be agreed with. One particular lane, one particular drain, one particular book read under one particular blanket while a particular row went on downstairs has a <strong>shape</strong>, and a shape can be matched. The reader is not comparing facts; they are recognising a structure &mdash; the specific relief, the specific kind of watchfulness. They can only find that structure if the details are sharp enough for it to have one.</p>
+      <p>So: <strong>generality invites agreement, specificity invites recognition</strong>, and only one of those feels like being seen. Which also means vagueness is not a safe middle. It is the one choice guaranteed to reach nobody, while looking from the inside like reaching everybody.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Flannery O&rsquo;Connor</b>, <em>Mystery and Manners</em> (1969) is the flintiest statement of it: fiction operates through the senses, begins in the concrete, and the writer&rsquo;s problem is nearly always an unwillingness to be specific enough for long enough. <b>Nabokov</b>: caress the details. <b>Chekhov</b>&rsquo;s moonlight on the broken bottle-neck. &mdash; The line often given as <b>Tolstoy</b>&rsquo;s &mdash; &ldquo;describe your village and you will be universal&rdquo; &mdash; is unsourced and probably apocryphal; the idea is real, the attribution is not. Use O&rsquo;Connor.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; name everything</span>
+        <p>Take a page of your draft and underline every general noun: <em>a car, a dog, a school, a song, a shop, some trees</em>.</p>
+        <p>Replace each with one that could be identified &mdash; the make and the rust, the breed and what was wrong with it, the exact song and who was allowed to play it. Do not add sentences; swap words.</p>
+        <p>Then read it aloud. The test is not whether it sounds vivid. It is whether a stranger could now be wrong about a detail and still feel the page was about them.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc E &middot; Working the lie</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>The seven-year-old is already in your armoury</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who"><b>The Ocean at the End of the Lane</b> &mdash; his most personal novel</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>It&rsquo;s the one that really is about a seven-year-old me, and it was a very uncomfortable book to write, because it had to be too honest about who I was, about what I felt when I was that age. The great thing about being an adult writing from the perspective of a seven-year-old boy is that I <em>was</em> a seven-year-old boy. I have that in my armoury. I didn&rsquo;t need to go out and interview seven-year-old boys. The family wasn&rsquo;t really my family, but the house and the environment and the place were my house, my environment, my place. And the more I wrote remembering what it was like to be seven, the more being seven came back to me. Things I hadn&rsquo;t thought about for forty years, for fifty years, came flooding back.</p>
+
+      <p>Two separate claims, and both are practical.</p>
+
+      <h3>The writing is the retrieval</h3>
+      <p>The usual order is: remember, then write. He describes the opposite &mdash; writing from the little he had brought back more, and the more he wrote the more arrived, things untouched for half a century. So <strong>&ldquo;I don&rsquo;t remember enough to write this&rdquo; is not a verdict, it is a description of the state before starting.</strong> The memory is not a warehouse you visit beforehand; it opens as you work.</p>
+      <p>His analogy for the sensation is exact. Going back to a town you left thirty or forty years ago: at first everything is strange and you are sure you have lost it, and then &mdash; <em>hang on, if you go down here, that&rsquo;s that road</em> &mdash; and the spaces start making sense to each other again. <em>You didn&rsquo;t even think you knew it, but it&rsquo;s in there waiting for you.</em> It comes back as connections between places, not as facts, which is also how to go looking for it: not &ldquo;what happened&rdquo; but &ldquo;what was next to what&rdquo;.</p>
+
+      <h3>What he swapped and what he kept</h3>
+      <p>The division is deliberate and it is a usable rule. The <strong>family was invented</strong>. The <strong>house, the environment, the place were real</strong>. He needed freedom in the part that had to carry the plot, and he needed unforgeable texture in the part that had to be believed. Invent where you need to move people around; keep the real where you need the reader to stop questioning.</p>
+      <p>And &ldquo;I have that in my armoury&rdquo; is doing quiet work against a common piece of advice. Research is one way in. Having been there is another, it is free, and it is generally better &mdash; on the condition set in move 10, which is that you are willing to be uncomfortable about it. He says twice that the book was hard to write. That is the same cost as the drawer paragraph, paid at novel length.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b><em>The Ocean at the End of the Lane</em></b> (2013), which won Book of the Year at the British National Book Awards &mdash; a short novel set in the Sussex countryside of his own childhood, narrated by an adult recovering a version of himself at seven. Gaiman has said elsewhere that it began as a short story for his wife, and that he did not realise it was a novel until he was well inside it &mdash; which fits the retrieval account above exactly.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the floor plan</span>
+        <p>Draw, badly, the floor plan of a room you were in at seven. Doors, windows, where the light came from.</p>
+        <p>Then name <strong>ten objects</strong> in it. Not ten interesting objects &mdash; the first ten, including the boring ones. Where the plug was. What was on top of the wardrobe.</p>
+        <p>Only then write. Not about the room: about something that happened in it. The point of the plan is that you will find yourself knowing things you did not know you had, and they will arrive as adjacencies &mdash; this was next to that, which means she must have been standing there.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m13">
+      <div class="movehead">
+        <span class="n">13</span>
+        <h2>Truth as a condiment</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m13">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="13"> Done</label>
+        </div>
+      </div>
+      <p class="who">The technique the whole lesson has been circling</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Writing yourself, going back to your own past and visiting your own past &mdash; as a writer, you&rsquo;re not writing autobiography. What you&rsquo;re doing is lying, but you&rsquo;re using the truth in order to make your lies convincing and true. You&rsquo;re using them as seasoning. You&rsquo;re using the truth as a condiment to make an otherwise unconvincing narrative absolutely credible. It is vitally important that whatever engines you might have used to convince your teacher that your homework really was eaten by the dog now come out to convince the reader that your father really was having an affair with an extraterrestrial monster from another dimension who is about to destroy the earth.</p>
+
+      <p>The ratio is the instruction. <strong>Seasoning, not the meal.</strong> Autobiography with the names changed is not what he is describing and he says so first, to close it off. The true material is deployed in small quantities, at the points where credit is needed, and spent immediately on something impossible.</p>
+
+      <div class="ratio">
+        <span class="block-label">The mix, as he describes it</span>
+        <div class="bar" role="img" aria-label="Mostly invented narrative, seasoned with a small amount of true detail">
+          <span class="invented">Invented &mdash; the narrative, the people, the events</span><span class="seasoning">True</span>
+        </div>
+        <p>The small green part is what the reader tastes and cannot argue with. It pays for all the rest.</p>
+      </div>
+
+      <p>The homework line is the best thing in the lesson and it is not a joke. It says the skill is <strong>not new</strong> &mdash; you have had it since you were eight. Take apart what a child actually does when lying well and you get the working method: one detail too specific to be invented, a small amount of independently checkable truth wrapped around the unverifiable claim, complete confidence in delivery, and no over-explaining. That is the same apparatus, pointed at a reader instead of a teacher, and the claim being smuggled through is now an extraterrestrial monster.</p>
+      <p>Which is why the arc ends here rather than at &ldquo;be honest&rdquo;. The honesty from moves 6 to 11 is not a virtue the class is recommending. It is the supply of true material, and this move is what it is <em>for</em>.</p>
+
+      <div class="ledger">
+        <div class="col made">
+          <h4>Invented</h4>
+          <ul>
+            <li>The family in the farmhouse</li>
+            <li>The Hempstocks, the ocean in the bucket</li>
+            <li>The thing that comes through, and everything it does</li>
+            <li>Every event the plot turns on</li>
+          </ul>
+        </div>
+        <div class="col real">
+          <h4>Seasoning</h4>
+          <ul>
+            <li>The lane, the house, the countryside &mdash; his</li>
+            <li>What being seven and outnumbered actually felt like</li>
+            <li>Rooms remembered by their adjacencies</li>
+            <li>A boy who read at the table and was told not to</li>
+          </ul>
+        </div>
+        <p class="foot">Move 12 supplies the right-hand column. Move 13 spends it on the left-hand one. Neither column works alone: the left without the right is unconvincing, the right without the left is a memoir nobody asked for.</p>
+      </div>
+
+      <blockquote class="pull"><p>Whatever engines you used to convince your teacher that your homework really was eaten by the dog now come out to convince the reader that your father really was having an affair with an extraterrestrial monster from another dimension.</p><cite>You have had the skill since you were eight</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>J.R.R. Tolkien</b>, &ldquo;On Fairy-Stories&rdquo; (lecture 1939, essay 1947) gives the theory: the reader is not suspending disbelief but granting <span class="term">secondary belief</span>, which holds only while the invented world stays internally consistent &mdash; and breaks the moment the writer is caught being careless. &mdash; The technique is old and shameless: <b>Defoe</b>&rsquo;s <em>Journal of the Plague Year</em> (1722) with its invented parish statistics, <b>Swift</b>&rsquo;s exact latitudes, <b>M.R. James</b> burying one ghost in a page of dry antiquarian detail. Verifiable detail is the collateral; the impossible thing is the loan.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; five true things</span>
+        <p>Write five true details from your own life. Sensory and checkable: a smell, a real name, the actual weather that week, a physical habit someone had, the thing on top of the wardrobe from move 12.</p>
+        <p>Now write a short scene in which <strong>nothing that happens is true</strong> &mdash; and place all five details inside it. Put at least one in the first three sentences, before the reader has decided whether to trust you.</p>
+        <p>Read it back and find the moment you stopped doubting it. That moment is the condiment working, and it will usually be one of the five.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">practice &amp; revision</span></div>
+
+    <article class="move" id="practice">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>A week of it</h2>
+      </div>
+      <p>None of the drills above take an evening. Spread over a week they build one thing &mdash; a page that is specific, honest past the point of comfort, and mostly invented.</p>
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Day</th><th>Do this</th><th>Move</th></tr></thead>
+          <tbody>
+            <tr><td class="day">Mon</td><td>Write the one sentence the thing you are working on is <em>for</em>. Check your last three scenes against it.</td><td>3</td></tr>
+            <tr><td class="day">Tue</td><td>Reread a chapter you love with opinion words banned. Twenty mechanical observations.</td><td>8</td></tr>
+            <tr><td class="day">Wed</td><td>The floor plan of a room you were in at seven. Ten objects, then write what happened there.</td><td>12</td></tr>
+            <tr><td class="day">Thu</td><td>The drawer paragraph &mdash; the one a named person must not read. Shut the drawer without rereading.</td><td>10</td></tr>
+            <tr><td class="day">Fri</td><td>Name everything: one page, every general noun replaced with an identifiable one.</td><td>11</td></tr>
+            <tr><td class="day">Sat</td><td>Five true details into one entirely invented scene. Find the sentence where you began to be believed.</td><td>13</td></tr>
+            <tr><td class="day">Sun</td><td>Open the drawer. Embarrassing, or just true? Then the deletion test on everything written this week.</td><td>10, 6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The one that pays for itself fastest is Tuesday, because it never stops working &mdash; every book you read afterwards is a second book you can take apart. The one people skip is Thursday.</p>
+    </article>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the contradiction the whole class rests on?</span><span class="a">We convey true things using lies &mdash; people who do not exist, things that did not happen to them, in places that aren&rsquo;t. The lie is not the cost of the truth; it is how the truth travels.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does Little Red Riding Hood actually teach, on his reading?</span><span class="a">Not &ldquo;stay on the path&rdquo;. Something operational about information: some people do not mean you well, and when they ask where you are going, you may not want to answer.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does he demolish his own example mid-sentence?</span><span class="a">To show the truth arrives anyway. Wolves can&rsquo;t talk, and she&rsquo;d have said &ldquo;that is a wolf&rdquo; &mdash; the reader knows the lie is a lie and takes the true thing regardless. Realism is not the price of being believed.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Whose line is &ldquo;hairy on the inside&rdquo;?</span><span class="a">Angela Carter &mdash; her wolf stories in <em>The Bloody Chamber</em> (1979) and the 1984 film <em>The Company of Wolves</em>. Not Gaiman&rsquo;s, though it gets quoted as his.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The Chesterton epigraph &mdash; what is the real story?</span><span class="a">Gaiman wrote it and attributed it to Chesterton. The genuine passage is <em>Tremendous Trifles</em> (1909), &ldquo;The Red Angel&rdquo;: the child already knows the dragon; the fairy tale supplies a St George. And the book says &ldquo;beaten&rdquo;, not &ldquo;defeated&rdquo;.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Which act was brave, and why?</span><span class="a">Not standing in the wasps &mdash; there was one available move and fear had nothing to decide. Going back the next morning for the glasses: optional, informed, nothing chasing him.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did the yellow jackets give the book?</span><span class="a">A handle: being brave means being scared and doing the right thing anyway. Which dictated structure &mdash; Coraline has to cross the second time knowing, and that crossing must be frightening.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did the readers in the signing queue do with the book?</span><span class="a">Used the plot as evidence &mdash; &ldquo;if she got through that, I can get through this&rdquo;. A worked example, not advice. Which is why the other mother has to stay terrifying.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How does he qualify &ldquo;all fiction has to be honest&rdquo;?</span><span class="a">Immediately: it may not be true for every other writer, may not be true for any other writer, but it is true for this writer. A rule offered as one person&rsquo;s, not a law.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does &ldquo;honest&rdquo; not mean here?</span><span class="a">Not accurate (the events are invented), not confessional (that&rsquo;s the means), not nice. It means not making a character behave the way the plot finds convenient &mdash; the author&rsquo;s thumb off the scale.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The two branches after the rejections &mdash; and which he took?</span><span class="a">&ldquo;I&rsquo;m not good enough&rdquo; or &ldquo;I don&rsquo;t understand the world&rdquo;. He took the second, because it is the only one you can act on today.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why appoint yourself a journalist?</span><span class="a">Licence to ask questions. A title makes it normal to phone a stranger and take an hour. He went to find out who everyone was, what they did and how they read &mdash; reconnaissance, not networking.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What changed at Milford?</span><span class="a">He was reading as an audience &mdash; &ldquo;I like this, this is good&rdquo; &mdash; while Gwyneth Jones, Diana Wynne Jones and Mary Gentle were reading as craftspeople. &ldquo;They were reading different stories to what I was reading.&rdquo;</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Was audience-reading a defect?</span><span class="a">No &mdash; he says &ldquo;I was wrong <em>if I wanted to be a writer</em>&rdquo;. It is what books are for and the response you are working to produce. It is just the wrong instrument for building one.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why did he have nothing to say &mdash; and why is that surprising?</span><span class="a">Not because he hadn&rsquo;t lived. Because he wasn&rsquo;t prepared to say anything true about who he was. The shortage was never material; it was unwillingness to spend it.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is a facility with voices dangerous?</span><span class="a">It isn&rsquo;t incompetence &mdash; the impressions were good. That is the trap: it produces publishable work forever, improves with practice, and feels like progress while functioning as a hiding place.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How much more honest than comfortable?</span><span class="a">A little. The unit of measurement is your own flinch, and the instruction is to go a short way past it deliberately &mdash; not to blow the doors off.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did he agree to, and what did he get?</span><span class="a">He agreed to live with being judged, with no terms. What came back was &ldquo;we love this story&rdquo; &mdash; the outcome, not the deal. Drop that distinction and it becomes a false promise.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does specificity travel further than generality?</span><span class="a">A general sentence gives a label, which can only be agreed with. A specific one has a shape, which can be matched. Generality invites agreement; specificity invites recognition.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">In which order do memory and writing actually happen?</span><span class="a">Backwards from the usual. Writing is the retrieval &mdash; the more he wrote of being seven, the more being seven returned, things untouched for fifty years. &ldquo;I don&rsquo;t remember enough&rdquo; describes the state before starting.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">In <em>Ocean</em>, what was invented and what was kept?</span><span class="a">The family was invented; the house, the environment and the place were his. Freedom where the plot needs to move, real texture where the reader needs to stop questioning.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is truth used as, and in what quantity?</span><span class="a">Seasoning &mdash; a condiment that makes an otherwise unconvincing narrative credible. Small amounts, spent at the points where credit is needed. Not autobiography with the names changed.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the homework-and-the-dog line really saying?</span><span class="a">That the skill is not new &mdash; you have had it since you were eight. One over-specific detail, a little checkable truth around the unverifiable claim, confident delivery, no over-explaining.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <p>The claims above that are mine rather than his, or that come from the lesson rather than a printed page:</p>
+      <ul>
+        <li><strong>&ldquo;Hairy on the inside.&rdquo;</strong> I have given it to Angela Carter. Confirm the exact wording and whether it is in the 1979 story or only the 1984 film before quoting it that way &mdash; it is famous mainly from the film.</li>
+        <li><strong>The Chesterton passage.</strong> Quoted here from memory of <em>Tremendous Trifles</em>, &ldquo;The Red Angel&rdquo;. It is short and out of copyright &mdash; read the paragraph itself rather than trusting this paraphrase of a paraphrase.</li>
+        <li><strong>&ldquo;Defeated&rdquo; versus &ldquo;beaten&rdquo;.</strong> Check the epigraph in a copy of <em>Coraline</em>. In the lesson he says &ldquo;defeated&rdquo;.</li>
+        <li><strong>&ldquo;Absolutely and utterly unpublishable.&rdquo;</strong> He says a publisher told him this about the first third of <em>Coraline</em>. Who, and when, is not in the lesson &mdash; and the widely told version of the story is about it being too frightening for children. Do not repeat the detail as if sourced.</li>
+        <li><strong>Thirty-nine stings, and the woods.</strong> His number, in the bath, with small children. Fine as told; not independently checkable, and not worth treating as a fact.</li>
+        <li><strong>&ldquo;Almost 20 years after Coraline.&rdquo;</strong> <em>Coraline</em> is 2002 and this class came out in 2019, so seventeen. Loose, not wrong.</li>
+        <li><strong>The date of the filming.</strong> Fixed by his own opening: five years at Bard College, whose appointment began in 2014. That puts the filming around 2019, and it&rsquo;s the only date evidence in the lesson.</li>
+        <li><strong>Milford.</strong> The UK event is the <em>Milford SF Writers&rsquo; Conference</em>; he says &ldquo;Workshop&rdquo;, which is the American parent. Which year he attended is not stated &mdash; do not invent one.</li>
+        <li><strong>The <em>Ocean</em> ledger in move 13.</strong> The left column is the book; the right column is reconstructed from what he says here plus what he has said elsewhere about the Sussex house. Treat it as an illustration of the method, not as a verified inventory of what in that novel is real.</li>
+        <li><strong>&ldquo;Make Good Art&rdquo;.</strong> Paraphrased from the 2012 address. The talk is published in full &mdash; use the printed wording if you are quoting it.</li>
+        <li><strong>Bettelheim.</strong> Cited under move 5 because it is the standard reference, with the caveats attached. If you only want the defensible part, skip him.</li>
+      </ul>
+      <p>Everything in the <strong>drills</strong>, the <strong>week table</strong>, the two-column bravery split, the invented/seasoning ratio and every <em>Watch for</em> box is mine, added where the lesson asserted something without showing the working.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+
+      <h3>Primary</h3>
+      <ul>
+        <li><strong>Neil Gaiman, MasterClass &mdash; <em>Teaches the Art of Storytelling</em></strong> (2019). This page covers the introduction and the opening lessons on truth and honesty only.</li>
+        <li><strong><em>Coraline</em></strong> (2002) &mdash; the dragons epigraph, the two crossings, and the readers in move 5.</li>
+        <li><strong><em>The Ocean at the End of the Lane</em></strong> (2013) &mdash; moves 12 and 13.</li>
+        <li><strong>&ldquo;Make Good Art&rdquo;</strong>, University of the Arts commencement address (2012) &mdash; the naked-in-the-street rule of thumb, stated more sharply than here.</li>
+      </ul>
+
+      <h3>Behind the claims</h3>
+      <ul>
+        <li><strong>G.K. Chesterton, <em>Tremendous Trifles</em></strong> (1909), &ldquo;The Red Angel&rdquo; &mdash; the actual dragon passage.</li>
+        <li><strong>Charles Perrault, &ldquo;Le Petit Chaperon Rouge&rdquo;</strong> (1697) &mdash; and its moral about the charming, quiet, polite wolves who are the most dangerous of all. The <strong>Grimms</strong> (1812) for the rescued version.</li>
+        <li><strong>Angela Carter, <em>The Bloody Chamber</em></strong> (1979) and <strong><em>The Company of Wolves</em></strong> (dir. Neil Jordan, 1984, screenplay with Carter) &mdash; wolves hairy on the inside.</li>
+        <li><strong>J.R.R. Tolkien, &ldquo;On Fairy-Stories&rdquo;</strong> (1947) &mdash; secondary belief, and why consistency rather than plausibility is what holds a reader.</li>
+        <li><strong>Flannery O&rsquo;Connor, <em>Mystery and Manners</em></strong> (1969) &mdash; fiction begins in the concrete; the specificity argument in move 11.</li>
+        <li><strong>Francine Prose, <em>Reading Like a Writer</em></strong> (2006) and <strong>Samuel Delany, <em>About Writing</em></strong> &mdash; the Milford skill, taught deliberately.</li>
+        <li><strong>John Gardner, <em>The Art of Fiction</em></strong> (1983) &mdash; the vivid and continuous dream, and what breaks it.</li>
+        <li><strong>Kenneth Burke, &ldquo;Literature as Equipment for Living&rdquo;</strong> (1938) and <strong>Barbara Hardy</strong> (1968) &mdash; narrative as a primary act of mind rather than an art form.</li>
+        <li><strong>Brian Boyd, <em>On the Origin of Stories</em></strong> (2009); <strong>Jonathan Gottschall, <em>The Storytelling Animal</em></strong> (2012) &mdash; the &ldquo;why&rdquo; Gaiman deliberately postpones in move 1.</li>
+        <li><strong>Bruno Bettelheim, <em>The Uses of Enchantment</em></strong> (1976), read against <strong>Jack Zipes, <em>Breaking the Magic Spell</em></strong> (1979) &mdash; the case for frightening children&rsquo;s stories, and the case against the case.</li>
+        <li><strong>Aristotle, <em>Nicomachean Ethics</em> III</strong> &mdash; courage requires fear; the man who feels none is not brave.</li>
+        <li><strong>Daniel Defoe, <em>A Journal of the Plague Year</em></strong> (1722) &mdash; invented statistics as authentication; the condiment technique three centuries early.</li>
+      </ul>
+
+      <h3>Also his, worth having</h3>
+      <ul>
+        <li><strong><em>The View from the Cheap Seats</em></strong> (2016) &mdash; his non-fiction, including &ldquo;Make Good Art&rdquo; and the reading-and-libraries lecture, where several of these arguments appear at length.</li>
+        <li><strong><em>Don&rsquo;t Panic</em></strong> (1988) &mdash; the end product of the self-issued journalist&rsquo;s licence in move 7.</li>
+      </ul>
+      <p class="endnote">Topic 03 of the study notes: Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; the introduction and the opening lessons on honesty &mdash; written up 21 September 2026. Attributions have been chased to their actual owners where the lesson left them loose. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "honestlies.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "honestlies.voice.v1", RTK = "honestlies.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

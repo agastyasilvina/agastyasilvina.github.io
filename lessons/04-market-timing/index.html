@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Godlike Timing</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- figures ---------- */
+figure.figblock{ margin:1.8rem 0; padding:1.1rem; background:var(--card); border:1px solid var(--line); border-radius:2px; }
+figure.figblock figcaption{ font-family:var(--f-mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:.9rem; }
+.fignote{ font-family:var(--f-mono); font-size:.74rem; line-height:1.6; color:var(--muted); margin-top:.9rem; }
+.key{ display:flex; flex-wrap:wrap; gap:.25rem 1.1rem; margin-top:.7rem; font-family:var(--f-mono); font-size:.68rem; color:var(--muted); }
+.key span{ display:inline-flex; align-items:center; gap:.4rem; }
+.key i{ width:.85rem; height:.85rem; border-radius:2px; display:inline-block; flex:none; }
+.key i.inv{ background:var(--accent); }
+.key i.csh{ background:repeating-linear-gradient(135deg, var(--line) 0 3px, transparent 3px 6px); border:1px solid var(--line-soft); }
+
+/* comparison bars */
+.bars{ display:flex; flex-direction:column; gap:.6rem; }
+.barrow{ display:grid; grid-template-columns:7.4rem minmax(0,1fr) 4.4rem; gap:.7rem; align-items:center; }
+.barrow .blab{ font-family:var(--f-mono); font-size:.74rem; color:var(--ink); line-height:1.3; }
+.barrow .blab em{ display:block; font-style:normal; color:var(--muted); font-size:.66rem; }
+.barrow .track{ height:1.4rem; background:var(--surface); border:1px solid var(--line-soft); border-radius:2px; overflow:hidden; }
+.barrow .fill{ display:block; height:100%; background:var(--accent); border-radius:0 3px 3px 0; }
+.barrow .bval{ font-family:var(--f-mono); font-size:.88rem; color:var(--ink); text-align:right; font-variant-numeric:tabular-nums; }
+@media (max-width:520px){ .barrow{ grid-template-columns:5.4rem minmax(0,1fr) 3.6rem; } .barrow .blab{ font-size:.66rem; } .barrow .bval{ font-size:.78rem; } }
+
+/* cash-drag columns */
+.flow{ display:flex; flex-direction:column; gap:1.2rem; }
+.flowrow .flab{ display:flex; flex-wrap:wrap; gap:.15rem .6rem; align-items:baseline; font-family:var(--f-mono); font-size:.72rem; color:var(--ink); margin-bottom:.45rem; }
+.flowrow .flab b{ font-weight:400; color:var(--accent-ink); }
+.flowrow .flab span{ color:var(--muted); }
+.cols{ display:grid; grid-template-columns:repeat(12,1fr); gap:2px; height:4.4rem; }
+.col{ display:flex; flex-direction:column; justify-content:flex-end; border:1px solid var(--line-soft); border-radius:2px; overflow:hidden;
+  background:repeating-linear-gradient(135deg, var(--line) 0 3px, transparent 3px 6px); }
+.col i{ display:block; width:100%; background:var(--accent); border-radius:2px 2px 0 0; }
+.axis{ display:grid; grid-template-columns:repeat(12,1fr); gap:2px; margin-top:.35rem;
+  font-family:var(--f-mono); font-size:.58rem; color:var(--muted); text-align:center; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Godlike Timing</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 04 &middot; Market timing</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 04 &middot; Waiting for the crash vs investing now</p>
+    <h1>Call every bottom perfectly &mdash; <em>and still finish behind.</em></h1>
+    <p class="standfirst">The lecture runs two thought experiments. The first hands you godlike powers &mdash; you know the exact day the market bottoms, every time &mdash; and you still lose to somebody who buys blindly every month. The second asks how long you would wait to invest a million dollars, and then shrinks the answer until it applies to you. Here is the argument, the numbers checked, and the three places it does not reach.</p>
+    <div class="metarow">
+      <span><b>11 moves</b> in four arcs</span>
+      <span>Source: a video summary of <b>Just Keep Buying</b> (Nick Maggiulli)</span>
+      <span>Notes taken <b>21 Sep 2026</b></span>
+      <span>Figures <b>rechecked</b>, not repeated</span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The eleven moves">
+    <p class="arclabel">What actually happened</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The three crashes</a></li>
+    </ol>
+    <p class="arclabel">Experiment one</p>
+    <ol>
+      <li><a href="#m2"><span class="n">2</span> The rules</a></li>
+      <li><a href="#m3"><span class="n">3</span> Perfect timing loses</a></li>
+      <li><a href="#m4"><span class="n">4</span> Miss by two months</a></li>
+      <li><a href="#m5"><span class="n">5</span> You wouldn&rsquo;t have bought</a></li>
+    </ol>
+    <p class="arclabel">Experiment two</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> The hundred-year question</a></li>
+      <li><a href="#m7"><span class="n">7</span> Two shapes of $12,000</a></li>
+      <li><a href="#m8"><span class="n">8</span> Lump sum wins 68%</a></li>
+    </ol>
+    <p class="arclabel">What it rests on</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> The assumption underneath</a></li>
+      <li><a href="#m10"><span class="n">10</span> What it does not say</a></li>
+      <li><a href="#m11"><span class="n">11</span> Decide the rule first</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;11 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">Three numbers carry the whole lecture. Everything else is the setup that produces them, and the question of whether they transfer to you.</p>
+
+    <div class="figs">
+      <div class="fig"><b>70%</b><span>DCA beats dip-buying, even with perfect foresight</span></div>
+      <div class="fig"><b>97%</b><span>if the bottom is missed by two months</span></div>
+      <div class="fig"><b>68%</b><span>lump sum beats spreading it out, 1920&ndash;2018</span></div>
+    </div>
+
+    <div class="arc"><h2>Arc A &middot; What actually happened</h2><span class="rule"></span><span class="cnt">1 move</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>The three crashes</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The opening setup</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The biggest crash was 1929 at &minus;89.2%. For comparison: the dot-com bubble took the market down 78%, and the 2008 crisis 54.1%.</p>
+
+      <p>The lecture opens by establishing how bad it can get, because the whole argument is about whether it is worth waiting for one of these. Three drawdowns, worst first:</p>
+
+      <figure class="figblock">
+        <figcaption>Peak-to-trough decline, as quoted in the lecture</figcaption>
+        <div class="bars">
+          <div class="barrow" title="Dow Jones Industrial Average, September 1929 to July 1932">
+            <span class="blab">1929<em>Great Crash</em></span>
+            <span class="track"><span class="fill" style="width:100%"></span></span>
+            <span class="bval">&minus;89.2%</span>
+          </div>
+          <div class="barrow" title="Nasdaq Composite, March 2000 to October 2002">
+            <span class="blab">1999&ndash;2002<em>Dot-com</em></span>
+            <span class="track"><span class="fill" style="width:87.4%"></span></span>
+            <span class="bval">&minus;78.0%</span>
+          </div>
+          <div class="barrow" title="Quoted as 54.1%; the S&P 500 fell about 57% on a closing basis, October 2007 to March 2009">
+            <span class="blab">2008<em>Financial crisis</em></span>
+            <span class="track"><span class="fill" style="width:60.7%"></span></span>
+            <span class="bval">&minus;54.1%</span>
+          </div>
+        </div>
+        <p class="fignote">Bar length is the decline as a share of the worst one. Figures as given in the lecture &mdash; see the box below before quoting them.</p>
+      </figure>
+
+      <p class="flag"><span class="block-label">Watch for</span>These three are not the same index, and the lecture calls them all &ldquo;the market&rdquo;. <b>&minus;89%</b> is the <b>Dow</b>, Sept 1929 to July 1932. <b>&minus;78%</b> is the <b>Nasdaq</b>, which was where the dot-com damage was concentrated &mdash; the S&amp;P 500 fell roughly half that over the same stretch. The <b>2008</b> figure is usually quoted nearer <b>&minus;57%</b> for the S&amp;P 500 on a closing basis; 54.1% is in the right neighbourhood but not the number most sources give. Compare like with like or the ranking is partly an artefact of which index you picked.</p>
+
+      <p>Worth adding what the chart above leaves out, because it matters more to the argument than depth does: <strong>how long each took to come back</strong>. Depth is what frightens people into waiting; recovery time is what actually costs them. A crash you buy into is only a bargain if there is a recovery on the other side within your horizon.</p>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Experiment one: perfect timing</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>The rules of the game</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">The thought experiment, stated precisely</p>
+
+      <p>You are dropped into <strong>1920</strong> with forty years of investing ahead of you and $100 a month to put to work. Two strategies, and you must pick one for the whole forty years:</p>
+      <ul>
+        <li><strong>Dollar cost averaging (DCA).</strong> Invest the $100 every month, no matter what the market is doing. No judgement, no waiting.</li>
+        <li><strong>Buy the dip.</strong> Hold the $100 in cash each month, let it pile up, and deploy the pile only when the market is in a dip &mdash; 1929, for instance.</li>
+      </ul>
+      <p>Then the lecture stacks the deck. The dip-buyer is given <strong>godlike powers</strong>: they know, in advance, the exact month the market bottoms, every time. Not a good guess &mdash; the actual low. Every purchase they make is at the best price available.</p>
+      <p>That is the part worth pausing on, because it is what makes the result interesting. The experiment is not testing whether market timing beats DCA. It is testing whether <em>the theoretical maximum of market timing</em> &mdash; a level nobody has ever reached or will &mdash; beats buying blindly every month.</p>
+
+      <p class="source"><span class="block-label">Where it comes from</span>The experiment and both headline figures are <b>Nick Maggiulli</b>&rsquo;s, from <em>Just Keep Buying</em> (2022) and the simulations he published on his blog <em>Of Dollars And Data</em>. The video is a summary of that book; the arithmetic underneath is his, run on US market history.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Perfect timing loses anyway</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">The first result</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Run the simulation and DCA outperforms buy-the-dip <b>over 70% of the time</b> &mdash; despite the dip-buyer knowing exactly when the market will bottom.</p>
+
+      <p>Logically it looks impossible. If you always buy at the lowest price, how do you lose? The answer is that <strong>price is only half of it, and time is the other half</strong>. While the dip-buyer sits on cash waiting for a bottom that may be four years away, the averager&rsquo;s money is already in the market, compounding through everything that happens in the meantime.</p>
+      <p>Cash waiting for a crash is not neutral. It is a position, and it is losing to inflation while it waits. The lecture&rsquo;s phrasing is that the market is likely to keep rising and leave you behind &mdash; and the longer the stretch without a crash, the further behind you get.</p>
+      <p>The shape of the result is as telling as the number. Buy-the-dip does well for start dates in the <strong>1920s</strong>, because a once-in-a-century crash arrives shortly after you begin hoarding cash. After the 1930s it essentially stops working. That is the strategy&rsquo;s entire case: it needs a catastrophe, early, while you are still holding cash rather than assets.</p>
+
+      <blockquote class="pull"><p>The dip-buyer has perfect knowledge of the future and loses anyway. The cost was never bad prices. It was the waiting.</p><cite>The point of experiment one</cite></blockquote>
+
+      <p class="flag"><span class="block-label">Watch for</span>&ldquo;Over 70% of the time&rdquo; is a count of <b>starting months</b> in the simulation, not a probability that applies to your particular decade. The 30% where dip-buying wins is not random noise either &mdash; it is concentrated in start dates that sit just before a severe crash. The honest reading: <b>dip-buying is a bet on a specific and rare kind of history, and you have to be right about the timing of that history in advance.</b></p>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Now miss the bottom by two months</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">The second result &mdash; the one that settles it</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Nobody on the planet can actually call the bottom. Miss it by just two months and DCA&rsquo;s win rate rises from 70% to <b>97%</b>.</p>
+
+      <p>This is the move that turns an interesting result into a decisive one. Take away the godlike powers &mdash; not all of them, just enough to make the dip-buyer <em>slightly</em> human, off by two months in either direction &mdash; and the strategy loses almost always.</p>
+      <p>Which tells you where dip-buying&rsquo;s edge actually lives: not in the general idea of buying cheaply, but in a precision <strong>that nobody has ever demonstrated</strong>. A strategy whose advantage evaporates under a two-month error is not a strategy, it is a wish with a spreadsheet attached.</p>
+      <p>And two months is generous. In the real version you do not know you are in a dip; you know the market has fallen and might fall further. The bottom is only visible in hindsight, which is precisely when it is no longer available.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; check your own record</span>
+        <p>If you have ever waited for a better entry price, write down <strong>the date you decided to wait</strong> and <strong>the price you were waiting for</strong>. Then look up what the price actually did. Do it for every instance you can remember, not just the one that worked.</p>
+        <p>This is the only version of this argument that will convince you, because it is about you rather than about 1929.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>And you wouldn&rsquo;t have bought anyway</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">The behavioural objection</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Another problem: you are very unlikely to actually invest when the market is crashing and everyone is panicking.</p>
+
+      <p>The simulation assumes a dip-buyer who deploys years of accumulated savings into a market that is down 40% and still falling, while the news is at its worst and the people around them are selling. The historical record of actual human beings doing this is thin.</p>
+      <p>The conditions that produce a bargain are the same conditions that make buying feel insane. That is not a coincidence &mdash; it is why the bargain exists. So the strategy requires two impossible things in sequence: know the bottom, then act against every instinct and every headline at exactly that moment.</p>
+      <p>Which is the quiet argument for automation. A monthly transfer that happens without your involvement keeps buying through the crash because nobody asked it how it felt. <strong>The advantage of a rule is that it does not have to be brave.</strong></p>
+
+      <p class="flag"><span class="block-label">Watch for</span>This cuts both ways, and the lecture only takes one side of it. The same person who can&rsquo;t bring themselves to buy during a crash may also not be able to stop themselves <b>selling</b> during one. Automation protects the buying; it does nothing about the selling. If you know that about yourself, the size of your position matters more than the schedule of your purchases.</p>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; Experiment two: all at once, or spread out</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>The hundred-year question</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">A different question: not <em>when</em>, but <em>how fast</em></p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You are gifted $1,000,000. Either invest it all now &mdash; lump sum &mdash; or invest 1% of it each year for the next hundred years. Waiting a century to get invested will not be kind to your purchasing power.</p>
+
+      <p>Experiment one killed off waiting for a crash. Experiment two asks the question that survives it: given money in hand <em>today</em>, should it all go in at once, or be fed in gradually?</p>
+      <p>The hundred-year version makes the answer obvious. Nobody would take a century to deploy a million dollars &mdash; the last instalment arrives long after you are dead, and the first ninety years of purchasing power are eaten by inflation while you wait. If you believe the assets rise over time, getting invested sooner is worth something.</p>
+      <p>Then comes the move that makes it bite: <strong>if a hundred years is absurd, so is a hundred months, and so is a hundred weeks.</strong> The absurdity does not appear at some threshold; it is the same cost at every scale, just smaller. Spreading money in has a price, and the price does not become zero because the schedule is short enough to feel prudent.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>This is a <b>reductio</b>, not a proof. It establishes the <em>direction</em> &mdash; spreading in costs something &mdash; not the <em>magnitude</em> at the horizons you actually care about. Twelve months is not a hundred years, and the cost over twelve months might be small enough to be worth paying for the reduction in regret. The reductio cannot tell you that; only the simulation in move 8 can, and even then only on past data.</p>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Two shapes of $12,000</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">The mechanism, made visible</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You have $12,000. Lump sum: invest all of it in month one. DCA: invest $1,000 in month one and hold the remaining $11,000 in cash, to be invested in equal payments over the next eleven months.</p>
+
+      <p>Same money, same destination, same twelve months. The only difference is <strong>where the money sits while the year happens</strong> &mdash; and that is the entire source of the performance gap:</p>
+
+      <figure class="figblock">
+        <figcaption>Where the $12,000 is, month by month</figcaption>
+        <div class="flow">
+          <div class="flowrow">
+            <p class="flab"><b>Lump sum</b> <span>one purchase &middot; $12,000 in month 1</span></p>
+            <div class="cols" role="img" aria-label="Lump sum: the full twelve thousand dollars is invested in every one of the twelve months.">
+              <div class="col"><i style="height:100%"></i></div><div class="col"><i style="height:100%"></i></div><div class="col"><i style="height:100%"></i></div>
+              <div class="col"><i style="height:100%"></i></div><div class="col"><i style="height:100%"></i></div><div class="col"><i style="height:100%"></i></div>
+              <div class="col"><i style="height:100%"></i></div><div class="col"><i style="height:100%"></i></div><div class="col"><i style="height:100%"></i></div>
+              <div class="col"><i style="height:100%"></i></div><div class="col"><i style="height:100%"></i></div><div class="col"><i style="height:100%"></i></div>
+            </div>
+          </div>
+          <div class="flowrow">
+            <p class="flab"><b>Dollar cost averaging</b> <span>twelve purchases &middot; $1,000 a month</span></p>
+            <div class="cols" role="img" aria-label="Dollar cost averaging: one twelfth invested in month one, rising by one twelfth each month until the full amount is invested in month twelve. The rest sits in cash.">
+              <div class="col"><i style="height:8.3%"></i></div><div class="col"><i style="height:16.7%"></i></div><div class="col"><i style="height:25%"></i></div>
+              <div class="col"><i style="height:33.3%"></i></div><div class="col"><i style="height:41.7%"></i></div><div class="col"><i style="height:50%"></i></div>
+              <div class="col"><i style="height:58.3%"></i></div><div class="col"><i style="height:66.7%"></i></div><div class="col"><i style="height:75%"></i></div>
+              <div class="col"><i style="height:83.3%"></i></div><div class="col"><i style="height:91.7%"></i></div><div class="col"><i style="height:100%"></i></div>
+            </div>
+            <div class="axis"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+          </div>
+        </div>
+        <div class="key">
+          <span><i class="inv"></i> invested &mdash; exposed to the market</span>
+          <span><i class="csh"></i> still in cash &mdash; waiting</span>
+        </div>
+        <p class="fignote">A diagram of the two schedules, not a simulation of returns. The hatched area is the cost: averaged across the year, the DCA investor has only about <b>half</b> the money in the market. If the market rises over those twelve months, they collect roughly half the rise.</p>
+      </figure>
+
+      <p>Stated plainly: dollar cost averaging a lump you already hold means <strong>deliberately staying about half-invested for a year</strong>. That is not a subtle drag. It is the whole of the difference, and it explains the result before you run a single simulation.</p>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Lump sum wins 68% of the time</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">The second result</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Simulated over 24-month periods from 1960 to 2018, the chart sits below the zero line most of the time. Extended to 1920&ndash;2018, lump sum beats DCA <b>68%</b> of the time &mdash; and results are similar across other asset classes.</p>
+
+      <p>Two thirds. Not overwhelming, but consistent, across a century, and consistent across asset classes rather than an artefact of one market&rsquo;s history. And it is exactly what the figure in move 7 predicts: if assets rise in most twelve-month windows, then being fully invested beats being half-invested in most twelve-month windows.</p>
+      <p>The lecture&rsquo;s own summary of when lump sum loses is the honest part: <strong>it underperforms when you invest right before a crash</strong> &mdash; and over a long enough period, it recovers.</p>
+
+      <p class="source"><span class="block-label">Independent corroboration</span>This one does not rest on a single author. <b>Vanguard</b> ran the same comparison in 2012 (<em>Dollar-cost averaging just means taking risk later</em>) across the US, UK and Australia, and found immediate investment beat averaging-in roughly <b>two thirds</b> of the time over twelve-month periods. Two different teams, different data windows, same answer &mdash; that is worth more than either result alone.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>&ldquo;68% of the time&rdquo; is a frequency, not a magnitude. It tells you nothing about <b>how much</b> you win or lose in each case, and the 32% is not scattered evenly &mdash; it clusters in exactly the windows people fear, the ones that begin just before a crash. A strategy that wins small two thirds of the time and loses large one third of the time is not obviously better, and the win rate alone cannot tell you which this is.</p>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; What it rests on</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>The assumption underneath</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">Where the narrator says he was actually convinced</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The numbers all made sense but weren&rsquo;t quite convincing on their own. What settled it: buying a diversified global fund is investing in the future of humanity &mdash; and the twentieth century had two world wars, a cold war and multiple crashes, and humanity kept going.</p>
+
+      <p>Every result on this page sits on one load-bearing assumption, stated in the hundred-year question and never revisited: <strong>the assets go up over time</strong>. Remove it and the conclusions invert &mdash; if the market falls over your horizon, the person who sat in cash wins, and the dip-buyer was right all along.</p>
+      <p>So the lecture ends by arguing for the assumption rather than the arithmetic, and it is the most honest moment in it. A global index fund holding several thousand companies across every major market is not a bet on a chart; it is a bet that in ten or twenty years, collectively, people will have built more than they destroyed. The twentieth century is offered as evidence: it contained about as much destruction as a century can hold, and the line still went up.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Two things to keep separate here. The <b>evidence</b> is one century of one species&rsquo; economic history, which is a sample of one and cannot be repeated for a control. The <b>bet</b> is reasonable anyway &mdash; it is roughly the same bet as owning a pension, a house, or a career. Just call it a bet rather than a law, because you will hold it better through a crash if you already know what you signed up for. Also: the fund&rsquo;s holding count (<b>4,115</b> companies as quoted) drifts constantly with index changes &mdash; read it off the current factsheet rather than repeating a number from a video.</p>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>What the lecture does not say</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">My additions &mdash; the gaps that matter most</p>
+
+      <h3>&ldquo;DCA&rdquo; means two different things, and the difference is everything</h3>
+      <p>This is the most misread point in the entire debate, and the lecture glides over it. In these studies, <strong>DCA means you already hold a lump of cash and choose to drip it in</strong>. That is the thing that loses 68% of the time.</p>
+      <p>Investing part of your salary every month is <em>not</em> that. Each paycheque is money that arrives and goes straight to work &mdash; a series of small lump sums, each invested immediately. It is already the strategy this research recommends, at the only speed available to you.</p>
+      <p>So if you invest monthly from income and this lecture made you anxious: <strong>you were never doing the losing strategy.</strong> The finding applies to windfalls &mdash; a bonus, an inheritance, a house sale, the cash pile you have been sitting on waiting for a better moment.</p>
+
+      <h3>68% means it lost one time in three</h3>
+      <p>Spreading the money in is not irrational; it is buying insurance, and insurance has a premium. The expected cost of that premium is the 68% figure. What you get for it is a smaller worst case and, more usefully, a plan you will actually execute. <strong>A worse strategy you follow beats a better one you abandon in March.</strong></p>
+
+      <h3>The backtest runs on the market that won</h3>
+      <p>US equities, 1920&ndash;2018, are the single most successful major market of the century &mdash; which is precisely why they are the ones with the clean data everyone backtests on. The counter-case is Japan: the Nikkei peaked at the end of <strong>1989</strong> and did not regain that level until <strong>February 2024</strong>. Thirty-four years. An investor there, doing everything this lecture recommends, would have spent a working lifetime underwater.</p>
+      <p>A global fund is a real defence against picking the wrong country. It is not a defence against a bad era, and nothing is.</p>
+
+      <h3>Not covered at all</h3>
+      <ul>
+        <li><strong>The emergency fund comes first.</strong> None of this applies to money you might need soon.</li>
+        <li><strong>Time horizon.</strong> Money needed within about five years does not belong in equities regardless of win rates.</li>
+        <li><strong>Fees, taxes and wrappers.</strong> Over decades these can matter more than the lump-sum-versus-DCA decision ever will.</li>
+        <li><strong>Currency.</strong> A global fund pays you in a basket of currencies while you spend one.</li>
+        <li><strong>&ldquo;The market recovers&rdquo; is about diversified indices,</strong> not individual companies. Plenty of those never came back.</li>
+      </ul>
+
+      <p class="flag"><span class="block-label">Watch for</span>These are study notes on somebody&rsquo;s book summary, not financial advice, and nothing here knows your tax position, your debts, your horizon or your nerve. The useful output of this page is a <b>question list</b> to take to your own situation, not an instruction.</p>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Decide the rule before you need it</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">Turning the finding into behaviour</p>
+
+      <p>Every result on this page points the same way: the winning behaviour is <strong>mechanical</strong>, and the losing behaviour is <strong>discretionary</strong>. The dip-buyer loses to a rule. The averager beats them by not having an opinion. So the practical work is not learning to predict markets &mdash; it is removing the moments where you get to decide.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; write the rule down</span>
+        <ol>
+          <li><strong>The rule.</strong> How much, on what date, into which fund, from which account. One sentence, specific enough that somebody else could execute it.</li>
+          <li><strong>Automate it</strong> so the decision is made once rather than monthly.</li>
+          <li><strong>The crash plan, written now</strong> while nothing is happening: what you do at &minus;20%, and at &minus;40%. If the answer is &ldquo;keep buying&rdquo;, say so in writing and sign it &mdash; that sentence is the whole point of writing it early.</li>
+          <li><strong>What would change my mind?</strong> Name in advance the evidence that would make you stop. Anything vaguer than that will be supplied by a headline at the worst moment. <em>(Same test as topic 01, move 2 &mdash; if nothing would change your mind, it isn&rsquo;t a position, it&rsquo;s a loyalty.)</em></li>
+        </ol>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; if you are sitting on cash you can&rsquo;t deploy</span>
+        <p>Pick the window <strong>in advance</strong> &mdash; say three or six months &mdash; divide the pile by that number, automate it, and then stop reading about it. You are knowingly paying a small expected cost for a much better chance of actually finishing the job.</p>
+        <p>And separate the two sentences people use interchangeably: <em>&ldquo;I don&rsquo;t have the money to invest&rdquo;</em> is a fact. <em>&ldquo;I&rsquo;m waiting for a better price&rdquo;</em> is a forecast. Only the second one is what this lecture is about.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The dip-buyer knows the exact bottom every time. Why do they still lose?</span><span class="a">Price is only half of it; time is the other half. Their money sits in cash waiting while the averager&rsquo;s money is already compounding.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How often does DCA beat perfectly-timed dip buying?</span><span class="a">Over 70% of the time.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">And if the bottom is missed by two months?</span><span class="a">97%. The strategy&rsquo;s entire edge lives in a precision nobody has.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why did buy-the-dip work for 1920s start dates and not after?</span><span class="a">It needs a severe crash early, while you are still holding cash. That is the whole case for it &mdash; a bet on a rare history, timed in advance.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Lump sum vs spreading it in: how often does lump sum win?</span><span class="a">68% of the time, 1920&ndash;2018, and similar across other asset classes.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What independent source says the same thing?</span><span class="a">Vanguard&rsquo;s 2012 study across the US, UK and Australia &mdash; investing immediately won about two thirds of the time over 12-month periods.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">If you DCA a lump over twelve months, how exposed are you on average?</span><span class="a">About half invested across the year &mdash; so you collect roughly half of whatever the market does in it.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">When does lump sum lose?</span><span class="a">When you invest right before a crash. The 32% is not scattered randomly &mdash; it clusters in exactly the windows people fear.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What job does the hundred-year question actually do?</span><span class="a">It&rsquo;s a reductio. It shows spreading in has a cost at every scale &mdash; the direction, not the magnitude. Only the simulation gives magnitude.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What single assumption holds up every result here?</span><span class="a">That the assets rise over your horizon. Remove it and every conclusion inverts.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The two meanings of &ldquo;DCA&rdquo; &mdash; what&rsquo;s the difference?</span><span class="a">In the studies: dripping in a lump you already hold (the losing one). In normal life: investing each paycheque as it arrives &mdash; that&rsquo;s a series of immediate lump sums, already the recommended thing.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The counter-case to a US backtest?</span><span class="a">Japan. The Nikkei peaked in December 1989 and did not regain that level until February 2024 &mdash; 34 years.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is automation the practical conclusion?</span><span class="a">The winning behaviour is mechanical and the losing behaviour is discretionary. A rule keeps buying through a crash because it doesn&rsquo;t have to be brave.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does a win rate of 68% not tell you?</span><span class="a">Magnitude. Winning small two thirds of the time and losing large one third is a different proposition, and the frequency alone can&rsquo;t distinguish them.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <p>What did not survive checking, and what I could not resolve from the video.</p>
+      <ul>
+        <li><strong>The 2008 figure.</strong> The lecture says &minus;54.1%. The S&amp;P 500&rsquo;s peak-to-trough is usually given as about &minus;57% on a closing basis (Oct 2007 &ndash; Mar 2009). Which index and which measure produce 54.1% is not stated.</li>
+        <li><strong>Three different indices, one word.</strong> Dow for 1929, Nasdaq for dot-com, presumably S&amp;P for 2008 &mdash; all called &ldquo;the market&rdquo;. The ranking is partly an artefact of that choice.</li>
+        <li><strong>Simulation parameters.</strong> Neither figure&rsquo;s underlying assumptions are stated on screen: window length, whether dividends are reinvested, real or nominal. Worth reading Maggiulli&rsquo;s original posts before repeating the numbers.</li>
+        <li><strong>24 months or unspecified?</strong> The lecture describes 24-month windows for 1960&ndash;2018, then extends to 1920&ndash;2018 and gives 68% without restating the window.</li>
+        <li><strong>The channel.</strong> Fetching the video page returned the title but no channel name or upload date. Attribution below is to the video and the book it summarises.</li>
+        <li><strong>4,115 companies.</strong> Quoted for the FTSE All-World. Index membership drifts constantly &mdash; check the current factsheet rather than the video.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p>So the two can be told apart later. <strong>From the lecture:</strong> both thought experiments, all the figures, the crash comparison, the $12,000 example, the conclusion about starting now, and the closing argument about betting on human development.</p>
+      <p><strong>Mine:</strong> the four-arc structure and the move numbering; the cash-drag figure and the &ldquo;about half invested&rdquo; reading of it; every <em>Watch for</em> box; the index caveats; the Vanguard corroboration; the reductio-versus-proof distinction in move 6; all of move 10 &mdash; the two meanings of DCA, the 32%, the Nikkei counter-case, and what the lecture doesn&rsquo;t cover; move 11 and both drills; the quiz and this list.</p>
+      <p>Where the lecture asserted a number without showing the working, I have said so rather than repeating it.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lecture.</strong> <em>Wait For The Crash vs. Invest Now &mdash; The Real Numbers (from the book JUST KEEP BUYING)</em> &mdash; <a href="https://www.youtube.com/watch?v=Pju14xOQAe8">youtube.com/watch?v=Pju14xOQAe8</a>. Channel not noted.</li>
+        <li><strong>The book it summarises.</strong> Nick Maggiulli, <em>Just Keep Buying</em> (Harriman House, 2022), and the simulations behind it on his blog <em>Of Dollars And Data</em> &mdash; the source of both the &ldquo;70% / 97%&rdquo; dip-buying result and the lump-sum comparison.</li>
+        <li><strong>Corroboration.</strong> Vanguard, <em>Dollar-cost averaging just means taking risk later</em> (2012) &mdash; immediate investment beat averaging-in about two thirds of the time across US, UK and Australian data.</li>
+        <li><strong>The Japan counter-case.</strong> The Nikkei 225&rsquo;s December 1989 peak was not exceeded until February 2024.</li>
+        <li><strong>Related topic here:</strong> <a href="../02-money/index.html">Topic 02 &mdash; Money</a> covers the automation and index-fund machinery this page assumes you already have; <a href="../01-communication/index.html">Topic 01, move 2</a> is where &ldquo;what would change my mind?&rdquo; comes from.</li>
+      </ul>
+      <p class="endnote"><b>Study notes, not financial advice.</b> Topic 04 of the study notes: a video summary of <em>Just Keep Buying</em>, written up 21 September 2026. Figures have been rechecked against their original sources rather than repeated, and the places they did not survive are marked. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "godliketiming.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "godliketiming.voice.v1", RTK = "godliketiming.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Study Notes</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- topic rows ---------- */
+.topics{ list-style:none; margin:2.4rem 0 0; padding:0; border-top:1px solid var(--line); }
+.topic{
+  position:relative; display:grid; grid-template-columns:2.6rem minmax(0,1fr) auto;
+  gap:.2rem 1rem; align-items:baseline;
+  padding:1.15rem .5rem 1.2rem .2rem; border-bottom:1px solid var(--line-soft);
+}
+.topic:hover{ background:var(--card); }
+.topic .n{ font-family:var(--f-mono); font-size:.92rem; color:var(--bronze); }
+.topic:hover .n{ color:var(--accent); }
+.topic .name{
+  display:block; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.35rem,3vw,1.72rem); line-height:1.15;
+}
+.topic .name a{ color:var(--ink); text-decoration:none; }
+.topic .name a::after{ content:""; position:absolute; inset:0; }
+.topic:hover .name a{ color:var(--accent-ink); }
+.topic .head{ display:block; margin-top:.2rem; color:var(--muted); font-size:.98rem; line-height:1.45; }
+.topic .meta{ display:block; margin-top:.4rem; font-family:var(--f-mono); font-size:.7rem; color:var(--muted); }
+.topic .meta b{ color:var(--ink); font-weight:400; }
+.topic .count{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); white-space:nowrap; justify-self:end; }
+.topic .arrow{ color:var(--accent); }
+.topic .raw{ position:relative; z-index:1; color:var(--accent-ink); }
+@media (max-width:560px){
+  .topic{ grid-template-columns:2.2rem minmax(0,1fr); }
+  .topic .count{ grid-column:2; justify-self:start; margin-top:.45rem; }
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Study Notes</b><span class="mark-sub"> &nbsp;/&nbsp; one folder per topic</span></p>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Watched, noted, unpacked</p>
+    <h1>Notes that survive <em>the week after watching.</em></h1>
+    <p class="standfirst">Each topic is a study page that unpacks one lecture &mdash; sourced, checked where there are numbers, and with a drill for each idea. The study pages read themselves aloud, so a topic can be revised while the next one is loading.</p>
+    <div class="metarow">
+      <span><b>14 topics</b> so far</span>
+      <span>Notes from <b>20&ndash;24 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap" style="padding-block:0 4rem;">
+  <ul class="topics">
+
+    <li class="topic">
+      <span class="n">14</span>
+      <span class="body">
+        <span class="name"><a href="14-lessons-from-the-cia/index.html">Lessons from the CIA</a></span>
+        <span class="head">Say what you think &mdash; and how sure you are</span>
+        <span class="meta">MasterClass &mdash; <b>Morell, Meyerriecks, Carbaugh</b></span>
+      </span>
+      <span class="count">14 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">13</span>
+      <span class="body">
+        <span class="name"><a href="13-becoming-a-writer/index.html">Becoming a writer</a></span>
+        <span class="head">You write the score &mdash; the reader plays it</span>
+        <span class="meta">MasterClass &mdash; <b>Margaret Atwood</b></span>
+      </span>
+      <span class="count">10 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">12</span>
+      <span class="body">
+        <span class="name"><a href="12-conflict/index.html">Conflict</a></span>
+        <span class="head">It&rsquo;s not the conflict &mdash; it&rsquo;s how you handle it</span>
+        <span class="meta">MasterClass &mdash; <b>Amanda Ripley</b></span>
+      </span>
+      <span class="count">16 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">11</span>
+      <span class="body">
+        <span class="name"><a href="11-short-stories/index.html">Short stories</a></span>
+        <span class="head">A short story is close-up magic</span>
+        <span class="meta">MasterClass &mdash; <b>Neil Gaiman</b></span>
+      </span>
+      <span class="count">10 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">10</span>
+      <span class="body">
+        <span class="name"><a href="10-building-a-story/index.html">Building a story</a></span>
+        <span class="head">Four words: and then what happened?</span>
+        <span class="meta">MasterClass &mdash; <b>Neil Gaiman</b></span>
+      </span>
+      <span class="count">13 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">09</span>
+      <span class="body">
+        <span class="name"><a href="09-finding-your-voice/index.html">Finding your voice</a></span>
+        <span class="head">Your voice is the stuff you can&rsquo;t help doing</span>
+        <span class="meta">MasterClass &mdash; <b>Neil Gaiman</b></span>
+      </span>
+      <span class="count">12 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">08</span>
+      <span class="body">
+        <span class="name"><a href="08-buying-gold/index.html">Buying gold</a></span>
+        <span class="head">What you want gold for decides how to hold it</span>
+        <span class="meta">Video summary &mdash; <b>one investor&rsquo;s stack</b></span>
+      </span>
+      <span class="count">13 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">07</span>
+      <span class="body">
+        <span class="name"><a href="07-love-and-relationships/index.html">Love and relationships</a></span>
+        <span class="head">More has stayed the same about love than has changed</span>
+        <span class="meta">MasterClass &mdash; <b>Ryan Holiday</b> &amp; guests &middot; <a class="raw" href="07-love-and-relationships/notes.md">My notes</a></span>
+      </span>
+      <span class="count">13 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">06</span>
+      <span class="body">
+        <span class="name"><a href="06-reading-hard-books/index.html">Reading hard books</a></span>
+        <span class="head">The author knows more than you &mdash; that&rsquo;s the point</span>
+        <span class="meta">Video summary &mdash; <b>How to Read a Book</b></span>
+      </span>
+      <span class="count">11 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">05</span>
+      <span class="body">
+        <span class="name"><a href="05-sources-of-inspiration/index.html">Sources of inspiration</a></span>
+        <span class="head">Where do you get your ideas? Two things, colliding</span>
+        <span class="meta">MasterClass &mdash; <b>Neil Gaiman</b></span>
+      </span>
+      <span class="count">11 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">04</span>
+      <span class="body">
+        <span class="name"><a href="04-market-timing/index.html">Market timing</a></span>
+        <span class="head">Call every bottom perfectly and still finish behind</span>
+        <span class="meta">Video summary &mdash; <b>Just Keep Buying</b></span>
+      </span>
+      <span class="count">11 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">03</span>
+      <span class="body">
+        <span class="name"><a href="03-storytelling/index.html">Storytelling</a></span>
+        <span class="head">Tell the truth with things that never happened</span>
+        <span class="meta">MasterClass &mdash; <b>Neil Gaiman</b></span>
+      </span>
+      <span class="count">13 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">02</span>
+      <span class="body">
+        <span class="name"><a href="02-money/index.html">Money</a></span>
+        <span class="head">Spend extravagantly on what you love, cut mercilessly on what you don&rsquo;t</span>
+        <span class="meta">Video summary &mdash; <b>Ramit Sethi</b></span>
+      </span>
+      <span class="count">14 rules <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">01</span>
+      <span class="body">
+        <span class="name"><a href="01-communication/index.html">Communication</a></span>
+        <span class="head">Say what needs saying &mdash; kindly, modestly, without hypocrisy</span>
+        <span class="meta">MasterClass &mdash; <b>Ryan Holiday</b> &amp; guests &middot; <a class="raw" href="01-communication/notes.md">My notes</a></span>
+      </span>
+      <span class="count">9 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+  </ul>
+
+</div>
+</body>
+</html>

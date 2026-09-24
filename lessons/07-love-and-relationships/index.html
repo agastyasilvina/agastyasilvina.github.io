@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Widening Circles</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- margin notes ---------- */
+.marginnotes{
+  margin-block:1.8rem 2.4rem; background:var(--card); border:1px solid var(--line);
+  border-radius:2px; padding:1.15rem 1.2rem 1.2rem;
+}
+.marginnotes > .block-label{ color:var(--bronze); }
+.mn{ padding-block:.75rem; border-top:1px solid var(--line-soft); }
+.mn:first-of-type{ border-top:0; padding-top:.15rem; }
+.mn q{ display:block; font-family:var(--f-mono); font-size:.82rem; color:var(--flag); font-style:normal; quotes:none; }
+.mn p{ margin:.25rem 0 0; font-size:.95rem; color:var(--muted); line-height:1.5; }
+.mn p b{ color:var(--ink); font-weight:400; }
+
+/* ---------- circles ---------- */
+.circles{ margin-block:1.6rem; display:flex; flex-direction:column; gap:0; }
+.circles .ring{
+  display:grid; grid-template-columns:1.6rem minmax(0,1fr); gap:.8rem; align-items:baseline;
+  padding-block:.6rem; border-top:1px solid var(--line-soft);
+}
+.circles .ring:first-child{ border-top:0; }
+.circles .ring .d{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent); }
+.circles .ring p{ margin:0; font-size:.98rem; line-height:1.5; }
+.circles .ring p b{ font-weight:700; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Widening Circles</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 07 &middot; Love &amp; relationships</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 07 &middot; Using ancient wisdom to solve modern problems</p>
+    <h1>More has stayed the same about love <em>than has changed.</em></h1>
+    <p class="standfirst">The philosophers are easy to picture as statues. They were people with in-laws, difficult marriages, children and friends they argued with for forty years &mdash; which is why they have anything to say here at all. Cynics on authenticity, Epicureans on why friendship beats romance, Aristotle on the friend who is a second self, Stoics on parents, and a set of circles you are supposed to keep pulling inward.</p>
+    <div class="metarow">
+      <span><b>13 moves</b> in four arcs</span>
+      <span>MasterClass &mdash; <b>Ryan Holiday</b> &amp; guests</span>
+      <span>Same class as <b><a href="../01-communication/index.html">topic 01</a></b></span>
+      <span>Notes taken <b>22 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The thirteen moves">
+    <p class="arclabel">Romance</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> Philosophers had in-laws</a></li>
+      <li><a href="#m2"><span class="n">2</span> All that I am</a></li>
+      <li><a href="#m3"><span class="n">3</span> Know thyself first</a></li>
+      <li><a href="#m4"><span class="n">4</span> The purple thread</a></li>
+      <li><a href="#m5"><span class="n">5</span> The Epicurean heresy</a></li>
+    </ol>
+    <p class="arclabel">Friendship</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> The loneliness epidemic</a></li>
+      <li><a href="#m7"><span class="n">7</span> Say it to them</a></li>
+      <li><a href="#m8"><span class="n">8</span> A second self</a></li>
+      <li><a href="#m9"><span class="n">9</span> Needed resistance</a></li>
+      <li><a href="#m10"><span class="n">10</span> Two hundred hours</a></li>
+    </ol>
+    <p class="arclabel">Parents</p>
+    <ol>
+      <li><a href="#m11"><span class="n">11</span> Estrangement</a></li>
+      <li><a href="#m12"><span class="n">12</span> You are the mediator</a></li>
+    </ol>
+    <p class="arclabel">The circles</p>
+    <ol>
+      <li><a href="#m13"><span class="n">13</span> Draw the rings in</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;13 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="marginnotes">
+      <span class="block-label">Margin notes &mdash; the questions you wrote while watching</span>
+      <div class="mn">
+        <q>prefer to be red thread?</q>
+        <p>It&rsquo;s <b>Agrippinus</b>, quoted by <b>Epictetus</b> in the <em>Discourses</em> I.2 &mdash; and in the Greek the thread is <b>purple</b>, not red: the narrow purple stripe that marks out a Roman garment. &ldquo;Red&rdquo; is the episode&rsquo;s rendering. <a href="#m4">Move 4</a>.</p>
+      </div>
+      <div class="mn">
+        <q>&ldquo;Of all the means to insure happiness&hellip; the acquisition of friends&rdquo; &mdash; check Seneca</q>
+        <p>Not Seneca. That&rsquo;s <b>Epicurus</b>, <em>Principal Doctrines</em> 27. The confusion is understandable: Seneca&rsquo;s <em>Letter 9</em> is <em>about</em> friendship and quotes Epicurus throughout, so the line travels under his name. <a href="#m8">Move 8</a>.</p>
+      </div>
+      <div class="mn">
+        <q>lonelier than ever &hellip; what about AI &rarr; I&rsquo;ll need to check about this</q>
+        <p>The episode doesn&rsquo;t touch it. But Aristotle&rsquo;s three kinds of friendship give you a test rather than a verdict, and it&rsquo;s a sharper one than most of the commentary. <a href="#m6">Move 6</a>.</p>
+      </div>
+      <div class="mn">
+        <q>what is esstrangement? Idk wtf is this</q>
+        <p><b>Estrangement</b> is a deliberate, ongoing distancing between family members &mdash; usually an adult child and a parent &mdash; kept up on purpose rather than by drift or a single row. It ranges from managed, limited contact to a total cutoff. <a href="#m11">Move 11</a>.</p>
+      </div>
+      <div class="mn">
+        <q>Man exist for the sake of one another.</q>
+        <p><b>Marcus Aurelius</b>, <em>Meditations</em> 8.59 &mdash; and the second half is the part that bites: <em>&ldquo;Teach them, then, or bear with them.&rdquo;</em> <a href="#m13">Move 13</a>.</p>
+      </div>
+      <div class="mn">
+        <q>Dr. Jeniffer B. on romantic love &middot; Dr. Alexandra solomon</q>
+        <p>Speakers aren&rsquo;t named aloud in the episode, so the names on this page come from your notes: <b>Jennifer Baker</b>, the philosopher from <a href="../01-communication/index.html">topic 01</a>, on the Epicureans; <b>Alexandra Solomon</b>, the relationship psychologist, on authenticity, friendship and parents.</p>
+      </div>
+    </div>
+
+    <p class="lead">Ryan Holiday names the thesis in the first minute: we shouldn&rsquo;t think of philosophy as removed from love and relationships, but as an integral part of the human experience &mdash; which by definition includes them. That&rsquo;s your &ldquo;philosophy is integral&rdquo; note, and the whole episode is the argument for it.</p>
+
+    <div class="arc"><h2>Arc A &middot; Romance</h2><span class="rule"></span><span class="cnt">5 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>Philosophers had in-laws</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The framing, and why any of this transfers</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Socrates would joke that his difficult marriage was a chance to practise philosophy. It&rsquo;s easy to think of Aristotle or Marcus Aurelius as statues, people from a different universe &mdash; but they were human beings. They had parents, marriages, children, friendships. It may have been thousands of years ago, but more has stayed the same about love and relationships than has changed.</p>
+
+      <p>The argument is doing real work, not just warming up. If the ancients had been the serene figures on the plinths, their advice about relationships would be worthless &mdash; you cannot learn conflict from someone who never had any. The claim is the opposite: <strong>they were in it</strong>. Marriages that didn&rsquo;t work, parents they disappointed, friends who irritated them for decades.</p>
+      <p>And the reason it transfers is that the domain barely moves. Technology has transformed how we <em>meet</em>, and changed almost nothing about what happens once we have. Jealousy, pretence, the fear of being fully known, obligations to ageing parents &mdash; none of that has a version number.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The wife isn&rsquo;t named in the episode. Tradition calls her <b>Xanthippe</b>, and her reputation as impossible comes almost entirely from later anecdote &mdash; in <b>Xenophon&rsquo;s <em>Symposium</em></b> Socrates is asked why he lives with the hardest woman there is, and answers that horse trainers choose spirited horses. Treat &ldquo;difficult marriage&rdquo; as a joke that hardened into a character over centuries, told entirely by his side.</p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>This is all that I am, and all that I have</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">Crates and Hipparchia &mdash; the Cynics on the pedestal problem</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Crates, the Cynic teacher of Zeno, is being pursued by Hipparchia, a young woman deeply in love with him. He is afraid she has put him on a pedestal &mdash; that she is in love with an idealised version. So he strips off his clothes, stands before her and says: <em>this is all that I am and all that I have.</em> She isn&rsquo;t frightened off. She does the same. They end up in a remarkably equal and loving relationship.</p>
+
+      <p>Your note caught the right phrase, and the pedestal is the point. Being idealised feels wonderful for about a month and is structurally unsafe, because the person is in a relationship with a version of you that you now have to maintain. <strong>Every day of that relationship increases the gap between what they love and what is actually there.</strong></p>
+      <p>The lesson the episode draws: the best relationships begin from honesty, and we avoid that beginning because we are afraid we are not enough &mdash; that if someone saw the real thing they wouldn&rsquo;t want it. So we build on half-truths and pretences <em>that time eventually reveals anyway</em>. The choice was never between being known and not being known. It was only ever about when, and how expensive it would be by then.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The ancient source is <b>Diogenes Laertius</b> VI.96&ndash;98, and it is blunter than the episode&rsquo;s telling. There, Crates strips as a <em>warning</em> &mdash; roughly &ldquo;here is the bridegroom, and this is all he owns; think hard, because you cannot be my partner unless you take up the same life.&rdquo; Hipparchia&rsquo;s answer is to adopt the Cynic dress and live that life with him, publicly, against her wealthy family&rsquo;s wishes. The mutual stripping on the spot is dramatisation; her choosing it with her eyes open is the historical part, and the better story. She is also one of the very few women philosophers antiquity bothered to record.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Know thyself first</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">The precondition</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>If you don&rsquo;t know who you are, what&rsquo;s important to you and what you want out of life, it&rsquo;s hard to be in a relationship &mdash; because how can they know you if you don&rsquo;t know yourself? How can they give you what you want if you don&rsquo;t know what that is?</p>
+
+      <p>This is the Delphic maxim &mdash; <em>know thyself</em>, the inscription at Delphi that Socrates made his life&rsquo;s work &mdash; turned into a practical relationship constraint. And the second sentence is the useful one, because it converts an abstract instruction into a testable one: <strong>the other person can only ever meet the version of you that you can describe.</strong></p>
+      <p>Which reframes a common complaint. &ldquo;They don&rsquo;t understand me&rdquo; is sometimes true and often incomplete; the prior question is whether you have ever said it out loud, to yourself, in words specific enough to act on. Nobody can infer your terms from your mood.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; three sentences, written before you need them</span>
+        <ol>
+          <li><strong>What matters most to me</strong> that I would not trade for a relationship going smoothly?</li>
+          <li><strong>What do I actually want</strong> from the next year &mdash; stated concretely enough that someone could help?</li>
+          <li><strong>What do I hide first</strong> when I meet someone new? That one is the pedestal in miniature, and it is the most informative of the three.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>The purple thread</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">Agrippinus on standing out &mdash; and the industry that sells the opposite</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>There is a very large industry selling courses and books on how to become attractive to people &mdash; certain ways you should be, to bring people to you. That is the definition of inauthentic: you&rsquo;re being a character, being what you think they want. And say it works. When do you stop? When does the mask slip?</p>
+
+      <p>Alexandra Solomon&rsquo;s addition is the sharpest line in the section, and it moves the injury: <strong>the damage isn&rsquo;t primarily to the person you&rsquo;re deceiving.</strong> It&rsquo;s the message you give yourself &mdash; that your natural, exhaled self is not good enough and has to be covered up. You can end the date. You can&rsquo;t end the belief you just reinforced.</p>
+      <p>Against which the episode sets Agrippinus, who compared a garment to its threads and said he would rather be the one that stands out and makes the whole thing beautiful. Everyone is born unique &mdash; unique DNA, unique circumstances, a combination that has never existed before &mdash; so the tradition&rsquo;s instruction is to be <strong>happy to stand out</strong>, and to accept that this will not be for everyone. Not everybody will appreciate it or understand it. That is the cost, and it is the same cost as being legible at all.</p>
+
+      <blockquote class="pull"><p>&ldquo;Why do you wish to be the purple, that small part which gives distinction to the rest, and makes it beautiful?&rdquo;</p><cite>Epictetus, Discourses I.2 &mdash; reporting Agrippinus</cite></blockquote>
+
+      <p class="flag"><span class="block-label">Watch for</span>This answers your margin note. The source is <b>Epictetus, <em>Discourses</em> I.2</b>, and the thread is <b>purple</b>, not red &mdash; the narrow purple stripe on a Roman garment, which marked rank and cost a fortune to dye. Agrippinus&rsquo; point turns on that: the purple is a tiny fraction of the cloth, and it is the reason anyone looks at the cloth at all. &ldquo;Red thread&rdquo; loses the specificity. Agrippinus was also a real Stoic who was exiled by Nero and reportedly went for lunch.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; name the character</span>
+        <p>Write down <strong>the version of yourself you perform</strong> when you want to be liked &mdash; the opinions you soften, the enthusiasms you hide, the register you slip into. Be specific enough to be embarrassed.</p>
+        <p>Then ask the question the episode asks: <em>if it works, when do you stop?</em> Any answer other than &ldquo;immediately&rdquo; tells you the cost you have signed up for.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>The Epicurean heresy</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">Jennifer Baker on why they ranked friendship above romance</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>&ldquo;This always gets a big gasp from my students.&rdquo; We idealise romantic love and tend to think a life isn&rsquo;t complete without it. The Epicureans held the opposite: look at how tension-filled romantic relationships have always been, anywhere you look, and how supportive, long-lasting and happiness-promoting friendship is. Why walk into something you know ends in anger and devastation? They thought you could get everything from friendship.</p>
+
+      <p>It is worth sitting with how strange this sounds, because the strangeness is the evidence. A position this available &mdash; friendship is more reliable than romance at producing the thing romance is sold as producing &mdash; is almost never stated, which suggests we are not neutral on the question.</p>
+      <p>The Epicurean case isn&rsquo;t prudishness. Epicurus organised his whole school as a <strong>household of friends</strong> living together, and rated friendship the greatest of all the goods wisdom provides. The argument is comparative: friendship delivers the security, the being-known and the daily pleasure that people expect from romance, while carrying a fraction of the volatility.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>&ldquo;They preferred friendship&rdquo; is a fair summary of the school, not of every Epicurean sentence. <b>Lucretius</b>, the tradition&rsquo;s greatest poet, devotes the end of <em>De Rerum Natura</em> IV to a famously sour anatomy of romantic obsession &mdash; the fullest surviving version of the argument, and much harsher than the episode&rsquo;s summary. If you want the actual case rather than the gasp, that is where it is.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; run the comparison honestly</span>
+        <p>List the relationships that have given you the most stability over the last decade, and the ones that produced the most upheaval. Don&rsquo;t sort them into categories first &mdash; write them, then label them.</p>
+        <p>The Epicureans are not asking you to give anything up. They are asking whether the effort you put into each category matches the returns, and most people find the ledger is not where they assumed.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Friendship</h2><span class="rule"></span><span class="cnt">5 moves</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>The loneliness epidemic</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">The problem the rest of this arc is answering</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>There&rsquo;s something ironic about being connected more than ever through social networks and devices, and feeling lonelier than ever. People are dying of despair because they don&rsquo;t have relationships, don&rsquo;t have friendships, have no one who understands them or gets them or spends time with them. Today and in the ancient world, to be apart from others is a form of wasting away.</p>
+
+      <p>The observation is not that we have fewer contacts. It is that contact and connection have come apart &mdash; you can be reachable by four hundred people and known by none of them. The ancient framing the episode reaches for is harsher than the modern one: not <em>unpleasant</em>, but <strong>a form of wasting away</strong>. Something that damages you by continuing.</p>
+
+      <h3>Your margin note: what about AI?</h3>
+      <p>The episode doesn&rsquo;t mention it, and I&rsquo;m not going to hand you research I can&rsquo;t stand behind &mdash; the honest position is that the evidence on AI companionship is young, contested, and mostly funded by people with a view. What the episode <em>does</em> give you is a test, and it&rsquo;s a sharper one than most of the commentary. It&rsquo;s Aristotle&rsquo;s, and it&rsquo;s in <a href="#m8">move 8</a>:</p>
+      <ul>
+        <li><strong>Utility friendship</strong> &mdash; valuable for what it does for you. An AI is straightforwardly good at this, and there&rsquo;s nothing fake about it.</li>
+        <li><strong>Pleasure friendship</strong> &mdash; valuable for how it feels to be with. It can do a fair amount of this too.</li>
+        <li><strong>Virtue friendship</strong> &mdash; the &ldquo;second self&rdquo;. This one requires a life with its own stakes: someone whose circumstances differ from yours, whose choices you watch play out, who can be <em>wrong</em>, who needs something from you, and who might lose something by being honest with you. <strong>That is the part the machinery can&rsquo;t supply</strong>, on the account this episode is working from &mdash; not because it isn&rsquo;t clever enough, but because it has nothing at risk.</li>
+      </ul>
+      <p>So the question isn&rsquo;t &ldquo;is this real&rdquo;. It&rsquo;s <em>which of the three am I getting, and which am I substituting it for?</em> Utility and pleasure are genuine goods and the ancients counted them as friendship. The failure mode is spending the two hundred hours from <a href="#m10">move 10</a> on something that cannot become the third kind, and then wondering why the loneliness didn&rsquo;t move.</p>
+      <p>Worth looking up yourself, since you flagged it: <strong>Robert Putnam</strong> on collapsing associational life, and whatever the current consensus is on the health effects of social isolation &mdash; that literature is older and much better established than the AI-specific work.</p>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Say it to them</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Seneca&rsquo;s letters, Marcus&rsquo; Book One, and a recruiter</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>One of the great Stoic texts is a series of letters from Seneca to his friend Lucilius &mdash; separated by vast distances, writing to each other about what they&rsquo;re struggling with. You can see the excitement on the page when a letter arrives. And one of the striking things about the ancient world was the willingness of friends to say how much they loved each other.</p>
+
+      <p>Then the example that carries the section. <em>Meditations</em> is a private notebook &mdash; Marcus Aurelius is writing to nobody. And he opens Book One with a long list of <strong>debts to people</strong>: from this one, how to shrug off a friend&rsquo;s resentment; from that one, to love his family, and truth, and justice. He is explicit that he would not be who he is without them.</p>
+      <p>The instruction the episode draws out is small and slightly uncomfortable: <strong>we all vaguely know who shaped us, and almost never tell them.</strong> Writing it down is step one. Saying it to the person is step two, and it is the step that gets skipped.</p>
+      <p>Your note says it in four words &mdash; <em>tell your friend how important they are</em> &mdash; and that is the whole assignment.</p>
+
+      <h3>The recruiter</h3>
+      <p>The episode&rsquo;s worked example of the inventory comes from the former Navy SEAL instructor (the unnamed one from <a href="../01-communication/index.html">topic 01</a>). Going through his own list of pivotal people, the one he wrote most about was his <strong>recruiter</strong>. Trying to join the Navy, he had two outstanding warrants for his arrest. She told him to come back the next day, appeared in dress uniform, took him before both judges, and made the same argument to each: <em>people make mistakes, and that doesn&rsquo;t mean they don&rsquo;t have potential.</em> His record was expunged. He could enlist.</p>
+      <p>What he kept from it wasn&rsquo;t the favour. It was the sentence &mdash; which he still lives by, and which he turns inward: <strong>because people make mistakes without losing their potential, you have to be willing to give yourself multiple chances too.</strong></p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the inventory, then the letter</span>
+        <ol>
+          <li>List the people who were <strong>pivotal</strong>. The episode&rsquo;s way in is the plainest: write a name &mdash; mum, a brother, a teacher, a boss &mdash; and ask what the most pivotal thing they did or said was. The stories arrive on their own.</li>
+          <li>For each, write the <strong>specific</strong> thing. Not &ldquo;she was always supportive&rdquo; &mdash; the sentence, the afternoon, the thing they did when it would have been easier not to.</li>
+          <li><strong>Send one this week.</strong> Not a text. The whole point of the Seneca example is that a letter is an event at the other end.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>A second self</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Aristotle&rsquo;s three friendships, and the Epicurus line from your notes</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Aristotle: some friends are utility or instrumental &mdash; &ldquo;only useful while they&rsquo;re funny&rdquo;. But a true friend gives you a second self: if you love them enough, their adventures, their challenges, their circumstances different from your own become something to train yourself on. You advise them, you hope for them, you see how it turns out &mdash; and at the end of your life you&rsquo;ve had not one life, but several.</p>
+
+      <p>Aristotle&rsquo;s taxonomy has three rungs, and the episode gives you the bottom and the top. Friendships of <strong>utility</strong> (this person is useful to me), of <strong>pleasure</strong> (this person is enjoyable), and of <strong>virtue</strong> (I value this person for who they are). The first two are real and the ancients did not sneer at them &mdash; but they dissolve the moment the usefulness or the fun stops, because the thing loved was never the person.</p>
+      <p>The payoff is the arithmetic at the end, which is worth reading twice: <strong>several lives instead of one.</strong> You only get one set of circumstances. A friend whose life you are genuinely invested in gives you a second run at problems you will never face yourself &mdash; and you get to watch the consequences, which is a kind of experience no book supplies.</p>
+      <p>Plato is given a different angle: we&rsquo;re drawn to the <strong>goodness</strong> in people, so loving a particular person is a way into understanding the good of the universe. And the schools split on the practicalities &mdash; the Epicureans thought you should live with your friends and only with your friends; the Stoics, the episode says, made the best friends because they&rsquo;d stick up for you come what may.</p>
+
+      <blockquote class="pull"><p>&ldquo;Of all the things which wisdom provides to make life entirely happy, much the greatest is the possession of friendship.&rdquo;</p><cite>Epicurus, Principal Doctrines 27</cite></blockquote>
+
+      <p class="flag"><span class="block-label">Watch for</span>That&rsquo;s your &ldquo;check Seneca&rdquo; line, and it isn&rsquo;t Seneca &mdash; it&rsquo;s <b>Epicurus</b>, <em>Principal Doctrines</em> 27, preserved by Diogenes Laertius. The wires cross easily because Seneca&rsquo;s <b>Letter 9</b> is <em>about</em> friendship and quotes Epicurus in it, and Seneca quotes him approvingly all through the early letters. Same doctrine turns up in <a href="../01-communication/index.html">topic 01</a>, move 9, as the reason not to chase the approval of strangers.</p>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Needed resistance</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">Frenemies &mdash; your question, answered</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Socrates and Diogenes the Cynic are sort of frenemies &mdash; they disagree fundamentally about philosophy, and they&rsquo;re always inviting each other over and getting into debates. You didn&rsquo;t have to be friends only with someone who thought exactly like you or lived exactly like you. Emerson picked this up: a true friend gives you needed resistance. We just can&rsquo;t see enough out of our own eyes.</p>
+
+      <p>&ldquo;Frenemy&rdquo; in the modern sense usually means someone who is quietly against you. The ancient version in this episode is different and much more useful: <strong>a friend who is openly, permanently against your position</strong>, and stays at the table anyway. The disagreement is the service being rendered.</p>
+      <p>The reason given is the good one: <em>we can&rsquo;t see enough out of our own eyes.</em> Someone who watches you and cares about you has information you cannot get at &mdash; not opinions, information. A friend who agrees with everything has removed themselves from the only job they were uniquely able to do.</p>
+      <p>This is <a href="../01-communication/index.html">topic 01</a> arriving from the other side. There, the discipline was stating an opponent&rsquo;s case at its strongest before answering it. Here it&rsquo;s the same principle as a relationship structure: <strong>keep people around who will make you do that.</strong></p>
+
+      <p class="flag"><span class="block-label">Watch for</span>&ldquo;A true friend gives you needed resistance&rdquo; is a fair paraphrase of <b>Emerson&rsquo;s essay <em>Friendship</em></b> (1841) rather than a quotation from it. The line in Emerson that says it most memorably is <em>&ldquo;better be a nettle in the side of your friend than his echo&rdquo;</em> &mdash; worth having, since it names the failure mode as well as the duty.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; audit the echoes</span>
+        <p>Name the last three significant decisions you made. For each: <strong>who pushed back, and did you change anything?</strong></p>
+        <p>If nobody pushed back, that isn&rsquo;t evidence you were right. It is evidence about who you asked &mdash; and it is fixable this week by asking the one person you avoid asking.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Two hundred hours</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">How adult friendship is actually built</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Some friendships come with us from childhood, and lots of us don&rsquo;t have those &mdash; that&rsquo;s fine, we can build deep friendships as adults. But there is <b>no hack for the x-axis of time</b>. It takes over two hundred hours together to move from acquaintance to something that feels like a deep friendship. You have to show up.</p>
+
+      <p>And explicitly not by text message. The reason given is mechanical rather than sentimental: <strong>experiences become the catalyst for the next experience.</strong> They lay a foundation, and then they become the private line of humour &mdash; <em>remember that time</em> &mdash; which is itself the connective tissue. Messages don&rsquo;t compound like that.</p>
+      <p>Two details worth stealing. The first is the geometry: the bonding scenarios are the ones where you are <strong>shoulder to shoulder, looking at the same thing</strong>, rather than face to face examining each other. The second is walking &mdash; the philosophers are always going for walks, and the observation offered is that bodies in motion regulate the nervous system and help you feel attuned and present. It is a shared experience and a positive physical one at the same time, and it makes disagreement much easier to survive.</p>
+      <p>Then the definition that ties the arc together, credited to the psychologist Kaethe Weingarten: <strong>intimacy is the co-creation of meaning that leads to coordinated action.</strong> Which means intimacy is whatever the two of you decide it is &mdash; whatever the pair of you agree deepens the friendship, counts. There is no external standard you are failing.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The two-hundred-hours figure is real research, not a round number: <b>Jeffrey Hall</b> (University of Kansas, 2018) put it at roughly <b>50 hours to a casual friend, 90 to a friend, and 200+ to a close friend</b>. The tiers are more useful than the headline, because they tell you that the first fifty are the cheap ones and the curve gets steeper. And the name is spelled <b>Kaethe</b> Weingarten.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; put a repeating thing in the calendar</span>
+        <p>Two hundred hours at two hours a month is eight years. At two hours a week it&rsquo;s two years. The maths is the whole argument for <strong>recurring</strong> rather than occasional.</p>
+        <p>So: one standing arrangement with one person, in the diary, repeating &mdash; a walk, a weekly call, the same bad five-a-side. Shoulder to shoulder if you can. Then stop trying to have deep conversations and let the hours accumulate.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; Parents</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Estrangement</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">Your question, answered properly</p>
+
+      <p><strong>Estrangement</strong> is a deliberate, sustained distancing between family members &mdash; most often an adult child and a parent &mdash; that is <em>chosen and maintained</em> rather than the result of drift, distance or a single argument. It runs along a spectrum: at one end, carefully limited contact (birthdays only, no visits, no discussion of certain subjects); at the other, a complete cutoff with no contact at all.</p>
+      <p>Two things it is <em>not</em>. It isn&rsquo;t simply a bad relationship &mdash; plenty of people see their parents constantly and can&rsquo;t stand them, which is a different problem. And it isn&rsquo;t necessarily permanent: a large share of estrangements are episodic, with periods of contact in between.</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>We learn from our parents so much about how to be a person &mdash; sometimes wonderful lessons, sometimes not. Some of us are estranged, some frustrated, some don&rsquo;t feel understood, and anyone will tell you that&rsquo;s a deeply painful, lonely thing. The number of younger adults with some kind of estrangement, temporary or permanent, is really high.</p>
+
+      <p>What makes the section good is that it refuses both of the easy positions. Alexandra Solomon&rsquo;s answer is that it is <strong>incredibly complicated</strong>, and then she takes each side seriously in turn.</p>
+      <p><strong>When a cutoff is essential.</strong> She cites a colleague&rsquo;s phrase, <em>queer wisdom</em>: if your parents have been clear that they reject who you are, staying in contact can require abandoning how you are &mdash; and that is too high a price. The same holds for abuse, or repeated patterns of neglect, deceit or addiction. Separation, in those cases, is not a failure of the relationship. It is the correct handling of it.</p>
+      <p><strong>When it&rsquo;s worth turning towards.</strong> Outside those cases, her observation is that parents and adult children have <em>a ripe opportunity to get to know each other in a new way</em> &mdash; because the relationship you have with your parent at thirty-five need not be the one you had at twelve. That comes with responsibility on <strong>both</strong> generations, which is the part usually left out: the adult child is not the only one expected to do the work.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>No source is given in the episode for &ldquo;an astoundingly large percentage&rdquo;, and the figure depends almost entirely on how you define estrangement &mdash; cutoff only, or any deliberate distancing? The most-cited survey work here is <b>Karl Pillemer&rsquo;s</b> (<em>Fault Lines</em>, 2020), which put something like a quarter of American adults as estranged from a relative. Treat any single number as definition-dependent rather than as a fact about a generation.</p>
+    </article>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>You are the mediator</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">What changes when you have children of your own</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>One school of thought says: I&rsquo;m not exposing my kids to what I went through with these parents. But being a grandparent to your child is radically different from having been a parent to you &mdash; and the thing your kid has that you didn&rsquo;t have is <em>you</em>. You mediate grandma and grandpa, you translate them, you flex and tighten the boundary. There are lots of shades of grey between a free-for-all and a cutoff.</p>
+
+      <p>This is the most practically useful idea in the arc, and it turns on a structural fact rather than on forgiveness. When you were a child, there was nobody standing between you and them. Your child has someone standing there, permanently, with full authority: <strong>you.</strong> So the thing you are protecting your child from is not the thing you experienced, because the thing you experienced included being alone with it.</p>
+      <p>Which converts a binary into a dial. Not <em>contact or no contact</em>, but: how much, where, for how long, supervised by whom, and on what subjects. That is what &ldquo;shades of grey&rdquo; means in practice, and it is available to you in a way it never was to the child you were.</p>
+
+      <h3>Two reframings worth keeping</h3>
+      <ul>
+        <li><strong>Look at your parent as a person &mdash; or as your grandparents&rsquo; child.</strong> The second is sharper. Whatever they did to you, they learned somewhere, from someone, at an age when they had no more choice than you did.</li>
+        <li><strong>&ldquo;What was your life like at that age?&rdquo;</strong> Solomon&rsquo;s first question when a parent is struggling with their child. The answer is usually either <em>envy</em> &mdash; my child has something I didn&rsquo;t &mdash; or <em>fear</em>, a protectiveness aimed at a danger from your own history rather than your child&rsquo;s. Both are much easier to handle once named, and neither is visible while you think the problem is the four-year-old.</li>
+      </ul>
+
+      <blockquote class="pull"><p>You can&rsquo;t change your childhood. But the cycle can stop with you &mdash; you can be what you needed at that age.</p><cite>The episode&rsquo;s closing line on parents</cite></blockquote>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; set the dial, in writing</span>
+        <p>If there&rsquo;s a difficult parent in your life, write the <strong>actual terms</strong> rather than carrying the question around: how often, where, how long, what subjects are closed, and what ends the visit. Specific enough to be followed by someone who isn&rsquo;t you.</p>
+        <p>A written boundary is a decision made once. An unwritten one has to be re-made, badly, every time the phone rings.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; The circles</h2><span class="rule"></span><span class="cnt">1 move</span></div>
+
+    <article class="move" id="m13">
+      <div class="movehead">
+        <span class="n">13</span>
+        <h2>Draw the rings in</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m13">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="13"> Done</label>
+        </div>
+      </div>
+      <p class="who">Hierocles&rsquo; circles, and what the longest study of happiness found</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>There&rsquo;s the monkish version &mdash; Diogenes in his barrel, no marriage, no children, philosophy as a solitary pursuit; the Buddha walking away from his wife and young child. Wonderful insights can come from that. But for most people, that&rsquo;s not where truth and meaning are found.</p>
+
+      <p>Against the solitary model the episode sets <strong>oikei&#333;sis</strong> &mdash; the Stoic Hierocles&rsquo; image of the self surrounded by widening rings. You are the innermost circle; then family; then neighbours; then fellow citizens; then everyone. The instruction is not to admire the diagram but to <strong>keep pulling the outer rings inward</strong>:</p>
+
+      <div class="circles">
+        <div class="ring"><span class="d">&#9679;</span><p><b>Yourself</b> &mdash; the innermost ring, and the one that needs no encouragement.</p></div>
+        <div class="ring"><span class="d">&#9702;</span><p>Treat <b>family</b> the way you treat yourself.</p></div>
+        <div class="ring"><span class="d">&#9702;</span><p>Treat <b>friends</b> the way you treat family.</p></div>
+        <div class="ring"><span class="d">&#9702;</span><p>Treat <b>fellow citizens</b> the way you treat friends.</p></div>
+        <div class="ring"><span class="d">&#9702;</span><p>Treat <b>foreigners</b> the way you treat fellow citizens.</p></div>
+      </div>
+
+      <p>Two things this does at once. It is an ethics &mdash; we are one human family and no person is an island. And, as Solomon notes, it is a <strong>corrective for the examined life&rsquo;s occupational hazard</strong>: those of us who like introspection can get navel-gazy, and this takes your awareness and points it outward, ring by ring. Self-knowledge was never supposed to terminate in the self.</p>
+      <p>Your margin note belongs here too. <em>&ldquo;People exist for the sake of one another&rdquo;</em> is <strong>Marcus Aurelius, <em>Meditations</em> 8.59</strong> &mdash; and he finishes the thought with an instruction that is much less cuddly than the first half: <em>teach them, then, or bear with them.</em> Those are the two options. Improve the situation, or tolerate it without complaint. Resentment isn&rsquo;t on the list.</p>
+
+      <h3>And the evidence, for once</h3>
+      <p>The episode closes with the <strong>Harvard Study of Adult Development</strong>, which has followed the same families since the late 1930s asking what makes a life go well. The finding, after eighty-odd years: it is <strong>the quality of your relationships</strong>. George Vaillant, who ran it for decades, put it as two pillars &mdash; <em>love, and finding a way to live that doesn&rsquo;t push love away.</em></p>
+      <p>Which is a decent summary of the entire episode. The Cynics on not performing a self that will eventually slip; the Epicureans on where the reliable returns are; Aristotle on the friend who gives you several lives; Solomon on boundaries that let a relationship survive contact &mdash; all of them are the second pillar. Not finding love. Not driving it away.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The episode says the study has run &ldquo;since like 1937&rdquo;; the Grant Study cohort is normally dated to <b>1938</b>, with the second cohort added shortly after. And the name is <b>Vaillant</b>. Minor, but this is the one empirical claim the episode leans on, so it is worth getting the citation right if you ever repeat it.</p>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does the episode insist the philosophers were ordinary people?</span><span class="a">Because advice about relationships from someone who never had any would be worthless. They had marriages, parents, children and friends who annoyed them &mdash; that&rsquo;s the qualification.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is Crates afraid of, and what does he do?</span><span class="a">That Hipparchia has put him on a pedestal &mdash; loves an idealised version. He strips and says this is all that I am and all that I have.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is being idealised structurally unsafe?</span><span class="a">They&rsquo;re in a relationship with a version you now have to maintain, and every day widens the gap between what they love and what&rsquo;s there. Time reveals it anyway &mdash; the only question is when, and how expensive.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does self-knowledge come before the relationship?</span><span class="a">They can only meet the version of you that you can describe. Nobody can infer your terms from your mood.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Agrippinus and the thread &mdash; source, and what colour?</span><span class="a">Epictetus, <em>Discourses</em> I.2. <b>Purple</b> &mdash; the narrow stripe that gives the whole garment its distinction. The episode says red.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Where&rsquo;s the real damage in performing a character to be liked?</span><span class="a">Not in deceiving the other person &mdash; in the message you give yourself, that your natural self isn&rsquo;t good enough and must be covered up.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The Epicurean position on romantic love?</span><span class="a">Friendship beats it. Romance has always been tension-filled; friendship is supportive, long-lasting and happiness-promoting. They thought you could get everything from friendship.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Aristotle&rsquo;s three kinds of friendship?</span><span class="a">Utility, pleasure, and virtue. The first two dissolve when the use or the fun stops, because the thing loved was never the person.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does a &ldquo;second self&rdquo; get you?</span><span class="a">Several lives instead of one &mdash; their circumstances, which you&rsquo;ll never face, become something to train on, and you get to watch the consequences.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">&ldquo;Of all the means to ensure happiness&hellip; friendship.&rdquo; Who?</span><span class="a">Epicurus, <em>Principal Doctrines</em> 27 &mdash; not Seneca. Seneca&rsquo;s <em>Letter 9</em> is about friendship and quotes Epicurus, which is how it travels under his name.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is a frenemy in the ancient sense?</span><span class="a">Socrates and Diogenes &mdash; fundamental disagreement, constant invitations. A friend openly against your position who stays at the table. The disagreement is the service.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why do you need someone to push back?</span><span class="a">We can&rsquo;t see enough out of our own eyes. Someone watching who cares about you has information you can&rsquo;t reach. Emerson: better a nettle than an echo.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How long to build a close friendship &mdash; and the tiers?</span><span class="a">200+ hours. Hall&rsquo;s figures: ~50 to casual friend, ~90 to friend, 200+ to close. No hack for the x-axis of time.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why experiences rather than messages?</span><span class="a">Experiences become the catalyst for the next one and turn into the shared line of humour. Best shoulder to shoulder, looking at the same thing &mdash; walking especially.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Weingarten&rsquo;s definition of intimacy?</span><span class="a">The co-creation of meaning that leads to coordinated action &mdash; so intimacy is whatever the two of you decide it is. There&rsquo;s no external standard you&rsquo;re failing.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is estrangement, exactly?</span><span class="a">Deliberate, sustained distancing between family members &mdash; chosen and maintained, not drift. From carefully limited contact to total cutoff, and often episodic rather than permanent.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">When is a cutoff the right call?</span><span class="a">Rejection of who you are (&ldquo;queer wisdom&rdquo;), abuse, or repeated neglect, deceit or addiction. Then separation is correct handling, not failure.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why isn&rsquo;t a grandparent the same threat a parent was?</span><span class="a">Because your child has something you didn&rsquo;t: you. You mediate, translate and set the boundary &mdash; so it&rsquo;s a dial, not a binary.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Hierocles&rsquo; circles &mdash; what&rsquo;s the instruction?</span><span class="a">Draw the outer rings inward. Family as yourself, friends as family, citizens as friends, foreigners as citizens.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Vaillant&rsquo;s two pillars, after eighty years of data?</span><span class="a">Love &mdash; and living in a way that doesn&rsquo;t push love away. The second pillar is what the whole episode is about.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>Speakers aren&rsquo;t named aloud in the episode,</strong> so <b>Jennifer Baker</b> and <b>Alexandra Solomon</b> come from your own notes, cross-checked against topic 01 where Baker also appears. The Navy recruiter story is attributed to the former SEAL instructor on the same basis.</li>
+        <li><strong>&ldquo;Red thread&rdquo; is purple</strong> in Epictetus, <em>Discourses</em> I.2. Worth confirming which translation the episode used, in case the reading is deliberate.</li>
+        <li><strong>The Crates and Hipparchia story</strong> as told here &mdash; with her stripping in reply &mdash; goes beyond Diogenes Laertius VI.96&ndash;98 as I know it. Check whether a later source carries that detail before repeating it.</li>
+        <li><strong>The estrangement statistic</strong> has no source in the episode, and any figure depends on how estrangement is defined. Pillemer&rsquo;s quarter-of-adults figure is the one I&rsquo;d check first.</li>
+        <li><strong>The 200 hours</strong> is Jeffrey Hall&rsquo;s 2018 work; I&rsquo;ve given the tiers from memory, so verify 50/90/200 before quoting them.</li>
+        <li><strong>The Harvard study start date</strong> &mdash; the episode says 1937, usually given as 1938.</li>
+        <li><strong>Emerson&rsquo;s &ldquo;needed resistance&rdquo;</strong> is a paraphrase of the essay, not a quotation from it.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the lecture:</strong> the whole argument that philosophy is integral to relationships; Socrates&rsquo; marriage; Crates and Hipparchia; know thyself as a precondition; the attraction industry and Solomon&rsquo;s &ldquo;deep wound&rdquo;; Agrippinus and the thread; the Epicurean preference for friendship; the loneliness epidemic; Seneca&rsquo;s letters and Marcus&rsquo; Book One; the recruiter; Aristotle&rsquo;s friendships and the second self; Plato on goodness; Socrates and Diogenes as frenemies; Emerson; the 200 hours, shoulder-to-shoulder and walking; Weingarten&rsquo;s intimacy; the whole parents section including queer wisdom, the mediator argument and &ldquo;your grandparents&rsquo; child&rdquo;; Hierocles&rsquo; circles; the Harvard study and Vaillant&rsquo;s two pillars.</p>
+      <p><strong>Mine:</strong> the four-arc structure and numbering; the margin-notes box answering your questions; the definition of estrangement; identifying the purple thread, the Epicurus attribution and the Marcus 8.59 citation; the Xanthippe note; the Diogenes Laertius comparison; the Lucretius pointer; the reading of the pedestal as a widening gap; the &ldquo;utility / pleasure / virtue&rdquo; test applied to your AI question; the observation that the two-pillar finding summarises the episode; the boundary-as-dial framing; Hall&rsquo;s tiers; every drill; the quiz and this list.</p>
+      <p>Where the episode asserts a number or a quotation, the <em>Watch for</em> boxes say what I could and couldn&rsquo;t stand behind.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The episode.</strong> <em>Using Ancient Wisdom to Solve Modern Problems</em> &mdash; Ryan Holiday and guests, MasterClass; the episode on love and relationships. Same class as <a href="../01-communication/index.html">topic 01</a>.</li>
+        <li><strong>Ancient:</strong> Diogenes Laertius VI.96&ndash;98 (Crates and Hipparchia) and X.148 (<em>Principal Doctrines</em> 27); Epictetus, <em>Discourses</em> I.2 (Agrippinus); Marcus Aurelius, <em>Meditations</em> Book 1 and 8.59; Seneca, <em>Letters to Lucilius</em>, esp. 9; Aristotle, <em>Nicomachean Ethics</em> VIII&ndash;IX (the three friendships, the friend as another self); Plato, <em>Symposium</em>; Lucretius, <em>De Rerum Natura</em> IV; Hierocles on the circles, preserved in Stobaeus; Xenophon, <em>Symposium</em> (Xanthippe).</li>
+        <li><strong>Modern:</strong> Emerson, <em>Friendship</em> (1841); Kaethe Weingarten on intimacy; Jeffrey Hall (2018) on hours to friendship; Karl Pillemer, <em>Fault Lines</em> (2020) on estrangement; the Harvard Study of Adult Development and George Vaillant&rsquo;s <em>Triumphs of Experience</em>.</li>
+        <li><strong>Related here:</strong> <a href="../01-communication/index.html">Topic 01</a> &mdash; same class, and the source of the steelman that move 9 reinvents; <a href="../05-sources-of-inspiration/index.html">topic 05</a> for the commonplace book the journaling drill assumes.</li>
+      </ul>
+      <p class="endnote">Topic 07 of the study notes: the love-and-relationships episode of <em>Using Ancient Wisdom to Solve Modern Problems</em>, written up 22 September 2026 with the notes I typed while watching. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "widening.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "widening.voice.v1", RTK = "widening.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

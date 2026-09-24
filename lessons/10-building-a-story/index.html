@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Four Words</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- what-if chain ---------- */
+.chain{ margin-block:1.6rem; display:flex; flex-direction:column; }
+.chain .step{ display:grid; grid-template-columns:1.7rem minmax(0,1fr); gap:.8rem; padding-block:.7rem; border-top:1px solid var(--line-soft); }
+.chain .step:first-child{ border-top:0; padding-top:0; }
+.chain .step .dot{
+  font-family:var(--f-mono); font-size:.66rem; color:var(--muted);
+  border:1px solid var(--line); border-radius:2px; height:1.7rem; display:grid; place-items:center;
+}
+.chain .step.out .dot{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.chain .step p{ margin:0; }
+.chain .step .q{ font-family:var(--f-mono); font-size:.74rem; color:var(--accent-ink); margin-bottom:.15rem; }
+.chain .step .a{ font-size:.98rem; line-height:1.55; }
+
+/* ---------- two axes of a conflict ---------- */
+.axes{ margin-block:1.5rem; display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media (max-width:520px){ .axes{ grid-template-columns:1fr; } }
+.axes .ax{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.axes .ax .block-label{ color:var(--accent-ink); }
+.axes .ax ul{ margin:.35rem 0 0; padding-left:1.05rem; }
+.axes .ax li{ margin-block:.3rem; font-size:.96rem; }
+.axes-note{ font-family:var(--f-mono); font-size:.74rem; color:var(--muted); line-height:1.6; margin-top:-.4rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Four Words</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 10 &middot; Building a story</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 10 &middot; Neil Gaiman&rsquo;s MasterClass</p>
+    <h1>Four words: <em>and then what happened?</em></h1>
+    <p class="standfirst">How to tell whether an idea is a story, and what to do with it once you suspect it is. His working definition from the years when stories paid the rent; a brain dump in a notebook; <em>Neverwhere</em> built out loud from a pun on Shepherd&rsquo;s Bush; the conflict young writers flinch from; and the one question he calls a flashlight &mdash; what do your characters want?</p>
+    <div class="metarow">
+      <span><b>13 moves</b> in four arcs</span>
+      <span>MasterClass &mdash; <b>Neil Gaiman</b></span>
+      <span>Fourth from this class &mdash; <b><a href="../03-storytelling/index.html">03</a> &middot; <a href="../05-sources-of-inspiration/index.html">05</a> &middot; <a href="../09-finding-your-voice/index.html">09</a></b></span>
+      <span>Notes taken <b>23 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The thirteen moves">
+    <p class="arclabel">What a story is</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> Pages, not cheated</a></li>
+      <li><a href="#m2"><span class="n">2</span> What&rsquo;s going to happen?</a></li>
+      <li><a href="#m3"><span class="n">3</span> And then what happened?</a></li>
+    </ol>
+    <p class="arclabel">From idea to story</p>
+    <ol>
+      <li><a href="#m4"><span class="n">4</span> Everything you know</a></li>
+      <li><a href="#m5"><span class="n">5</span> Is it enough?</a></li>
+      <li><a href="#m6"><span class="n">6</span> Don&rsquo;t look down</a></li>
+      <li><a href="#m7"><span class="n">7</span> What is it about?</a></li>
+    </ol>
+    <p class="arclabel"><em>Neverwhere</em>, built live</p>
+    <ol>
+      <li><a href="#m8"><span class="n">8</span> Shepherds in Shepherd&rsquo;s Bush</a></li>
+      <li><a href="#m9"><span class="n">9</span> Make the metaphor concrete</a></li>
+    </ol>
+    <p class="arclabel">Conflict and wanting</p>
+    <ol>
+      <li><a href="#m10"><span class="n">10</span> Don&rsquo;t flinch</a></li>
+      <li><a href="#m11"><span class="n">11</span> Two axes of a collision</a></li>
+      <li><a href="#m12"><span class="n">12</span> The flashlight</a></li>
+      <li><a href="#m13"><span class="n">13</span> Want, and need</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;13 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">Beginners usually have an idea and can&rsquo;t tell whether it&rsquo;s a story. This lesson is his answer, and it&rsquo;s a sequence rather than a theory: define what a story has to do for a reader; dump everything you know onto a page; ask whether what you have is enough to start from; work out what it&rsquo;s about; then let the characters want things that can&rsquo;t both be had. The middle of it is <em>Neverwhere</em>, derived step by step in front of you.</p>
+
+    <div class="arc"><h2>Arc A &middot; What a story is</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>Turning pages, and not cheated</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">A definition built under financial pressure</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Especially during the <em>Sandman</em> years he would worry, and obsessively ask himself: what is the story? These things are how he fed himself, fed his family, paid the rent. What he eventually decided: <b>a story is anything fictional that keeps you turning the pages and doesn&rsquo;t leave you feeling cheated at the end.</b></p>
+
+      <p>Two clauses, and each is a separate test. The first is about <strong>the middle</strong> &mdash; momentum, the reader&rsquo;s willingness to continue. The second is about <strong>the end</strong> &mdash; whether the payoff honours what the middle promised.</p>
+      <p>Notice what the definition leaves out: plot, character, theme, structure, beauty. It is defined entirely by what happens to <em>the reader</em>. That is liberating, because anything that achieves it counts. And it is exacting, because you can fail it with immaculate craft &mdash; a beautifully written piece that nobody finishes isn&rsquo;t a story by this measure.</p>
+      <p>&ldquo;Not cheated&rdquo; is doing more work than it looks. It&rsquo;s what rules out the tricks that keep pages turning without earning it: the mystery with no answer, the twist that contradicts its own setup, the rescue from nowhere. <strong>You can keep people reading with a cheat. You can&rsquo;t end with one.</strong></p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>What&rsquo;s going to happen?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">A three-year-old&rsquo;s game, and the engine of suspense</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>His three-year-old son&rsquo;s favourite game: stand next to him on a bed or a big sofa and ask &ldquo;What&rsquo;s going to happen?&rdquo; &mdash; &ldquo;I don&rsquo;t know what&rsquo;s going to happen&rdquo; &mdash; and jump and fall down. It can go on for weeks. That is the game a writer plays with readers: things they don&rsquo;t know, things they need to find out, things they care about.</p>
+
+      <p>The child has worked out something adults forget: <strong>the not-knowing is the pleasure</strong>, not an obstacle to it. The fall is fun because it wasn&rsquo;t certain.</p>
+      <p>Then watch how his example questions escalate, because the escalation has a structure:</p>
+      <ul>
+        <li><strong>Orientation</strong> &mdash; who are these people, what are they doing, why should I care? The questions every story has to answer to get started.</li>
+        <li><strong>Stakes</strong> &mdash; is she going to kiss her, or poison her? A single choice with two very different futures.</li>
+        <li><strong>Knowledge</strong> &mdash; does she know about the missing will? Do they know grandmother&rsquo;s body is still in the room upstairs? These are no longer about what will happen; they are about <em>who knows what</em>.</li>
+      </ul>
+      <p>That third kind is the deep engine. Once the reader knows something a character doesn&rsquo;t, every ordinary scene becomes tense, because the reader is watching the character walk towards it. Hitchcock&rsquo;s famous version is the bomb under the table: show it to the audience, and a dull conversation between two people becomes unbearable.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>And then what happened?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">The four words, and the care that produces them</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Someone asked on his blog what quote he&rsquo;d have inscribed on the wall of a children&rsquo;s library. He wouldn&rsquo;t put up a quote. He&rsquo;d put up the four words anyone telling a story wants to hear &mdash; the ones that show it&rsquo;s working and pages will be turned. The words children ask when you pause. The words you hear at the end of a chapter.</p>
+
+      <blockquote class="pull"><p>&ldquo;And then what happened?&rdquo;</p><cite>Neil Gaiman &mdash; <em>Just Four Words</em></cite></blockquote>
+
+      <p>Two consequences follow, and he states both. The permissive one: <strong>anything you can do to keep people turning pages is legitimate.</strong> No technique is too low to use. The demanding one: the main thing is that <strong>you have to care</strong>. If you don&rsquo;t care what happens to these people, nobody else will; if it doesn&rsquo;t matter to you what happens next, nobody else is going to give the smallest toss.</p>
+      <p>And then the practical instruction, which is sharper than it sounds: imbue the care so that <em>any time you stop</em> &mdash; any time you move from one character to another, one place to another, any time you hesitate &mdash; the reader&rsquo;s question is <em>and then what happened?</em></p>
+      <p>That turns every cut into a test. A chapter break, a switch of viewpoint, a jump in time: at each one, the reader is carrying a question across the gap, or they aren&rsquo;t. <strong>The joins are where books get put down</strong>, so the joins are where to look.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>He calls it &ldquo;a book called <em>Stories</em>&rdquo;. It is the introduction to the anthology <b><em>Stories: All-New Tales</em></b> (2010), which he co-edited with Al Sarrantonio &mdash; the four words are the anthology&rsquo;s whole editorial principle &mdash; and it was later collected in <em>The View from the Cheap Seats</em>. Worth knowing if you want to read the full piece; it&rsquo;s short.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; audit the joins</span>
+        <p>Take a draft and find every place it stops: chapter breaks, scene cuts, changes of viewpoint. At each one, write down <strong>the question the reader is carrying across</strong>.</p>
+        <p>Where you can write a real question, the join holds. Where you can&rsquo;t &mdash; where the honest answer is &ldquo;nothing, really&rdquo; &mdash; that&rsquo;s where your reader leaves, and you now know the page number.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; From idea to story</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Write down everything you know</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">The first thing he does on any new project</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Starting something from scratch &mdash; a comic, a novel, a short story, a script &mdash; one of the best things to do is just sit there, by hand if possible, with a notebook, and write down everything you know. A giant brain dump. Doodles; circled words. Not an essay for anyone to read: you, telling yourself everything, up front. Because in the process of writing anything down, <b>your mind starts to notice connections &mdash; and connections are what fiction is made out of.</b></p>
+
+      <p>That last sentence is <a href="../05-sources-of-inspiration/index.html">topic 05</a>&rsquo;s <em>confluence</em> seen from the working end. There, ideas were two things you already had, colliding. Here is the practical method for making them collide: put everything you know about a project onto the same page, and the collisions happen on the paper instead of by luck.</p>
+      <p>&ldquo;By hand&rdquo; is worth taking seriously rather than as a preference. A notebook page is <strong>spatial</strong> &mdash; you can circle a word in one corner, draw an arrow to something in the other, doodle next to a name. A document is a single line of text with an order imposed on it. The connections he&rsquo;s describing are exactly the ones that go <em>across</em> the page rather than down it.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; one page, everything</span>
+        <p>For the next idea you have, before writing a word of the story: one sheet, by hand, <strong>everything you know</strong> &mdash; characters, a place, a feeling, a line of dialogue, the ending you suspect, the thing that annoys you about the premise. No order.</p>
+        <p>Then take a pen of a different colour and draw lines between anything that connects. The lines are the story starting.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Is it enough to start with?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">The small thing you go in with</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Stories begin with ideas, and the idea can be very small: a feeling, an image, something the story begins with, something it ends with, a moment from the middle, two characters interacting. Mostly he doesn&rsquo;t know the whole story &mdash; he writes it to find out what happens. But he has something going in. The question is whether that&rsquo;s enough. <b>If it&rsquo;s a beginning, he needs a general idea of where it&rsquo;s going. If it&rsquo;s an end, he needs to know how we got there.</b></p>
+
+      <p>This is a precise and usable test, and it depends on <em>which kind</em> of fragment you&rsquo;re holding. Each kind has a different missing half:</p>
+      <ul>
+        <li><strong>A beginning</strong> needs a <em>direction</em> &mdash; not a plot, just a sense of where it goes.</li>
+        <li><strong>An ending</strong> needs a <em>route</em> &mdash; how anyone could arrive there.</li>
+        <li><strong>A middle moment</strong> needs both, which is why it&rsquo;s the hardest fragment to start from.</li>
+        <li><strong>A feeling or an image</strong> needs something to happen to it at all.</li>
+      </ul>
+      <p>It is the same problem as <a href="../05-sources-of-inspiration/index.html">topic 05</a>&rsquo;s chair wolf &mdash; <em>moments aren&rsquo;t a plot yet</em> &mdash; approached from the other side. There, the fix was four questions: what&rsquo;s true before, what does it force after, what are the rules, how is it beaten? Here, the prior question: <strong>which half am I missing?</strong></p>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Don&rsquo;t look down</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Wile E. Coyote, and the faith the job requires</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You need faith in yourself, because writing is Wile E. Coyote running off a cliff and still running &mdash; and he&rsquo;s fine until he stops and looks down. Part of your job is not to stop, look down and say &ldquo;there is nothing underneath me&rdquo;, because then you fall. You keep running towards the place. <b>But you have to know where you&rsquo;re running to.</b></p>
+
+      <p>Two instructions that sound contradictory, and aren&rsquo;t, because they&rsquo;re about different things:</p>
+      <ul>
+        <li><strong>Don&rsquo;t examine the ground.</strong> Mid-draft, the question &ldquo;is any of this working?&rdquo; has no good answer and a very good chance of stopping you. <a href="../09-finding-your-voice/index.html">Topic 09</a> gave the reason: every bad draft felt like the good one at the time, so the feeling is not information yet.</li>
+        <li><strong>Do know the destination.</strong> Faith without a direction isn&rsquo;t running across a gap, it&rsquo;s running in circles on top of a mesa.</li>
+      </ul>
+      <p>So faith is about the <em>ground</em> and knowledge is about the <em>target</em>. Missing the first, you stall at every page. Missing the second, you produce a lot of pages that go nowhere &mdash; which is the attic full of first pages from topic 09, seen from inside.</p>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>What is it about?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Not plot &mdash; the thing that decides what belongs</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Very often he wants to know, before he begins, what it&rsquo;s about &mdash; though he probably won&rsquo;t really find out until it&rsquo;s over and he rereads it and asks &ldquo;what was this about?&rdquo; But he needs some idea going in, and <b>that isn&rsquo;t plot</b>. If anything you could call it theme. For him it&rsquo;s just: what is this about?</p>
+
+      <p>The useful way to think about it: <strong>&ldquo;about&rdquo; is a compass, not a map.</strong> It doesn&rsquo;t tell you what happens next. It tells you which of the hundred things that <em>could</em> happen next belong in this book &mdash; which is the decision you face on every page, and which plot alone can&rsquo;t make for you.</p>
+      <p>And note the honest admission built into it: what you go in with and what you discover at the end are not the same. He needs a working answer to start, and he&rsquo;s prepared to be told a different one by the finished book. The next arc is a worked example of exactly that.</p>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; <em>Neverwhere</em>, built live</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Shepherds in Shepherd&rsquo;s Bush</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">From an idea to what it&rsquo;s about &mdash; and the audience problem</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The idea: people living under London, a hidden London, and giving London&rsquo;s place names literal meanings &mdash; so there really will be shepherds in Shepherd&rsquo;s Bush. That&rsquo;s an idea. What&rsquo;s it about? Going in, he decided: <b>the people who fall through the cracks</b>. Homelessness; the mentally ill; the people living rough on the pavements of big cities.</p>
+
+      <p>Then the constraint that makes the whole thing work, and it&rsquo;s a practical one, not a literary one. If he sat down to write <em>a big book about homelessness</em>, the only people who&rsquo;d pick it up would be people already interested in homelessness &mdash; which is to say, not the people who most needed to read it.</p>
+      <p>So the subject has to arrive <strong>disguised as something else</strong>. A book about living in a big city. An adventure &mdash; one that people come to unconvinced, enjoy, and finish looking differently at the people sleeping in shop doorways, no longer pretending they&rsquo;re invisible.</p>
+      <p>That&rsquo;s <a href="../03-storytelling/index.html">topic 03</a>&rsquo;s &ldquo;tell the truth with things that never happened&rdquo; turned into a strategy with a target audience. The fiction isn&rsquo;t sugar on a message. It is the only delivery route that reaches the reader the message is for.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>He says it plainly: what he went in with <b>wasn&rsquo;t entirely what he discovered it had been about</b> by the end. The working answer to &ldquo;what&rsquo;s it about?&rdquo; is a starting compass, not a contract &mdash; move 7 in practice. And the place-name idea is itself <a href="../05-sources-of-inspiration/index.html">topic 05</a>&rsquo;s confluence: a map of London, collided with taking words literally.</p>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Make the metaphor concrete</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">What fantasy is for, and the derivation from theme to plot</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>&ldquo;For me, so much fantasy is about making a metaphor concrete.&rdquo; What it&rsquo;s about is the way we treat the homeless as invisible, as non-persons. So in the story, they <em>are</em> going to be invisible. They <em>are</em> going to be non-persons.</p>
+
+      <p>Here is the derivation as he gives it, one step at a time. Every step is forced by the one before:</p>
+
+      <div class="chain">
+        <div class="step">
+          <span class="dot">&#9679;</span>
+          <div><p class="q">The idea</p><p class="a">A London beneath London, with place names taken literally.</p></div>
+        </div>
+        <div class="step">
+          <span class="dot">?</span>
+          <div><p class="q">What is it about?</p><p class="a">The people who fall through the cracks of big cities.</p></div>
+        </div>
+        <div class="step">
+          <span class="dot">?</span>
+          <div><p class="q">What do we actually do to those people?</p><p class="a">We treat them as invisible &mdash; as non-persons.</p></div>
+        </div>
+        <div class="step">
+          <span class="dot">?</span>
+          <div><p class="q">So make it literal</p><p class="a">In this world, people from below <em>are</em> invisible. The metaphor is now a rule of the setting.</p></div>
+        </div>
+        <div class="step out">
+          <span class="dot">&#9632;</span>
+          <div><p class="q">Put the hero through it</p><p class="a">Richard Mayhew helps a girl from London Below, saves her &mdash; and in doing so becomes part of it. People stop being able to see him.</p></div>
+        </div>
+        <div class="step out">
+          <span class="dot">&#9632;</span>
+          <div><p class="q">The consequences, concretely</p><p class="a">His office doesn&rsquo;t know who he is. Cash machines won&rsquo;t give him money. Taxis won&rsquo;t stop. He is an invisible unperson &mdash; and now he has to go down there, and the plot has to happen.</p></div>
+        </div>
+      </div>
+
+      <p>The brilliance is in the fifth step. <strong>The hero&rsquo;s catastrophe <em>is</em> the theme.</strong> Richard doesn&rsquo;t learn about invisibility, or meet someone who explains it to him &mdash; he undergoes it, in the ordinary humiliating detail of a cash machine refusing him. The reader experiences the metaphor from the inside, which is why it can change how they look at a doorway afterwards. It&rsquo;s <a href="../05-sources-of-inspiration/index.html">topic 05</a>&rsquo;s rule about emotion &mdash; tell them what happens, not how to feel &mdash; applied to an entire argument.</p>
+      <p>And note that the plot comes <em>last</em>. He didn&rsquo;t invent an adventure and then look for a meaning to hang on it. &ldquo;What is it about?&rdquo; generated the rule of the world, the rule generated the hero&rsquo;s problem, and the problem made the plot unavoidable.</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>There&rsquo;s an old line: if you want a message, use Western Union. That may be true &mdash; but if you&rsquo;re writing something, you have to have something you want to say. Not every story needs a giant social message. But you need to know what your story is about, and it has to be about something <b>for you</b>.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The Western Union line is usually credited to <b>Samuel Goldwyn</b>, and like the Garcia quote in <a href="../09-finding-your-voice/index.html">topic 09</a> the attribution is shaky &mdash; versions have been pinned on several Hollywood figures of the period. Gaiman sensibly cites it as &ldquo;an old line&rdquo;. Do the same.</p>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; Conflict and wanting</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Don&rsquo;t flinch</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">The most common beginner failure he sees</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Young writers are peaceable souls. They want to live in a happy place; they&rsquo;ve had enough conflict in their lives already &mdash; and they shy away from it. You read their stories and go: <em>but there, that&rsquo;s the place where your two characters are meant to collide. This is where things are meant to get difficult.</em> And they avoid it. You have to make them face conflict, write it, and realise there are many ways to solve it &mdash; <b>but you have to have the conflict first.</b></p>
+
+      <p>The flinch is <strong>kindness in the wrong place</strong>. The writer is protecting characters they&rsquo;ve grown fond of from the one thing that would make them interesting &mdash; and the reader, who wanted the collision, gets a scene where everyone behaves reasonably and nothing is at stake.</p>
+      <p>It&rsquo;s the same instruction as <a href="../05-sources-of-inspiration/index.html">topic 05</a>&rsquo;s unicorn &mdash; kill it, and break the reader&rsquo;s heart &mdash; and, oddly, the same failure as <a href="../01-communication/index.html">topic 01</a>&rsquo;s avoided conversations. The writer who won&rsquo;t let two characters collide on the page is often the person who won&rsquo;t have the difficult conversation off it. Same reflex, same cost: the thing that needed to happen doesn&rsquo;t, and everything after it is thinner.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; find the swerve</span>
+        <p>Reread your last story looking for one thing: <strong>the moment two characters were about to collide and didn&rsquo;t</strong> &mdash; someone changed the subject, left the room, was interrupted, or was suddenly reasonable.</p>
+        <p>Rewrite that scene with the collision in it. Don&rsquo;t solve it yet; just let it happen. Then read what comes after, and see how much of it now has to change.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Two axes of a collision</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">His list of ways through, separated into what it actually contains</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You can attack something head-on, go around it, attack it surreptitiously, deal with it with strength, deal with it with intelligence. You can go into it and fail. Go into it and succeed. Go into it and neither succeed nor fail, but create an outcome that was completely unexpected and sends everything off in a new direction. You can succeed, and in succeeding make things worse. <b>You have to allow the conflict to happen, and that is so much of what a plot is.</b></p>
+
+      <p>He gives this as one list, and it&rsquo;s actually two &mdash; <em>how a character goes at a problem</em>, and <em>how it comes out</em>. Pulled apart, they become a generator:</p>
+
+      <div class="axes">
+        <div class="ax">
+          <span class="block-label">How they go at it</span>
+          <ul>
+            <li>Head-on</li>
+            <li>Around it</li>
+            <li>Surreptitiously</li>
+            <li>With strength</li>
+            <li>With intelligence</li>
+          </ul>
+        </div>
+        <div class="ax">
+          <span class="block-label">How it comes out</span>
+          <ul>
+            <li>They fail</li>
+            <li>They succeed</li>
+            <li>Neither &mdash; something unexpected, and a new direction</li>
+            <li>They succeed, and it makes things worse</li>
+          </ul>
+        </div>
+      </div>
+      <p class="axes-note">Any approach &times; any outcome is a scene. Five by four is twenty versions of one conflict, before you&rsquo;ve changed a single character.</p>
+
+      <p>The outcomes are not equal, and this is the useful bit. <strong>The first two end things. The last two make more story.</strong> Plain failure or plain success resolves the conflict; &ldquo;neither, and a new direction&rdquo; and &ldquo;succeed and make it worse&rdquo; both hand you the next problem. So the middle of almost any book runs on the last two, and the ending is where you finally spend one of the first two.</p>
+    </article>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>The flashlight</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">The one question he says he&rsquo;ll keep harping on</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You have building blocks. The words and the language &mdash; the voice of the story, what it sounds like. Then the characters: who are they, what do they do, <b>what do they want?</b> He&rsquo;ll harp on that last one, because when you&rsquo;re plotting it&rsquo;s the only question that opens the door to what you do next. If you get stuck, ask what your characters want. It&rsquo;s like a flashlight: it shines a light on the road ahead and lets you move forward.</p>
+
+      <p>The first building block is <a href="../09-finding-your-voice/index.html">topic 09</a> in a sentence &mdash; the voice. The second is the one this move is about, and the flashlight image is exact: wanting doesn&rsquo;t show you the whole route, it lights the next few yards. That&rsquo;s all you need when you&rsquo;re stuck, because stuck almost always means <em>I don&rsquo;t know what anyone would do next</em>, and a character who wants something always knows what they&rsquo;d do next.</p>
+      <p>Then the answer he gave to someone who said <em>I keep coming up with great characters, but I can&rsquo;t make a plot happen</em>:</p>
+
+      <blockquote class="pull"><p>Take two of your best characters. Have them work out what they want &mdash; and make the things they want mutually exclusive. Then set them off, knowing only one of them can have it.</p><cite>Neil Gaiman &mdash; on characters with no plot</cite></blockquote>
+
+      <p>If one succeeds, the other fails. That has to give you conflict, and conflict is most of what a plot is. It&rsquo;s the shortest recipe for a story in the whole class, and it works because it connects the two halves of this arc: <strong>wanting</strong> gives each character a direction, and <strong>mutual exclusion</strong> makes the directions collide.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; two wants, one prize</span>
+        <p>Pick two characters you like who currently have nothing to do with each other. For each, write <strong>one sentence</strong>: <em>more than anything, they want ____.</em></p>
+        <p>Now rewrite one of the sentences until the two wants can&rsquo;t both be satisfied &mdash; the same job, the same person, the same house, opposite outcomes of the same trial. The moment they&rsquo;re exclusive, write the first scene where both of them find out.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m13">
+      <div class="movehead">
+        <span class="n">13</span>
+        <h2>Want, and need</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m13">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="13"> Done</label>
+        </div>
+      </div>
+      <p class="who">One stage below the mechanics of plotting</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Sometimes what a character wants will surprise you. It&rsquo;s not just the money, or the boy. A lot of the time they want to learn, to grow up, to save their friend. What do you want &mdash; and what do you need? That, as a driver, is always one stage below the mechanics of plotting, and it will save you over and over.</p>
+
+      <blockquote class="pull"><p>&ldquo;Characters always, for good or for evil, get what they need. They do not get what they want.&rdquo;</p><cite>Neil Gaiman &mdash; the last line of the lesson</cite></blockquote>
+
+      <div class="script">
+        <div class="line"><span class="k">Want</span><q>The thing they&rsquo;re chasing, and would name if you asked &mdash; the money, the boy, the throne. It drives the plot.</q></div>
+        <div class="line"><span class="k">Need</span><q>The thing that would actually resolve them &mdash; to grow up, to learn, to be stopped. It decides the ending.</q></div>
+      </div>
+
+      <p>The want/need split is a standard tool, and Gaiman&rsquo;s version has two words in it that most versions don&rsquo;t: <strong>&ldquo;always&rdquo;</strong> and <strong>&ldquo;for good or for evil&rdquo;</strong>. What a character needs is not a reward. The hero who needs humility gets humiliated. The villain who needs to be stopped gets stopped. The rule isn&rsquo;t that stories are kind; it&rsquo;s that they are <em>just</em>, in a structural sense.</p>
+      <p>Which closes the loop with <a href="#m1">move 1</a> precisely. His definition of a story was: keeps you turning the pages, and doesn&rsquo;t leave you feeling cheated at the end. <strong>The want keeps you turning the pages. The need is why the ending doesn&rsquo;t feel like a cheat.</strong> An ending that gives a character what they wanted feels cheap; one that gives them what they needed &mdash; even when it hurts &mdash; feels inevitable in retrospect, which is the feeling the whole definition was reaching for.</p>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">His working definition of a story?</span><span class="a">Anything fictional that keeps you turning the pages and doesn&rsquo;t leave you feeling cheated at the end.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does &ldquo;not cheated&rdquo; rule out?</span><span class="a">The mystery with no answer, the twist that contradicts its setup, the rescue from nowhere. You can keep people reading with a cheat; you can&rsquo;t end with one.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does the three-year-old&rsquo;s game teach?</span><span class="a">The not-knowing is the pleasure, not an obstacle to it. That&rsquo;s the game you play with readers.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Three levels of question a reader carries?</span><span class="a">Orientation (who are these people?), stakes (kiss her or poison her?), and knowledge &mdash; who knows what (does she know about the will? the body upstairs?).</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why is &ldquo;who knows what&rdquo; the deep engine?</span><span class="a">Once the reader knows something a character doesn&rsquo;t, every ordinary scene turns tense &mdash; Hitchcock&rsquo;s bomb under the table.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The four words, and where they&rsquo;re from?</span><span class="a">&ldquo;And then what happened?&rdquo; &mdash; his essay <em>Just Four Words</em>, the introduction to <em>Stories: All-New Tales</em>.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The two consequences he draws from them?</span><span class="a">Anything that keeps pages turning is legitimate. And you have to care &mdash; if it doesn&rsquo;t matter to you what happens next, nobody else will give the smallest toss.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Where do readers put books down?</span><span class="a">At the joins &mdash; chapter breaks, cuts, changes of viewpoint &mdash; wherever there&rsquo;s no question being carried across the gap.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why brain-dump, and why by hand?</span><span class="a">Writing anything down makes your mind notice connections, and connections are what fiction is made of. A page is spatial &mdash; circles and arrows connect across it.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Is it enough to start with? The test.</span><span class="a">A beginning needs a direction. An ending needs a route. A middle moment needs both. Ask which half you&rsquo;re missing.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Wile E. Coyote &mdash; the two halves?</span><span class="a">Don&rsquo;t look down: don&rsquo;t examine the ground mid-draft. But know where you&rsquo;re running to. Faith is about the ground; direction is about the target.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">If &ldquo;what it&rsquo;s about&rdquo; isn&rsquo;t plot, what is it?</span><span class="a">A compass, not a map. It decides which of the possible next things belong in this book. And you may find out it was about something else at the end.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why not write &ldquo;a big book about homelessness&rdquo;?</span><span class="a">Only people already interested would read it &mdash; not the ones who needed to. So it arrives disguised as an adventure about living in a city.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">&ldquo;So much fantasy is about&hellip;&rdquo;?</span><span class="a">Making a metaphor concrete. We treat homeless people as invisible non-persons &mdash; so in <em>Neverwhere</em>, they literally are.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What makes Richard Mayhew&rsquo;s catastrophe so effective?</span><span class="a">It <em>is</em> the theme. He doesn&rsquo;t learn about invisibility; he undergoes it &mdash; the office, the cash machine, the taxi that won&rsquo;t stop.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The most common young-writer failure?</span><span class="a">Flinching from conflict &mdash; the characters are about to collide and the scene swerves. You have to have the conflict first.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The two axes of a collision?</span><span class="a">How they go at it (head-on, around, surreptitiously, strength, intelligence) &times; how it comes out (fail, succeed, neither-and-a-new-direction, succeed-and-worse). Any pairing is a scene.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Which outcomes run the middle of a book?</span><span class="a">&ldquo;Neither, and a new direction&rdquo; and &ldquo;succeed, and make it worse&rdquo; &mdash; they hand you the next problem. Plain success and failure end things.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Great characters, no plot &mdash; the fix?</span><span class="a">Two of your best characters, mutually exclusive wants, set them off. Only one can have it. That has to give you conflict.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Want versus need &mdash; and how it closes the lesson?</span><span class="a">The want drives the plot; the need decides the ending &mdash; always, for good or evil. The want keeps pages turning; the need is why the end doesn&rsquo;t feel like a cheat.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong><em>Just Four Words</em></strong> &mdash; I&rsquo;ve given it as the introduction to <em>Stories: All-New Tales</em> (2010), co-edited with Al Sarrantonio, and later collected in <em>The View from the Cheap Seats</em>. He only says &ldquo;a book called <em>Stories</em>&rdquo;. Worth confirming against a copy.</li>
+        <li><strong>The Western Union line</strong> is commonly credited to Samuel Goldwyn; the attribution is disputed. He cites it as &ldquo;an old line&rdquo;, which is the safe way.</li>
+        <li><strong>Hitchcock&rsquo;s bomb under the table</strong> is my addition, not his &mdash; from Hitchcock&rsquo;s interviews with Truffaut. Used here because it names the mechanism behind his &ldquo;does she know about the will?&rdquo; example.</li>
+        <li><strong>Want and need</strong> as a pair is a screenwriting commonplace. What&rsquo;s distinctive here is his &ldquo;always&rdquo; and &ldquo;for good or for evil&rdquo;, which is why the page leans on those words.</li>
+        <li><strong>Which lesson this is</strong> in the class running order &mdash; not stated in the lesson.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the lesson:</strong> the <em>Sandman</em>-era worry and the definition of a story; the what&rsquo;s-going-to-happen game and its example questions; <em>Just Four Words</em> and the library wall; &ldquo;anything that keeps pages turning is legitimate&rdquo; and the need to care; the handwritten brain dump and &ldquo;connections are what fiction is made out of&rdquo;; the kinds of small idea and the beginning/ending test; Wile E. Coyote; &ldquo;what is it about&rdquo; as something other than plot; the whole <em>Neverwhere</em> derivation, the audience problem and &ldquo;making a metaphor concrete&rdquo;; the Western Union line; young writers shying from conflict and his list of ways through; the building blocks; the flashlight; two characters with mutually exclusive wants; and want versus need, with its closing line.</p>
+      <p><strong>Mine:</strong> the four-arc structure and numbering; reading the definition as two separate tests and &ldquo;you can keep reading with a cheat, but can&rsquo;t end with one&rdquo;; sorting his questions into orientation, stakes and knowledge, and the Hitchcock link; &ldquo;the joins are where books get put down&rdquo;; the spatial argument for writing by hand; the missing-half table for kinds of fragment; splitting the coyote into faith and direction; &ldquo;about is a compass&rdquo;; the <em>Neverwhere</em> step chain and &ldquo;the hero&rsquo;s catastrophe is the theme&rdquo;; the flinch as misplaced kindness and the link to topic 01; separating his list into two axes, and noting which outcomes make more story; &ldquo;a character who wants something always knows what they&rsquo;d do next&rdquo;; reading &ldquo;for good or evil&rdquo; as structural justice, and closing the loop back to move 1; every drill; the quiz; the cross-links; and this list.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lesson.</strong> Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; on building a story, a novel and a plot from an idea. Fourth from this class here, after <a href="../03-storytelling/index.html">03</a>, <a href="../05-sources-of-inspiration/index.html">05</a> and <a href="../09-finding-your-voice/index.html">09</a>.</li>
+        <li><strong>His work, as discussed:</strong> <em>The Sandman</em>; <em>Neverwhere</em> &mdash; which began as a 1996 BBC television serial before the novel; and the essay <em>Just Four Words</em>.</li>
+        <li><strong>Borrowed:</strong> Wile E. Coyote &mdash; a Chuck Jones creation, as it happens, which makes two Chuck Jones references in consecutive topics after the bad drawings in <a href="../09-finding-your-voice/index.html">09</a>; the Western Union line, usually credited to Samuel Goldwyn.</li>
+        <li><strong>Added by me:</strong> Hitchcock&rsquo;s bomb under the table, from <em>Hitchcock/Truffaut</em>.</li>
+      </ul>
+      <p class="endnote">Topic 10 of the study notes: Neil Gaiman&rsquo;s MasterClass on the art of storytelling &mdash; the lesson on building a story &mdash; written up 23 September 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "fourwords.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "fourwords.voice.v1", RTK = "fourwords.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

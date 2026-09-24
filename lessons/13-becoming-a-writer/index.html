@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>The Score</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+
+/* ---------- timeline ---------- */
+.tl{ margin-block:1.5rem; border-left:2px solid var(--line); padding-left:1.1rem; display:flex; flex-direction:column; gap:.85rem; }
+.tl .ev{ position:relative; }
+.tl .ev::before{ content:""; position:absolute; left:calc(-1.1rem - 5px); top:.45rem; width:8px; height:8px; border-radius:50%; background:var(--accent); }
+.tl .ev .when{ display:block; font-family:var(--f-mono); font-size:.72rem; letter-spacing:.06em; color:var(--bronze); }
+.tl .ev p{ margin:.15rem 0 0; font-size:.98rem; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>The Score</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 13 &middot; Becoming a writer</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 13 &middot; Margaret Atwood&rsquo;s MasterClass</p>
+    <h1>You write the score. <em>The reader plays it.</em></h1>
+    <p class="standfirst">The opening of Atwood&rsquo;s class: why creativity is about evoking rather than expressing, why words on a page are inert until a reader performs them, and why a book&rsquo;s meaning stops belonging to its author the day it&rsquo;s published. Then how she became a writer &mdash; in the north woods with no electricity, by way of a novel about an ant &mdash; and how she actually works: never from an idea, by hand first, fast, like a downhill skier.</p>
+    <div class="metarow">
+      <span><b>10 moves</b> in three arcs</span>
+      <span>MasterClass &mdash; <b>Margaret Atwood</b></span>
+      <span>First from this class</span>
+      <span>Notes taken <b>24 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The ten moves">
+    <p class="arclabel">What writing is</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> Evoke, don&rsquo;t express</a></li>
+      <li><a href="#m2"><span class="n">2</span> A score, not a performance</a></li>
+      <li><a href="#m3"><span class="n">3</span> The reader decides</a></li>
+    </ol>
+    <p class="arclabel">How she became one</p>
+    <ol>
+      <li><a href="#m4"><span class="n">4</span> The north woods</a></li>
+      <li><a href="#m5"><span class="n">5</span> Obituaries and fashion</a></li>
+      <li><a href="#m6"><span class="n">6</span> The lost manuscript</a></li>
+    </ol>
+    <p class="arclabel">How she works</p>
+    <ol>
+      <li><a href="#m7"><span class="n">7</span> Never start with an idea</a></li>
+      <li><a href="#m8"><span class="n">8</span> Downhill skier</a></li>
+      <li><a href="#m9"><span class="n">9</span> Immerse first</a></li>
+      <li><a href="#m10"><span class="n">10</span> Name the fear</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;10 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">A new teacher after four lessons of Gaiman, and a useful one to set beside him: they agree about almost everything that matters and disagree, productively, about where a book begins. Atwood is also very funny, and much of the teaching here is carried by jokes &mdash; so the page tries to keep the joke and the point together.</p>
+
+    <div class="arc"><h2>Arc A &middot; What writing is</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>Evoke, don&rsquo;t express</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">The first thing she says, and it reframes the whole enterprise</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Creativity is one of the essential things about being human. You don&rsquo;t have to apologise for it. People say <em>express yourself</em> &mdash; she doesn&rsquo;t think that&rsquo;s the key thing. Expressing yourself can be shouting in a field. Rather than expressing yourself, think in terms of <b>evoking</b>: conjuring up, for the reader, some curiosity, some suspense, some interest &mdash; rather than <em>this is my ego</em>.</p>
+
+      <p>The distinction moves the finish line. <strong>Expression is complete the moment it leaves you</strong> &mdash; a shout in an empty field has fully succeeded as expression. <strong>Evocation only happens inside someone else.</strong> So the question you ask of every sentence changes, from &ldquo;is this what I feel?&rdquo; to &ldquo;what will this make the reader feel, wonder or want?&rdquo;</p>
+      <p>It&rsquo;s the same instruction Gaiman gave in <a href="../05-sources-of-inspiration/index.html">topic 05</a> via Lou Reed &mdash; tell them what happens, don&rsquo;t tell them how to feel &mdash; and the same reader-first definition of a story he gave in <a href="../10-building-a-story/index.html">topic 10</a>. Two very different writers, the same first principle: the work is measured at the reader&rsquo;s end.</p>
+      <p>And the first sentence deserves keeping for anyone who feels writing is self-indulgent: <strong>you don&rsquo;t have to apologise for it.</strong> It&rsquo;s something human beings do.</p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>A score, not a performance</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">What words on a page actually are</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>A writer has a very limited repertoire: a blank page and some words. No film, no sound effects, no actors. And <b>words on a page are inert</b> &mdash; like black notes on a score, inert until the music is played, or in a book&rsquo;s case, until someone reads it. Then the words turn back into sounds, smells, colours, people. Reading is the most participative of the arts; the brain has to supply everything, with the words as cues and clues. <b>What you give the reader is a score, which the reader then interprets.</b></p>
+
+      <p>The consequence for craft is direct: <strong>words are cues, not contents.</strong> A sentence doesn&rsquo;t contain a smell; it prompts the reader to produce one from their own memory. Your job is choosing the cues that make the reader&rsquo;s mind do the right work &mdash; which is why over-description so often fails. A score that specified every breath and every rubato would leave the performer nothing to perform, and the reader nothing to do.</p>
+      <p>She follows it with the humility the metaphor implies: all you can do is make the score as good as it can be, throw it out into the world, and hope for the best. You don&rsquo;t get to play it for anyone.</p>
+      <p>This is <a href="../06-reading-hard-books/index.html">topic 06</a>&rsquo;s argument from the other side of the page. Adler said reading was an activity, not a reception; Atwood is saying the writer&rsquo;s whole medium depends on that being true.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>&ldquo;More brain activity reading than watching television or film&rdquo; is offered as a general claim, without a study. It&rsquo;s plausible and widely repeated, and the point survives either way &mdash; a film shows you the room, a book makes you build it &mdash; but don&rsquo;t quote it as a finding.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>The reader decides</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">Whose book is it, once it&rsquo;s out?</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>You cannot dictate how the reader reads your book, because once it&rsquo;s out in the world <b>its meaning is not decided by the writer any more</b>. Even if the writer thought they were putting meaning X into it, readers may take quite a different idea &mdash; and usually do, over time. Hardy thought <em>Tess of the d&rsquo;Urbervilles</em> was about the irony of fate; &ldquo;we think it&rsquo;s a pretty kinky story about what happened to women in the Victorian period. I mean, that&rsquo;s what I think. What do you think?&rdquo;</p>
+
+      <p>Notice the last two sentences. She states a reading of Hardy that he wouldn&rsquo;t have recognised &mdash; and then immediately hands the question to you. She&rsquo;s demonstrating the principle while stating it: her reading of <em>Tess</em> has no more authority than yours, and neither has Hardy&rsquo;s.</p>
+
+      <h3>Her own book, and the name she didn&rsquo;t give</h3>
+      <p>In <em>The Handmaid&rsquo;s Tale</em> she never named the narrator. Readers decided she was called <strong>June</strong>. Nothing in the book contradicts it; in fact everything fits. In the first chapter, a list of names is passed between the women in the dark &mdash; and every one of those names turns up again later in the book, <strong>except June</strong>. So June has to be the narrator&rsquo;s. &ldquo;I thought that was pretty smart of them.&rdquo;</p>
+      <p>This is the best possible illustration of the move, because the author learned something about her own book from its readers &mdash; and the evidence was on the page the whole time. It&rsquo;s <a href="../11-short-stories/index.html">topic 11</a>&rsquo;s question in reverse: <em>was the rose always there?</em> Here, nobody put the rose there on purpose, and it was there anyway.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The readers&rsquo; June was later adopted by the television adaptation (2017), where the character is June throughout &mdash; so an inference made by readers from a list of names became, in effect, canon on screen. A neat case of the principle she&rsquo;s describing going one step further than she describes it.</p>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; How she became a writer</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <p>Her own account, in order. Every step of it is told as a joke, and nearly every joke is also a point about who gets to be a writer.</p>
+
+    <div class="tl">
+      <div class="ev"><span class="when">Childhood</span><p>The north woods: no radio, television, cinema, electricity or running water. But books.</p></div>
+      <div class="ev"><span class="when">Age 7</span><p>Her first novel. About an ant. Not a great success, but illustrated.</p></div>
+      <div class="ev"><span class="when">High school</span><p>A puppetry business &mdash; birthday parties for five-year-olds, heavy on cannibalism.</p></div>
+      <div class="ev"><span class="when">Age 16</span><p>Starts writing seriously again, and this time wants to be a writer.</p></div>
+      <div class="ev"><span class="when">The 1950s</span><p>Steered off journalism: a woman on a newspaper would write obituaries and fashion.</p></div>
+      <div class="ev"><span class="when">University, then Harvard</span><p>English language and literature; graduate school, &ldquo;better than being a waitress&rdquo;.</p></div>
+      <div class="ev"><span class="when">1966</span><p>A book of poetry with a cover she made by hand. It wins a prize.</p></div>
+      <div class="ev"><span class="when">1969</span><p>The novel her publisher lost under a pile on his floor finally appears.</p></div>
+    </div>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>The north woods</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">An early reader because there was nothing else</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>She became a writer partly because she was a very early reader, and she was an early reader because she grew up in the north woods &mdash; no radio, no television, no theatre, no cinema, no electricity, no running water. But there were books. Other children might be afraid of getting lost among the trees; she was afraid of flush toilets. &ldquo;Why did things just vanish?&rdquo;</p>
+
+      <p>The mechanism is scarcity. Books weren&rsquo;t competing with anything, so reading became the default way of passing time &mdash; and a childhood saturated in one medium produced someone who wanted to make it. It&rsquo;s <a href="../05-sources-of-inspiration/index.html">topic 05</a>&rsquo;s compost heap with nothing else on it.</p>
+      <p>She wrote comics and little stories, and her first novel at seven &mdash; about an ant. Then she lost interest in writing and wanted to be a painter. Her first business, in high school, was puppet shows for five-year-olds&rsquo; birthday parties, and the puppet shows were always about the thing dearest to a five-year-old&rsquo;s heart: <strong>cannibalism</strong>. The Three Little Pigs, Little Red Riding Hood, Hansel and Gretel &mdash; &ldquo;the classics&rdquo;.</p>
+      <p>The joke lands because it&rsquo;s true. The stories children love most are full of being eaten, and they are not frightened off by it; they ask for it again. It&rsquo;s the same observation as Gaiman&rsquo;s in <a href="../11-short-stories/index.html">topic 11</a> &mdash; horror stays with you hardest &mdash; made about the audience rather than the reader.</p>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Obituaries and fashion pages</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">Every adult suggested something else</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>At sixteen she started writing seriously and thought of journalism school &mdash; and was told that as a woman on a newspaper she&rsquo;d write nothing but the obituaries and the fashion pages. This was the fifties. So: run away to Paris, live in a garret, drink absinthe, smoke cigarettes, write masterpieces, die young. But first English language and literature, in case she ended up a teacher &ldquo;before jumping off the bridge&rdquo;. Then graduate school at Harvard, proposed as better than being a waitress &mdash; more writing time, &ldquo;I was told, by those who were humoring me&rdquo;. One adviser said she should forget the writing and the graduate school and find a good man and get married. &ldquo;But I paid no attention to that.&rdquo;</p>
+
+      <p>Told as comedy, it&rsquo;s a list of gates closing. The profession she wanted assigned women to two pages of the paper; her advisers humoured her; one of them told her to give it up and marry. None of it stopped her, and the reason she gives is almost buried in a subordinate clause: <strong>by this time she was already publishing</strong> in small literary magazines, and already writing the same kinds of thing she still writes &mdash; poetry, fiction, non-fiction, and roughly speaking, drama.</p>
+      <p>That&rsquo;s the practical lesson under the jokes. <strong>The doing came before the permission.</strong> She never waited to be told she could be a writer; she was one, in small magazines, while the adults were still deciding what she should be instead. It&rsquo;s <a href="../09-finding-your-voice/index.html">topic 09</a>&rsquo;s whole argument in a single biography: the most important thing is just writing.</p>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>The lost manuscript</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">A first book, a prize, and a publisher&rsquo;s whopping lie</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>She published her first book of poetry in 1966, and made the cover herself out of Letraset and the little red dots you put on legal contracts. It won the only literary prize going in Canada at the time. Then a publisher wrote saying they&rsquo;d heard she had a novel. She did &mdash; her second; the first had come to nothing &mdash; and she had sent it to that same publisher two years earlier, and they had accepted it. So she wrote back: actually, you have my novel; could I please have it back?</p>
+
+      <p>The publisher took her for a drink and said they&rsquo;d publish it. <em>&ldquo;Have you read it?&rdquo; &ldquo;No, but I will.&rdquo;</em> Then, in her words, he told her a whopping lie: the female editor in charge of it had got pregnant, &ldquo;and you know what that does to their brains&rdquo;, and had put it in a drawer and told nobody. &ldquo;But I have eyes everywhere. I have my informants.&rdquo; What had really happened was that the manuscript had been on the floor of his office the whole time, with other people&rsquo;s manuscripts piled on top of it.</p>
+      <p>Two things to take from it. The first is that the excuse is itself the material: a sexist lie about a woman editor, told to a young woman writer, in exactly the decade she&rsquo;s been describing &mdash; and handled with a deadpan that does more damage than outrage would. The second is about timing. The book finally appeared in 1969, <strong>just in time for the women&rsquo;s movement</strong>, and was read either as an early women&rsquo;s-movement novel or as the work of a young writer who&rsquo;d grow up later, depending on who reviewed it. <a href="#m3">Move 3</a> again: the same book, two meanings, decided by the reader and the moment &mdash; not by her.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The 1966 book is <b><em>The Circle Game</em></b>, and the prize was the <b>Governor General&rsquo;s Award</b> &mdash; &ldquo;the only literary prize going in Canada&rdquo; is her joke about how thin the field was. Strictly, her first poetry publication was the small pamphlet <em>Double Persephone</em> (1961); she&rsquo;s counting the first real book. The novel the publisher lost is <b><em>The Edible Woman</em></b> (1969). She names none of these in the class.</p>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; How she works</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Never start with an idea</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Why school taught literature backwards</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>She never starts with an idea. People teaching finished books can talk about ideas, because by then someone might know what they are. The way we were taught literature in high school was probably backwards: that there was a container, the work of art, and inside it these ideas, <b>like prizes in a Cracker Jack box</b>. That isn&rsquo;t how writers write. They start with characters. With voices. With scenes. Sometimes her books have started with objects. And out of that comes a story &mdash; &ldquo;because what are novels, if not stories?&rdquo;</p>
+
+      <p>The Cracker Jack image is precise about the mistake. It pictures the idea as <em>put in</em> &mdash; manufactured separately and packed inside &mdash; when for the writer the idea is what you <em>find</em> afterwards, looking back at what the characters and scenes turned into. Teaching a finished book by its ideas is fine. Trying to write one by starting from them produces a lecture wearing a costume.</p>
+      <p>This sits in interesting tension with Gaiman in <a href="../10-building-a-story/index.html">topic 10</a>, who wants to know roughly <em>what a book is about</em> before he begins. Look closer and they agree more than they differ. Gaiman&rsquo;s &ldquo;about&rdquo; was explicitly <em>not</em> plot, was allowed to change, and was only really discovered on rereading; Atwood&rsquo;s starting points are all concrete &mdash; a person, a voice, a scene, a thing. <strong>Both reject the idea as a starting brief.</strong> The difference is only whether you carry a compass (Gaiman) or simply start walking from something you can see (Atwood).</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; start from a thing</span>
+        <p>Pick one concrete starting point and nothing else: <strong>a character, a voice, a scene, or an object</strong>. Not a theme, not a message, not &ldquo;a story about grief&rdquo;.</p>
+        <p>Write two pages from it without deciding what it means. Afterwards, write one line: <em>what does this seem to be about?</em> That line is the Cracker Jack prize &mdash; and you found it rather than packed it.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Downhill skier</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Her actual working process</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>She starts with handwriting, because for her it allows more of a flow from brain to hand to page. Then she transcribes and types at the same time &mdash; continuing to write as she does, which lets her remember what she&rsquo;s just written. At about fifty or sixty pages she can start thinking about structure. Lots of Post-it notes and notebooks; afterthoughts get stuck here and there on the desk and folded into a draft. &ldquo;I&rsquo;m more of a downhill skier&rdquo; &mdash; as fast as she can, then a lot of backtracking, filling in and <b>re-vision</b>. And when you re-vision, you see things you didn&rsquo;t see the first time through.</p>
+
+      <div class="rules">
+        <div class="r">
+          <span class="num">1</span>
+          <div><h4>Handwrite first</h4><p>For the <em>flow from brain to hand to page</em> &mdash; the same starting point Gaiman uses in <a href="../10-building-a-story/index.html">topic 10</a>, for much the same reason.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">2</span>
+          <div><h4>Transcribe, and keep writing as you type</h4><p>Typing up is not clerical. It forces a complete reread, and she keeps composing while she does it &mdash; so every page gets a second pass for free.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">3</span>
+          <div><h4>Structure at fifty or sixty pages &mdash; not before</h4><p>Only once there&rsquo;s enough material to have a shape does she start thinking about what the shape is.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">4</span>
+          <div><h4>Catch the afterthoughts</h4><p>Post-its and notebooks all over the desk, folded into the next draft rather than interrupting this one.</p></div>
+        </div>
+        <div class="r">
+          <span class="num">5</span>
+          <div><h4>Go fast, then go back</h4><p>Downhill as fast as possible, then backtrack, fill in and re-vision &mdash; <em>see again</em> &mdash; because the second look finds what the first one missed.</p></div>
+        </div>
+      </div>
+
+      <p>The downhill skier is the opposite of the writer who perfects each sentence before moving on, and she says in the next breath that both are legitimate. What the image captures is <strong>momentum as a method</strong>: a skier who stops to examine every turn falls over. The corrections happen afterwards, on a different run.</p>
+      <p>Her word is worth keeping, too. She says <em>re-vision</em> rather than revision &mdash; literally <strong>seeing again</strong>. Revision sounds like correcting; re-vision is looking at the thing with new eyes and noticing what was always there. Which, after <a href="#m3">move 3</a>, is exactly what her readers did with June.</p>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Immerse first</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">Where ideas come from, and why there are no rules</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Nobody knows where ideas come from. But immerse yourself in something &mdash; music, painting, writing, thinking about science, which she does a lot &mdash; and you&rsquo;re going to get ideas about it. <b>You have to do the immersing first.</b> You&rsquo;re not sitting waiting for lightning to strike; you&rsquo;re working in a <em>m&eacute;tier</em>. The more you work in it, the more ideas you get. That&rsquo;s just how human creativity works.</p>
+
+      <p>This is the plainest statement in the whole series of something every teacher here has circled. Gaiman&rsquo;s compost heap in <a href="../05-sources-of-inspiration/index.html">topic 05</a> said stock the heap; his confluence said ideas are collisions between things you already have. Atwood says the same with the romance removed: <strong>ideas are a by-product of working</strong>, and the supply is proportional to the time spent in the medium. Waiting for inspiration gets the causality backwards.</p>
+
+      <h3>No surefire rules</h3>
+      <p>Some writers go start to finish in order; some perfect each sentence before moving on; some rough out a whole and then re-vision. There is no set of rules that works for everyone, so try hers, and if they don&rsquo;t work for you:</p>
+
+      <blockquote class="pull"><p>&ldquo;The waste paper basket is your friend.&rdquo;</p><cite>Margaret Atwood</cite></blockquote>
+
+      <p>You don&rsquo;t have to follow anybody else&rsquo;s rules. You discover your own by working with your own material and finding out what best pleases you when you arrange it. The only standard she holds constant is this: <strong>make the book the best it can be in its own terms</strong> &mdash; not in some other book&rsquo;s terms, and not in the terms of a rule you read somewhere, including hers.</p>
+      <p>The waste paper basket is also <a href="../11-short-stories/index.html">topic 11</a>&rsquo;s &ldquo;you&rsquo;ve lost a week, no big deal&rdquo;, in a single object. Being willing to throw things away is what makes it safe to try them.</p>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Name the fear</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">What&rsquo;s actually stopping you, and what to do about each version</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>If you really want to write and you&rsquo;re struggling to start, you&rsquo;re afraid of something. What is that fear? That people will laugh at you? That it won&rsquo;t be any good? That your mother will find out? <b>Identify the fear, and look it in the face</b> &mdash; there are ways of dealing with all of them.</p>
+
+      <p>The reason naming matters is practical: <strong>a vague fear has no remedy, and a specific one usually has an obvious one.</strong> Her examples show it:</p>
+      <div class="script">
+        <div class="line"><span class="k">The fear</span><q>My mother will find out.</q></div>
+        <div class="line"><span class="k good">The remedy</span><q>Make up another name and write under it. People always have.</q></div>
+        <div class="line"><span class="k">The fear</span><q>People will laugh at me.</q></div>
+        <div class="line"><span class="k good">The remedy</span><q>You don&rsquo;t have to show anyone anything until you&rsquo;re ready. It&rsquo;s only you and the page &mdash; no crowd standing round jeering.</q></div>
+        <div class="line"><span class="k">The fear</span><q>It won&rsquo;t be any good.</q></div>
+        <div class="line"><span class="k good">The remedy</span><q>It probably won&rsquo;t, at first &mdash; and the waste paper basket is your friend.</q></div>
+      </div>
+      <p>And a lovely detail: there may be a helpful person in the room after all &mdash; a writer you&rsquo;ve read, perhaps long dead, whom you think of as your helper. <strong>That person is on your side.</strong> Identify the fear, deal with it, and the door opens.</p>
+      <p>This is <a href="../12-conflict/index.html">topic 12</a>&rsquo;s &ldquo;your own understory&rdquo; turned on the blank page. Ripley&rsquo;s first question in a conflict was <em>why am I feeling this way?</em>, because knowing the real driver stops you being trapped by the reaction. Atwood asks the same question of the freeze &mdash; and gives the same reason.</p>
+
+      <blockquote class="pull"><p>&ldquo;Unless you&rsquo;re writing something on the page, you&rsquo;re not writing.&rdquo;</p><cite>Margaret Atwood</cite></blockquote>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; one sentence each</span>
+        <p>Finish this sentence honestly: <em>I&rsquo;m not writing because I&rsquo;m afraid that ______.</em> Then write one sentence underneath: the specific remedy for that specific fear &mdash; a pen name, a locked notebook, a deadline for showing nobody.</p>
+        <p>Then do the thing her last line says, today, for ten minutes: put something on the page. Anything counts except thinking about it.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why &ldquo;evoke&rdquo; rather than &ldquo;express&rdquo;?</span><span class="a">Expressing yourself can be shouting in a field &mdash; complete the moment it leaves you. Evoking only happens in the reader: curiosity, suspense, interest.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What are words on a page, in her image?</span><span class="a">Inert &mdash; black notes on a score. They only become sounds, smells, colours and people when a reader performs them.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does that imply for description?</span><span class="a">Words are cues, not contents. Over-specify and you leave the reader nothing to perform.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Who decides what a published book means?</span><span class="a">The readers, not the writer &mdash; and usually differently over time. Hardy&rsquo;s <em>Tess</em> was about fate; she reads it as what happened to Victorian women. &ldquo;What do you think?&rdquo;</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How did readers work out the narrator of <em>The Handmaid&rsquo;s Tale</em> is June?</span><span class="a">Chapter one lists names; every one recurs later in the book except June. So June must be hers. She never named her.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why was she an early reader?</span><span class="a">The north woods: no radio, TV, cinema, electricity or running water &mdash; but books. And she was afraid of flush toilets.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What were her high-school puppet shows about?</span><span class="a">Cannibalism &mdash; the Three Little Pigs, Red Riding Hood, Hansel and Gretel. What&rsquo;s dearest to a five-year-old&rsquo;s heart.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What was she told about journalism, and when?</span><span class="a">In the fifties, that as a woman she&rsquo;d write only obituaries and fashion. Later an adviser said find a good man and marry. She paid no attention.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What actually kept her going?</span><span class="a">She was already publishing in small magazines. The doing came before the permission.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What really happened to the lost novel?</span><span class="a">Not the pregnant-editor story he told her &mdash; it was on the floor of his office under other people&rsquo;s manuscripts. It came out in 1969, just in time for the women&rsquo;s movement.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why &ldquo;never start with an idea&rdquo;?</span><span class="a">Ideas aren&rsquo;t prizes packed inside a Cracker Jack box; they&rsquo;re what you find afterwards. Start with characters, voices, scenes, objects.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Where do Atwood and Gaiman actually differ on beginnings?</span><span class="a">Barely. Both reject the idea as a brief. Gaiman carries a loose compass (&ldquo;what&rsquo;s it about?&rdquo;); Atwood starts walking from something concrete.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Her process, in order?</span><span class="a">Handwrite; type while transcribing and still writing; think structure at 50&ndash;60 pages; catch afterthoughts on Post-its; go fast downhill, then backtrack and re-vision.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does she say &ldquo;re-vision&rdquo;?</span><span class="a">Seeing again. Not correcting &mdash; looking with new eyes, and finding what the first pass missed.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Where do ideas come from?</span><span class="a">Nobody knows &mdash; but immerse yourself in a m&eacute;tier and they come. Do the immersing first; don&rsquo;t wait for lightning.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Whose rules should you follow?</span><span class="a">Your own, discovered by working. Make the book the best it can be in its own terms. The waste paper basket is your friend.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Stuck at the start &mdash; what to do?</span><span class="a">Name the fear exactly: laughing, not good enough, your mother finding out. Each has a remedy &mdash; a pen name, not showing anyone yet. You and the page.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Her last line?</span><span class="a">&ldquo;Unless you&rsquo;re writing something on the page, you&rsquo;re not writing.&rdquo;</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>The books behind her stories.</strong> The 1966 poetry is <em>The Circle Game</em>, which won the Governor General&rsquo;s Award; her first poetry publication was the pamphlet <em>Double Persephone</em> (1961). The lost novel is <em>The Edible Woman</em> (1969). She names none of them.</li>
+        <li><strong>The brain-activity claim</strong> about reading versus film &mdash; plausible, uncited.</li>
+        <li><strong>June</strong> &mdash; the television series (2017) adopted the readers&rsquo; name. Worth confirming how the book&rsquo;s later sequel treats it before building anything on it.</li>
+        <li><strong>Which lesson this is.</strong> It reads as the class&rsquo;s opening &mdash; she introduces herself &mdash; but the numbering isn&rsquo;t given.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the lesson:</strong> creativity needing no apology; evoking rather than expressing; words as an inert score, and reading as the most participative art; meaning decided by readers, Hardy&rsquo;s <em>Tess</em> and the naming of June; the north woods, the flush toilets, the ant novel, the painter, the cannibal puppet shows; journalism, Paris, Harvard, the adviser, the small magazines; the handmade cover, the prize, the lost manuscript and the publisher&rsquo;s lie; never starting with an idea and the Cracker Jack box; handwriting, transcribing, fifty or sixty pages, Post-its, the downhill skier and re-vision; immersing first and the m&eacute;tier; no surefire rules and the waste paper basket; naming the fear, pen names, the helper, and the last line.</p>
+      <p><strong>Mine:</strong> the three-arc structure and the timeline; &ldquo;expression is complete when it leaves you, evocation only happens in someone else&rdquo;; words as cues, not contents, and the over-specified score; the June story as the rose in reverse; &ldquo;the doing came before the permission&rdquo;; reading the publisher&rsquo;s excuse as material, and the two readings of 1969 as move 3 again; the Atwood&ndash;Gaiman comparison on beginnings; the five-step breakdown of her process and &ldquo;every page gets a second pass for free&rdquo;; re-vision as seeing again; the fear-and-remedy table; the book identifications; every drill; the quiz; the cross-links to topics 05, 06, 09, 10, 11 and 12; and this list.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lesson.</strong> Margaret Atwood&rsquo;s MasterClass on writing &mdash; the opening of the class.</li>
+        <li><strong>Her books behind the stories:</strong> <em>The Handmaid&rsquo;s Tale</em> (1985); <em>The Circle Game</em> (1966); <em>The Edible Woman</em> (1969); and <em>Double Persephone</em> (1961), which she doesn&rsquo;t mention.</li>
+        <li><strong>Named:</strong> Thomas Hardy, <em>Tess of the d&rsquo;Urbervilles</em>; the fairy tales of her puppet shows &mdash; the Three Little Pigs, Little Red Riding Hood, Hansel and Gretel.</li>
+        <li><strong>Related here:</strong> <a href="../05-sources-of-inspiration/index.html">05</a> &mdash; the compost heap and not telling readers how to feel; <a href="../06-reading-hard-books/index.html">06</a> &mdash; reading as an activity; <a href="../09-finding-your-voice/index.html">09</a> &mdash; just writing; <a href="../10-building-a-story/index.html">10</a> &mdash; handwriting first, and &ldquo;what is it about?&rdquo;; <a href="../11-short-stories/index.html">11</a> &mdash; the rose, and losing a week; <a href="../12-conflict/index.html">12</a> &mdash; your own understory.</li>
+      </ul>
+      <p class="endnote">Topic 13 of the study notes: the opening of Margaret Atwood&rsquo;s MasterClass on writing, written up 24 September 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "thescore.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "thescore.voice.v1", RTK = "thescore.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

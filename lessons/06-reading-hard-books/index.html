@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Hard Books</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+table.week td.lev{ font-family:var(--f-mono); font-size:.76rem; color:var(--accent-ink); white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Hard Books</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 06 &middot; Reading</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 06 &middot; Mortimer Adler, How to Read a Book</p>
+    <h1>The author knows more than you. <em>That&rsquo;s the point.</em></h1>
+    <p class="standfirst">A walk-through of Adler&rsquo;s system: the four levels of reading, and the nine rules for chewing one difficult book until you can say what it argued, whether it worked, and on what grounds you disagree. The rules are his. The staging, the drills and the three places the summary compresses him are mine.</p>
+    <div class="metarow">
+      <span><b>11 moves</b> in four arcs</span>
+      <span>Video summary of <b>How to Read a Book</b> (Adler)</span>
+      <span>Notes taken <b>22 Sep 2026</b></span>
+      <span>Rules restaged <b>into Adler&rsquo;s three stages</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The eleven moves">
+    <p class="arclabel">The stance</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The fork in the road</a></li>
+      <li><a href="#m2"><span class="n">2</span> Equals and unequals</a></li>
+      <li><a href="#m3"><span class="n">3</span> The four levels</a></li>
+    </ol>
+    <p class="arclabel">Inspectional</p>
+    <ol>
+      <li><a href="#m4"><span class="n">4</span> Skim on purpose</a></li>
+    </ol>
+    <p class="arclabel">Analytical &mdash; nine rules</p>
+    <ol>
+      <li><a href="#m5"><span class="n">5</span> What kind of book</a></li>
+      <li><a href="#m6"><span class="n">6</span> Unity, parts, problems</a></li>
+      <li><a href="#m7"><span class="n">7</span> Coming to terms</a></li>
+      <li><a href="#m8"><span class="n">8</span> Propositions, arguments</a></li>
+      <li><a href="#m9"><span class="n">9</span> Did they answer it?</a></li>
+      <li><a href="#m10"><span class="n">10</span> Understand, then judge</a></li>
+    </ol>
+    <p class="arclabel">Syntopical</p>
+    <ol>
+      <li><a href="#m11"><span class="n">11</span> Make them come to you</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;11 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">The claim underneath this lesson is that the interesting number is not how many books you read but how many <em>changed you</em> &mdash; and that reading the kind of book which can change you is a learnable procedure rather than a talent. What follows is that procedure, restaged into the three stages Adler actually uses, because the flat list of nine rules hides the shape.</p>
+
+    <div class="arc"><h2>Arc A &middot; The stance</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>The fork in the road</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">Why the narrator went looking for a method</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Long obsessed with stories, but after college the reading dropped to maybe one or two books a year &mdash; and not ones that challenged him or grew him in any meaningful way. Having reorganised his life around reading again, he hit a fork: would he have the stamina and the courage to read hard books, or keep opting for pure entertainment?</p>
+
+      <p>Two separate problems sit here, and most reading advice conflates them. <strong>Reading more</strong> is a scheduling problem &mdash; solvable with a habit, a chair and a phone left in another room. <strong>Reading harder</strong> is not. You can fix the first completely and still spend every one of those hours on books that ask nothing of you.</p>
+      <p>The word he reaches for is <strong>courage</strong>, and it is the right one. The barrier to a difficult book is not time; it is the specific discomfort of reading a page and knowing you did not understand it. That feeling is unpleasant enough that people reliably reorganise their reading to avoid it, and then describe the result as taste.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the honest count</span>
+        <p>List every book you finished in the last twelve months. Beside each, write one sentence: <strong>what did it change?</strong> An opinion, a habit, a piece of vocabulary, a way of seeing something.</p>
+        <p>Books with a blank beside them weren&rsquo;t wasted &mdash; entertainment is a legitimate use of an evening. But the count you are actually interested in is the number of non-blank lines, and for most people it is startlingly close to zero.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>Equals and unequals</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">Adler&rsquo;s distinction between passive and active reading</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Passive reading is solely for information or entertainment. Every piece of writing is a conversation between equals or unequals &mdash; a magazine article written for a general audience is a back-and-forth between equals. Active reading is the way to overcome the superiority of an author who, at the beginning, knows more than we do. It&rsquo;s our job to understand what the book is trying to teach, and we do it by discovery: research, investigation, reflection.</p>
+
+      <p>The distinction is not about genre, and that is the part worth holding on to. It is about <strong>the gap between you and the writer</strong>. A text pitched at your level can only inform you &mdash; it can rearrange facts you were already equipped to receive. Only a text above your level can teach you, because teaching requires someone who knows something you don&rsquo;t.</p>
+      <p>Which produces an uncomfortable corollary. <strong>Difficulty is the signal that you are in the right book</strong>, not the wrong one. The instinct to close a book because it is over your head is exactly inverted &mdash; being over your head is the precondition for the thing you wanted.</p>
+      <p>And &ldquo;learning by discovery&rdquo; is doing real work in that sentence: with no instructor in the room, the labour that a teacher would normally supply has to come from you. That labour is what the nine rules are.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>A test that falls out of this, and it is unforgiving. If you finished a book and <b>struggled with nothing and disagreed with nothing</b>, it was entertainment &mdash; whatever its subject, however serious the cover. That is not a criticism of the book. It is information about the gap, and therefore about what it was able to do for you.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>The four levels</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">The map for the rest of the lesson</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Adler says active reading has four components: elementary, inspectional, analytical and syntopical. We&rsquo;re going to skip elementary and jump straight into inspectional.</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Level</th><th>The question it answers</th><th>What you actually do</th></tr></thead>
+          <tbody>
+            <tr><td class="lev">Elementary</td><td>What does the sentence say?</td><td>Decoding. Assumed of any adult reader, which is why the video skips it.</td></tr>
+            <tr><td class="lev">Inspectional</td><td>What is this book about, and is it for me?</td><td>Skim with purpose, under time pressure. Decide whether to commit.</td></tr>
+            <tr><td class="lev">Analytical</td><td>What exactly is it saying, and is it true?</td><td>The nine rules. Unlimited time, one book, chewed thoroughly.</td></tr>
+            <tr><td class="lev">Syntopical</td><td>What does the literature say about <em>my</em> question?</td><td>Many books at once, compared on terms you set.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="flag"><span class="block-label">Watch for</span>The video calls them &ldquo;components&rdquo;, which loses something. In Adler they are <b>levels, and they are cumulative</b> &mdash; each one contains the ones beneath it. Analytical reading doesn&rsquo;t replace inspectional; it begins with it. Syntopical reading uses both. So this is not a menu of four techniques to pick from, it is a ladder, and skipping a rung shows.</p>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Inspectional reading</h2><span class="rule"></span><span class="cnt">1 move</span></div>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Skim on purpose</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">Triage, before you spend the hours</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Inspectional reading is light, almost superficial &mdash; but done with a purpose: to understand quickly what a book is about and its overall vibe, before spending hours on a book that might not be a fit. Unless a word is absolutely blocking comprehension, keep skimming and let the text wash over you. You have different gears, and you get better at modulating them.</p>
+
+      <p>The permission buried in this section is the most liberating thing in the lesson. If you skip words you didn&rsquo;t understand and come away with <strong>half the book</strong>, Adler holds that this beats understanding <em>nothing</em> because you quit the moment the text turned difficult. Half of a hard book is not a failed reading. It is a successful first pass.</p>
+      <p>The gears idea is worth practising deliberately rather than waiting for it to arrive. Most people read everything at one speed &mdash; the speed at which they could, in principle, follow every clause &mdash; and then treat any book that resists that speed as impossible. Reading fast over the parts you don&rsquo;t need is what buys you the time to read slowly over the parts you do.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Adler splits this level in two, and the video merges them. <b>Systematic skimming</b> is the pre-read: title page, preface, table of contents, index, the publisher&rsquo;s blurb, then dipping into the chapters that look pivotal &mdash; this is the part that actually answers &ldquo;should I commit to this?&rdquo;. <b>Superficial reading</b> is the other half: go through the whole thing once, start to finish, never stopping for what you don&rsquo;t understand. The video&rsquo;s advice is the second half. The first half is the one that saves you the wasted hours, and it takes about fifteen minutes.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the fifteen-minute triage</span>
+        <ol>
+          <li><strong>Title page and preface.</strong> Authors say what they are doing here, plainly, because they are still nervous.</li>
+          <li><strong>Table of contents,</strong> slowly. It is the author&rsquo;s own outline &mdash; the thing rule 3 will later ask you to reconstruct.</li>
+          <li><strong>Index.</strong> Look up the terms you already care about; the page counts tell you where the weight sits.</li>
+          <li><strong>Dip into two or three pivotal chapters,</strong> plus the last few pages of the argument &mdash; writers usually summarise themselves at the end.</li>
+          <li><strong>Decide:</strong> commit, shelve, or abandon. Write the decision down with one line of why. That line is worth having when you meet the book again in three years.</li>
+        </ol>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; Analytical reading &mdash; the nine rules</h2><span class="rule"></span><span class="cnt">6 moves</span></div>
+
+    <p>Analytical reading is what he calls <strong>chewing and digesting</strong> a book &mdash; and the phrase is older than Adler: Francis Bacon&rsquo;s <em>Of Studies</em> has some books to be tasted, others swallowed, &ldquo;and some few to be chewed and digested&rdquo;. Fantasy, romance and thrillers rarely need it. Hard philosophy, science, some history and the classics do, and the nine rules are the structure that lets you extract the learning <strong>without a professor in the room</strong>.</p>
+    <p>The video gives the nine as a flat list. They aren&rsquo;t one: Adler groups them into three stages, each answering a different question, and the grouping is most of the value.</p>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Rule 1 &mdash; what kind of book is it?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">Stage one, structural: what is this book about as a whole?</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Identify the kind of book you&rsquo;re reading. Adler breaks them into two: <b>theoretical</b> &mdash; what it <em>is</em> &mdash; and <b>practical</b> &mdash; what it <em>ought to be</em>. Then write it on the inside cover or in your commonplace book.</p>
+
+      <p>His examples: Penrose&rsquo;s <em>The Emperor&rsquo;s New Mind</em> and Hoffman&rsquo;s <em>The Case Against Reality</em> are theoretical &mdash; they make a claim about the way the world is. <em>How to Read a Book</em> itself is practical, as is <em>How to Take Smart Notes</em>. And a nice stretch: <strong>Seneca&rsquo;s letters count as practical</strong> under Adler&rsquo;s definition, because their aim is to tell us how to act.</p>
+      <p>Then the honest wrinkle. Sapolsky&rsquo;s <em>Behave</em> is a science book describing how the world is &mdash; theoretical &mdash; but it also wants to inspire specific actions, which makes it practical. His ruling: <strong>pick one, or both, it doesn&rsquo;t matter.</strong> The value is not the label. It is that you have started sorting books in your head instead of receiving them all the same way.</p>
+      <p>Why it earns its place as rule one: <strong>the category tells you what would count as the book being wrong.</strong> A theoretical book fails if it is false. A practical book fails if the advice doesn&rsquo;t work, or if the end it aims at turns out not to be worth wanting &mdash; a completely different kind of objection, which you cannot raise if you never noticed which sort of book you were holding.</p>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Rules 2&ndash;4 &mdash; unity, parts, problems</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">The rest of stage one</p>
+
+      <div class="rules">
+        <div class="r">
+          <span class="num">2</span>
+          <div>
+            <h4>State the unity of the book in one to three sentences</h4>
+            <p>A general idea isn&rsquo;t enough &mdash; you have to be able to say it. <em>If you catch yourself saying &ldquo;I know what it&rsquo;s about, I just can&rsquo;t say it exactly&rdquo;, that is a good sign you did not understand it.</em></p>
+          </div>
+        </div>
+        <div class="r">
+          <span class="num">3</span>
+          <div>
+            <h4>Outline the parts that make up that unity</h4>
+            <p>The author chose a structure because they believed it was needed. That doesn&rsquo;t absolve you from stating the parts <em>in your own words</em> &mdash; and your outline may not match the book&rsquo;s chapters, which is fine. It only has to support the unity you stated.</p>
+          </div>
+        </div>
+        <div class="r">
+          <span class="num">4</span>
+          <div>
+            <h4>Work out what problems the author is trying to solve</h4>
+            <p>Books begin with a question. Sometimes the author flags them in headings; often not, and pulling them out is your job. <em>Theoretical questions:</em> does it exist, what kind of thing is it, why, what caused it, what is it for? <em>Practical:</em> what ends should be sought, by what means, and under these conditions what is the right thing to do?</p>
+          </div>
+        </div>
+      </div>
+
+      <p>His worked example of a unity, from a novel he had just finished: <em>a young, amoral man dreams of making it big as a photographer, puts his ambition above everything, and ends up making a Faustian bargain.</em> Twenty-four words, and you could argue with it &mdash; which is the test. A summary nobody could disagree with is usually a summary that says nothing.</p>
+
+      <p>These three are a <strong>closed loop</strong>, and that is how you use them. The unity, the outline and the problems have to agree with each other. If your outline doesn&rsquo;t obviously support your one-sentence unity, one of the two is wrong &mdash; and noticing the mismatch is cheaper than reading the book twice.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the inside-cover card</span>
+        <p>For the next book you finish, write four things on the inside cover or in your notes, in this order: <strong>the kind</strong> (theoretical or practical), <strong>the unity</strong> in under three sentences, <strong>your outline</strong> in five or six lines, and <strong>the questions</strong> it set out to answer.</p>
+        <p>Do it from memory first, then check. Whatever you couldn&rsquo;t produce from memory is the part you read passively.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Rule 5 &mdash; coming to terms</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Stage two, interpretive &mdash; and the single highest-leverage rule</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Understand the major words and phrases the author uses &mdash; Adler calls it <b>coming to terms</b>. The difficult words are usually the ones you need to crack to unlock the whole argument. He recommends a two-column page: terms on one side, meanings on the other. If you want to read books outside your current level, this tip alone is probably the highest-leverage thing you can do.</p>
+
+      <p>The narrator is right to single it out, and it is worth being precise about what a <strong>term</strong> is, because it is not the same as a word. A term is <strong>a word used in one unambiguous sense</strong>. One word carrying two senses is two terms; two different words carrying the same sense are one term. Coming to terms means locating the sense <em>this author</em> is using &mdash; which is why a dictionary is so often useless here. The dictionary gives you the range. The book gives you the choice within it.</p>
+      <p>And this is the hinge of the whole system. Rules 1&ndash;4 work on the book from the outside &mdash; its kind, its shape, its questions. Rule 5 is where you go inside the argument, and every rule after it depends on having done it. An argument you cannot follow is, nine times out of ten, an argument built from a term you quietly translated into your own meaning.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the term sheet</span>
+        <p>Keep one page, two columns, at the front of the book. Every time a word stops you &mdash; or worse, <em>nearly</em> stops you and you carried on &mdash; write it on the left. Leave the right blank until you can fill it from the book itself rather than from a dictionary.</p>
+        <p>The blanks are the map of what you don&rsquo;t understand yet, and they usually number about six. Six words is a much smaller problem than &ldquo;this book is too hard&rdquo;.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Rules 6&ndash;7 &mdash; propositions and arguments</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Stage two continued</p>
+
+      <div class="rules">
+        <div class="r">
+          <span class="num">6</span>
+          <div>
+            <h4>Mark the important sentences, and find the propositions in them</h4>
+            <p>Propositions are the author&rsquo;s judgements &mdash; what they actually assert. If the author hasn&rsquo;t made the key sentences obvious, finding them is your job, not theirs.</p>
+          </div>
+        </div>
+        <div class="r">
+          <span class="num">7</span>
+          <div>
+            <h4>Locate or construct the basic arguments</h4>
+            <p>An argument is propositions arranged to convince you of something. When they&rsquo;re spread across pages, you have to assemble them &mdash; on a separate sheet, or just by <em>numbering the propositions in the margins</em> in the order the argument needs them.</p>
+          </div>
+        </div>
+      </div>
+
+      <p>Two ideas in this section are worth more than the rules themselves.</p>
+      <p><strong>&ldquo;An essential part of reading is to be perplexed &mdash; and to know it.&rdquo;</strong> If you never stop to question a passage, you cannot expect insights you did not already have. Perplexity isn&rsquo;t the interruption of reading; it is the part where reading is happening. The failure mode is not confusion, it is <em>unnoticed</em> confusion.</p>
+      <p><strong>The sin of verbalism.</strong> Adler&rsquo;s name for being able to repeat an author&rsquo;s words while being unable to make their argument in your own. It is the exact failure that rule 2 catches at the level of the whole book, appearing again at the level of a single argument &mdash; and it is the natural end state of highlighting.</p>
+      <p>The margin-numbering trick is the cheap version of rule 7 and it works because an argument is not a set of claims, it is a set of claims <em>in an order</em>. Numbering makes the order visible, and a gap in the numbers is usually a premise the author assumed you would supply.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the verbalism test</span>
+        <p>Close the book. Say the argument out loud in your own words, using none of the author&rsquo;s distinctive phrases. If you can only produce their sentences, you have the words and not the thought &mdash; go back and number the propositions.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Rule 8 &mdash; did they answer it?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">The end of stage two</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Once you have a grasp of the arguments, go back to the questions from rule 4 and check: which did the author answer, which did they dodge, and what new questions came up along the way? Did they do the job well enough?</p>
+
+      <p>Short rule, and it is the reason rule 4 had to be <em>written down</em>. Judged from memory, you will silently grade the book on the questions it did answer &mdash; the ones it handled well are the ones you remember it raising. The dodged question leaves no trace unless you recorded it before the author had a chance to distract you from it.</p>
+      <p>Three outcomes worth logging separately: <strong>answered</strong>, <strong>dodged</strong>, and <strong>newly raised</strong>. The third is not a failure &mdash; a book that opens a question it cannot close has still done something for you, and that question is often the seed of the next book you should read.</p>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Rule 9 &mdash; understand before you judge</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">Stage three, critical</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Before you can agree or disagree, you must first understand. By the end you either understood it or you didn&rsquo;t &mdash; there&rsquo;s no middle ground. Understood and agree? Your work is done. Understood and disagree? Write down <em>why</em>, in your commonplace book or your outline. That is the crux of critical reading: to show where the author was uninformed, misinformed or illogical.</p>
+
+      <p>This is the rule people skip, and skipping it is what most book opinions are made of. &ldquo;I didn&rsquo;t like it&rdquo; delivered before &ldquo;I understood it&rdquo; is not criticism, it is a report on the reader.</p>
+      <p>Note what the three grounds have in common: <strong>every one of them is a claim you have to be able to support.</strong> Uninformed &mdash; they lack a fact that bears on the case, and you can name it. Misinformed &mdash; they assert something false, and you can say what is true instead. Illogical &mdash; the conclusion doesn&rsquo;t follow from their own premises, and you can point at the step. None of them is &ldquo;I disagree&rdquo;.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The video gives three grounds; Adler gives <b>four</b>. The missing one is <b>&ldquo;your analysis is incomplete&rdquo;</b> &mdash; the author hasn&rsquo;t solved all the problems they set out to solve, or hasn&rsquo;t seen the implications of their own position. It is the most useful of the four in practice, because it is the most often true. Adler also attaches two conditions the video skips: <b>don&rsquo;t disagree for the sake of disagreeing</b>, and <b>give reasons</b> &mdash; treat a disagreement as something that could in principle be resolved, and leave room for the possibility that the one who is wrong is you.</p>
+
+      <p>Worth connecting to <a href="../01-communication/index.html">topic 01</a>: the obligation to state the author&rsquo;s case before objecting to it is the <strong>steelman</strong>, arriving from a different direction. Adler&rsquo;s test and Socrates&rsquo; are the same test &mdash; you have not earned a disagreement until you can make the other side&rsquo;s argument yourself.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; earn the disagreement</span>
+        <p>Next time a book annoys you, write two paragraphs before you write anything else: <strong>their argument, at its strongest, in your words</strong> &mdash; then your objection, labelled with which of the four grounds it stands on.</p>
+        <p>A surprising number of objections fail to survive the first paragraph. Those are the ones worth catching before you repeat them at a dinner party.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; Syntopical reading</h2><span class="rule"></span><span class="cnt">1 move</span></div>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Make the books come to terms with you</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">The level above analytical &mdash; reading on a mission</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Syntopical reading is for when you&rsquo;re on a mission &mdash; two or more books on the same topic, because you have a specific question you want answered. You&rsquo;re assembling your own bibliography. Start with inspectional reading, to find out fast whether a book will answer your question before you sink hours into one that won&rsquo;t.</p>
+
+      <p>Then the inversion that gives the level its whole character: <strong>you make the books come to terms with you</strong>, rather than coming to terms with each of them in turn. You fix your own vocabulary first. Where an author uses a different word for something you have already named, you bucket it under yours.</p>
+      <p>His example is a good one because it is genuinely hard. Reading Spinoza&rsquo;s <em>Ethics</em>, you meet <span class="term">mode</span> and <span class="term">substance</span> &mdash; words Aristotle and Descartes also use, and which Spinoza is deliberately redefining while writing in response to them. Taken at face value the result is chaos: three thinkers, the same words, three meanings. Anchored to your own term, it becomes a comparison &mdash; here is my concept, here is what each of them says about it.</p>
+      <p>That inversion is the difference between reading a lot and doing research. Come to terms with each author in sequence and you end up serially adopting five incompatible vocabularies, unable to put any two of them in the same sentence. The books can only be compared on ground that belongs to <em>you</em>.</p>
+
+      <p>The rest of the level, in his order: get the questions clear, <strong>define the issues</strong> &mdash; the places where the authors genuinely disagree &mdash; and then analyse the discussion. That last step has a name worth keeping: <strong>dialectical objectivity</strong>, which means laying out every side without taking one.</p>
+
+      <p>Which is <a href="../01-communication/index.html">topic 01</a>&rsquo;s steelman again, scaled up from an argument to a literature: state each position at its strongest, including the ones you came in wanting to beat. Adler&rsquo;s version is stricter, though &mdash; in a syntopical reading you are not supposed to resolve it at all. The output is a map of the disagreement, not a verdict.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; a five-book question</span>
+        <ol>
+          <li>Write <strong>one question</strong> you actually want answered. Narrow enough that a book could fail to address it.</li>
+          <li>Assemble five candidates and give each the fifteen-minute triage from move 4. Keep the ones that speak to the question; shelve the rest without guilt.</li>
+          <li>Write <strong>your</strong> terms down first &mdash; three or four words you will use throughout, defined in your own sentences.</li>
+          <li>For each book, record what it says about <em>your</em> terms, not what it says about its own.</li>
+          <li>List the points where they genuinely disagree. That list is the answer you were looking for &mdash; more useful than any single book&rsquo;s verdict.</li>
+        </ol>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <p>His own closing note is the right one to keep: at first the rules feel like too much, and you overthink every step &mdash; then it becomes like riding a bicycle and you stop counting the steps. And the last instruction, which is not about reading at all: <strong>resist the temptation to keep scrolling.</strong> Close the browser, turn off the wifi, and go and get the difficult book you have been putting off.</p>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Passive reading versus active reading?</span><span class="a">Passive is for information or entertainment. Active is the work of overcoming an author who, at the start, knows more than you.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does &ldquo;a conversation between equals or unequals&rdquo; mean in practice?</span><span class="a">A text at your level can only inform you. Only one above your level can teach you &mdash; so difficulty is the signal you&rsquo;re in the right book.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The four levels, in order?</span><span class="a">Elementary, inspectional, analytical, syntopical &mdash; and they&rsquo;re cumulative, each containing the ones below.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is inspectional reading for?</span><span class="a">Finding out fast what a book is about and whether it&rsquo;s worth your hours &mdash; before you spend them.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">You skimmed and understood half. Verdict?</span><span class="a">Better than understanding nothing because you quit when it got hard. Half a hard book is a successful first pass.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Adler&rsquo;s two halves of inspectional reading?</span><span class="a">Systematic skimming &mdash; title page, preface, contents, index, pivotal chapters &mdash; and superficial reading, straight through without stopping. The video only covers the second.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Rule 1, and why it matters?</span><span class="a">Theoretical (what is) or practical (what ought to be). It tells you what would count as the book being wrong &mdash; false, versus advice that doesn&rsquo;t work.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Rule 2, and its built-in test?</span><span class="a">State the unity in one to three sentences. &ldquo;I know what it&rsquo;s about but I can&rsquo;t say it exactly&rdquo; means you didn&rsquo;t understand it.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Must your outline match the book&rsquo;s chapters?</span><span class="a">No. It&rsquo;s in your own words and may differ entirely &mdash; it only has to support the unity you stated.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Rule 4 &mdash; and the two families of question?</span><span class="a">Find the problems the author set out to solve. Theoretical: does it exist, what kind, why, what caused it, what for? Practical: what ends, what means, what&rsquo;s right to do here?</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is a &ldquo;term&rdquo;, exactly?</span><span class="a">A word used in one unambiguous sense. Same word, two senses = two terms. Coming to terms means finding the sense <em>this</em> author uses &mdash; which is why the dictionary rarely settles it.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The sin of verbalism?</span><span class="a">Repeating the author&rsquo;s words while being unable to make their argument in your own. The natural end state of highlighting.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">&ldquo;An essential part of reading is to be perplexed&rdquo; &mdash; and?</span><span class="a">To know it. Unnoticed confusion is the failure, not confusion. If you never question a passage, you can&rsquo;t expect insights you didn&rsquo;t already have.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Cheapest way to do rule 7?</span><span class="a">Number the propositions in the margins in the order the argument needs them. An argument is claims <em>in an order</em>, and gaps in the numbers show you the missing premise.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Rule 8 &mdash; three things to log?</span><span class="a">Which questions were answered, which were dodged, and which new ones appeared. The dodged one leaves no trace unless you wrote rule 4 down first.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">On what grounds may you criticise?</span><span class="a">Uninformed, misinformed, illogical &mdash; and Adler&rsquo;s fourth, which the video omits: the analysis is incomplete. Never just &ldquo;I disagree&rdquo;.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The inversion that defines syntopical reading?</span><span class="a">You make the books come to terms with <em>you</em>. Fix your own vocabulary, then bucket each author&rsquo;s words under yours &mdash; otherwise you can&rsquo;t compare them at all.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Dialectical objectivity?</span><span class="a">Laying out every side of the discussion without taking one. The output is a map of the disagreement, not a verdict.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>I do not have Adler open in front of me.</strong> The three-stage grouping, the two halves of inspectional reading, the fourth ground for criticism and the ordering of the syntopical steps are all from memory of the book, not read off the page. They are the parts of this study page most worth verifying against a copy &mdash; everything attributed directly to the video comes from the video itself.</li>
+        <li><strong>The edition.</strong> The video credits Mortimer J. Adler alone. The version nearly everyone reads is the <b>1972 revision, co-written with Charles Van Doren</b> &mdash; worth knowing when you go looking for the rules as numbered here.</li>
+        <li><strong>The novelist is Karl Ove Knausg&aring;rd.</strong> I have not been able to confirm the title <em>The School of Night</em> or the plot summary he gives, so the unity example on this page is reported as his, not vouched for.</li>
+        <li><strong>Rule numbering.</strong> The video&rsquo;s nine map cleanly onto Adler&rsquo;s stages, but whether his numbering is Adler&rsquo;s own or the video&rsquo;s reorganisation needs checking against the book.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the lecture:</strong> everything attributed to Adler &mdash; active and passive reading, equals and unequals, the four levels, inspectional skimming and the 50% permission, all nine analytical rules, the sin of verbalism, being perplexed and knowing it, the theoretical/practical split, syntopical reading and dialectical objectivity. Also every example: Penrose, Hoffman, Seneca, Sapolsky, Knausg&aring;rd, Spinoza, the two-column term sheet, the bicycle, and the closing instruction to stop scrolling.</p>
+      <p><strong>Mine:</strong> the four-arc structure and regrouping the nine rules into Adler&rsquo;s three stages; the split between reading <em>more</em> and reading <em>harder</em>; &ldquo;difficulty is the signal&rdquo; and the struggled-with-nothing test; the table of levels and the note that they are cumulative; the two-halves correction and the fifteen-minute triage; &ldquo;what would count as the book being wrong&rdquo;; reading rules 2&ndash;4 as a closed loop; the definition of a term and calling rule 5 the hinge; the explanation of why margin-numbering works; answered / dodged / newly raised; the fourth ground for criticism and Adler&rsquo;s two conditions on it; both cross-links to topic 01; every drill; the quiz and this list.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The book.</strong> Mortimer J. Adler, <em>How to Read a Book</em> (1940; revised edition 1972 with Charles Van Doren) &mdash; the source of every rule here.</li>
+        <li><strong>&ldquo;Chewed and digested&rdquo;</strong> is Francis Bacon, <em>Of Studies</em> (1625): some books are to be tasted, others swallowed, and some few chewed and digested.</li>
+        <li><strong>Named in the video:</strong> Roger Penrose, <em>The Emperor&rsquo;s New Mind</em>; Donald Hoffman, <em>The Case Against Reality</em>; S&ouml;nke Ahrens, <em>How to Take Smart Notes</em>; Seneca&rsquo;s <em>Letters</em>; Robert Sapolsky, <em>Behave</em>; Karl Ove Knausg&aring;rd; Spinoza&rsquo;s <em>Ethics</em>.</li>
+        <li><strong>Related here:</strong> <a href="../01-communication/index.html">Topic 01</a> for the steelman, which rule 9 reinvents; <a href="../05-sources-of-inspiration/index.html">topic 05</a> for the commonplace book this lesson keeps telling you to write in.</li>
+      </ul>
+      <p class="endnote">Topic 06 of the study notes: a video walk-through of Mortimer Adler&rsquo;s <em>How to Read a Book</em>, written up 22 September 2026. The rules are Adler&rsquo;s and the staging is mine; where I have worked from memory of the book rather than the video, the <em>To check</em> list says so. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "hardbooks.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "hardbooks.voice.v1", RTK = "hardbooks.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1065 @@
+<!doctype html><!--wrap-->
+<html lang="en"><!--wrap-->
+<head><!--wrap-->
+<meta charset="utf-8"><!--wrap-->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><!--wrap-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Speak True</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+</style>
+</head><!--wrap-->
+<body><!--wrap-->
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Speak True</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 01 &middot; Communication</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Using ancient wisdom to solve modern problems &middot; Ryan Holiday &amp; guests</p>
+    <h1>Say what needs saying &mdash; <em>kindly, modestly, without hypocrisy.</em></h1>
+    <p class="standfirst">The whole communication topic collapses into that one line of Marcus Aurelius. Everything else in the episode is either a way to earn the right to say the thing, or a way to survive what comes back. Here are my notes, unpacked: what each line meant, where it actually comes from, and the drill that turns it into a habit.</p>
+    <div class="metarow">
+      <span><b>9 moves</b> in three arcs</span>
+      <span>Teachers: <b>Ryan Holiday</b>, <b>Jennifer Baker</b>, an unnamed <b>former Navy SEAL</b></span>
+      <span>Dead teachers: <b>Socrates, Seneca, Marcus Aurelius, Epictetus</b></span>
+      <span>Notes taken <b>20 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The nine moves">
+    <p class="arclabel">Before you speak</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> Nobody is wrong on purpose</a></li>
+      <li><a href="#m2"><span class="n">2</span> Know you might be wrong</a></li>
+      <li><a href="#m3"><span class="n">3</span> Steelman it first</a></li>
+      <li><a href="#m4"><span class="n">4</span> The tactical pause</a></li>
+    </ol>
+    <p class="arclabel">When you speak</p>
+    <ol>
+      <li><a href="#m5"><span class="n">5</span> Say the thing</a></li>
+      <li><a href="#m6"><span class="n">6</span> Run it through filters</a></li>
+      <li><a href="#m7"><span class="n">7</span> Make it land</a></li>
+    </ol>
+    <p class="arclabel">When it comes back</p>
+    <ol>
+      <li><a href="#m8"><span class="n">8</span> Love criticism</a></li>
+      <li><a href="#m9"><span class="n">9</span> Haters are a fixed cost</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#practice"><span class="n">&#9679;</span> The practice week</a></li>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;9 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Your browser speaks the page &mdash; each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top. Good for a second pass while the next episode is loading.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">Several teachers, one claim: this is not theory. Study it, practise it, and it changes how the next argument in your actual life goes &mdash; and it doesn&rsquo;t matter how old you are, how senior you are, or how good you already think you are at talking to people. What follows is the order I&rsquo;d practise them in. Moves 1&ndash;4 happen before you open your mouth, 5&ndash;7 while you&rsquo;re talking, 8&ndash;9 after the words are out of your hands.</p>
+
+    <div class="arc"><h2>Arc A &middot; Before you speak</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>Nobody is wrong on purpose</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">Socrates, via <b>Ryan Holiday</b></p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>Socrates: No one is wrong on purpose. Based on what you knew you thought you were right, and then you get more information, then you think differently. They are doing their best and can come to you in good faith. Your first instinct is important. We need to find common ground. See yourself in the other person.</p>
+
+      <p>The starting position for every disagreement: the person across from you is not being obtuse on purpose. They are reasoning honestly from a different set of facts &mdash; the same way you were reasoning honestly right up until the moment you learned the thing that changed your mind. You have held a wrong opinion sincerely. So have they. That is the whole insight.</p>
+      <p>This reframes the job. You are not trying to defeat a bad person; you are trying to <strong>find the one input that differs</strong>. What do they know that I don&rsquo;t? What do I know that they haven&rsquo;t heard yet? Common ground first, correction second.</p>
+      <p>It also makes a claim about your own first instinct: the instinct is data, but it is data about <em>you</em>, not about them. If your first instinct is that someone is an idiot, that instinct is a prediction &mdash; and the Socratic bet is that the prediction is usually wrong.</p>
+
+      <blockquote class="pull"><p>&ldquo;No one errs willingly.&rdquo;</p><cite>The Socratic paradox &mdash; Plato, Protagoras 345d&ndash;e</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Plato, Protagoras 345d&ndash;e</b> and <b>Meno 77b&ndash;78b</b>: Socrates argues that wrongdoing is a form of ignorance &mdash; nobody knowingly chooses the worse option for themselves. Marcus Aurelius runs the same argument as a morning ritual in <b>Meditations 2.1</b>: expect to meet meddlers and ingrates today, and forgive them, because they act badly &ldquo;because they can&rsquo;t tell good from evil.&rdquo;</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; three questions before a disagreement</span>
+        <ol>
+          <li><strong>When have I been wrong about something like this?</strong> Name the specific time. Not a hypothetical.</li>
+          <li><strong>Why do I believe what I believe here?</strong> What is the actual evidence, as opposed to the group I got it from?</li>
+          <li><strong>Where can I see myself in them?</strong> Which version of me &mdash; younger, less informed, more frightened &mdash; would be saying exactly what they are saying?</li>
+        </ol>
+        <p>If you can&rsquo;t answer all three, you&rsquo;re not ready to have the conversation. You&rsquo;re ready to have a fight.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>Know you might be wrong</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">The Socratic method, via <b>Jennifer Baker</b></p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>Knowledge of his own ignorance. Socratic method. And ultimately knowing that you can be wrong, questioning what is thought to be right &mdash; that is S. method. People don&rsquo;t like to be shown they are wrong.</p>
+
+      <p>Socrates&rsquo; famous wisdom was not a stock of answers. The oracle called him the wisest man in Athens and he spent the rest of his life trying to disprove it, concluding that the only edge he had was this: he didn&rsquo;t think he knew things he didn&rsquo;t know. <strong>Knowledge of his own ignorance.</strong></p>
+      <p>The method that falls out of that is all questions and no assertions. Not &ldquo;you&rsquo;re wrong because X&rdquo; but &ldquo;what would have to be true for that to hold?&rdquo; &mdash; and then following the answers wherever they go, including into your own position. Two things are happening at once: you are testing what is thought to be right, and you are leaving open the possibility that the thing that breaks is yours.</p>
+      <p>And the practical warning, which is the most useful line in my notes: <strong>people do not like to be shown they are wrong.</strong> Being shown feels like an ambush; arriving at it yourself feels like thinking. Questions let the other person keep authorship of the change of mind. That is not a trick &mdash; it&rsquo;s the difference between a conclusion someone holds and one they merely lost.</p>
+      <p>Worth remembering that Athens executed Socrates. The method makes enemies when it is used to humiliate in public. Use it to open a door, not to walk someone into a wall.</p>
+
+      <div class="script">
+        <div class="line"><span class="k bad">Instead of</span><q>That&rsquo;s wrong &mdash; the data says the opposite.</q></div>
+        <div class="line"><span class="k good">Try</span><q>What would we expect to see if that were true? &hellip; Is that what we&rsquo;re seeing?</q></div>
+        <div class="line"><span class="k bad">Instead of</span><q>You&rsquo;ve misunderstood how this works.</q></div>
+        <div class="line"><span class="k good">Try</span><q>Walk me through the step where it goes from A to B &mdash; that&rsquo;s the bit I can&rsquo;t follow.</q></div>
+        <div class="line"><span class="k bad">Instead of</span><q>Obviously we should do it my way.</q></div>
+        <div class="line"><span class="k good">Try</span><q>What would change your mind here? &hellip; Here&rsquo;s what would change mine.</q></div>
+      </div>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Plato, Apology 21d</b> &mdash; &ldquo;I am wiser than this man&hellip; he thinks he knows something when he does not, whereas I do not think I know what I do not know.&rdquo; The question-driven method is the <span class="term">elenchus</span>, visible in almost every early dialogue. &ldquo;I know that I know nothing&rdquo; is a later paraphrase, not a quote.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; convert statements into questions</span>
+        <p>For the next three disagreements, ban yourself from the counter-statement. Every objection has to leave your mouth as a question, and the question has to be one you don&rsquo;t already know the answer to. Then add the hardest one, aimed at yourself: <strong>what would change my mind?</strong> If nothing would, you are not in a disagreement, you are in a loyalty.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Steelman it first</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">Debate technique &mdash; the counterweight to the straw man</p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>&ldquo;Steelman&rdquo; argument. A debate technique that involves presenting an opponent&rsquo;s argument in its strongest form, even if that&rsquo;s not how they presented it. E.g. claim: money is the key to happiness &mdash; argue as if you believe it&rsquo;s true. Steelmanning vs straw man &rarr; logical fallacy and attacking that. Steel man &rarr; better engagement.</p>
+
+      <p>A <strong>straw man</strong> is the flimsiest version of what someone said &mdash; easy to knock down, which is why it&rsquo;s tempting, and a recognised logical fallacy, which is why it never actually persuades anybody. A <strong>steelman</strong> is the opposite discipline: you rebuild their case in its strongest form, out loud, better than they made it &mdash; and only then do you answer it.</p>
+      <p>Two things happen. They stop defending and start listening, because you have just proved you understood. And often you discover the strong version is stronger than you assumed, which is embarrassing but cheap &mdash; far cheaper than discovering it mid-argument in front of other people.</p>
+
+      <h3>The worked example from the class</h3>
+      <p><strong>Claim: money is the key to happiness.</strong> The straw man is &ldquo;so you think billionaires are happy?&rdquo; The steelman goes: almost everything that reliably makes life miserable &mdash; insecurity, debt, no time, bad housing, untreated illness, no options &mdash; is either caused by or cured by money. Below a threshold, money buys the removal of misery, which is most of what happiness turns out to be day to day. Money also buys time, and time is the raw material of everything people say matters more than money.</p>
+      <p>Now you can answer it, and your answer has to be better, because you just removed the cheap targets. That is the point.</p>
+
+      <h3>How to do it in four steps</h3>
+      <ol>
+        <li><strong>Restate</strong> their case in your own words, at its strongest.</li>
+        <li><strong>Add</strong> the argument they missed. One they&rsquo;d be glad to have.</li>
+        <li><strong>Check</strong>: &ldquo;Is that fair? Have I got it?&rdquo; Wait for the yes.</li>
+        <li><strong>Then</strong> respond &mdash; to that version, not the flimsy one.</li>
+      </ol>
+      <p>Opening line from my notes, worth keeping verbatim: <em>&ldquo;I might not agree that money is the key to happiness, but here&rsquo;s the strongest case for it&hellip;&rdquo;</em></p>
+
+      <p class="source"><span class="block-label">Where it comes from</span>&ldquo;Steelman&rdquo; is modern jargon; the discipline is old. <b>Aristotle, Rhetoric I.1</b> treats knowing the arguments on both sides as basic competence. Philosophers call the general rule the <span class="term">principle of charity</span>. <b>J. S. Mill, On Liberty (1859)</b> puts the cost of skipping it best: &ldquo;He who knows only his own side of the case, knows little of that.&rdquo;</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; defend the take you find dumbest</span>
+        <p>Pick the opinion that annoyed you most this week. Write <strong>150 words defending it</strong> as though you held it, with no irony and no sneaking a rebuttal into the last sentence. Then show it to someone who actually believes it and ask what you got wrong. Do it weekly; it is the single highest-leverage habit in this topic.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>The tactical pause</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">A former <b>Navy SEAL</b> instructor, and <b>Seneca</b></p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>Control emotion for tough moment/argument. Restraint: from former Navy SEAL. Emotional discipline: UNDER CONTROL. Dial back anger. Tactical pause, assess the situation. Anger &rarr; leads to bad decisions. SENECA, De Ira: when in doubt, continue to pause. Delay is the best remedy for anger.</p>
+
+      <p>Two sources, two thousand years apart, same instruction. The military version is the <strong>tactical pause</strong>: on contact, stop, breathe, re-assess, <em>then</em> act. Not freezing &mdash; a deliberate beat inserted between the stimulus and the response, because the response chosen in the first second is almost never the best one available.</p>
+      <p>Seneca&rsquo;s version is blunter. Anger presents itself as information &mdash; it feels like moral clarity, like the one moment you finally see the situation for what it is. It isn&rsquo;t. It&rsquo;s an accelerant, and the decisions taken under it are the ones you spend the following week undoing. His remedy is not to argue with the feeling but to <strong>outlast it</strong>: do nothing, say nothing, send nothing, and the heat drops by itself.</p>
+      <p>The line I wrote down as &ldquo;when in doubt, continue to pause&rdquo; is the operative one. The pause is not a fixed length. If you are still unsure whether you should send it, that uncertainty <em>is</em> the answer: keep waiting.</p>
+
+      <blockquote class="pull"><p>&ldquo;The greatest remedy for anger is delay.&rdquo;</p><cite>Seneca, On Anger II.29</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Seneca, De Ira (On Anger)</b> &mdash; three books written for his brother Novatus. <b>II.29</b>: <em>maximum remedium irae mora est</em>, the greatest remedy for anger is delay. Book III is a practical manual: postpone, walk, change the room, avoid people you know will provoke you when you&rsquo;re tired. He also recommends rehearsing provocations in advance (<b>Letters 18</b>, 91) so they arrive as expected rather than as an insult.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the pause protocol</span>
+        <ol>
+          <li><strong>Name it silently.</strong> &ldquo;This is anger.&rdquo; Naming it demotes it from clarity to weather.</li>
+          <li><strong>Four slow exhales.</strong> Longer out than in. This is the whole of the physiological trick.</li>
+          <li><strong>Ask:</strong> what will I wish I had done when I read this back in 24 hours?</li>
+          <li><strong>Still unsure? Keep pausing.</strong> Doubt is not a signal to send.</li>
+        </ol>
+        <p>Two standing rules that do most of the work: nothing important gets sent at night, and angry drafts get written with the recipient field <strong>empty</strong>.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; When you speak</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Say the thing</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who"><b>Marcus Aurelius</b></p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>Marcus Aurelius: speaking up and being honest. What needs to be said. Avoiding tough conversation. Speak true: with kindness, modestly, without hypocrisy.</p>
+
+      <p>Everything in Arc A is restraint, and restraint has a failure mode: it becomes an excuse. The pause turns into a week, the week turns into never, and the conversation you owed someone quietly becomes a fact about your relationship instead. Silence is not kindness. It is deferral, with interest.</p>
+      <p>So the counterweight, and it comes from the most powerful man in the world writing notes to himself about being braver: <strong>say what needs to be said.</strong> Marcus gives the whole delivery specification in a single clause &mdash; say what seems most just, but <strong>kindly, modestly, without hypocrisy</strong>. Three conditions, all doing real work:</p>
+      <ul>
+        <li><strong>Kindly</strong> &mdash; the goal is their improvement, not your relief at finally saying it.</li>
+        <li><strong>Modestly</strong> &mdash; you might be wrong (see move 2); say it as a view, not a verdict.</li>
+        <li><strong>Without hypocrisy</strong> &mdash; don&rsquo;t criticise what you also do, and don&rsquo;t perform a warmth you don&rsquo;t feel. People detect the performance and discount everything attached to it.</li>
+      </ul>
+
+      <blockquote class="pull"><p>&ldquo;Say what seems to you most just &mdash; only let it be with kindness, modesty, and without hypocrisy.&rdquo;</p><cite>Marcus Aurelius, Meditations 8.5</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Meditations 8.5.</b> The Greek runs <em>eumen&#333;s, aid&#275;mon&#333;s, anupokrit&#333;s</em> &mdash; kindly, modestly, unfeignedly. Translations vary (Hays gives &ldquo;sincerity&rdquo; for the third), but &ldquo;without hypocrisy&rdquo; is the literal one, and it is the version my notes caught.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the avoided-conversations list</span>
+        <p>Write down the <strong>three conversations you are currently avoiding</strong>. For each, write the one sentence that actually has to be said &mdash; the sentence you keep editing out. Then book the smallest of the three this week. The list is the point: avoidance survives on being vague, and it does not survive being written in a single sentence.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Run it through the filters</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Socratic filter, plus knowing your own default</p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>Cautious filter / impulsive filter. What&rsquo;s appropriate around giving/receiving feedback. Honesty w/o tact is cruelty. Not everybody rolls like I roll. How to give critical feedback like Socrates: TRUE, GOOD, USEFUL &mdash; contentious &middot; HONOURABLE &rarr; can be immoral. Be careful. Impact on the world or other people.</p>
+
+      <h3>First filter: which one are you?</h3>
+      <p>Two default settings, two different repairs.</p>
+      <ul>
+        <li>The <strong>cautious filter</strong> holds everything back. Nothing unkind ever gets said, and nothing useful does either. Repair: move 5 &mdash; ship the message.</li>
+        <li>The <strong>impulsive filter</strong> ships it raw, immediately, at full strength. Repair: move 4 &mdash; pause first.</li>
+      </ul>
+      <p>Then the line that generalises it: <strong>not everybody rolls like I roll.</strong> Your tolerance for bluntness is not a universal standard, it&rsquo;s a personal setting &mdash; probably inherited from a family or a trade where that was normal. Calibrate to the person receiving it, not to the person delivering it. And the hard version: <strong>honesty without tact is cruelty</strong>. &ldquo;I was just being honest&rdquo; is what people say when they enjoyed it.</p>
+
+      <h3>Second filter: true, good, useful &mdash; and honourable</h3>
+      <p>Before it leaves your mouth, four checks:</p>
+      <ol>
+        <li><strong>Is it true?</strong> Not &ldquo;is it how I feel&rdquo; &mdash; do I know it?</li>
+        <li><strong>Is it good/kind?</strong> Am I trying to help, or to land a hit?</li>
+        <li><strong>Is it useful?</strong> Can they act on it? If not, why are they hearing it?</li>
+        <li><strong>Is it honourable?</strong> What&rsquo;s the effect on them, and on everyone else it touches?</li>
+      </ol>
+      <p>The fourth is the one the class flagged, and it&rsquo;s the reason the checklist isn&rsquo;t a machine you can hide behind: something can be true, useful, and still immoral to say &mdash; true and useful in public when it should have been private, true and useful to a person already at the end of their rope. Contentious things can pass all three filters. Be careful anyway.</p>
+
+      <div class="flag">
+        <span class="block-label">Check this</span>
+        <p>The &ldquo;triple filter test&rdquo; is told as a Socrates anecdote, but it isn&rsquo;t in Plato or Xenophon &mdash; it&rsquo;s a modern parable retrofitted onto him. Fine as a checklist, not citable as Socrates. If the episode named a source for it, I missed it.</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the send gate</span>
+        <p>For one week, every piece of critical feedback (spoken or typed) gets the four checks first, and you name your own filter out loud: <em>&ldquo;my default here is impulsive, so I&rsquo;m waiting&rdquo;</em> or <em>&ldquo;my default here is cautious, so I&rsquo;m saying it.&rdquo;</em> Notice which one you use more &mdash; that&rsquo;s your setting, and it&rsquo;ll be the same next year unless you work on it.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Make it land</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">The three key skills for giving feedback</p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>Key skills for giving feedback: 1. Create a platform of emotional safety by separating the behaviour from the person. 2. Lead with vulnerability. 3. Break it up. Feedback &mdash; person who did the thing. Shutdown; polarize; micro-conversation. Not to humiliate, to allow people to get better.</p>
+
+      <p>Delivery is a separate skill from judgement. You can be entirely right and still have the conversation fail, because the other person stopped being able to hear you about ninety seconds in. Three moves stop that.</p>
+
+      <h3>1. Separate the behaviour from the person</h3>
+      <p>&ldquo;The third section lost the room&rdquo; is a fact about a deck. &ldquo;You&rsquo;re a bad presenter&rdquo; is a claim about an identity, and identities defend themselves. Same information, completely different conversation. Keep every sentence pointed at a thing that was done, at a specific time, that could be done differently next time. That is what the phrase <em>platform of emotional safety</em> means in practice &mdash; not softness, just a floor solid enough that the person can look at the problem without having to defend who they are.</p>
+
+      <h3>2. Lead with vulnerability</h3>
+      <p>Go first. Name your own version of the same failure before you name theirs &mdash; not as a rhetorical softener but because it&rsquo;s almost always true, and saying it converts the exchange from a prosecution into a shared problem. It also costs you the high ground, which is exactly the point: the high ground is what makes feedback feel like a sentence being handed down.</p>
+
+      <h3>3. Break it up</h3>
+      <p>One long confrontation containing everything you&rsquo;ve noticed since March is an ambush. Two things happen when people get too much at once: they <strong>shut down</strong> (nothing lands, they nod, nothing changes), or they <strong>polarise</strong> (they dig in and defend, and now the position is public and expensive to abandon). The fix is <strong>micro-conversations</strong>: small, frequent, low-stakes, close to the event. Thirty seconds after the meeting beats thirty minutes in a review six weeks later.</p>
+      <p>And the rule that sits underneath all three: feedback goes to <strong>the person who did the thing</strong>. Not to their manager, not to the group, not to the room afterwards. Anything else isn&rsquo;t feedback, it&rsquo;s complaint with an audience.</p>
+
+      <div class="script">
+        <div class="line"><span class="k bad">Ambush</span><q>We need to talk about your attitude in meetings.</q></div>
+        <div class="line"><span class="k good">Micro</span><q>Quick one &mdash; when you cut in on Dev just then, he stopped talking for the rest of it. Worth watching.</q></div>
+        <div class="line"><span class="k bad">Identity</span><q>You&rsquo;re disorganised.</q></div>
+        <div class="line"><span class="k good">Behaviour</span><q>The spec landed the morning of the build. I need it two days before &mdash; what would make that possible?</q></div>
+        <div class="line"><span class="k bad">High ground</span><q>You should have escalated this sooner.</q></div>
+        <div class="line"><span class="k good">Vulnerable</span><q>I sat on almost exactly this for a fortnight last year and it cost us. That&rsquo;s why I&rsquo;m raising it now rather than later.</q></div>
+      </div>
+
+      <p class="source"><span class="block-label">Where it comes from</span>The three skills are the class&rsquo;s framing, not an ancient text &mdash; but <b>Marcus Aurelius, Meditations 6.27 and 10.4</b> supply the intent: correct people by showing them, gently, what they&rsquo;ve missed, and if you can&rsquo;t, blame yourself rather than them. The aim is never humiliation; it is that the person gets better.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; one micro-conversation a day</span>
+        <p>Each day, deliver <strong>one</strong> piece of feedback within an hour of the thing happening. One sentence about one behaviour, to the person who did it. Keep a tally for two weeks. The habit you&rsquo;re building isn&rsquo;t courage, it&rsquo;s <em>speed</em> &mdash; feedback that&rsquo;s fast can be small, and feedback that&rsquo;s small doesn&rsquo;t need courage.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; When it comes back</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Love criticism more than praise</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who"><b>Marcus Aurelius</b>, on the receiving end</p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>Love criticism more than the praise. Criticism allows you to improve.</p>
+
+      <p>Praise tells you what people are willing to say to your face. Criticism tells you something you didn&rsquo;t already know, which is the only kind of information worth having. The instruction isn&rsquo;t to tolerate criticism gracefully &mdash; it&rsquo;s to <strong>prefer</strong> it, on the grounds that it is the only input that makes you better.</p>
+      <p>Marcus, who could have had a critic exiled, writes the opposite policy into his private notebook: if you can show me I&rsquo;m wrong, I&rsquo;ll change &mdash; what I&rsquo;m after is the truth, and nobody was ever harmed by it. Note the mechanism he names: what harms you is <em>persisting in the error</em>, not being told about it. The criticism is the rescue, not the injury.</p>
+      <p>The practical difficulty is that the first reaction &mdash; the flush of heat, the instant counter-argument assembling itself &mdash; arrives before any assessment of whether the criticism is true. So you need a rule that runs before the reaction does.</p>
+
+      <blockquote class="pull"><p>&ldquo;If anyone can refute me &mdash; show me I&rsquo;m making a mistake or looking at things from the wrong perspective &mdash; I&rsquo;ll gladly change. It&rsquo;s the truth I&rsquo;m after, and the truth never harmed anyone.&rdquo;</p><cite>Marcus Aurelius, Meditations 6.21 (trans. Hays)</cite></blockquote>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Meditations 6.21.</b> Compare <b>Meditations 5.3</b> &mdash; do what needs doing and don&rsquo;t mind being criticised for it &mdash; and the long list of debts in <b>Book 1</b>, several of them to people who corrected him.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the receiving rules</span>
+        <ol>
+          <li><strong>&ldquo;Thank you &mdash; tell me more.&rdquo;</strong> Before any defence. Buys you the whole criticism instead of the first sentence of it.</li>
+          <li><strong>Wait 24 hours</strong> before deciding whether it&rsquo;s true. The reaction and the assessment must not happen in the same hour.</li>
+          <li><strong>Ask once a month:</strong> &ldquo;what&rsquo;s the one thing you&rsquo;d change about how I work?&rdquo; Ask someone junior to you at least once a quarter &mdash; they see the most and volunteer the least.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Haters are a fixed cost</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">Online communication &mdash; <b>Seneca</b>, <b>Epictetus</b>, <b>Epicurus</b></p>
+
+      <p class="shorthand"><span class="block-label">In my notes</span>Online communication. Bad comment from troll &mdash; don&rsquo;t let it suck you in. Don&rsquo;t try to make everyone like you. The ancients dealt with haters, e.g. Seneca was hated: &ldquo;Seneca hypocrite, bad writer,&rdquo; etc. Haters exist. Epicurus on happiness. When you find yourself offended&hellip; if this person really knew me, they&rsquo;d say even worse.</p>
+
+      <p>Move 8 says take criticism seriously. Move 9 is the necessary limit on it: <strong>not every comment is criticism.</strong> A troll isn&rsquo;t offering you information, they&rsquo;re offering you an argument, and the argument is the product. Engaging is the payment. The skill is telling the two apart quickly and spending your attention only on the first.</p>
+      <p>Underneath it is a harder instruction: <strong>don&rsquo;t try to make everyone like you.</strong> It doesn&rsquo;t work, and the attempt is corrosive &mdash; a person optimising for universal approval has to become vague enough to be acceptable to everyone, which is the same as being nobody in particular. Say anything worth saying and you acquire detractors. They are a fixed cost of having a position.</p>
+
+      <h3>Seneca had haters too</h3>
+      <p>This is the part I wrote down because it was genuinely comforting. Seneca &mdash; the man whose essays we are still reading &mdash; was publicly accused of being a hypocrite in his own lifetime: preaching the simple life while amassing an immense fortune, writing about virtue while serving Nero. Tacitus records Publius Suillius Rufus attacking him by name over it. Quintilian sniffed at his prose style for a century afterwards. Two thousand years of &ldquo;Seneca: hypocrite, bad writer&rdquo; &mdash; and the letters are still in print, still useful this morning. The haters were not wrong about everything, and it did not matter.</p>
+
+      <blockquote class="pull"><p>&ldquo;He obviously doesn&rsquo;t know my other faults, or he wouldn&rsquo;t have mentioned only these.&rdquo;</p><cite>Epictetus, Enchiridion 33 &mdash; what to say when someone speaks badly of you</cite></blockquote>
+
+      <p>That&rsquo;s the line from my notes as &ldquo;if this person really knew me, they&rsquo;d say even worse,&rdquo; and it does two jobs at once. It defuses the insult by agreeing with a bigger version of it &mdash; you can&rsquo;t be wounded by an accusation you&rsquo;ve already outbid. And it&rsquo;s honest: you do have other faults. The person who knows that in advance is unblackmailable.</p>
+
+      <div class="flag">
+        <span class="block-label">Check this</span>
+        <p>My notes attribute this to <b>Epicurus</b>, but the line is <b>Epictetus</b>, Enchiridion 33 &mdash; different philosopher, different school, similar-looking name. Either the episode said Epictetus and I wrote the wrong one, or it genuinely said Epicurus and was wrong. Worth a re-watch.</p>
+        <p>Epicurus is still relevant here, just for a different point: his account of happiness doesn&rsquo;t include being well thought of by strangers. What it does include is friendship &mdash; &ldquo;of all the things wisdom provides&hellip; much the greatest is the possession of friendship&rdquo; (<em>Principal Doctrines</em> 27) &mdash; plus freedom from anxiety and from unnecessary desires. Approval from people you&rsquo;ll never meet is exactly the kind of unnecessary desire he means.</p>
+      </div>
+
+      <p class="source"><span class="block-label">Where it comes from</span><b>Tacitus, Annals 13.42</b> for Suillius&rsquo; attack on Seneca (including the jibe about a fortune of three hundred million sesterces). <b>Quintilian, Institutio Oratoria 10.1.125&ndash;131</b> for the style criticism. <b>Epictetus, Enchiridion 33</b> for the reply to slander. <b>Epicurus, Letter to Menoeceus</b> and <b>Principal Doctrines</b> for the account of happiness.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the troll protocol</span>
+        <ol>
+          <li><strong>No replies in the first hour.</strong> Same rule as anger, same reason.</li>
+          <li><strong>Ask: who is this?</strong> A colleague, a customer, someone with skin in the game &mdash; that&rsquo;s feedback, take it to move 8. A stranger enjoying themselves &mdash; that&rsquo;s weather.</li>
+          <li><strong>Take the grain, bin the vessel.</strong> If there&rsquo;s one true thing inside the abuse, extract it and discard the rest, including your feelings about the rest.</li>
+          <li><strong>Never argue in public with someone whose goal is the argument.</strong> You cannot win a game where their participation is the prize.</li>
+        </ol>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">practice &amp; revision</span></div>
+
+    <article class="move" id="practice">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>The practice week</h2>
+        <div class="movetools"><button class="btn listen" type="button" data-target="practice">&#9654; Listen</button></div>
+      </div>
+      <p>The claim at the top of the episode was that studying and practising this makes a real difference in real life &mdash; which only cashes out if the moves get used on live people. One move per day, smallest viable version.</p>
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Day</th><th>Move</th><th>The smallest version that counts</th></tr></thead>
+          <tbody>
+            <tr><td class="day">Mon</td><td>1 &mdash; Good faith</td><td>In one disagreement, answer the three questions before replying. Say out loud what they might know that you don&rsquo;t.</td></tr>
+            <tr><td class="day">Tue</td><td>2 &mdash; Questions</td><td>Ban counter-statements for a day. Every objection leaves your mouth as a question you don&rsquo;t know the answer to.</td></tr>
+            <tr><td class="day">Wed</td><td>3 &mdash; Steelman</td><td>150 words defending the opinion that annoyed you most this week. No irony, no rebuttal at the end.</td></tr>
+            <tr><td class="day">Thu</td><td>4 &mdash; Pause</td><td>One message you wanted to send immediately, held overnight. Compare the morning version with the one you drafted.</td></tr>
+            <tr><td class="day">Fri</td><td>5 &amp; 7 &mdash; Say it</td><td>Have the smallest of your three avoided conversations. Behaviour not identity, your version of it first.</td></tr>
+            <tr><td class="day">Sat</td><td>8 &mdash; Take it</td><td>Ask one person: &ldquo;what&rsquo;s the one thing you&rsquo;d change about how I work?&rdquo; Reply only with &ldquo;thank you &mdash; tell me more.&rdquo;</td></tr>
+            <tr><td class="day">Sun</td><td>9 &mdash; Ignore it</td><td>Find one thing that offended you online this week. Extract the grain if there is one. Don&rsquo;t reply either way.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the Socratic paradox, in one line?</span><span class="a">No one errs willingly &mdash; wrongdoing comes from ignorance, not malice. Plato, Protagoras / Meno. Practically: nobody is wrong on purpose.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The three questions before a disagreement?</span><span class="a">When have I been wrong about this? Why do I believe what I believe? Where can I see myself in them?</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What exactly was Socrates wiser about?</span><span class="a">His own ignorance &mdash; he didn&rsquo;t think he knew what he didn&rsquo;t know. Apology 21d.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why questions instead of statements?</span><span class="a">People don&rsquo;t like being shown they&rsquo;re wrong. Questions let them keep authorship of the change of mind.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Straw man vs steelman?</span><span class="a">Straw man: attack the weakest version &mdash; a fallacy, and it persuades nobody. Steelman: rebuild their case stronger than they made it, get agreement, then answer that.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Four steps of a steelman?</span><span class="a">Restate at its strongest &rarr; add the argument they missed &rarr; check &ldquo;is that fair?&rdquo; &rarr; then respond.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Seneca&rsquo;s remedy for anger?</span><span class="a">Delay. <em>Maximum remedium irae mora est</em> &mdash; On Anger II.29. And when in doubt about whether to send it, keep pausing.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Marcus&rsquo; three conditions on honesty?</span><span class="a">Kindly, modestly, without hypocrisy. Meditations 8.5.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Cautious filter or impulsive filter &mdash; what&rsquo;s the repair for each?</span><span class="a">Cautious: say it (move 5). Impulsive: pause first (move 4). And calibrate to them, not you &mdash; not everybody rolls like I roll.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The four filters before critical feedback?</span><span class="a">True, good/kind, useful &mdash; and honourable. The fourth exists because true + useful can still be cruel.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The three key skills for giving feedback?</span><span class="a">1. Emotional safety &mdash; separate behaviour from person. 2. Lead with vulnerability. 3. Break it up into micro-conversations.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What happens when you give too much feedback at once?</span><span class="a">They shut down, or they polarise and defend. Fix: small, frequent, close to the event.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why prefer criticism to praise?</span><span class="a">It&rsquo;s the only input that tells you something new. Meditations 6.21 &mdash; what harms you is persisting in the error, not being told about it.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The reply to someone who speaks badly of you?</span><span class="a">&ldquo;He doesn&rsquo;t know my other faults, or he&rsquo;d have mentioned those too.&rdquo; Epictetus, Enchiridion 33.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Which famous Stoic was called a hypocrite and a bad writer?</span><span class="a">Seneca &mdash; attacked by Suillius in his lifetime (Tacitus, Annals 13.42), criticised for his style by Quintilian. Still read.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Who does feedback go to?</span><span class="a">The person who did the thing. Anyone else and it&rsquo;s complaint with an audience.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check on a re-watch</h2>
+      </div>
+      <p>Things I couldn&rsquo;t resolve from the notes alone. Recorded honestly rather than papered over &mdash; a study page that quietly guesses is worse than one that says where the gaps are.</p>
+      <ul>
+        <li><strong>The Navy SEAL&rsquo;s name.</strong> My notes just say &ldquo;from former Navy SEAL.&rdquo; The restraint / tactical-pause segment is his; the attribution is missing.</li>
+        <li><strong>Epicurus or Epictetus?</strong> The &ldquo;they&rsquo;d say even worse if they knew me&rdquo; line is Epictetus (Enchiridion 33). My note says Epicurus. See move 9.</li>
+        <li><strong>&ldquo;True, good, useful&rdquo; as Socrates.</strong> Presented in the episode as Socratic; it&rsquo;s a modern parable, not in the dialogues. Did the class attribute it, or did I?</li>
+        <li><strong>&ldquo;They are doing their base.&rdquo;</strong> I&rsquo;ve read this as &ldquo;doing their best.&rdquo; Almost certainly right, but it&rsquo;s a guess.</li>
+        <li><strong>Exact class and episode title.</strong> Recorded here as <em>Using Ancient Wisdom to Solve Modern Problems</em>, topic 01, Communication. Confirm the numbering before the next episode so the folders stay in order.</li>
+        <li><strong>Jennifer Baker&rsquo;s segment.</strong> I caught the Socratic-method material but not her framing around it &mdash; worth a second pass, it was the densest part.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <p>Everything cited above, with the honest status of each. Standard section numbers, so any translation will get you to the same place.</p>
+      <h3>Primary</h3>
+      <ul>
+        <li><strong>Plato</strong> &mdash; <em>Apology</em> 21d (ignorance); <em>Protagoras</em> 345d&ndash;e and <em>Meno</em> 77b&ndash;78b (no one errs willingly).</li>
+        <li><strong>Marcus Aurelius, Meditations</strong> &mdash; 2.1 (expect difficult people, forgive them); 5.3 (do the thing, don&rsquo;t mind criticism); 6.21 (refute me and I&rsquo;ll gladly change); 6.27 &amp; 10.4 (correct gently, or blame yourself); 8.5 (kindly, modestly, without hypocrisy).</li>
+        <li><strong>Seneca</strong> &mdash; <em>De Ira</em> II.29 (delay is the greatest remedy), Book III (the practical measures); <em>Letters</em> 18 and 91 (rehearsing adversity in advance).</li>
+        <li><strong>Epictetus</strong> &mdash; <em>Enchiridion</em> 33 (the reply to slander).</li>
+        <li><strong>Epicurus</strong> &mdash; <em>Letter to Menoeceus</em>; <em>Principal Doctrines</em> 27 (friendship as the greatest good).</li>
+        <li><strong>Tacitus</strong> &mdash; <em>Annals</em> 13.42 (Suillius&rsquo; attack on Seneca). <strong>Quintilian</strong> &mdash; <em>Institutio Oratoria</em> 10.1.125&ndash;131 (on Seneca&rsquo;s style).</li>
+        <li><strong>Aristotle</strong> &mdash; <em>Rhetoric</em> I.1. <strong>J. S. Mill</strong> &mdash; <em>On Liberty</em> (1859), ch. 2.</li>
+      </ul>
+      <h3>Not ancient, though it gets presented that way</h3>
+      <ul>
+        <li><strong>The &ldquo;triple filter test&rdquo;</strong> (true / good / useful) &mdash; a modern anecdote attached to Socrates. No classical source.</li>
+        <li><strong>&ldquo;Steelman&rdquo;</strong> &mdash; recent coinage. The underlying discipline is Aristotle&rsquo;s and Mill&rsquo;s.</li>
+        <li><strong>&ldquo;I know that I know nothing&rdquo;</strong> &mdash; a paraphrase of Apology 21d, not a quotation.</li>
+        <li><strong>&ldquo;Honesty without tact is cruelty&rdquo;</strong> &mdash; a maxim in wide circulation with no reliable attribution. True anyway.</li>
+        <li><strong>The three feedback skills</strong> and the <strong>cautious/impulsive filter</strong> &mdash; the class&rsquo;s own framing, modern.</li>
+      </ul>
+
+      <details class="raw">
+        <summary>My original notes, as typed</summary>
+        <pre>Communication
+Several different expert
+Study/practice and this made real different in real life.
+it doesn't matter how you are (young/old, etc)
+
+Using ancient wisdom to solve Modern Problems (Ryan Holiday)
+
+Communication
+Explaining something the right way
+  how to deal with people who disagree with them, many others
+  - Socrates: No one is wrong on purpose
+  Based on what you knew you thought you were right, and then you get more
+  information. then you think differently
+  they are doing their base [best?] and can come to you in good faith
+  your first instinct is important. We need to find common ground.
+  see your self in the other person
+  When have I been wrong
+  Why do I believe what I believe
+
+Jennifer Baker
+Knowledge of his own ignorance
+Socrates method. And ultimately knowing that you can be wrong, questioning
+what is thought to be right - that is S. method
+People don't like to be shown they are wrong
+
+"Steelman" argument. A debate technique that involves presenting an opponent's
+argument in its strongest form, even if that's not how they presented it.
+e.g. Claim: Money is the key to happiness; argue as if you believe it's true
+SM: I might not agree that money is the key to...
+Steelmanning vs straw man -> logical fallacy and attacking that.
+Steel man -> better engagement
+
+Control emotion for tough moment/argument
+Restraint: "From former Navy SEAL" -
+Emotional discipline: UNDER CONTROL.
+Dial back anger. Tactical pause, assess the situation
+Anger -> leads to bad decisions.
+SENECA: De Ira: when in doubt, continue to pause
+Delay is the best remedy 4 anger.
+Speak true: with kindness, modestly [?] or w/o hypocrisy.
+
+Marcus Aurelius:
+Speaking up and being honest / what needs to be said / avoiding tough conversation
+-> love criticism more than the praise
+Criticism allows you to improve.
+Not to humiliate, to allow people to get better.
+
+* Cautious filter / Impulsive filter
+what's appropriate around giving/receiving feedback.
+Honesty w/o tact is cruelty.
+Not everybody rolls like I roll.
+How to give critical feedback like Socrates:
+TRUE, GOOD, USEFUL: contentious - HONORABLE
+  can be immoral. Be careful.
+impact on the world or other people
+
+- Feedback - person who did the thing
+Leading w/ vulnerabilities
+Shutdown; polarize; micro-conversation
+
+Key skills for giving feedback
+1 Create a platform of emotional safety by separating the behaviour from the person
+2 Lead w/ vulnerability
+3 Break it up
+
+Online communication.
+Bad comment from troll, DON'T suck ya in [?]
+Don't try to make everyone like you.
+The ancients deal w/ haters, e.g. Seneca was hated.
+"Seneca hypocrite, bad writer," etc.
+Haters exist
+Epicurus - on happiness
+When you find yourself offended...
+If this person really knew me, they'll say even worse.</pre>
+      </details>
+
+      <p class="endnote">Topic 01 of <em>Using Ancient Wisdom to Solve Modern Problems</em>. Notes taken 20 September 2026, unpacked the same day. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "speaktrue.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "speaktrue.voice.v1", RTK = "speaktrue.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|Where it comes from|Check this|Drill|Tap to reveal)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body><!--wrap-->
+</html><!--wrap-->
