@@ -38,6 +38,12 @@ Grouped the same way as the contents page, newest first within each group.
 | 14 | [Lessons from the CIA](14-lessons-from-the-cia/index.html) — trust and listening, reading people against their baseline, owning a role, bad news upwards, the Iraq biases, confidence levels, and 95/80/60 at Abbottabad. | MasterClass, Michael Morell, Dawn Meyerriecks and Brian Carbaugh |
 | 06 | [Reading hard books](06-reading-hard-books/index.html) — active reading, the four levels, the nine rules of analytical reading, and making books come to terms with you. | Video summary of Mortimer J. Adler, *How to Read a Book* |
 
+### Science & technology
+
+| # | Topic | Source |
+| --- | --- | --- |
+| 17 | [Quantum computing](17-quantum-computing/index.html) — qubits as amplitudes, measurement, interference as the engine, entanglement without messages, Bell's test, what Grover and Shor really buy, and why noise is the enemy. With working labs. | Book — Pantheon Space Academy, *Quantum Computing Explained for Beginners* (2023), chapter 1 |
+
 ### Money
 
 | # | Topic | Source |
@@ -49,9 +55,9 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 17-<topic-slug>
-# build 17-<topic-slug>/index.html
-# then add its row to the right category in index.html
+mkdir 18-<topic-slug>
+# build 18-<topic-slug>/index.html, with the numbered squares under its top bar
+# then add its row to the right category in index.html, and its square to the strip
 ```
 
 Where a topic quotes a number, recompute it rather than repeating it, and chase

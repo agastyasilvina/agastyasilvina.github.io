@@ -1,0 +1,1895 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Wrong Answers Cancel</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+
+/* ---------- formulas + answers ---------- */
+.formula{
+  font-family:var(--f-mono); font-size:1.02rem; text-align:center; color:var(--ink);
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:2px;
+  padding:.75rem .9rem; overflow-x:auto; white-space:nowrap;
+}
+details.ans{ margin-top:.8rem; border-top:1px dashed var(--line); padding-top:.55rem; }
+details.ans summary{
+  cursor:pointer; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink);
+}
+details.ans p{ margin-block:.55rem 0; font-size:.95rem; color:var(--muted); }
+table.week tr.tot td{ background:var(--surface); font-family:var(--f-mono); font-size:.82rem; color:var(--ink); }
+table.week tr.tot td strong{ font-weight:700; color:var(--accent-ink); }
+table.week.map td.day a{ color:var(--bronze); }
+table.week.route td{ font-family:var(--f-mono); font-size:.84rem; }
+.rgroup{ margin:.3rem 0 0; font-family:var(--f-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); }
+
+/* ---------- labs ---------- */
+.lab{ margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:1rem 1.1rem 1.1rem; }
+.lab .block-label{ color:var(--accent-ink); }
+.lab-grid{ display:grid; grid-template-columns:minmax(0,12.5rem) minmax(0,1fr); gap:1.1rem; align-items:center; margin-top:.4rem; }
+@media (max-width:560px){ .lab-grid{ grid-template-columns:1fr; } }
+.lab .keys{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.9rem; }
+.lab .keys .gate{ min-width:2.6rem; font-weight:700; font-size:.8rem; }
+.lab .say{ margin:.8rem 0 0; font-size:.92rem; line-height:1.5; color:var(--muted); min-height:2.8em; }
+.dial{ width:100%; max-width:12.5rem; height:auto; display:block; margin-inline:auto; overflow:visible; }
+.dial .ring{ fill:none; stroke:var(--line); stroke-width:.014; }
+.dial .axis{ stroke:var(--muted); stroke-width:.01; opacity:.55; }
+.dial .diag{ stroke:var(--line); stroke-width:.01; stroke-dasharray:.04 .04; }
+.dial .proj{ stroke:var(--bronze); stroke-width:.012; stroke-dasharray:.03 .03; }
+.dial .arrow{ stroke:var(--accent); stroke-width:.035; stroke-linecap:round; }
+.dial .tip{ fill:var(--accent); }
+.dial text{ font-family:var(--f-mono); font-size:.13px; fill:var(--muted); }
+.dial text.dim{ opacity:.65; }
+.readout{ display:flex; flex-direction:column; gap:.4rem; font-family:var(--f-mono); font-size:.8rem; }
+.rrow{ display:grid; grid-template-columns:3.3rem 4rem minmax(0,1fr) 3.3rem; gap:.5rem; align-items:center; }
+.rrow.wide{ grid-template-columns:3.6rem minmax(0,1fr) 3.3rem; }
+.rrow .k{ color:var(--ink); }
+.rrow .amp{ color:var(--muted); text-align:right; }
+.rrow .pc{ color:var(--ink); text-align:right; }
+.rrow.rhead{ font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:.2rem; }
+.rrow.rhead span:nth-child(2){ text-align:right; }
+.rrow.rhead span:last-child{ text-align:right; }
+.bar{ position:relative; display:block; height:.6rem; background:var(--line-soft); border-radius:1px; overflow:hidden; }
+.bar i{ position:absolute; left:0; top:0; bottom:0; width:0; background:var(--accent); transition:width .25s ease; }
+.bar.m75::after{ content:""; position:absolute; top:0; bottom:0; left:75%; width:2px; background:var(--flag); }
+.lab .sl{
+  display:flex; flex-direction:column; gap:.3rem; margin-top:.9rem;
+  font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.lab input[type="range"]{ width:100%; accent-color:var(--accent); margin:0; }
+.hist{ margin:.8rem 0 0; font-family:var(--f-mono); font-size:.74rem; color:var(--bronze); overflow-wrap:anywhere; }
+.shots{ margin-top:.8rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); }
+.shots:empty{ display:none; }
+.shots b{ color:var(--ink); font-weight:700; }
+.dots{ display:grid; grid-template-columns:repeat(25,minmax(0,1fr)); gap:2px; margin-top:.45rem; max-width:17rem; }
+.dots i{ display:block; aspect-ratio:1; background:var(--line); border-radius:1px; }
+.dots i.d1{ background:var(--accent); }
+.prow{ display:grid; grid-template-columns:3.2rem minmax(0,1fr); gap:.6rem; align-items:center; margin-top:.7rem; }
+.prow .side{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.bits{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:3px; min-height:1.5rem; max-width:20rem; }
+.bits b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.bits b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.bits b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.gctl{ display:flex; flex-wrap:wrap; gap:.2rem 1.2rem; align-items:flex-end; }
+.gctl .sl{ margin-top:.5rem; }
+.gctl .grow{ flex:1 1 12rem; }
+.gplot{ width:100%; height:auto; display:block; margin-top:.9rem; background:var(--surface); border:1px solid var(--line-soft); border-radius:2px; }
+.gplot .guide{ stroke:var(--line); stroke-width:1; stroke-dasharray:3 3; }
+.gplot .curve{ fill:none; stroke:var(--accent); stroke-width:1.6; stroke-linejoin:round; }
+.gplot .vline{ stroke:var(--flag); stroke-width:1; opacity:.6; }
+.gplot .now{ fill:var(--flag); }
+.gplot text{ font-family:var(--f-mono); font-size:8px; fill:var(--muted); }
+.gread{ margin:.7rem 0 0; font-family:var(--f-mono); font-size:.78rem; line-height:1.6; color:var(--muted); }
+.gread b{ color:var(--ink); font-weight:700; }
+
+/* ---------- jump strip: numbered squares for phones and tablets, where the rail is hidden ---------- */
+.jump{ border-top:1px solid var(--line-soft); }
+.jump-in{
+  position:relative; display:flex; align-items:center; gap:.3rem; overflow-x:auto; padding-block:.4rem;
+  scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+          mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.jump-in::-webkit-scrollbar{ display:none; }
+.jump a{
+  flex:none; min-width:2.1rem; height:2.1rem; padding-inline:.35rem; display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.76rem; line-height:1; color:var(--muted); text-decoration:none;
+  background:var(--card); border:1px solid var(--line); border-radius:2px;
+}
+.jump a:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.jump a.home{ font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); }
+.jump a.done{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.jump a.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.jump .jsep{ flex:none; width:1px; height:1.3rem; background:var(--line); margin-inline:.25rem; }
+@media (min-width:1080px){ .jump{ display:none; } }
+@media (max-width:1079px){ .move{ scroll-margin-top:7.8rem; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Wrong Answers Cancel</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 17 &middot; An introduction to quantum computing</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+  <nav class="jump" aria-label="Jump to a section">
+    <div class="wrap jump-in">
+      <a class="home" href="../index.html" aria-label="All topics">All</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m1" aria-label="1. Two amplitudes">1</a>
+      <a href="#m2" aria-label="2. Measurement">2</a>
+      <a href="#m3" aria-label="3. Gates">3</a>
+      <a href="#m4" aria-label="4. Interference">4</a>
+      <a href="#m5" aria-label="5. Uncertainty">5</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m6" aria-label="6. Two to the n">6</a>
+      <a href="#m7" aria-label="7. Entanglement">7</a>
+      <a href="#m8" aria-label="8. Bell’s test">8</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m9" aria-label="9. Measuring speed">9</a>
+      <a href="#m10" aria-label="10. Grover">10</a>
+      <a href="#m11" aria-label="11. Shor">11</a>
+      <a href="#m12" aria-label="12. Different, not better">12</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m13" aria-label="13. Levels and spin">13</a>
+      <a href="#m14" aria-label="14. Noise">14</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#map" aria-label="Chapter map">&#8801;</a>
+      <a href="#quiz" aria-label="Self&#8209;quiz">?</a>
+      <a href="#verify" aria-label="To check">!</a>
+      <a href="#mine" aria-label="What’s mine">&#9679;</a>
+      <a href="#sources" aria-label="Sources">&sect;</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 17 &middot; An introduction to quantum computing</p>
+    <h1>Not every answer at once — <em>the wrong ones cancel.</em></h1>
+    <p class="standfirst">Quantum computing from the ground up, in the order the ideas depend on each other. The chapter behind these notes has the right ingredients — superposition, measurement, interference, entanglement — but it circles through them twice, wraps each one in a new analogy, and repeats the most common mistake about the subject: that a quantum computer tries every answer at once. It doesn’t. It arranges for the wrong answers to cancel out. Nothing here needs more maths than squaring a number, and there’s a working qubit to play with.</p>
+    <div class="metarow">
+      <span><b>14 moves</b> in four arcs</span>
+      <span>Book — <b>Quantum Computing Explained for Beginners</b>, ch.&nbsp;1</span>
+      <span>Notes taken <b>26 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The fourteen moves">
+    <p class="arclabel">One qubit</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> Two amplitudes</a></li>
+      <li><a href="#m2"><span class="n">2</span> Measurement</a></li>
+      <li><a href="#m3"><span class="n">3</span> Gates</a></li>
+      <li><a href="#m4"><span class="n">4</span> Interference</a></li>
+      <li><a href="#m5"><span class="n">5</span> Uncertainty</a></li>
+    </ol>
+    <p class="arclabel">Many qubits</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> Two to the n</a></li>
+      <li><a href="#m7"><span class="n">7</span> Entanglement</a></li>
+      <li><a href="#m8"><span class="n">8</span> Bell’s test</a></li>
+    </ol>
+    <p class="arclabel">What it buys you</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> Measuring speed</a></li>
+      <li><a href="#m10"><span class="n">10</span> Grover</a></li>
+      <li><a href="#m11"><span class="n">11</span> Shor</a></li>
+      <li><a href="#m12"><span class="n">12</span> Different, not better</a></li>
+    </ol>
+    <p class="arclabel">Real qubits</p>
+    <ol>
+      <li><a href="#m13"><span class="n">13</span> Levels and spin</a></li>
+      <li><a href="#m14"><span class="n">14</span> Noise</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#map"><span class="n">&#8801;</span> Chapter map</a></li>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What’s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;14 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top. The labs are skipped.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">The chapter reads like a guided tour that keeps doubling back: wave–particle duality twice, energy levels twice, measurement twice, and a fresh analogy every few minutes — a quantum continent, a jukebox, a chameleon, a forest where every tree shows all four seasons at once. The ideas are the right ones. The order isn’t, and a few of the analogies teach something false. So this page starts again from the bottom: one qubit, then several, then what they’re good for, then what a qubit physically is. Each move leans on the one before, so read them in order the first time. To find where a part of the chapter went, use the <a href="#map">chapter map</a> at the end. (Topic <a href="../06-reading-hard-books/index.html">06</a> would call this outlining a book before arguing with it.)</p>
+
+    <div class="arc"><h2>Arc A &middot; One qubit</h2><span class="rule"></span><span class="cnt">5 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>A qubit is two amplitudes</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">Superposition, without the cat</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>A classical bit is 0 or 1, like a light switch. A qubit can be 0, 1, or both at once until it’s measured. The chapter’s pictures are Schrödinger’s cat, alive and dead in a sealed box until someone looks, and a spinning top that can turn clockwise, anticlockwise “or any state in between”. Superposition, it says, lets a quantum computer process a massive amount of data simultaneously.</p>
+
+      <p>Start with the thing being replaced. A classical bit has two possible states and is always in exactly one of them. Everything your laptop does is long strings of these, pushed through logic gates.</p>
+      <p>A qubit also has two states you can read out, written |0⟩ and |1⟩ — the bracket is just a label meaning “the state called 0”. But between measurements a qubit isn’t described by which one it’s in. It’s described by <strong>two numbers called amplitudes</strong>, one attached to each outcome:</p>
+      <p class="formula">state = α|0⟩ + β|1⟩</p>
+      <p>That combination <em>is</em> superposition. Two rules come with it:</p>
+      <ul>
+        <li><strong>Amplitudes can be negative.</strong> In full generality they’re complex numbers, which adds a phase, but plain positive and negative numbers are enough to see every idea on this page.</li>
+        <li><strong>Their squares add up to 1:</strong> α<sup>2</sup> + β<sup>2</sup> = 1. The next move explains why.</li>
+      </ul>
+      <p>Because the squares add up to 1, you can draw a qubit as an arrow of length one: α is how far it points towards 0 (to the right), β how far towards 1 (upwards). |0⟩ points straight right, |1⟩ straight up, and the arrow halfway between, with α = β ≈ 0.707, is the equal superposition, called |+⟩. Every lab on this page uses this picture.</p>
+
+      <h3>What a qubit is not</h3>
+      <ul>
+        <li><strong>Not a number between 0 and 1.</strong> A dimmer at 50% is one definite setting. A qubit in |+⟩ reads 0 or 1, never 0.5. The chapter’s top that spins “in between” invites exactly this mistake.</li>
+        <li><strong>Not secretly 0 or 1, with you just not knowing which.</strong> That’s a coin under a cup, and a coin under a cup can’t do what move 4 shows a qubit doing.</li>
+        <li><strong>Not “both at once” in any way you can use directly.</strong> You can never read both. Move 6 is about what that costs.</li>
+      </ul>
+
+      <p class="flag"><span class="block-label">Watch for</span>Schrödinger’s cat was a complaint, not an explanation. Schrödinger dreamed it up in 1935 to show how absurd it seemed to apply superposition to something the size of a cat. It works as a picture of a superposition as long as you remember its author was objecting. And a real cat never gets into one: it’s constantly bumping into air and light, which destroys superpositions almost instantly (move 14).</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — which are real qubit states?</span>
+        <p>Check the squares. (a) α = 0.6, β = 0.8. (b) α = 0.5, β = 0.5. (c) α = 0.707, β = −0.707. (d) α = 0, β = −1.</p>
+        <details class="ans"><summary>Answers</summary>
+          <p>(a) Yes: 0.36 + 0.64 = 1. (b) No: 0.25 + 0.25 = 0.5, so the chances would only add up to a half. (c) Yes: that’s |−⟩, the equal superposition with a minus sign on the 1 part. (d) Yes: it’s |1⟩ with a minus sign in front, which move 3 shows is physically the same as |1⟩.</p>
+        </details>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>Measurement gives one bit</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">The Born rule, and what “collapse” means in practice</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Measuring makes the qubit “collapse” to 0 or 1, and nobody can predict which. The Born rule, named after Max Born, says the probability of an outcome is the square of the wave function’s size there — “it’s a power of two”. Measurements work through observables, which the chapter pictures as the tools of a Swiss Army knife, one per property; eigenstates and eigenvalues are the states and readings that belong to a measurement, like the clear notes of a plucked guitar string. An electron’s spin might be 70% likely to be up and 30% down.</p>
+
+      <p>The <strong>Born rule</strong> is the bridge from amplitudes to anything you can see: <em>the chance of an outcome is its amplitude squared.</em> Max Born proposed it in 1926, and it’s the reason the squares have to add up to 1 — they’re probabilities, and something has to happen.</p>
+
+      <div class="figs">
+        <div class="fig"><b>50%</b><span>α = 0.707 → chance of 0</span></div>
+        <div class="fig"><b>36 / 64</b><span>α = 0.6, β = 0.8</span></div>
+        <div class="fig"><b>36%</b><span>α = −0.6: the sign squares away</span></div>
+        <div class="fig"><b>70%</b><span>β = 0.837 → chance of 1</span></div>
+      </div>
+
+      <p>Three things happen when you measure, and all three shape how quantum computers are used:</p>
+      <ol>
+        <li><strong>You get one bit.</strong> A 0 or a 1, at random, with the Born-rule chances. Never the amplitudes themselves.</li>
+        <li><strong>The state becomes what you saw.</strong> Read 1 and the qubit is now |1⟩; read it again and you get 1 again, every time. The amplitudes it had before are gone. In practice that’s all “collapse” means.</li>
+        <li><strong>One run tells you almost nothing.</strong> To learn that a state is 70/30 you prepare it again and again and count, so quantum programs are run thousands of times — each run is called a shot. You can’t shortcut this by copying the qubit first: an unknown quantum state can’t be copied (the no-cloning theorem, 1982).</li>
+      </ol>
+      <p>Physicists still argue about what collapse <em>is</em>; the rival interpretations of quantum mechanics are rival answers. Nobody argues about the rule, and the rule is all a quantum computer needs.</p>
+
+      <div class="lab qlab" data-mode="z">
+        <span class="block-label">Try it — the Born rule</span>
+        <div class="lab-grid">
+          <div class="dialbox"></div>
+          <div>
+            <div class="readout">
+              <div class="rrow rhead"><span>Reads</span><span>Amplitude</span><span></span><span>Chance</span></div>
+              <div class="rrow" data-k="0"><span class="k">0</span><span class="amp">+1.000</span><span class="bar"><i></i></span><span class="pc">100%</span></div>
+              <div class="rrow" data-k="1"><span class="k">1</span><span class="amp">0</span><span class="bar"><i></i></span><span class="pc">0%</span></div>
+            </div>
+            <label class="sl">Turn the arrow <input class="ang" type="range" min="-180" max="180" step="1" value="0"></label>
+          </div>
+        </div>
+        <div class="keys">
+          <button class="btn" type="button" data-act="m1">Measure once</button>
+          <button class="btn" type="button" data-act="m100">Measure 100 fresh copies</button>
+        </div>
+        <div class="shots"></div>
+        <p class="say" aria-live="polite">Turn the arrow, then measure. The chances are the amplitudes squared.</p>
+      </div>
+
+      <h3>The vocabulary: observables and eigen-things</h3>
+      <p>The chapter spends two sections on this. For a qubit it fits in three lines:</p>
+      <ul>
+        <li>An <strong>observable</strong> is a question you can put to the system: “is it 0 or 1?”, or “which way does this electron’s spin point along the magnet?”</li>
+        <li>Its <strong>eigenstates</strong> are the states that answer it with certainty. For “0 or 1?”, those are |0⟩ and |1⟩.</li>
+        <li>Its <strong>eigenvalues</strong> are the possible answers — the numbers on the dial.</li>
+      </ul>
+      <p><em>Eigen</em> is German for “own” or “characteristic”: each question has its own set of states. Every other state is a combination of them and gets a random answer, with Born-rule chances. The chapter’s guitar string is a good analogy: the string’s pure notes are its eigenstates, their pitches are the eigenvalues, and a real pluck sounds several at once.</p>
+
+      <div class="flag">
+        <p><span class="block-label">Watch for</span>Nobody has to be watching. The chapter says quantum things stay in superposition until “a conscious observer” measures them. No consciousness is needed: any interaction that leaves a record of the outcome anywhere — in a detector, a stray photon, a jostled atom — does it. That’s exactly why qubits are so hard to protect (move 14).</p>
+        <p>Two small slips in the spin example. The outcomes up and down aren’t “the observables”: the observable is the spin measurement, up and down are its eigenstates, and the two readings are its eigenvalues. And a superposed electron isn’t 70% likely to <em>be</em> up; it’s 70% likely to be <em>found</em> up. Move 8 explains why physicists don’t think it was secretly up all along.</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill — Born-rule practice</span>
+        <p>Give the chance of reading 1. (a) α = 0.8, β = 0.6. (b) α = 0.6, β = −0.8. (c) α = β = 0.707. Then (d): what amplitudes read 1 nine times out of ten? Check (d) with the arrow.</p>
+        <details class="ans"><summary>Answers</summary>
+          <p>(a) 36%. (b) 64% — the minus sign makes no difference to a measurement made now. (c) 50%. (d) β<sup>2</sup> = 0.9, so β ≈ 0.949 and α ≈ 0.316, either of which can be negative: an arrow about 72° up from the 0 direction.</p>
+        </details>
+      </div>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Gates move the arrow</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">Operators and gates, made concrete</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Quantum operators are like recalibrating a compass: they transform one quantum state into another. Quantum gates are like routes through the terrain: a qubit passing through one undergoes a distinct change, and scientists guide qubits through sequences of gates towards a desired state or an algorithm’s answer.</p>
+
+      <p>A <strong>gate</strong> is an operation that changes the amplitudes; on the circle, it moves the arrow. Gates obey one strict rule: the arrow must keep length one, because the chances must still add up to 1. So every gate is a rotation or a reflection, and every gate can be undone. (The textbook word is <em>unitary</em>; the chapter’s “operators” are the maths that describes them.)</p>
+      <p>Three single-qubit gates cover everything on this page:</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Gate</th><th>What it does</th><th>On the circle</th></tr></thead>
+          <tbody>
+            <tr><td class="day">X</td><td>Swaps the amplitudes: α|0⟩ + β|1⟩ becomes β|0⟩ + α|1⟩. The quantum NOT.</td><td>Reflect in the 45° line</td></tr>
+            <tr><td class="day">Z</td><td>Flips the sign of the 1 amplitude: β becomes −β.</td><td>Reflect in the horizontal axis</td></tr>
+            <tr><td class="day">H</td><td>Mixes them: the new α is (α + β) ÷ √2, the new β is (α − β) ÷ √2. Named after Hadamard.</td><td>Reflect in the 22.5° line</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>H is the workhorse. From |0⟩ it makes the equal superposition |+⟩; from |1⟩ it makes |−⟩, the same superposition with a minus sign on the 1 part.</p>
+      <p>Z teaches the subtlest lesson on the page. Apply it to |1⟩ and you get −|1⟩, which reads 1 every time, exactly like |1⟩: a minus sign on the <em>whole</em> state changes nothing you could ever measure. Apply it to |+⟩ and you get |−⟩. Measured straight away that’s still 50/50, but it’s a genuinely different state, because the minus sign sits <em>between</em> the parts. A relative sign is invisible to a measurement made now and decisive for what the next gate does. Move 4 is about exactly that.</p>
+      <p>A quantum program — a <strong>circuit</strong> — always has the same shape: start every qubit at |0⟩, apply a sequence of gates, measure, and repeat the whole run many times to collect the statistics.</p>
+
+      <div class="lab qlab" data-mode="gates">
+        <span class="block-label">Try it — gates</span>
+        <div class="lab-grid">
+          <div class="dialbox"></div>
+          <div>
+            <div class="readout">
+              <div class="rrow rhead"><span>Reads</span><span>Amplitude</span><span></span><span>Chance</span></div>
+              <div class="rrow" data-k="0"><span class="k">0</span><span class="amp">+1.000</span><span class="bar"><i></i></span><span class="pc">100%</span></div>
+              <div class="rrow" data-k="1"><span class="k">1</span><span class="amp">0</span><span class="bar"><i></i></span><span class="pc">0%</span></div>
+            </div>
+            <p class="hist"></p>
+          </div>
+        </div>
+        <div class="keys">
+          <button class="btn gate" type="button" data-act="X">X</button>
+          <button class="btn gate" type="button" data-act="Z">Z</button>
+          <button class="btn gate" type="button" data-act="H">H</button>
+          <button class="btn" type="button" data-act="m1">Measure once</button>
+          <button class="btn" type="button" data-act="m100">Measure 100 fresh copies</button>
+          <button class="btn" type="button" data-act="reset">Reset</button>
+        </div>
+        <div class="shots"></div>
+        <p class="say" aria-live="polite">The qubit starts at |0⟩. Press a gate.</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill — four experiments</span>
+        <p>Run each from Reset, then press Measure 100 fresh copies. Write down what you get before reading move 4, which explains all four.</p>
+        <ol>
+          <li>H.</li>
+          <li>H, H.</li>
+          <li>H, Z, H.</li>
+          <li>H, Measure once, H.</li>
+        </ol>
+      </div>
+
+      <p class="flag"><span class="block-label">Watch for</span>Nothing is read out between gates. The chapter’s picture of a qubit guided along a route suggests little checks along the way. There aren’t any: the amplitudes are transformed silently, and only the final measurement produces an outcome. A measurement in the middle makes a different circuit, with a different result — experiment 4.</p>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Interference is the engine</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">The idea the chapter mentions once and should have led with</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Wave–particle duality: fired at two slits, electrons build up an interference pattern like waves, yet each one lands as a single dot like a particle. Quantum algorithms use interference to amplify correct solutions and diminish wrong ones, and gates cause constructive or destructive interference, like waves merging or diverging in an ocean. The chapter also credits duality with letting a qubit be both 0 and 1 until it’s measured.</p>
+
+      <p>Set experiment 2 beside a coin. Flip a fair coin: 50/50. Flip it again without looking: still 50/50. Randomness added to randomness stays random. Now the qubit: H makes a 50/50 state — and a second H, which on its own also makes 50/50 states, brings the qubit back to 0 <em>with certainty</em>. Two randomising steps, and the randomness vanished.</p>
+      <p>Probabilities can’t do that. They’re never negative, so they can only pile up. Amplitudes can, because they can be negative, so they can cancel. Follow the amplitudes from |0⟩ through H and H as routes the qubit could take:</p>
+
+      <div class="tablewrap">
+        <table class="week route">
+          <thead><tr><th>Route</th><th>First H</th><th>Second H</th><th>Amplitude along the route</th></tr></thead>
+          <tbody>
+            <tr><td class="day">0 → 0 → 0</td><td>+0.707</td><td>+0.707</td><td>+0.5</td></tr>
+            <tr><td class="day">0 → 1 → 0</td><td>+0.707</td><td>+0.707</td><td>+0.5</td></tr>
+            <tr class="tot"><td>Total for 0</td><td></td><td></td><td><strong>1, so a 100% chance</strong></td></tr>
+            <tr><td class="day">0 → 0 → 1</td><td>+0.707</td><td>+0.707</td><td>+0.5</td></tr>
+            <tr><td class="day">0 → 1 → 1</td><td>+0.707</td><td>−0.707</td><td>−0.5</td></tr>
+            <tr class="tot"><td>Total for 1</td><td></td><td></td><td><strong>0, so no chance at all</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The −0.707 is H’s single minus sign, on the step from 1 to 1. Multiply along each route, add up the routes that end at the same outcome, and only <em>then</em> square. The two routes to 1 are equal and opposite and cancel — <strong>destructive interference</strong> — while the two routes to 0 reinforce. That’s the whole trick. It’s the only reason a quantum computer could ever beat a classical one at anything.</p>
+      <p>The other experiments now make sense:</p>
+      <ul>
+        <li><strong>H, Z, H</strong> reads 1 with certainty. Z put a minus sign on the middle 1, so now it’s the routes to 0 that cancel.</li>
+        <li><strong>H, measure, H</strong> is back to 50/50. The measurement in the middle forced the qubit onto one route, so there were no longer two routes to interfere.</li>
+      </ul>
+      <p><strong>The double slit</strong> is the same story in a laboratory. Fire electrons one at a time at two slits and each lands as a single dot, but thousands of dots build up bands: places where the two routes, through the left slit and through the right, cancel or reinforce. Put a detector at the slits to learn which way each electron went and the bands disappear. That’s experiment 4, done with electrons.</p>
+      <p>So wave–particle duality, as far as computing is concerned, comes down to this: the <em>amplitudes</em> behave like waves — they add and they cancel — and the <em>outcomes</em> behave like particles, one definite click per run. A quantum algorithm is a way of arranging the waves so that when the click comes, it’s probably the right one.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Superposition doesn’t come from duality, as the chapter has it. Superposition is the basic rule — any two states can be combined. Duality is the name for what you see when a superposition of routes meets a detector: wave-like interference in the statistics, particle-like single events.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — predict, then check</span>
+        <p>Predict each result, then test it in the lab in <a href="#m3">move 3</a>. (a) X, H. (b) X, H, H. (c) H, X, H.</p>
+        <details class="ans"><summary>Answers</summary>
+          <p>(a) |−⟩: 50/50, with the minus on the 1 part. (b) Back to |1⟩: this time the routes to 0 cancel. (c) |0⟩ with certainty: X swaps two equal amplitudes, which changes nothing, so the second H simply undoes the first.</p>
+        </details>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Uncertainty, qubit-sized</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">Heisenberg’s principle, on the circle</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Heisenberg, 1927: the more precisely you know a particle’s position, the less precisely you can know its momentum, and the reverse. It isn’t a shortcoming of our instruments but a property of nature. For quantum computing the chapter calls it a double-edged sword — qubits are like shifting sands that change when observed too closely — and credits the probabilistic nature that follows from it with letting quantum computers process vast amounts of information at once.</p>
+
+      <p>The chapter has the physics right and its role in computing wrong. Right: position and momentum can’t both be sharp, and not because instruments are clumsy — no state has both.</p>
+      <p>A qubit has its own, simpler version. There’s more than one question you can ask it. “Is it 0 or 1?” is one. “Is it + or −?” is another: you ask it by applying H and then measuring, because H turns |+⟩ into |0⟩ and |−⟩ into |1⟩. The two questions are <em>complementary</em>:</p>
+      <ul>
+        <li>|0⟩ answers “0 or 1?” with certainty and “+ or −?” at random, 50/50.</li>
+        <li>|+⟩ answers “+ or −?” with certainty and “0 or 1?” at random.</li>
+        <li>No state answers both with certainty. On the circle it’s plain to see: an arrow can lie along an axis or along a diagonal, never both.</li>
+      </ul>
+
+      <div class="lab qlab" data-mode="two">
+        <span class="block-label">Try it — two questions</span>
+        <div class="lab-grid">
+          <div class="dialbox"></div>
+          <div>
+            <div class="readout">
+              <div class="rrow rhead"><span></span><span>Amplitude</span><span></span><span>Chance</span></div>
+              <p class="rgroup">Asked “0 or 1?”</p>
+              <div class="rrow" data-k="0"><span class="k">0</span><span class="amp">+1.000</span><span class="bar"><i></i></span><span class="pc">100%</span></div>
+              <div class="rrow" data-k="1"><span class="k">1</span><span class="amp">0</span><span class="bar"><i></i></span><span class="pc">0%</span></div>
+              <p class="rgroup">Asked “+ or −?”</p>
+              <div class="rrow" data-k="+"><span class="k">+</span><span class="amp">+0.707</span><span class="bar"><i></i></span><span class="pc">50%</span></div>
+              <div class="rrow" data-k="-"><span class="k">−</span><span class="amp">+0.707</span><span class="bar"><i></i></span><span class="pc">50%</span></div>
+            </div>
+            <label class="sl">Turn the arrow <input class="ang" type="range" min="-180" max="180" step="1" value="0"></label>
+          </div>
+        </div>
+        <div class="keys">
+          <button class="btn" type="button" data-act="m100">Ask 100 copies “0 or 1?”</button>
+          <button class="btn" type="button" data-act="x100">Ask 100 copies “+ or −?”</button>
+        </div>
+        <div class="shots"></div>
+        <p class="say" aria-live="polite">Certain for “0 or 1?”, a coin toss for “+ or −?”.</p>
+      </div>
+
+      <p>That’s the uncertainty principle in miniature, and it falls out of the same maths as everything else. But it isn’t what gives quantum computers their power — interference is — and the chapter’s claim that uncertainty lets them process vast amounts of information doesn’t follow. Where complementarity really earns its keep is security. In <strong>quantum key distribution</strong> (the BB84 scheme, from 1984), a key is sent one photon at a time, each prepared for one of two complementary questions chosen at random. An eavesdropper doesn’t know which question to ask, and asking the wrong one disturbs the photon, so the eavesdropping shows up as errors.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Quantum uncertainty isn’t ignorance. A coin under a cup is uncertain because you haven’t looked. A qubit in |0⟩ is completely known — you know its state exactly — and it <em>still</em> answers “+ or −?” at random.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — trade one certainty for another</span>
+        <p>Turn the arrow to 0° and ask 100 copies each question. Then 45°. Then about 20°. Notice that whatever makes one answer more certain makes the other less certain.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Many qubits</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Two to the n</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Where the power comes from, and the myth about it</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>A forest where every tree shows all four seasons until it’s photographed. If each tree is a qubit, two trees represent four states — 00, 01, 10, 11 — three trees eight, and every extra qubit doubles the possibilities, letting a quantum computer explore vast computational paths in a single command. A classical explorer checks one path at a time; a quantum explorer treads many at once.</p>
+
+      <p>The chapter gets the counting right. Two qubits have four possible readouts, 00, 01, 10 and 11, and their state holds an amplitude for each. Three qubits hold eight, and n qubits hold 2<sup>n</sup>:</p>
+
+      <div class="figs">
+        <div class="fig"><b>1,024</b><span>amplitudes for 10 qubits</span></div>
+        <div class="fig"><b>10<sup>15</sup></b><span>for 50 qubits</span></div>
+        <div class="fig"><b>10<sup>90</sup></b><span>for 300 qubits</span></div>
+        <div class="fig"><b>10<sup>80</sup></b><span>atoms in the observable universe</span></div>
+      </div>
+
+      <p>That growth is real, and it’s why simulating a few dozen qubits strains a supercomputer: just storing the amplitudes for 50 qubits takes about 18 million gigabytes.</p>
+      <p>Here’s the catch the chapter skips: <strong>you only ever read n bits out.</strong> Measure 300 qubits and you get one string of 300 zeros and ones, chosen at random by the Born rule, and the amplitudes are gone. A theorem pins this down — Holevo’s, from 1973: n qubits can’t deliver more than n bits of readable information.</p>
+      <p>So try the “every path at once” plan. Put every qubit through H, so all 2<sup>n</sup> answers have equal amplitude. Run your calculation on all of them at once. Measure. You get one answer picked at random — no better than a guess, which an ordinary computer can make for free.</p>
+      <p>The real design problem is harder and more interesting: arrange the gates so that by the end, the amplitudes of the <em>wrong</em> answers cancel and the right answer’s pile up — move 4, on an enormous scale. That only works for problems with the right hidden structure, which is why quantum speed-ups exist for some problems and not for others.</p>
+
+      <blockquote class="pull">
+        <p>A quantum computer doesn’t try every answer. It arranges for the wrong answers to cancel.</p>
+        <cite>The sentence to keep</cite>
+      </blockquote>
+
+      <p class="flag"><span class="block-label">Watch for</span>The chapter’s comparison table calls classical computing “sequential” and quantum computing “parallel”. Classical computers are massively parallel already — a graphics card does thousands of operations at once. And quantum “parallelism” isn’t many calculations whose answers you collect; it’s one calculation on amplitudes, from which you collect a single sample.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — say it plainly</span>
+        <p>Explain to a friend, in two sentences, why putting 300 qubits in superposition doesn’t let you read 2<sup>300</sup> answers. If you can do it without the word “collapse”, you’ve got it.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Entanglement: correlation, not a message</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">What entangled qubits share, and what they can’t do</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>When particles are entangled, one particle’s state “instantly influences” the other’s, however far apart they are. The chapter’s pictures: two tuning forks in distant rooms of a mansion, where striking one makes the other ring; a magical walkie-talkie that lets one team member’s discovery instantly inform the rest; two cities’ traffic systems adapting to each other with no visible communication. Entanglement lets quantum computers work on many qubits in a coordinated way.</p>
+
+      <p>You can make an entangled pair with two gates. Start with two qubits at |00⟩ and apply H to the first, which gives equal amplitudes on |00⟩ and |10⟩. Then apply <strong>CNOT</strong>, the controlled-NOT: a two-qubit gate that flips the second qubit only when the first is 1. The |10⟩ part becomes |11⟩, and you have a <strong>Bell pair</strong>:</p>
+      <p class="formula">(|00⟩ + |11⟩) ÷ √2</p>
+      <p>Measure both and you get 00 half the time and 11 half the time, never 01 or 10. Each qubit on its own is a perfect coin toss; together they always agree. And there’s no way to describe this state as “the first qubit is doing this, the second is doing that” — it can’t be split into two single-qubit states. That’s what entangled means: the pair has a state, and the parts don’t have states of their own.</p>
+
+      <div class="lab pairs">
+        <span class="block-label">Try it — twelve pairs at a time</span>
+        <div class="keys">
+          <button class="btn" type="button" data-act="ent">Measure 12 entangled pairs</button>
+          <button class="btn" type="button" data-act="ind">Measure 12 unentangled pairs</button>
+        </div>
+        <div class="prow"><span class="side">Alice</span><span class="bits ba"></span></div>
+        <div class="prow"><span class="side">Bob</span><span class="bits bb"></span></div>
+        <p class="say" aria-live="polite">Each pair is measured once, on both sides. Where Bob’s bit doesn’t match Alice’s, it’s outlined in red.</p>
+      </div>
+
+      <p>Now the part the chapter gets wrong. Alice takes one qubit of a pair to Tokyo and Bob takes the other to Lisbon. Alice measures and reads 1, so she knows Bob will read 1. But she didn’t <em>choose</em> to read 1 — her result was a coin toss — so she can’t use it to say anything. Bob, looking only at his own results, sees a random string whether or not Alice has measured, whatever she did. The correlation appears only when they compare notes, over an ordinary channel, no faster than light. This is a theorem — the no-communication theorem — not a technical hurdle waiting for better equipment.</p>
+      <p>Each of the chapter’s analogies smuggles in the one thing entanglement can’t do. A struck tuning fork that makes a distant one ring is sending a signal. A walkie-talkie exists to send messages. A traffic system that adapts to a closure across town has been told about it. Entangled qubits share correlated randomness, and no more.</p>
+      <p>What entanglement does for computing is quieter and more important: it’s why n qubits need all 2<sup>n</sup> amplitudes. Without entanglement, each qubit could be described separately — n pairs of amplitudes, 2n numbers in all — and an ordinary computer could simulate the lot with ease. Entanglement is what makes the big space genuinely big.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>“Spooky action at a distance” was an objection. Einstein wrote the phrase — <em>spukhafte Fernwirkung</em> — in a 1947 letter to Max Born, about something he thought a sensible theory shouldn’t contain. He was betting that each particle carries hidden instructions from the start. Move 8 is how that bet was settled.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — be Bob</span>
+        <p>Press each button a few times and look <em>only</em> at Bob’s row. Could Bob tell which kind of pair he had? Now compare the two rows. That comparison is the only place the entanglement shows — and it needed Alice’s results to reach Bob the ordinary way.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Bell’s test</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Why entanglement isn’t just matching socks</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>In 1935 Einstein, Podolsky and Rosen argued that measuring one particle can’t really affect a distant one, so hidden variables must fix the results in advance. In the 1960s John Bell devised a test — Bell’s inequality — of whether the correlations are genuinely quantum or explicable by hidden variables, and experiments side with quantum mechanics. The chapter adds quantum teleportation, which recreates one qubit’s state in a distant qubit, and superdense coding, which it says maximises the information transmitted.</p>
+
+      <p>Everything in move 7’s lab could be faked. Post two envelopes holding the same random bit to Tokyo and Lisbon, and you get random results that always agree. Bell himself called this <em>Bertlmann’s socks</em>, after a colleague who always wore odd ones: see that one sock is pink and you know the other isn’t, with nothing spooky involved. EPR’s hope was that entanglement is socks — hidden instructions, written at the start.</p>
+      <p>Bell’s insight, in 1964, was that the socks idea makes a testable prediction once each side can choose between <em>different</em> questions. The cleanest version is a game, the CHSH game, named after Clauser, Horne, Shimony and Holt, who proposed it in 1969:</p>
+      <ul>
+        <li>Alice and Bob are separated and can’t communicate. Each is handed a random question — a bit, x for Alice and y for Bob — and each must answer with a bit.</li>
+        <li>They win if their answers <strong>agree</strong>, except when both questions are 1, when they must <strong>disagree</strong>.</li>
+      </ul>
+      <p>With any plan agreed in advance — any hidden instructions, even shared random ones — the best possible is 75%. (One best plan: both always answer 0, which wins every round except the 1-and-1.) With a shared Bell pair, each measuring along an angle set by their question, they win about 85% of rounds: cos<sup>2</sup> 22.5° ≈ 0.854. No instructions written in advance can do that.</p>
+
+      <div class="lab chsh">
+        <span class="block-label">Try it — the CHSH game, 1,000 rounds</span>
+        <div class="readout">
+          <div class="rrow wide"><span class="k">Plan</span><span class="bar m75 bar-c"><i></i></span><span class="pc pc-c">—</span></div>
+          <div class="rrow wide"><span class="k">Pairs</span><span class="bar m75 bar-q"><i></i></span><span class="pc pc-q">—</span></div>
+        </div>
+        <div class="keys">
+          <button class="btn" type="button" data-act="plan">Play with a plan fixed in advance</button>
+          <button class="btn" type="button" data-act="pairs">Play with entangled pairs</button>
+        </div>
+        <p class="say" aria-live="polite">The red mark on each bar is 75%, the most any plan fixed in advance can average.</p>
+      </div>
+
+      <p>One caveat about that simulation: it’s a single program that sees both questions, so it can reach 85% by cheating. That’s exactly the point. To beat 75%, the two sides have to behave as if each could see the other’s question — and separated players holding entangled pairs manage it without any signal passing between them.</p>
+      <p>Experiments have run this test again and again: John Clauser’s in 1972, Alain Aspect’s in 1982, and in 2015 three teams — in Delft, in Vienna and at NIST in Boulder — closed the remaining loopholes. The results match quantum mechanics, not socks, and Clauser, Aspect and Anton Zeilinger shared the 2022 Nobel Prize in Physics for the work. The conclusion: no theory in which each particle carries its own local instructions can reproduce what entangled particles do.</p>
+
+      <h3>Two tricks, stated properly</h3>
+      <ul>
+        <li><strong>Teleportation</strong> (1993) moves a qubit’s state onto a distant qubit. It uses up a shared Bell pair <em>and</em> needs two ordinary bits sent the normal way, so nothing travels faster than light, and the original is destroyed in the process — it has to be, since states can’t be copied. It moves quantum information across networks, not matter.</li>
+        <li><strong>Superdense coding</strong> (1992) runs the other way: with a Bell pair shared beforehand, sending one qubit delivers two ordinary bits. A modest, exact gain — not efficiency “never before achieved”.</li>
+      </ul>
+
+      <p class="flag"><span class="block-label">Watch for</span>The chapter calls Bell’s inequality “the litmus test for quantum computers” and credits non-locality with their power. Bell tests certify that entanglement is real, and some cryptography uses them that way. But quantum computers aren’t checked with Bell tests, and their power comes from interference across an enormous space of amplitudes (moves 4 and 6) — which entanglement makes possible, but which has nothing to do with distance.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — check the 75%</span>
+        <p>Each player has only four fixed strategies: always 0, always 1, repeat the question, flip the question. That makes sixteen combinations. Pick three and score them against the four possible question pairs. You’ll find that none wins all four, and the best win three.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; What it buys you</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>How speed is measured</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">Time complexity, and the haystack the chapter gets wrong</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Time complexity measures how an algorithm’s running time grows with the size of its input. On many problems classical computers slow down linearly — ten units of data in ten minutes, twenty in twenty — but some blow up exponentially, like searching a haystack, where every time the haystack doubles the search time can double too. A quantum computer is like a magical tool that probes half the haystack at once, then a quarter, and so on; for factoring it works in polynomial time where classical computers need exponential time.</p>
+
+      <p>Time complexity asks one question: as the input grows, how fast does the work grow? Three growth rates matter here:</p>
+      <ul>
+        <li><strong>Linear</strong> — double the input, double the work. Checking every straw in a haystack.</li>
+        <li><strong>Polynomial</strong> — the work grows like n<sup>2</sup> or n<sup>3</sup>. It climbs quickly but stays manageable; computer scientists count polynomial as efficient.</li>
+        <li><strong>Exponential</strong> — add <em>one</em> more unit of input and the work doubles. Trying every combination of an n-switch lock.</li>
+      </ul>
+      <p>So the chapter’s haystack is linear, not exponential: a haystack twice the size taking twice as long is the definition of linear. The difference is the whole story. At a billion steps a second:</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Input size n</th><th>n<sup>3</sup> steps</th><th>2<sup>n</sup> steps</th></tr></thead>
+          <tbody>
+            <tr><td class="day">10</td><td>a microsecond</td><td>a microsecond</td></tr>
+            <tr><td class="day">50</td><td>an eighth of a millisecond</td><td>13 days</td></tr>
+            <tr><td class="day">100</td><td>a millisecond</td><td>40 trillion years</td></tr>
+            <tr><td class="day">300</td><td>27 milliseconds</td><td>a number of years 74 digits long</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The universe is about 14 billion years old; the 2<sup>n</sup> column passes that at around n = 89.</p>
+      <p>The chapter’s magical tool, which probes half the haystack and then a quarter, isn’t a quantum computer either. It’s binary search, which ordinary computers already do — but only on sorted data, like a dictionary. On an unsorted haystack no computer, quantum or classical, can halve its way to the needle. What a quantum computer can do there is Grover’s algorithm: about √N looks instead of N. That’s move 10.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>A speed-up claim needs two numbers: how the quantum algorithm scales, and how the best <em>classical</em> one does. For factoring the chapter says classical computers take exponential time; the best known classical method is actually sub-exponential — slower than any polynomial, faster than exponential. More importantly, nobody has proved a fast classical method can’t exist. Speed-ups are measured against the best algorithm we know, which is why some have vanished: in 2018 Ewin Tang, then an 18-year-old undergraduate, found a classical algorithm that matched a celebrated quantum speed-up for recommendation systems.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — classify</span>
+        <p>Linear, polynomial, exponential, or better than linear? (a) Reading every page of a book. (b) Comparing every pair of students in a class. (c) Trying every subset of a shopping list to find the cheapest combination that meets a target. (d) Finding a word in a printed dictionary.</p>
+        <details class="ans"><summary>Answers</summary>
+          <p>(a) Linear. (b) Polynomial: about n<sup>2</sup> ÷ 2 pairs. (c) Exponential: 2<sup>n</sup> subsets. (d) Better than linear — logarithmic, because you halve the pages each time, which only works because the dictionary is sorted.</p>
+        </details>
+      </div>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Grover: a square-root speed-up</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">What “amplifying the right answer” looks like</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Algorithms like Grover’s and Shor’s manipulate qubits to amplify the probabilities of correct solutions, making them more likely to be observed — guided, the chapter says, by the Born rule.</p>
+
+      <p>Grover’s algorithm (Lov Grover, 1996) is the honest version of the haystack. You have N unsorted items and a way to recognise the one you want. Checking them one at a time takes about N/2 looks on average. Grover takes about 0.785 × √N rounds (that’s π/4 × √N).</p>
+      <p>How it works, in the picture from moves 1 to 4. Start with every item at equal amplitude. The state is an arrow pointing almost entirely at “wrong answers”, tilted only very slightly towards the right one. Each round has two steps: flip the sign of the right answer’s amplitude — a step called the oracle, which recognises the answer without revealing it — and then reflect every amplitude about their average. Two reflections make a rotation, so each round turns the arrow by the same small angle towards the right answer. The wrong answers’ amplitudes shrink, and the right one’s grows.</p>
+
+      <div class="lab grover">
+        <span class="block-label">Try it — Grover rounds</span>
+        <div class="gctl">
+          <label class="sl">Items
+            <select class="ctl gn">
+              <option value="4">4</option>
+              <option value="16">16</option>
+              <option value="64" selected>64</option>
+              <option value="256">256</option>
+              <option value="1024">1,024</option>
+              <option value="1000000">1,000,000</option>
+            </select>
+          </label>
+          <label class="sl grow">Rounds <input class="gk" type="range" min="0" max="13" step="1" value="0"></label>
+        </div>
+        <div class="keys">
+          <button class="btn" type="button" data-act="dec">− 1 round</button>
+          <button class="btn" type="button" data-act="inc">+ 1 round</button>
+          <button class="btn" type="button" data-act="best">Jump to the peak</button>
+        </div>
+        <svg class="gplot" viewBox="0 0 300 110" role="img" aria-label="Chance of finding the right item, plotted against the number of rounds">
+          <line class="guide" x1="0" y1="15" x2="300" y2="15"/>
+          <line class="guide" x1="0" y1="105" x2="300" y2="105"/>
+          <text x="3" y="12">100%</text>
+          <polyline class="curve" points=""/>
+          <line class="vline" x1="0" y1="10" x2="0" y2="105"/>
+          <circle class="now" cx="0" cy="105" r="4"/>
+        </svg>
+        <p class="gread"></p>
+        <p class="say" aria-live="polite"></p>
+      </div>
+
+      <p>Three things to notice in the dial:</p>
+      <ul>
+        <li><strong>Four items, one round, certainty.</strong> With N = 4 a single round lands exactly on the answer. Checking one at a time can take three looks.</li>
+        <li><strong>Too many rounds overshoot.</strong> Keep going past the peak and the arrow rotates <em>past</em> the answer, and the chance falls again. You have to know when to stop — a very un-classical way for an algorithm to behave.</li>
+        <li><strong>The gain is a square root.</strong> A million items: 785 rounds instead of about 500,000 looks. Huge — but not exponential, and it’s provably the best any quantum computer can do on an unstructured search (Bennett, Bernstein, Brassard and Vazirani, 1997).</li>
+      </ul>
+
+      <p class="flag"><span class="block-label">Watch for</span>A square-root speed-up is easily eaten by overheads. Each quantum step is far slower than a classical one, and error correction (move 14) slows it further, so for many practical searches a quadratic advantage may never pay off. Grover matters more as the cleanest example of a right answer grown by interference than as a way to search databases.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — find the peak</span>
+        <p>Set 16 items. How many rounds give the best chance, and what is it? Then 64 items. Then work out, without the dial, roughly how many rounds a hundred million items would need.</p>
+        <details class="ans"><summary>Answers</summary>
+          <p>16 items: 3 rounds, about 96%. 64 items: 6 rounds, about 99.7%. A hundred million: √N is 10,000, so about 7,850 rounds — against about 50 million looks one at a time.</p>
+        </details>
+      </div>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Shor, and the locks on the internet</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">The algorithm that made governments pay attention</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Shor’s algorithm can factorise large numbers more efficiently than the best-known classical algorithms, with profound implications for cryptography. For massive numbers, classical factoring could take years, decades or longer.</p>
+
+      <p>Multiplying two large prime numbers is easy. Getting them back from the product is, as far as anyone knows, enormously hard for an ordinary computer. That one-way street guards much of the internet: RSA encryption depends on it, and the elliptic-curve systems that have largely replaced RSA depend on a close cousin.</p>
+      <p>In 1994 Peter Shor showed that a quantum computer could factor in polynomial time. The engine, again, is interference. Factoring can be turned into finding the <em>period</em> of a sequence of numbers — how often it repeats — and a step called the quantum Fourier transform makes the amplitudes interfere so that only answers tied to the period survive. It’s the H-then-H cancellation from move 4, on a vast scale. A variant of the algorithm breaks the elliptic-curve systems too.</p>
+      <p>Then the reality check:</p>
+
+      <div class="figs">
+        <div class="fig"><b>15</b><span>factored by Shor’s algorithm, 2001</span></div>
+        <div class="fig"><b>21</b><span>factored, 2012</span></div>
+        <div class="fig"><b>20 million</b><span>noisy qubits to break RSA-2048: 2019 estimate</span></div>
+        <div class="fig"><b>&lt; 1 million</b><span>the 2025 estimate, running under a week</span></div>
+      </div>
+
+      <p>The 15 and 21 runs used shortcuts that relied on already knowing the answer. Nobody can break real encryption with a quantum computer yet. But anything encrypted today can be recorded and stored until someone can — “harvest now, decrypt later” — which is why the switch has already begun. In August 2024 the US standards body NIST published its first post-quantum standards (FIPS 203, 204 and 205), built on maths problems that no known quantum algorithm cracks, and major browsers and messaging apps have started using post-quantum encryption.</p>
+      <p>What quantum computers don’t break: symmetric ciphers like AES, which encrypt the data itself once a key has been agreed. Grover’s algorithm can at most square-root the work of guessing a key, so a 256-bit key keeps about 128 bits of strength. The fix is longer keys, not new maths.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Post-quantum cryptography and quantum key distribution are different things. Post-quantum cryptography is ordinary software on ordinary computers, using maths that quantum computers aren’t known to break — that’s what the world is adopting. Quantum key distribution (move 5) needs special hardware and dedicated links, and is used far more narrowly.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — feel the asymmetry</span>
+        <p>Multiply 13 by 17 in your head. Now, without looking back, factor 221. The first takes a few seconds; the second is a hunt. RSA-2048 uses a number 617 digits long.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>Different, not better</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">What quantum computers are for, and what they aren’t</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>“Quantum doesn’t equate to ‘better’, it signifies ‘different’”: quantum computers excel in certain areas while classical machines remain irreplaceable in others. Among the promising areas the chapter names simulating quantum systems and optimisation, which it calls inherently probabilistic and so tailor-made for quantum machines.</p>
+
+      <p>That line is the best in the chapter, and the one to keep. Here’s an honest scorecard, as of 2025:</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Task</th><th>Quantum advantage</th><th>Where it stands</th></tr></thead>
+          <tbody>
+            <tr><td>Simulating molecules and materials — catalysts, batteries, drugs</td><td>potentially exponential</td><td>the strongest case; needs error-corrected machines</td></tr>
+            <tr><td>Factoring and discrete logarithms — breaking RSA and elliptic curves</td><td>exponential over the best known classical methods</td><td>needs large error-corrected machines; the world is already switching (move 11)</td></tr>
+            <tr><td>Unstructured search</td><td>square root (Grover)</td><td>real, but overheads may swallow it</td></tr>
+            <tr><td>Optimisation — logistics, scheduling, finance</td><td>unproven</td><td>no clear win on real problems yet</td></tr>
+            <tr><td>Machine learning</td><td>unproven</td><td>several claimed speed-ups later matched classically</td></tr>
+            <tr><td>Email, video, games, spreadsheets, chatbots</td><td>none</td><td>ordinary computers, for good</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <blockquote class="pull">
+        <p>Nature isn’t classical, dammit, and if you want to make a simulation of nature, you’d better make it quantum mechanical.</p>
+        <cite>Richard Feynman, 1981</cite>
+      </blockquote>
+
+      <p>Feynman’s point is why simulation heads the list. Working out how electrons arrange themselves in a molecule is a quantum problem, and its cost on a classical computer grows exponentially, for exactly the reason in move 6. A machine made of qubits sidesteps that by being the same kind of thing as what it simulates.</p>
+      <p>The realistic future isn’t a quantum laptop. It’s quantum processors as specialist co-processors, like graphics cards: an ordinary computer runs everything, and hands the quantum one the few subroutines it’s good at.</p>
+
+      <h3>“Quantum supremacy”</h3>
+      <p>In 2019 Google’s 53-qubit Sycamore chip performed a sampling task in about 200 seconds that Google estimated would take a supercomputer 10,000 years. IBM replied that a better classical method would take days, and later work narrowed the gap further. Demonstrations like this use tasks chosen to be hard for classical computers, not useful ones: they’re milestones of control, not applications.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Optimisation isn’t “inherently probabilistic” in a way that suits quantum machines. Randomness helps plenty of classical optimisation methods too, and no quantum method has yet shown a clear advantage over the best classical ones on real-world problems.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — quantum-shaped or not?</span>
+        <p>Should a quantum computer help with each of these? (a) Designing a better catalyst for making fertiliser. (b) Sorting a spreadsheet. (c) Reading traffic that was encrypted with RSA in 2010. (d) Recommending films. (e) Designing a battery electrolyte.</p>
+        <details class="ans"><summary>Answers</summary>
+          <p>(a) Yes — molecular simulation. (b) No. (c) Yes, once a large error-corrected machine exists; that’s the harvest-now worry. (d) Probably not: the famous quantum speed-up here was matched classically. (e) Yes — simulation again.</p>
+        </details>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; Real qubits</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m13">
+      <div class="movehead">
+        <span class="n">13</span>
+        <h2>Energy levels and spin</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m13">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="13"> Done</label>
+        </div>
+      </div>
+      <p class="who">What a qubit physically is</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Energy is quantised: like a jukebox whose volume only goes up in whole steps, or the rungs of a ladder, an atom’s electrons can only hold certain energies, and quantum computers move qubits between these levels — in trapped-ion machines, tuned lasers make an electron jump from one level to another. Spin is an electron’s built-in angular momentum, not literal spinning, and comes in two values, up and down, as the Stern–Gerlach experiment showed. Superconducting qubits are tiny circuits, cooled until current flows without resistance, with quantised energy levels; labs cool them to near absolute zero and steer them with microwave pulses.</p>
+
+      <p>Nothing so far has depended on what a qubit is made of. Any physical system will do if it has two distinguishable states that can be put in superposition, and nature offers several.</p>
+      <ul>
+        <li><strong>Two energy levels.</strong> Anything bound — an atom, an ion, a small circuit — can only hold certain energies, like rungs on a ladder; that’s what “quantised” means, and it’s the chapter’s jukebox. Call the bottom rung 0 and the next one up 1. A pulse of light or microwaves tuned to exactly the gap between them drives the system from one to the other: a full pulse flips 0 to 1 (an X gate), and half a pulse leaves an equal superposition. The discreteness is what makes a clean 0 and 1 possible at all.</li>
+        <li><strong>Spin.</strong> An electron behaves as if it carries a tiny built-in magnet, though nothing is literally spinning. Measure it along any direction and you only ever get one of two values, up or down. Otto Stern and Walther Gerlach saw this in 1922, when a beam of silver atoms passing through a magnet split into exactly two. A ready-made qubit.</li>
+      </ul>
+      <p>The main ways of building qubits, as of 2025:</p>
+
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th>Approach</th><th>The qubit</th><th>Controlled by</th><th>Trade-off</th></tr></thead>
+          <tbody>
+            <tr><td>Superconducting circuits — Google, IBM</td><td>the two lowest energy levels of a tiny circuit</td><td>microwave pulses, at about 0.01 K</td><td>fast operations; short-lived states; hard to wire up at scale</td></tr>
+            <tr><td>Trapped ions — Quantinuum, IonQ</td><td>two levels of an ion held in electric fields</td><td>lasers</td><td>very accurate and long-lived; slower</td></tr>
+            <tr><td>Neutral atoms — QuEra, Pasqal, Atom Computing</td><td>atoms held in focused laser “tweezers”</td><td>lasers</td><td>large arrays; newer</td></tr>
+            <tr><td>Photons — PsiQuantum, Xanadu</td><td>properties of single particles of light</td><td>optical components</td><td>light travels well, so networking comes naturally; lost photons are the problem</td></tr>
+            <tr><td>Spins in silicon — Intel and others</td><td>single electron spins</td><td>microwaves and voltages</td><td>could use chip-industry factories; early days</td></tr>
+            <tr><td>Topological — Microsoft</td><td>exotic states meant to resist noise by design</td><td>—</td><td>still unproven; a 2025 claim is disputed</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Why so cold? A superconducting qubit’s energy gap is tiny — the thermal energy of about a quarter of a degree above absolute zero. At room temperature, heat would knock it between levels constantly. At about 0.01 K, more than a hundred times colder than deep space, it stays put. The chapter’s superconducting circuits have one more essential ingredient: a Josephson junction, a thin insulating barrier that makes the rungs unevenly spaced, so a pulse tuned to the bottom gap doesn’t accidentally push the circuit up to a third rung.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The chapter says quantised energy levels let quantum computers perform some tasks exponentially faster. Quantisation is the hardware’s foundation — it’s what makes a clean qubit possible — but speed-ups come from interference (moves 4 and 6). And spin’s link to wave–particle duality is looser than the chapter suggests; what matters is simpler: it’s a natural two-outcome quantity.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — why one colour?</span>
+        <p>Explain why an ion qubit needs a laser tuned to one exact colour, and what a laser of the wrong colour would do.</p>
+        <details class="ans"><summary>Answer</summary>
+          <p>Light comes in packets whose energy is set by its colour. Only a packet matching the gap between the two levels can drive the jump; light of the wrong colour barely affects the ion. That’s quantisation doing the work.</p>
+        </details>
+      </div>
+    </article>
+
+    <article class="move" id="m14">
+      <div class="movehead">
+        <span class="n">14</span>
+        <h2>Noise is the enemy</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m14">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="14"> Done</label>
+        </div>
+      </div>
+      <p class="who">Decoherence, error correction, and the tunnelling machines</p>
+
+      <p class="shorthand"><span class="block-label">In the chapter</span>Quantum tunnelling: like a hiker who could pass straight through a hill instead of climbing over it, a quantum system can pass through energy barriers, escaping local minima to find the lowest valley. This matters especially in quantum annealing, where the lowest valley is the optimal solution.</p>
+
+      <p>Move 2 said that any interaction that leaves a record counts as a measurement. That’s the central engineering problem. A qubit’s surroundings — stray heat, vibration, electrical noise, a neighbouring qubit — are constantly, accidentally measuring it. Each stray interaction leaks a little information about the qubit into the world, and its superposition fades into an ordinary random bit. This is <strong>decoherence</strong>, and it wrecks the interference that everything depends on. (The chapter leaves noise for its next chapter; it’s too central to leave out here.)</p>
+      <p>The numbers set the challenge. The best operations on today’s qubits go wrong roughly once in a thousand; Shor’s algorithm at real key sizes needs billions of operations. The answer is <strong>quantum error correction</strong>: spread one reliable “logical” qubit across many physical ones, and keep checking whether any of them have drifted — without looking at the data itself. The trick is to measure only relationships, like “do these two qubits agree?”, which reveals an error without revealing the value. It works only when the physical error rate is below a threshold, about 1% for the leading scheme, the surface code. Below it, adding more qubits makes the logical qubit better rather than worse.</p>
+      <p>In late 2024 Google’s Willow chip showed this convincingly for the first time: each step up in the size of the code roughly halved the logical error rate. The price is steep — hundreds to thousands of physical qubits for each logical one — which is why the estimates in move 11 run to a million qubits. Until then we’re in what John Preskill in 2018 named the <strong>NISQ</strong> era: noisy intermediate-scale quantum machines, too noisy for the famous algorithms, useful for experiments.</p>
+
+      <h3>Tunnelling, and the annealers</h3>
+      <p>The chapter’s tunnelling section describes a different kind of machine. A <strong>quantum annealer</strong> — D-Wave has sold them since 2011 — doesn’t run gates at all. It encodes an optimisation problem as an energy landscape and lets the system settle towards the lowest valley, with tunnelling through barriers as one hoped-for way of not getting stuck in a shallow dip. The effect is real; whether it beats good classical methods on practical problems is still argued over. Tunnelling isn’t exotic in ordinary computing either: flash memory stores bits by tunnelling electrons through an insulator, and it’s one of the things limiting how small ordinary transistors can get.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>The chapter presents tunnelling as a general source of quantum computing power. It matters for annealers, and it’s how a superconducting qubit’s Josephson junction works, but Shor’s and Grover’s algorithms don’t use it. Their power is interference.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill — the contradiction</span>
+        <p>In one breath: why must a quantum computer be isolated from its surroundings <em>and</em> controlled by them?</p>
+        <details class="ans"><summary>Answer</summary>
+          <p>Gates and measurements need you to reach in with pulses of light or microwaves; every other kind of contact is an accidental measurement. Building a quantum computer is the art of managing that contradiction.</p>
+        </details>
+      </div>
+
+      <p>The whole page, in seven lines:</p>
+      <div class="rules">
+        <div class="r"><span class="num">1</span><div><h4>Amplitudes</h4><p>A qubit is two amplitudes. Squared, they’re the chances of reading 0 and 1.</p></div></div>
+        <div class="r"><span class="num">2</span><div><h4>Measurement</h4><p>One bit comes out, and the state becomes what you read.</p></div></div>
+        <div class="r"><span class="num">3</span><div><h4>Interference</h4><p>Gates rotate and reflect the amplitudes, and amplitudes can cancel. <em>That’s the engine.</em></p></div></div>
+        <div class="r"><span class="num">4</span><div><h4>Scale</h4><p>n qubits hold 2<sup>n</sup> amplitudes, but give up only n bits.</p></div></div>
+        <div class="r"><span class="num">5</span><div><h4>Entanglement</h4><p>Correlation without communication — stronger than any instructions agreed in advance.</p></div></div>
+        <div class="r"><span class="num">6</span><div><h4>Speed-ups</h4><p>Choreographed interference on problems with the right structure: exponential for factoring and simulation, a square root for search, unproven elsewhere.</p></div></div>
+        <div class="r"><span class="num">7</span><div><h4>Noise</h4><p>The enemy. Error correction is the price of scale.</p></div></div>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="map" data-noread>
+      <div class="movehead">
+        <span class="n">&#8801;</span>
+        <h2>Chapter map</h2>
+      </div>
+      <p>Every section of the chapter, in the order it comes, and where it went on this page. The repeats are the chapter’s own.</p>
+      <div class="tablewrap">
+        <table class="week map">
+          <thead><tr><th>The chapter’s section</th><th>Here</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td>Principles of quantum mechanics — superposition, qubits, entanglement, Shor, ion traps and superconducting chips</td><td class="day"><a href="#m1">1</a>, <a href="#m6">6</a>, <a href="#m7">7</a>, <a href="#m11">11</a>, <a href="#m13">13</a></td><td>an overview; “instantly influences” is corrected in 7</td></tr>
+            <tr><td>Wave–particle duality — the football that makes ripples</td><td class="day"><a href="#m4">4</a></td><td>duality isn’t why a qubit can be 0 and 1</td></tr>
+            <tr><td>The probabilistic nature of quantum mechanics — the crossroads in the fog, Schrödinger’s cat</td><td class="day"><a href="#m1">1</a>, <a href="#m2">2</a></td><td>the cat was a complaint</td></tr>
+            <tr><td>Quantised energy levels — the jukebox</td><td class="day"><a href="#m13">13</a></td><td>—</td></tr>
+            <tr><td>Duality again — the chameleon, the double slit, interference as a resource</td><td class="day"><a href="#m4">4</a></td><td>the right idea, and the heart of this page</td></tr>
+            <tr><td>The Born rule — waves on an ocean</td><td class="day"><a href="#m2">2</a></td><td>correct</td></tr>
+            <tr><td>Probabilistic nature again — wave functions and orbitals</td><td class="day"><a href="#m2">2</a>, <a href="#m6">6</a></td><td>“explore many solutions at once” is corrected in 6</td></tr>
+            <tr><td>Quantised energy again — the ladder, lasers on trapped ions</td><td class="day"><a href="#m13">13</a></td><td>“exponentially faster” is corrected</td></tr>
+            <tr><td>Classical and quantum — determinism against probability</td><td class="day"><a href="#m2">2</a>, <a href="#m12">12</a></td><td>“optimisation is tailor-made” is corrected in 12</td></tr>
+            <tr><td>Measurement and observables — the two-way compass, spin at 70/30, inside the lab</td><td class="day"><a href="#m2">2</a>, <a href="#m13">13</a></td><td>“the outcomes are the observables” is corrected</td></tr>
+            <tr><td>Operators and gates — calibrations and routes</td><td class="day"><a href="#m3">3</a></td><td>made concrete as X, Z and H</td></tr>
+            <tr><td>Measurement and observables again — the Swiss Army knife</td><td class="day"><a href="#m2">2</a></td><td>—</td></tr>
+            <tr><td>Eigenvalues and eigenstates — the guitar string</td><td class="day"><a href="#m2">2</a></td><td>a good analogy</td></tr>
+            <tr><td>The uncertainty principle — the cliff, shifting sands</td><td class="day"><a href="#m5">5</a></td><td>right physics, wrong role in computing</td></tr>
+            <tr><td>Time complexity — the trails</td><td class="day"><a href="#m9">9</a></td><td>—</td></tr>
+            <tr><td>Bits against qubits — the architecture table</td><td class="day"><a href="#m1">1</a>, <a href="#m6">6</a></td><td>“in between” and “parallel” are corrected</td></tr>
+            <tr><td>Bits against qubits — problem scaling and the haystack</td><td class="day"><a href="#m9">9</a>, <a href="#m10">10</a>, <a href="#m11">11</a></td><td>linear called exponential; binary search called quantum</td></tr>
+            <tr><td>Bits against qubits — entanglement, the tuning forks and the walkie-talkie</td><td class="day"><a href="#m7">7</a></td><td>entanglement sends no signal</td></tr>
+            <tr><td>Superposition — the forest of seasons, doubling with each qubit</td><td class="day"><a href="#m1">1</a>, <a href="#m6">6</a></td><td>the counting is right; “conscious observer” is corrected in 2</td></tr>
+            <tr><td>Entanglement — the oak and the pine, the two cities’ traffic</td><td class="day"><a href="#m7">7</a></td><td>entanglement sends no signal</td></tr>
+            <tr><td>Quantum tunnelling — the hiker and the valleys</td><td class="day"><a href="#m14">14</a></td><td>matters for annealers</td></tr>
+            <tr><td>Spin — the ice skater, Stern–Gerlach</td><td class="day"><a href="#m13">13</a></td><td>—</td></tr>
+            <tr><td>Bell’s inequality, EPR and local realism — “the litmus test”</td><td class="day"><a href="#m8">8</a></td><td>overstated for computing</td></tr>
+            <tr><td>Teleportation and superdense coding</td><td class="day"><a href="#m8">8</a></td><td>stated precisely</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is a qubit’s state made of?</span><span class="a">Two amplitudes, one for 0 and one for 1, whose squares add up to 1.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The Born rule?</span><span class="a">The chance of an outcome is its amplitude squared.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Is |+⟩ halfway between 0 and 1?</span><span class="a">No. It reads 0 or 1, 50/50 — never 0.5. It’s a combination with two amplitudes, not an in-between value.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does measuring do to the state?</span><span class="a">It becomes the outcome you read. The old amplitudes are gone; measure again and you get the same answer.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why run a quantum program thousands of times?</span><span class="a">Each run gives one sample, and the state can’t be copied to peek at. The chances only show up in the counts.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Does measurement need an observer?</span><span class="a">No. Any interaction that leaves a record anywhere counts — which is why qubits are so fragile.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is a gate, on the circle?</span><span class="a">A rotation or reflection of the arrow. It keeps the chances adding up to 1, and it can always be undone.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">X, Z and H?</span><span class="a">X swaps the amplitudes. Z flips the sign of the 1 amplitude. H mixes them into (α + β) ÷ √2 and (α − β) ÷ √2.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does H then H give back |0⟩?</span><span class="a">The two routes to 1 carry +0.5 and −0.5 and cancel; the two routes to 0 add up to 1. Interference.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does a measurement in the middle do?</span><span class="a">It destroys the interference: the qubit is forced onto one route, so there aren’t two routes left to cancel.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">An overall sign versus a relative sign?</span><span class="a">A minus on the whole state changes nothing measurable. A minus between the parts changes what the next gate does.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The qubit version of the uncertainty principle?</span><span class="a">“0 or 1?” and “+ or −?” can’t both have certain answers. |0⟩ is certain for the first and a coin toss for the second.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">300 qubits: how many amplitudes, how many bits out?</span><span class="a">2<sup>300</sup>, about 10<sup>90</sup> amplitudes — but a measurement gives you 300 bits.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why doesn’t “try every answer at once” work?</span><span class="a">Measuring an equal superposition gives a random answer. Speed-ups need interference that cancels the wrong answers.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How do you make a Bell pair?</span><span class="a">H on the first qubit, then CNOT: (|00⟩ + |11⟩) ÷ √2. The two always agree; each alone is random.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Can entanglement carry a message?</span><span class="a">No. Each side sees coin tosses whatever the other does; the correlation shows only when results are compared the ordinary way.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What makes entanglement more than matching socks?</span><span class="a">Bell’s test: with different questions on each side, entangled pairs win the CHSH game about 85% of the time. Any plan fixed in advance tops out at 75%.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">A haystack twice the size takes twice as long. Linear or exponential?</span><span class="a">Linear. Exponential is when one extra unit of input doubles the work.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does Grover buy you, and what if you overdo it?</span><span class="a">About 0.785 × √N rounds instead of about N/2 looks. Too many rounds overshoot, and the chance falls again.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does Shor matter, and what’s the response?</span><span class="a">It factors in polynomial time, breaking RSA and elliptic-curve cryptography. NIST published post-quantum standards in 2024.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The strongest case for quantum computers?</span><span class="a">Simulating molecules and materials, because nature is quantum — Feynman’s point in 1981.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What does error correction trade?</span><span class="a">Many physical qubits for one reliable logical qubit. It only helps below a threshold error rate — about 1% for the surface code.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>Dates and attributions used here:</strong> the Born rule, 1926; Heisenberg, 1927; EPR and Schrödinger’s cat, 1935; Einstein’s “spooky action at a distance”, in a 1947 letter to Max Born; Stern–Gerlach, 1922; Bell, 1964; CHSH, 1969; Holevo, 1973; no-cloning, 1982; BB84, 1984; superdense coding, 1992; teleportation, 1993; Shor, 1994; Grover, 1996; Grover’s optimality, 1997.</li>
+        <li><strong>The Feynman quotation</strong> is from his 1981 talk, published in 1982 as “Simulating Physics with Computers”. Check the wording against the paper before repeating it.</li>
+        <li><strong>Bell experiments:</strong> Clauser, 1972; Aspect, 1982; the three loophole-free tests of 2015; the 2022 Nobel Prize.</li>
+        <li><strong>Factoring demonstrations:</strong> 15 in 2001 and 21 in 2012, both simplified using knowledge of the answer. Check whether anything larger has since been factored with Shor’s algorithm itself.</li>
+        <li><strong>RSA-2048 estimates:</strong> Gidney and Ekerå, 2019 (about 20 million noisy qubits, 8 hours); Gidney, 2025 (under a million noisy qubits, under a week). Both assume particular error rates and speeds.</li>
+        <li><strong>Post-quantum standards:</strong> NIST FIPS 203 (ML-KEM), 204 (ML-DSA) and 205 (SLH-DSA), August 2024.</li>
+        <li><strong>Google’s Willow result</strong>, December 2024, and the “roughly halved” figure for each step up in code size.</li>
+        <li><strong>The state of the field.</strong> Every claim here about hardware, companies and records is as of mid-2025, and the field moves fast. Check the platform table before repeating it.</li>
+        <li><strong>The temperatures:</strong> a 5 GHz qubit’s energy gap, divided by Boltzmann’s constant, comes to about 0.24 K; dilution refrigerators typically run at 10 to 20 thousandths of a kelvin.</li>
+        <li><strong>The 2019 supremacy figures:</strong> Google’s 200 seconds against 10,000 years, and IBM’s reply of about two and a half days.</li>
+        <li><strong>Arithmetic here</strong> (worth redoing): 2<sup>50</sup> amplitudes at 16 bytes each is about 18 million gigabytes; 2<sup>100</sup> nanoseconds is about 40 trillion years; Grover on a million items peaks at 785 rounds.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What’s mine</h2>
+      </div>
+      <p><strong>From the chapter:</strong> the principles themselves and the order it first raises them; its analogies — the quantum continent, the jukebox and the ladder, the chameleon, the two-way compass, the Swiss Army knife, the guitar string, the forest of seasons, the spinning top, the haystack, the tuning forks, the walkie-talkie, the two cities’ traffic, the hiker and the valleys, the ice skater; the Born rule as “a power of two”; <em>eigen</em> as German for characteristic; uncertainty as a property of nature rather than of instruments; lasers on trapped ions, cooled superconducting circuits and microwave pulses; spin and Stern–Gerlach; EPR, Bell and local realism; teleportation and superdense coding; Shor and cryptography; Grover and amplifying correct answers; time complexity; and “quantum doesn’t equate to better, it signifies different”.</p>
+      <p><strong>Mine:</strong> the four-arc order; the amplitude-circle picture and the labs; the route table for H then H; overall against relative signs; the qubit version of uncertainty and the link to BB84; 2<sup>n</sup> amplitudes against n readable bits, and Holevo; building a Bell pair from H and CNOT; the no-signalling case against the tuning forks, walkie-talkie and traffic; Bertlmann’s socks, the CHSH game and its simulation; the growth table and the linear and binary-search corrections; the Grover dial; the Shor reality check and the post-quantum standards; the scorecard and the supremacy note; the platform table and the quarter-kelvin arithmetic; decoherence, error correction and Willow; annealing as the home of tunnelling; every Watch for box, drill and card; and the chapter map.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The chapter.</strong> Pantheon Space Academy, <em>Quantum Computing Explained for Beginners: The Science, Technology, and Impact</em> (2023), chapter 1, “The Physics of Quantum Computers”.</li>
+        <li><strong>Further reading, added by me:</strong> Andy Matuschak and Michael Nielsen, <em>Quantum Country</em> (2019) — a free introduction online with spaced-repetition review built in; Chris Bernhardt, <em>Quantum Computing for Everyone</em> (2019); Scott Aaronson, <em>Quantum Computing Since Democritus</em> (2013); Michael Nielsen and Isaac Chuang, <em>Quantum Computation and Quantum Information</em> (2000), the standard textbook.</li>
+        <li><strong>Behind particular claims:</strong> Richard Feynman, “Simulating Physics with Computers” (1982); John Bell, “On the Einstein Podolsky Rosen Paradox” (1964) and “Bertlmann’s Socks and the Nature of Reality” (1981); Clauser, Horne, Shimony and Holt (1969); Peter Shor (1994); Lov Grover (1996); Bennett, Bernstein, Brassard and Vazirani (1997); Ewin Tang (2018); John Preskill, “Quantum Computing in the NISQ Era and Beyond” (2018); Craig Gidney and Martin Ekerå (2019); Craig Gidney (2025); Google Quantum AI, “Quantum error correction below the surface code threshold” (2024); NIST FIPS 203, 204 and 205 (2024).</li>
+        <li><strong>Related here:</strong> <a href="../06-reading-hard-books/index.html">06</a> — outlining a hard book before arguing with it.</li>
+      </ul>
+
+      <p class="endnote">Topic 17 of the study notes: chapter 1 of <em>Quantum Computing Explained for Beginners</em>, written up 26 September 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var R = Math.SQRT1_2, MINUS = "−", KET = "⟩", ARROW = " → ";
+
+  function amp(x){
+    if (Math.abs(x) < 5e-4) return "0";
+    return (x < 0 ? MINUS : "+") + Math.abs(x).toFixed(3);
+  }
+  function pct(p){
+    var v = Math.round(p * 1000) / 10;
+    return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + "%";
+  }
+  function snap(v){
+    var s = [0, 1, -1, R, -R];
+    for (var i = 0; i < s.length; i++) if (Math.abs(v - s[i]) < 1e-9) return s[i];
+    return v;
+  }
+  function setAttrs(el, o){
+    for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) el.setAttribute(k, String(o[k]));
+  }
+  function each(sel, fn){ Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
+  function big(n){ return Math.round(n).toLocaleString("en-GB"); }
+
+  var DIAL =
+    '<svg class="dial" viewBox="-1.45 -1.4 2.9 2.8" role="img">' +
+      '<line class="diag" x1="-.95" y1=".95" x2=".95" y2="-.95"/>' +
+      '<line class="diag" x1="-.95" y1="-.95" x2=".95" y2=".95"/>' +
+      '<line class="axis" x1="-1.25" y1="0" x2="1.25" y2="0"/>' +
+      '<line class="axis" x1="0" y1="-1.25" x2="0" y2="1.25"/>' +
+      '<circle class="ring" cx="0" cy="0" r="1"/>' +
+      '<text x="1.06" y="-.07">|0' + KET + '</text>' +
+      '<text x=".07" y="-1.1">|1' + KET + '</text>' +
+      '<text x="-1.43" y="-.07">' + MINUS + '|0' + KET + '</text>' +
+      '<text x=".07" y="1.2">' + MINUS + '|1' + KET + '</text>' +
+      '<text class="dim" x=".9" y="-.8">|+' + KET + '</text>' +
+      '<text class="dim" x=".9" y=".86">|' + MINUS + KET + '</text>' +
+      '<line class="proj px" x1="1" y1="0" x2="1" y2="0"/>' +
+      '<line class="proj py" x1="1" y1="0" x2="0" y2="0"/>' +
+      '<line class="arrow" x1="0" y1="0" x2="1" y2="0"/>' +
+      '<circle class="tip" cx="1" cy="0" r=".055"/>' +
+    '</svg>';
+
+  /* ---------- one-qubit labs ---------- */
+  each(".qlab", function(root){
+    var mode = root.getAttribute("data-mode") || "z";
+    var a = 1, b = 0, hist = [];
+    var box = root.querySelector(".dialbox");
+    box.innerHTML = DIAL;
+    var svg = box.querySelector("svg");
+    var slider = root.querySelector(".ang");
+    var say = root.querySelector(".say");
+    var shots = root.querySelector(".shots");
+    var histEl = root.querySelector(".hist");
+
+    function paintRow(kind, am){
+      var r = root.querySelector('.rrow[data-k="' + kind + '"]');
+      if (!r) return;
+      var p = am * am;
+      r.querySelector(".amp").textContent = amp(am);
+      r.querySelector(".bar i").style.width = (p * 100).toFixed(1) + "%";
+      r.querySelector(".pc").textContent = pct(p);
+    }
+    function paint(){
+      var x = a, y = -b;
+      setAttrs(svg.querySelector(".arrow"), { x2: x, y2: y });
+      setAttrs(svg.querySelector(".tip"), { cx: x, cy: y });
+      setAttrs(svg.querySelector(".px"), { x1: x, y1: y, x2: x, y2: 0 });
+      setAttrs(svg.querySelector(".py"), { x1: x, y1: y, x2: 0, y2: y });
+      svg.setAttribute("aria-label", "The qubit as an arrow: amplitude " + amp(a) + " for 0 and " + amp(b) + " for 1");
+      paintRow("0", a);
+      paintRow("1", b);
+      paintRow("+", (a + b) * R);
+      paintRow("-", (a - b) * R);
+      if (slider) slider.value = String(Math.round(Math.atan2(b, a) * 180 / Math.PI));
+      if (histEl) {
+        var shown = hist.length > 9 ? ["…"].concat(hist.slice(-9)) : hist;
+        histEl.textContent = "Circuit: |0" + KET + (shown.length ? ARROW + shown.join(ARROW) : "");
+      }
+    }
+    function certain(v){ return Math.abs(v) < 1e-9 || Math.abs(Math.abs(v) - 1) < 1e-9; }
+    function describe(){
+      var A = Math.abs(a), B = Math.abs(b);
+      if (mode === "two") {
+        var px = (a - b) * R; px = px * px;
+        if (certain(b)) return "Certain for “0 or 1?”, a coin toss for “+ or " + MINUS + "?”.";
+        if (px < 1e-9 || px > 1 - 1e-9) return "Certain for “+ or " + MINUS + "?”, a coin toss for “0 or 1?”.";
+        return "Neither answer is certain: “0 or 1?” splits " + pct(a * a) + " / " + pct(b * b) + ", “+ or " + MINUS + "?” splits " + pct(1 - px) + " / " + pct(px) + ".";
+      }
+      var overall = " The minus sign is on the whole state, so no measurement can see it.";
+      if (B < 1e-9) return "Certain to read 0." + (a < 0 ? overall : "");
+      if (A < 1e-9) return "Certain to read 1." + (b < 0 ? overall : "");
+      if (Math.abs(A - B) < 1e-9) {
+        if (a > 0 && b > 0) return "|+" + KET + ", the equal superposition. Measured now: 50/50.";
+        if (a > 0 && b < 0) return "|" + MINUS + KET + ". Measured now it’s 50/50, like |+" + KET + ", but the minus sign sits between the parts, so it’s a different state.";
+        return "50/50 if measured now: |" + (a * b > 0 ? "+" : MINUS) + KET + " with an overall minus sign, which changes nothing measurable.";
+      }
+      return "Reads 0 with chance " + pct(a * a) + " and 1 with chance " + pct(b * b) + ".";
+    }
+    function act(name){
+      var was5050 = Math.abs(Math.abs(a) - Math.abs(b)) < 1e-9, msg = "", t;
+      if (name === "X") { t = a; a = b; b = t; hist.push("X"); }
+      else if (name === "Z") { b = -b; hist.push("Z"); }
+      else if (name === "H") { t = (a + b) * R; b = (a - b) * R; a = t; hist.push("H"); }
+      else if (name === "reset") { a = 1; b = 0; hist = []; shots.innerHTML = ""; }
+      else if (name === "m1") {
+        if (Math.random() < a * a) {
+          a = 1; b = 0; hist.push("read 0");
+          msg = "Read 0. The state is now |0" + KET + " — measure again and you’ll read 0 every time.";
+        } else {
+          a = 0; b = 1; hist.push("read 1");
+          msg = "Read 1. The state is now |1" + KET + " — measure again and you’ll read 1 every time.";
+        }
+      }
+      var n = Math.sqrt(a * a + b * b);
+      a = snap(a / n); b = snap(b / n);
+      if (!msg) {
+        msg = name === "reset" ? "Back to |0" + KET + ". Press a gate." : describe();
+        if (name === "H" && was5050 && (Math.abs(a) < 1e-9 || Math.abs(b) < 1e-9)) {
+          msg += " The two routes to " + (Math.abs(a) < 1e-9 ? "0" : "1") + " cancelled: that’s interference.";
+        }
+      }
+      paint();
+      say.textContent = msg;
+    }
+    function fire(basis){
+      var p1 = basis === "x" ? Math.pow((a - b) * R, 2) : b * b;
+      var ones = 0, cells = "";
+      for (var i = 0; i < 100; i++) {
+        var one = Math.random() < p1;
+        if (one) ones++;
+        cells += '<i class="' + (one ? "d1" : "d0") + '"></i>';
+      }
+      var q = basis === "x" ? "+ or " + MINUS + "?" : "0 or 1?";
+      var l0 = basis === "x" ? "+" : "0", l1 = basis === "x" ? MINUS : "1";
+      shots.innerHTML = '<span>100 fresh copies asked “' + q + '”: <b>' + l0 + '</b> × ' + (100 - ones) +
+        ' &middot; <b>' + l1 + '</b> × ' + ones + '</span><span class="dots" aria-hidden="true">' + cells + '</span>';
+    }
+
+    Array.prototype.forEach.call(root.querySelectorAll("[data-act]"), function(btn){
+      btn.addEventListener("click", function(){
+        var name = btn.getAttribute("data-act");
+        if (name === "m100") fire("z");
+        else if (name === "x100") fire("x");
+        else act(name);
+      });
+    });
+    if (slider) slider.addEventListener("input", function(){
+      var th = parseFloat(slider.value) * Math.PI / 180;
+      a = snap(Math.cos(th)); b = snap(Math.sin(th));
+      hist = [];
+      shots.innerHTML = "";
+      paint();
+      say.textContent = describe();
+    });
+    paint();
+  });
+
+  /* ---------- entangled pairs ---------- */
+  each(".pairs", function(root){
+    var n = 12, rowA = root.querySelector(".ba"), rowB = root.querySelector(".bb"), say = root.querySelector(".say");
+    function run(entangled){
+      var ha = "", hb = "", agree = 0;
+      for (var i = 0; i < n; i++) {
+        var x = Math.random() < 0.5 ? 1 : 0;
+        var y = entangled ? x : (Math.random() < 0.5 ? 1 : 0);
+        if (x === y) agree++;
+        ha += '<b class="' + (x ? "one" : "") + '">' + x + "</b>";
+        hb += '<b class="' + (y ? "one" : "") + (x !== y ? " miss" : "") + '">' + y + "</b>";
+      }
+      rowA.innerHTML = ha;
+      rowB.innerHTML = hb;
+      say.textContent = entangled
+        ? "Entangled: " + agree + " of " + n + " agree. Each row on its own is a run of coin tosses; side by side, they match."
+        : "Unentangled: " + agree + " of " + n + " agree, by chance. Each row on its own still looks exactly like coin tosses.";
+    }
+    root.querySelector('[data-act="ent"]').addEventListener("click", function(){ run(true); });
+    root.querySelector('[data-act="ind"]').addEventListener("click", function(){ run(false); });
+  });
+
+  /* ---------- the CHSH game ---------- */
+  each(".chsh", function(root){
+    var say = root.querySelector(".say");
+    function play(pairs){
+      var wins = 0, N = 1000;
+      for (var i = 0; i < N; i++) {
+        var x = Math.random() < 0.5 ? 1 : 0, y = Math.random() < 0.5 ? 1 : 0, ans, bns;
+        if (pairs) {
+          var ta = x ? Math.PI / 4 : 0, tb = y ? -Math.PI / 8 : Math.PI / 8;
+          ans = Math.random() < 0.5 ? 1 : 0;
+          bns = Math.random() < Math.pow(Math.cos(ta - tb), 2) ? ans : 1 - ans;
+        } else {
+          ans = 0; bns = 0;
+        }
+        if ((ans ^ bns) === (x & y)) wins++;
+      }
+      var key = pairs ? "q" : "c";
+      root.querySelector(".bar-" + key + " i").style.width = (wins / N * 100).toFixed(1) + "%";
+      root.querySelector(".pc-" + key).textContent = pct(wins / N);
+      say.textContent = pairs
+        ? "Entangled pairs won " + big(wins) + " of 1,000 rounds. Each side’s own answers were coin tosses; the pairs only beat 750 together."
+        : "The fixed plan (both always answer 0) won " + big(wins) + " of 1,000 rounds. No plan agreed in advance can average better than 75%.";
+    }
+    root.querySelector('[data-act="plan"]').addEventListener("click", function(){ play(false); });
+    root.querySelector('[data-act="pairs"]').addEventListener("click", function(){ play(true); });
+  });
+
+  /* ---------- Grover rounds ---------- */
+  each(".grover", function(root){
+    var sel = root.querySelector(".gn"), rng = root.querySelector(".gk");
+    var svg = root.querySelector(".gplot"), out = root.querySelector(".gread"), say = root.querySelector(".say");
+    var W = 300, TOP = 15, BASE = 105, N, th, best, max;
+    function P(k){ var s = Math.sin((2 * k + 1) * th); return s * s; }
+    function gp(p){ return p > 1 - 1e-9 ? "100%" : p > 0.9995 ? "over 99.9%" : pct(p); }
+    function y(p){ return BASE - p * (BASE - TOP); }
+    function draw(){
+      var k = parseInt(rng.value, 10) || 0, p = P(k);
+      var cx = max ? W * k / max : 0;
+      setAttrs(svg.querySelector(".now"), { cx: cx.toFixed(1), cy: y(p).toFixed(1) });
+      setAttrs(svg.querySelector(".vline"), { x1: cx.toFixed(1), x2: cx.toFixed(1) });
+      out.innerHTML = "<b>" + k + "</b> round" + (k === 1 ? "" : "s") + " &middot; chance of the right item <b>" + gp(p) + "</b><br>" +
+        "Peak: " + best + " round" + (best === 1 ? "" : "s") + " (" + gp(P(best)) + ") &middot; one at a time: about " + big(N / 2) + " looks on average";
+      say.textContent = k === 0
+        ? "No rounds yet: every item is equally likely, so the chance is 1 in " + big(N) + "."
+        : k < best ? "Climbing: each round turns the arrow the same small angle towards the answer."
+        : k === best ? "The peak. Stop here and measure."
+        : "Past the peak: the arrow has turned beyond the answer, so the chance is falling again.";
+    }
+    function setup(){
+      N = parseInt(sel.value, 10);
+      th = Math.asin(1 / Math.sqrt(N));
+      best = Math.max(1, Math.round(Math.PI / (4 * th) - 0.5));
+      max = 2 * best + 1;
+      rng.max = String(max);
+      if ((parseInt(rng.value, 10) || 0) > max) rng.value = "0";
+      var pts = [], steps = 300;
+      for (var i = 0; i <= steps; i++) {
+        var t = max * i / steps, s = Math.sin((2 * t + 1) * th);
+        pts.push((W * i / steps).toFixed(1) + "," + y(s * s).toFixed(1));
+      }
+      svg.querySelector(".curve").setAttribute("points", pts.join(" "));
+      draw();
+    }
+    sel.addEventListener("change", function(){ rng.value = "0"; setup(); });
+    rng.addEventListener("input", draw);
+    Array.prototype.forEach.call(root.querySelectorAll("[data-act]"), function(btn){
+      btn.addEventListener("click", function(){
+        var k = parseInt(rng.value, 10) || 0, name = btn.getAttribute("data-act");
+        if (name === "dec") k = Math.max(0, k - 1);
+        else if (name === "inc") k = Math.min(max, k + 1);
+        else k = best;
+        rng.value = String(k);
+        draw();
+      });
+    });
+    setup();
+  });
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "quantum.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "quantum.voice.v1", RTK = "quantum.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In the chapter|Watch for|Drill|Tap to reveal)$/;
+  /* read the notation aloud sensibly: |0⟩ as "ket 0", superscripts as powers */
+  var SAY = [
+    [/\|([^|\u27E9\s]{1,3})\u27E9/g, " ket $1 "],
+    [/\u03B1/g, " alpha "], [/\u03B2/g, " beta "], [/\u03C0/g, " pi "],
+    [/\u221A/g, " root "], [/\u2248/g, " about "], [/\u00D7/g, " times "], [/\u00F7/g, " divided by "],
+    [/\u2212/g, " minus "], [/\u2192/g, " to "], [/\u00B0/g, " degrees "]
+  ];
+  function speakable(el){
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll(".block-label"), function(x){ x.textContent = x.textContent + ": "; });
+    Array.prototype.forEach.call(c.querySelectorAll("sup"), function(x){
+      var s = x.textContent.trim();
+      x.textContent = s === "2" ? " squared " : s === "3" ? " cubed " : " to the " + s + " ";
+    });
+    var t = c.textContent;
+    SAY.forEach(function(r){ t = t.replace(r[0], r[1]); });
+    return t;
+  }
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead") || el.closest(".lab") || el.closest("details")) return;
+      var t = speakable(el).replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    /* split only where punctuation is followed by a space, so 0.707 stays whole */
+    var bits = text.split(/([.!?…]+\s+)/), sentences = [];
+    for (var i = 0; i < bits.length; i += 2) sentences.push(bits[i] + (bits[i + 1] || ""));
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move:not([data-noread])")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+<script>
+/* jump strip: show which section you're in, and which moves are marked done */
+(function(){
+  "use strict";
+  var strip = document.querySelector(".jump-in");
+  if (!strip) return;
+  var links = Array.prototype.slice.call(strip.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var smooth = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var current = -2, ticking = false;
+  function mark(){
+    ticking = false;
+    if (strip.offsetParent === null) return;
+    var line = strip.getBoundingClientRect().bottom + 32, best = -1;
+    targets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= line) best = i; });
+    if (best === current) return;
+    current = best;
+    links.forEach(function(a, i){
+      a.classList.toggle("active", i === best);
+      if (i === best) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+    if (best >= 0) {
+      var a = links[best], left = a.offsetLeft - (strip.clientWidth - a.offsetWidth) / 2;
+      if (strip.scrollTo) strip.scrollTo({ left: left, behavior: smooth ? "smooth" : "auto" });
+      else strip.scrollLeft = left;
+    }
+  }
+  function done(){
+    Array.prototype.forEach.call(document.querySelectorAll(".revbox"), function(b){
+      var art = b.closest("article");
+      var a = art && strip.querySelector('a[href="#' + art.id + '"]');
+      if (a) a.classList.toggle("done", b.checked);
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(mark); }
+  }, { passive: true });
+  window.addEventListener("resize", function(){ current = -2; mark(); });
+  document.addEventListener("change", function(e){
+    if (e.target && e.target.classList && e.target.classList.contains("revbox")) done();
+  });
+  done();
+  mark();
+})();
+</script>
+</body>
+</html>

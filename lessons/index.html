@@ -303,6 +303,27 @@ html{ scroll-behavior:smooth; }
 .cathead .catn{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); white-space:nowrap; }
 .catline{ margin:.45rem 0 0; color:var(--muted); font-size:.95rem; max-width:40rem; }
 .cat .topics{ margin-top:1.1rem; }
+
+/* ---------- jump strip: one numbered square per topic ---------- */
+.jump{ border-top:1px solid var(--line-soft); }
+.jump-in{
+  display:flex; align-items:center; gap:.3rem; overflow-x:auto; padding-block:.4rem;
+  scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+}
+.jump-in::-webkit-scrollbar{ display:none; }
+@media (max-width:760px){
+  .jump-in{
+    -webkit-mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+            mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  }
+}
+.jump a{
+  flex:none; min-width:2.1rem; height:2.1rem; padding-inline:.35rem; display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.76rem; line-height:1; color:var(--muted); text-decoration:none;
+  background:var(--card); border:1px solid var(--line); border-radius:2px;
+}
+.jump a:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.cat{ scroll-margin-top:7.4rem; }
 </style>
 </head>
 <body>
@@ -310,6 +331,27 @@ html{ scroll-behavior:smooth; }
   <div class="wrap topbar-in">
     <p class="mark"><b>Study Notes</b><span class="mark-sub"> &nbsp;/&nbsp; one folder per topic</span></p>
   </div>
+  <nav class="jump" aria-label="Open a topic">
+    <div class="wrap jump-in">
+      <a href="01-communication/index.html" aria-label="Topic 1: Communication">01</a>
+      <a href="02-money/index.html" aria-label="Topic 2: Money">02</a>
+      <a href="03-storytelling/index.html" aria-label="Topic 3: Storytelling">03</a>
+      <a href="04-market-timing/index.html" aria-label="Topic 4: Market timing">04</a>
+      <a href="05-sources-of-inspiration/index.html" aria-label="Topic 5: Sources of inspiration">05</a>
+      <a href="06-reading-hard-books/index.html" aria-label="Topic 6: Reading hard books">06</a>
+      <a href="07-love-and-relationships/index.html" aria-label="Topic 7: Love and relationships">07</a>
+      <a href="08-buying-gold/index.html" aria-label="Topic 8: Buying gold">08</a>
+      <a href="09-finding-your-voice/index.html" aria-label="Topic 9: Finding your voice">09</a>
+      <a href="10-building-a-story/index.html" aria-label="Topic 10: Building a story">10</a>
+      <a href="11-short-stories/index.html" aria-label="Topic 11: Short stories">11</a>
+      <a href="12-conflict/index.html" aria-label="Topic 12: Conflict">12</a>
+      <a href="13-becoming-a-writer/index.html" aria-label="Topic 13: Becoming a writer">13</a>
+      <a href="14-lessons-from-the-cia/index.html" aria-label="Topic 14: Lessons from the CIA">14</a>
+      <a href="15-character-and-dialogue/index.html" aria-label="Topic 15: Character and dialogue">15</a>
+      <a href="16-polymaths/index.html" aria-label="Topic 16: The psychology of polymaths">16</a>
+      <a href="17-quantum-computing/index.html" aria-label="Topic 17: Quantum computing">17</a>
+    </div>
+  </nav>
 </header>
 
 <section class="hero">
@@ -318,10 +360,10 @@ html{ scroll-behavior:smooth; }
     <h1>Notes that survive <em>the week after watching.</em></h1>
     <p class="standfirst">Each topic is a study page that unpacks one lecture &mdash; sourced, checked where there are numbers, and with a drill for each idea. The study pages read themselves aloud, so a topic can be revised while the next one is loading.</p>
     <div class="metarow">
-      <span><b>16 topics</b> in 4 categories</span>
+      <span><b>17 topics</b> in 5 categories</span>
       <span>Notes from <b>20&ndash;26 Sep 2026</b></span>
     </div>
-      <nav class="catnav" aria-label="Categories"><a href="#cat-writing">Writing &amp; storytelling<b>7</b></a><a href="#cat-people">People &amp; conversation<b>3</b></a><a href="#cat-thinking">Thinking &amp; judgement<b>3</b></a><a href="#cat-money">Money<b>3</b></a></nav>
+      <nav class="catnav" aria-label="Categories"><a href="#cat-writing">Writing &amp; storytelling<b>7</b></a><a href="#cat-people">People &amp; conversation<b>3</b></a><a href="#cat-thinking">Thinking &amp; judgement<b>3</b></a><a href="#cat-science">Science &amp; technology<b>1</b></a><a href="#cat-money">Money<b>3</b></a></nav>
   </div>
 </section>
 
@@ -474,6 +516,24 @@ html{ scroll-behavior:smooth; }
         <span class="meta">Video summary &mdash; <b>How to Read a Book</b></span>
       </span>
       <span class="count">11 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    </ul>
+  </section>
+
+  <section class="cat" id="cat-science">
+    <div class="cathead"><h2>Science &amp; technology</h2><span class="rule"></span><span class="catn">1 topic</span></div>
+    <p class="catline">Physics and computing, rebuilt in the order the ideas depend on each other.</p>
+    <ul class="topics">
+
+    <li class="topic">
+      <span class="n">17</span>
+      <span class="body">
+        <span class="name"><a href="17-quantum-computing/index.html">Quantum computing</a></span>
+        <span class="head">Not every answer at once &mdash; the wrong ones cancel</span>
+        <span class="meta">Book &mdash; <b>Quantum Computing Explained for Beginners</b></span>
+      </span>
+      <span class="count">14 moves <span class="arrow">&rarr;</span></span>
     </li>
 
     </ul>

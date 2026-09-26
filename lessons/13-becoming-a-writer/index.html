@@ -302,6 +302,28 @@ html{ scroll-behavior:smooth; }
 .tl .ev::before{ content:""; position:absolute; left:calc(-1.1rem - 5px); top:.45rem; width:8px; height:8px; border-radius:50%; background:var(--accent); }
 .tl .ev .when{ display:block; font-family:var(--f-mono); font-size:.72rem; letter-spacing:.06em; color:var(--bronze); }
 .tl .ev p{ margin:.15rem 0 0; font-size:.98rem; line-height:1.5; }
+
+/* ---------- jump strip: numbered squares for phones and tablets, where the rail is hidden ---------- */
+.jump{ border-top:1px solid var(--line-soft); }
+.jump-in{
+  position:relative; display:flex; align-items:center; gap:.3rem; overflow-x:auto; padding-block:.4rem;
+  scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+          mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.jump-in::-webkit-scrollbar{ display:none; }
+.jump a{
+  flex:none; min-width:2.1rem; height:2.1rem; padding-inline:.35rem; display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.76rem; line-height:1; color:var(--muted); text-decoration:none;
+  background:var(--card); border:1px solid var(--line); border-radius:2px;
+}
+.jump a:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.jump a.home{ font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); }
+.jump a.done{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.jump a.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.jump .jsep{ flex:none; width:1px; height:1.3rem; background:var(--line); margin-inline:.25rem; }
+@media (min-width:1080px){ .jump{ display:none; } }
+@media (max-width:1079px){ .move{ scroll-margin-top:7.8rem; } }
 </style>
 </head>
 <body>
@@ -315,6 +337,29 @@ html{ scroll-behavior:smooth; }
       <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
     </div>
   </div>
+  <nav class="jump" aria-label="Jump to a section">
+    <div class="wrap jump-in">
+      <a class="home" href="../index.html" aria-label="All topics">All</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m1" aria-label="1. Evoke, don&rsquo;t express">1</a>
+      <a href="#m2" aria-label="2. A score, not a performance">2</a>
+      <a href="#m3" aria-label="3. The reader decides">3</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m4" aria-label="4. The north woods">4</a>
+      <a href="#m5" aria-label="5. Obituaries and fashion">5</a>
+      <a href="#m6" aria-label="6. The lost manuscript">6</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m7" aria-label="7. Never start with an idea">7</a>
+      <a href="#m8" aria-label="8. Downhill skier">8</a>
+      <a href="#m9" aria-label="9. Immerse first">9</a>
+      <a href="#m10" aria-label="10. Name the fear">10</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#quiz" aria-label="Self&#8209;quiz">?</a>
+      <a href="#verify" aria-label="To check">!</a>
+      <a href="#mine" aria-label="What&rsquo;s mine">&#9679;</a>
+      <a href="#sources" aria-label="Sources">&sect;</a>
+    </div>
+  </nav>
 </header>
 
 <section class="hero">
@@ -918,6 +963,51 @@ html{ scroll-behavior:smooth; }
   });
   stopBtn.addEventListener("click", stopAll);
   window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+<script>
+/* jump strip: show which section you're in, and which moves are marked done */
+(function(){
+  "use strict";
+  var strip = document.querySelector(".jump-in");
+  if (!strip) return;
+  var links = Array.prototype.slice.call(strip.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var smooth = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var current = -2, ticking = false;
+  function mark(){
+    ticking = false;
+    if (strip.offsetParent === null) return;
+    var line = strip.getBoundingClientRect().bottom + 32, best = -1;
+    targets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= line) best = i; });
+    if (best === current) return;
+    current = best;
+    links.forEach(function(a, i){
+      a.classList.toggle("active", i === best);
+      if (i === best) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+    if (best >= 0) {
+      var a = links[best], left = a.offsetLeft - (strip.clientWidth - a.offsetWidth) / 2;
+      if (strip.scrollTo) strip.scrollTo({ left: left, behavior: smooth ? "smooth" : "auto" });
+      else strip.scrollLeft = left;
+    }
+  }
+  function done(){
+    Array.prototype.forEach.call(document.querySelectorAll(".revbox"), function(b){
+      var art = b.closest("article");
+      var a = art && strip.querySelector('a[href="#' + art.id + '"]');
+      if (a) a.classList.toggle("done", b.checked);
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(mark); }
+  }, { passive: true });
+  window.addEventListener("resize", function(){ current = -2; mark(); });
+  document.addEventListener("change", function(e){
+    if (e.target && e.target.classList && e.target.classList.contains("revbox")) done();
+  });
+  done();
+  mark();
 })();
 </script>
 </body>
