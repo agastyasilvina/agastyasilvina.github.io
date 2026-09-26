@@ -288,6 +288,21 @@ html{ scroll-behavior:smooth; }
   .topic{ grid-template-columns:2.2rem minmax(0,1fr); }
   .topic .count{ grid-column:2; justify-self:start; margin-top:.45rem; }
 }
+
+/* ---------- categories ---------- */
+.catnav{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.4rem; }
+.catnav a{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.04em; text-decoration:none; color:var(--accent-ink);
+  border:1px solid var(--line); border-radius:2px; padding:.32rem .6rem; background:var(--card); }
+.catnav a:hover{ border-color:var(--accent); }
+.catnav a b{ font-weight:400; color:var(--muted); margin-left:.45rem; }
+.cat{ margin-top:3.2rem; scroll-margin-top:4.5rem; }
+.cat:first-of-type{ margin-top:2.4rem; }
+.cathead{ display:flex; align-items:baseline; gap:.9rem; }
+.cathead h2{ font-family:var(--f-display); font-weight:400; font-size:clamp(1.6rem,3.6vw,2.1rem); line-height:1.1; margin:0; }
+.cathead .rule{ flex:1; height:1px; background:var(--line); }
+.cathead .catn{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); white-space:nowrap; }
+.catline{ margin:.45rem 0 0; color:var(--muted); font-size:.95rem; max-width:40rem; }
+.cat .topics{ margin-top:1.1rem; }
 </style>
 </head>
 <body>
@@ -303,23 +318,27 @@ html{ scroll-behavior:smooth; }
     <h1>Notes that survive <em>the week after watching.</em></h1>
     <p class="standfirst">Each topic is a study page that unpacks one lecture &mdash; sourced, checked where there are numbers, and with a drill for each idea. The study pages read themselves aloud, so a topic can be revised while the next one is loading.</p>
     <div class="metarow">
-      <span><b>14 topics</b> so far</span>
-      <span>Notes from <b>20&ndash;24 Sep 2026</b></span>
+      <span><b>15 topics</b> in 4 categories</span>
+      <span>Notes from <b>20&ndash;26 Sep 2026</b></span>
     </div>
+      <nav class="catnav" aria-label="Categories"><a href="#cat-writing">Writing &amp; storytelling<b>7</b></a><a href="#cat-people">People &amp; conversation<b>3</b></a><a href="#cat-thinking">Thinking &amp; judgement<b>2</b></a><a href="#cat-money">Money<b>3</b></a></nav>
   </div>
 </section>
 
 <div class="wrap" style="padding-block:0 4rem;">
-  <ul class="topics">
+  <section class="cat" id="cat-writing">
+    <div class="cathead"><h2>Writing &amp; storytelling</h2><span class="rule"></span><span class="catn">7 topics</span></div>
+    <p class="catline">Neil Gaiman&rsquo;s class on the art of storytelling, and Margaret Atwood&rsquo;s on writing.</p>
+    <ul class="topics">
 
     <li class="topic">
-      <span class="n">14</span>
+      <span class="n">15</span>
       <span class="body">
-        <span class="name"><a href="14-lessons-from-the-cia/index.html">Lessons from the CIA</a></span>
-        <span class="head">Say what you think &mdash; and how sure you are</span>
-        <span class="meta">MasterClass &mdash; <b>Morell, Meyerriecks, Carbaugh</b></span>
+        <span class="name"><a href="15-character-and-dialogue/index.html">Character and dialogue</a></span>
+        <span class="head">Dialogue is character &mdash; so listen to it</span>
+        <span class="meta">MasterClass &mdash; <b>Neil Gaiman</b></span>
       </span>
-      <span class="count">14 moves <span class="arrow">&rarr;</span></span>
+      <span class="count">11 moves <span class="arrow">&rarr;</span></span>
     </li>
 
     <li class="topic">
@@ -330,16 +349,6 @@ html{ scroll-behavior:smooth; }
         <span class="meta">MasterClass &mdash; <b>Margaret Atwood</b></span>
       </span>
       <span class="count">10 moves <span class="arrow">&rarr;</span></span>
-    </li>
-
-    <li class="topic">
-      <span class="n">12</span>
-      <span class="body">
-        <span class="name"><a href="12-conflict/index.html">Conflict</a></span>
-        <span class="head">It&rsquo;s not the conflict &mdash; it&rsquo;s how you handle it</span>
-        <span class="meta">MasterClass &mdash; <b>Amanda Ripley</b></span>
-      </span>
-      <span class="count">16 moves <span class="arrow">&rarr;</span></span>
     </li>
 
     <li class="topic">
@@ -373,51 +382,11 @@ html{ scroll-behavior:smooth; }
     </li>
 
     <li class="topic">
-      <span class="n">08</span>
-      <span class="body">
-        <span class="name"><a href="08-buying-gold/index.html">Buying gold</a></span>
-        <span class="head">What you want gold for decides how to hold it</span>
-        <span class="meta">Video summary &mdash; <b>one investor&rsquo;s stack</b></span>
-      </span>
-      <span class="count">13 moves <span class="arrow">&rarr;</span></span>
-    </li>
-
-    <li class="topic">
-      <span class="n">07</span>
-      <span class="body">
-        <span class="name"><a href="07-love-and-relationships/index.html">Love and relationships</a></span>
-        <span class="head">More has stayed the same about love than has changed</span>
-        <span class="meta">MasterClass &mdash; <b>Ryan Holiday</b> &amp; guests &middot; <a class="raw" href="07-love-and-relationships/notes.md">My notes</a></span>
-      </span>
-      <span class="count">13 moves <span class="arrow">&rarr;</span></span>
-    </li>
-
-    <li class="topic">
-      <span class="n">06</span>
-      <span class="body">
-        <span class="name"><a href="06-reading-hard-books/index.html">Reading hard books</a></span>
-        <span class="head">The author knows more than you &mdash; that&rsquo;s the point</span>
-        <span class="meta">Video summary &mdash; <b>How to Read a Book</b></span>
-      </span>
-      <span class="count">11 moves <span class="arrow">&rarr;</span></span>
-    </li>
-
-    <li class="topic">
       <span class="n">05</span>
       <span class="body">
         <span class="name"><a href="05-sources-of-inspiration/index.html">Sources of inspiration</a></span>
         <span class="head">Where do you get your ideas? Two things, colliding</span>
         <span class="meta">MasterClass &mdash; <b>Neil Gaiman</b></span>
-      </span>
-      <span class="count">11 moves <span class="arrow">&rarr;</span></span>
-    </li>
-
-    <li class="topic">
-      <span class="n">04</span>
-      <span class="body">
-        <span class="name"><a href="04-market-timing/index.html">Market timing</a></span>
-        <span class="head">Call every bottom perfectly and still finish behind</span>
-        <span class="meta">Video summary &mdash; <b>Just Keep Buying</b></span>
       </span>
       <span class="count">11 moves <span class="arrow">&rarr;</span></span>
     </li>
@@ -432,14 +401,32 @@ html{ scroll-behavior:smooth; }
       <span class="count">13 moves <span class="arrow">&rarr;</span></span>
     </li>
 
+    </ul>
+  </section>
+
+  <section class="cat" id="cat-people">
+    <div class="cathead"><h2>People &amp; conversation</h2><span class="rule"></span><span class="catn">3 topics</span></div>
+    <p class="catline">Talking, loving and disagreeing well &mdash; the ancients by way of Ryan Holiday, and Amanda Ripley on conflict.</p>
+    <ul class="topics">
+
     <li class="topic">
-      <span class="n">02</span>
+      <span class="n">12</span>
       <span class="body">
-        <span class="name"><a href="02-money/index.html">Money</a></span>
-        <span class="head">Spend extravagantly on what you love, cut mercilessly on what you don&rsquo;t</span>
-        <span class="meta">Video summary &mdash; <b>Ramit Sethi</b></span>
+        <span class="name"><a href="12-conflict/index.html">Conflict</a></span>
+        <span class="head">It&rsquo;s not the conflict &mdash; it&rsquo;s how you handle it</span>
+        <span class="meta">MasterClass &mdash; <b>Amanda Ripley</b></span>
       </span>
-      <span class="count">14 rules <span class="arrow">&rarr;</span></span>
+      <span class="count">16 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">07</span>
+      <span class="body">
+        <span class="name"><a href="07-love-and-relationships/index.html">Love and relationships</a></span>
+        <span class="head">More has stayed the same about love than has changed</span>
+        <span class="meta">MasterClass &mdash; <b>Ryan Holiday</b> &amp; guests &middot; <a class="raw" href="07-love-and-relationships/notes.md">My notes</a></span>
+      </span>
+      <span class="count">13 moves <span class="arrow">&rarr;</span></span>
     </li>
 
     <li class="topic">
@@ -452,7 +439,74 @@ html{ scroll-behavior:smooth; }
       <span class="count">9 moves <span class="arrow">&rarr;</span></span>
     </li>
 
-  </ul>
+    </ul>
+  </section>
+
+  <section class="cat" id="cat-thinking">
+    <div class="cathead"><h2>Thinking &amp; judgement</h2><span class="rule"></span><span class="catn">2 topics</span></div>
+    <p class="catline">Reading what&rsquo;s over your head, and how intelligence analysts decide under uncertainty.</p>
+    <ul class="topics">
+
+    <li class="topic">
+      <span class="n">14</span>
+      <span class="body">
+        <span class="name"><a href="14-lessons-from-the-cia/index.html">Lessons from the CIA</a></span>
+        <span class="head">Say what you think &mdash; and how sure you are</span>
+        <span class="meta">MasterClass &mdash; <b>Morell, Meyerriecks, Carbaugh</b></span>
+      </span>
+      <span class="count">14 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">06</span>
+      <span class="body">
+        <span class="name"><a href="06-reading-hard-books/index.html">Reading hard books</a></span>
+        <span class="head">The author knows more than you &mdash; that&rsquo;s the point</span>
+        <span class="meta">Video summary &mdash; <b>How to Read a Book</b></span>
+      </span>
+      <span class="count">11 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    </ul>
+  </section>
+
+  <section class="cat" id="cat-money">
+    <div class="cathead"><h2>Money</h2><span class="rule"></span><span class="catn">3 topics</span></div>
+    <p class="catline">Spending plans, when to invest, and gold. Study notes, not financial advice.</p>
+    <ul class="topics">
+
+    <li class="topic">
+      <span class="n">08</span>
+      <span class="body">
+        <span class="name"><a href="08-buying-gold/index.html">Buying gold</a></span>
+        <span class="head">What you want gold for decides how to hold it</span>
+        <span class="meta">Video summary &mdash; <b>one investor&rsquo;s stack</b></span>
+      </span>
+      <span class="count">13 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">04</span>
+      <span class="body">
+        <span class="name"><a href="04-market-timing/index.html">Market timing</a></span>
+        <span class="head">Call every bottom perfectly and still finish behind</span>
+        <span class="meta">Video summary &mdash; <b>Just Keep Buying</b></span>
+      </span>
+      <span class="count">11 moves <span class="arrow">&rarr;</span></span>
+    </li>
+
+    <li class="topic">
+      <span class="n">02</span>
+      <span class="body">
+        <span class="name"><a href="02-money/index.html">Money</a></span>
+        <span class="head">Spend extravagantly on what you love, cut mercilessly on what you don&rsquo;t</span>
+        <span class="meta">Video summary &mdash; <b>Ramit Sethi</b></span>
+      </span>
+      <span class="count">14 rules <span class="arrow">&rarr;</span></span>
+    </li>
+
+    </ul>
+  </section>
 
 </div>
 </body>
