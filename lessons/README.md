@@ -34,6 +34,7 @@ Grouped the same way as the contents page, newest first within each group.
 
 | # | Topic | Source |
 | --- | --- | --- |
+| 16 | [The psychology of polymaths](16-polymaths/index.html) — what the laureates and athletes research does and doesn't show, cognitive entrenchment, three advantages of breadth, and why the collector isn't a polymath. | Video — PsychToons |
 | 14 | [Lessons from the CIA](14-lessons-from-the-cia/index.html) — trust and listening, reading people against their baseline, owning a role, bad news upwards, the Iraq biases, confidence levels, and 95/80/60 at Abbottabad. | MasterClass, Michael Morell, Dawn Meyerriecks and Brian Carbaugh |
 | 06 | [Reading hard books](06-reading-hard-books/index.html) — active reading, the four levels, the nine rules of analytical reading, and making books come to terms with you. | Video summary of Mortimer J. Adler, *How to Read a Book* |
 
@@ -48,8 +49,8 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 16-<topic-slug>
-# build 16-<topic-slug>/index.html
+mkdir 17-<topic-slug>
+# build 17-<topic-slug>/index.html
 # then add its row to the right category in index.html
 ```
 

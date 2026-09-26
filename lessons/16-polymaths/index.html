@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Serious Amateurs</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Serious Amateurs</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 16 &middot; The psychology of polymaths</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 16 &middot; Why many interests can be an advantage</p>
+    <h1>Breadth pays &mdash; <em>if you finish things.</em></h1>
+    <p class="standfirst">For anyone whose honest answer to &ldquo;what do you do?&rdquo; is a list. The video argues that restless curiosity isn&rsquo;t a lack of discipline but a pattern common among people at the top of their fields, and backs it with real research. The research is good. It also says slightly less than the video claims, and the most useful part of the argument is the warning near the end: there&rsquo;s a counterfeit version of all this, and it looks exactly like the real one from the inside.</p>
+    <div class="metarow">
+      <span><b>12 moves</b> in four arcs</span>
+      <span>Video &mdash; <b>PsychToons</b></span>
+      <span>Notes taken <b>26 Sep 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The twelve moves">
+    <p class="arclabel">The claim</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> A list, not a label</a></li>
+      <li><a href="#m2"><span class="n">2</span> What the laureates did</a></li>
+      <li><a href="#m3"><span class="n">3</span> Sample first</a></li>
+    </ol>
+    <p class="arclabel">How it works</p>
+    <ol>
+      <li><a href="#m4"><span class="n">4</span> Transfer</a></li>
+      <li><a href="#m5"><span class="n">5</span> The single crop</a></li>
+    </ol>
+    <p class="arclabel">Three advantages</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> Import ideas</a></li>
+      <li><a href="#m7"><span class="n">7</span> Know how not to know</a></li>
+      <li><a href="#m8"><span class="n">8</span> Own an intersection</a></li>
+    </ol>
+    <p class="arclabel">The bill, and the way out</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> The world can&rsquo;t read you</a></li>
+      <li><a href="#m10"><span class="n">10</span> Finish things</a></li>
+      <li><a href="#m11"><span class="n">11</span> Build the bridges</a></li>
+      <li><a href="#m12"><span class="n">12</span> Go deep in seasons</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What&rsquo;s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;12 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">This topic has a lot of company in these notes. Gaiman said ideas are two things colliding (<a href="../05-sources-of-inspiration/index.html">05</a>); Atwood said ideas come from immersion in a craft (<a href="../13-becoming-a-writer/index.html">13</a>); the CIA officers said the mix of skill sets in a room is where the creativity comes from (<a href="../14-lessons-from-the-cia/index.html">14</a>). This video makes the case for the person who carries several fields around inside one head &mdash; and then, usefully, says what separates that person from someone who merely starts a lot of things.</p>
+
+    <div class="arc"><h2>Arc A &middot; The claim</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>A list, not a label</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">Who the video is for</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Last month photography; before that coding, psychology, music theory, a language you may never use. Five unfinished projects, browser tabs from five worlds, and one recurring question: why can&rsquo;t I just pick one thing? Everyone else introduces themselves in a word &mdash; designer, accountant, lawyer &mdash; and your honest answer is a list. People call it unfocused; jack of all trades, master of none. The video&rsquo;s claim is the opposite: that restless curiosity is one of the most reliable patterns among people who reach the top of their fields.</p>
+
+      <p>The vocabulary is worth having. <strong>Polymathy</strong> is the serious pursuit of several fields across a lifetime. <strong>Multipotentialite</strong> is the more recent word for a person with many interests and no single calling &mdash; coined by the writer Emilie Wapnick, and popular because it names a feeling a lot of people had assumed was a personal failing.</p>
+      <p>Hold on to one word in the definition, because the whole video turns on it by the end: <em>serious</em>. The claim isn&rsquo;t that having many interests makes you exceptional. It&rsquo;s that pursuing several of them seriously can.</p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>What the laureates did</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">The strongest evidence the video offers</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Robert and Michèle Root-Bernstein spent years studying Nobel laureates and comparing them with ordinary members of their professions. Laureates were far more likely to have serious interests outside their field &mdash; they painted, played instruments, wrote poetry, made things. And many described those side interests as a deliberate strategy: the fuel for their best ideas. The people at the peak weren&rsquo;t the narrowest. They were the broadest.</p>
+
+      <p>This is real research and a striking finding: the most eminent scientists were markedly more likely than typical scientists to paint, play music, write or perform as amateurs. It&rsquo;s the best-known evidence that arts and crafts correlate with scientific distinction.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>Three things the video skips. First, the well-known Root-Bernstein study is of <b>scientists</b> &mdash; Nobel laureates in the sciences compared with members of scientific societies. The video&rsquo;s &ldquo;science, literature, economics and peace&rdquo; stretches it. Second, it&rsquo;s a <b>correlation</b>. Laureates having more hobbies could mean hobbies help, or that unusually energetic, curious, well-resourced people both win prizes and take up hobbies. Third, &ldquo;it was a deliberate strategy&rdquo; is what the laureates <b>said about themselves</b> &mdash; honest, probably, but self-report, told after the success. None of this sinks the finding. It means it supports &ldquo;breadth is compatible with the very top, and often goes with it&rdquo; more firmly than &ldquo;breadth causes it&rdquo;.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Sample first, specialise later</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">Why a broad start can look like falling behind</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>In 2022, Arne Güllich, Brooke Macnamara and David Hambrick published an analysis of about six thousand athletes, including hundreds of world-class performers. The world-class athletes usually <b>hadn&rsquo;t</b> specialised early: they sampled several sports, started their main one later, and <b>progressed more slowly at first</b> than athletes who peaked at national level. The same pattern, they noted, shows up among Nobel laureates in science compared with winners of lesser awards.</p>
+
+      <p>The line the video builds on this is memorable: if your twenties or thirties feel like a mess of exploring and restarting, you may be in your <strong>sampling period</strong> &mdash; the phase the best performers went through before anyone knew their names. <em>You are not late. You are loading.</em></p>
+      <p>The most useful part of the finding isn&rsquo;t &ldquo;sample&rdquo;. It&rsquo;s <strong>&ldquo;slower early progress&rdquo;</strong>. The people who ended up best looked worse at the start. That means early comparisons with narrow, fast-starting peers are measuring the wrong thing &mdash; which is a relief if you&rsquo;re the one being compared.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>This is a study of <b>athletes</b>, and the jump from sport to careers is an extrapolation &mdash; plausible, popular, and not the same as evidence. The broader argument is made at length in David Epstein&rsquo;s book <em>Range</em> (2019), which is where most of this video&rsquo;s ideas travel from. Also note the direction of the finding: world-class athletes <b>sampled, and then specialised</b>. Sampling was the start of the path, not the whole of it &mdash; which is exactly the point of <a href="#m12">move 12</a>.</p>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; How it works</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Transfer</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">Carrying a pattern across a border</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Your brain doesn&rsquo;t store learning in sealed boxes. Every field teaches you more than facts: patterns, structures, ways a problem can be shaped. Carry a pattern from one world into another and you can see a solution the people inside that world can&rsquo;t &mdash; because to them it looks brand new, and to you it looks familiar.</p>
+
+      <p>That last sentence is the whole mechanism, and it&rsquo;s the same one Gaiman called <strong>confluence</strong> in <a href="../05-sources-of-inspiration/index.html">topic 05</a>: an idea is two things you already have, meeting for the first time. The polymath simply has more unlike things on hand to collide.</p>
+
+      <p class="flag"><span class="block-label">Watch for</span>&ldquo;Transfer&rdquo; needs care, because in psychology <b>far transfer</b> &mdash; a skill learned in one domain improving performance in an unrelated one &mdash; is one of the field&rsquo;s more disappointing findings. Large meta-analyses (Sala and Gobet among them) find that training in chess, music or working-memory games does little for general ability. What the video describes is something narrower and better supported: <b>analogy</b> &mdash; consciously recognising that a problem here has the same shape as one you&rsquo;ve seen there. That doesn&rsquo;t happen automatically; it happens when you go looking, which is exactly <a href="#m11">move 11</a>.</p>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>The single crop</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">Cognitive entrenchment</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>The researcher Erik Dane, in the <em>Academy of Management Review</em>, gave the specialist&rsquo;s risk a name: <b>cognitive entrenchment</b>. The deeper someone goes into one domain, the more stable their mental map becomes. Stability makes them fast &mdash; and rigid. They stop questioning the map, and start rejecting whatever doesn&rsquo;t fit it. Expertise hardens into a cage.</p>
+
+      <p>The video&rsquo;s image is farming. A field planted with one crop is efficient until one disease arrives that the crop can&rsquo;t resist, and the whole field dies in a season. A forest is messier and slower, but almost nothing can wipe out that much variety at once. <strong>The specialist is the single crop; the polymath is the forest.</strong></p>
+      <p>Dane&rsquo;s point is subtler than &ldquo;experts are rigid&rdquo;, and worth stating fairly: entrenchment is the <em>cost</em> of the same stable knowledge that makes experts fast and accurate. It isn&rsquo;t a reason to avoid expertise; it&rsquo;s a reason to keep some of your attention outside it. You can see the same fix in <a href="../12-conflict/index.html">topic 12</a>, where organisations rotate people through other roles to stop groups hardening into camps.</p>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; Three advantages</h2><span class="rule"></span><span class="cnt">3 moves</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>You can import ideas</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Advantage one</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>A team has been stuck on the same problem for weeks &mdash; same degrees, same training, same mental map, all searching the same small territory. Then someone connects it to something from a completely different world: a principle from biology, a trick from game design, a structure from storytelling. The room goes quiet, because it works. Specialists can&rsquo;t make that move &mdash; not for lack of intelligence, but because you can&rsquo;t import from a country you&rsquo;ve never visited.</p>
+
+      <p>The image to keep: every interest you&rsquo;ve pursued is a border you&rsquo;ve crossed, and your &ldquo;scattered past&rdquo; is really <strong>a network of trade routes, with ideas as the cargo</strong>.</p>
+      <p>Notice who wins in the meeting story. It isn&rsquo;t the person with the most interests. It&rsquo;s the person who <em>connected</em> one of them to the problem in front of everyone. The advantage only pays out at the moment of connection &mdash; which is why the video eventually has to tell you to build those connections deliberately.</p>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>You know how not to know</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">Advantage two &mdash; immunity to the expert&rsquo;s disease</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Every field eventually changes: new technology, new rules, and the map it took a specialist twenty years to build is wrong in twenty months. For them that&rsquo;s an identity crisis, because their whole sense of self was planted in one crop. You&rsquo;ve lived through that shift many times on a small scale, every time you started a new field as a beginner. <b>You know how to not know.</b> You know the clumsy first weeks, and you know they pass.</p>
+
+      <p>This is the most persuasive of the three, because it doesn&rsquo;t depend on being brilliant at anything. It depends on <strong>familiarity with being bad at something and staying anyway</strong>. That is a trainable tolerance, and most specialists haven&rsquo;t practised it since they were students.</p>
+      <p>It also ties back to <a href="#m5">move 5</a>: Dane suggests that working on tasks outside your main domain is one way entrenchment gets broken. The restlessness, on this reading, is a workout &mdash; and the muscle is adaptability.</p>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>You can own an intersection</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Advantage three &mdash; the arithmetic of combinations</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Becoming the best in the world at one thing is nearly impossible: millions compete for the spot, and most started earlier. Becoming genuinely good at two or three things and combining them puts you in a category with almost no competition. A decent writer who understands psychology and knows how video works can build something a world-class writer with no other skills can&rsquo;t. Specialists compete on depth, where the queue is endless; you compete on combination, where you might be the only one there.</p>
+
+      <p>The logic is straightforward multiplication. If one in ten people is good at each of three unrelated things, and the skills are roughly independent, one in a thousand is good at all three &mdash; and the particular combination that makes <em>you</em> useful may be rarer still. <strong>You don&rsquo;t have to win the crowded race; you can find the one with a single entrant.</strong></p>
+
+      <p class="flag"><span class="block-label">Watch for</span>This third advantage is an <b>argument, not a research finding</b> &mdash; the video cites nothing for it, and it&rsquo;s a version of the popular &ldquo;talent stack&rdquo; idea. It&rsquo;s sound as far as it goes, with one condition it leaves unstated: the intersection only pays if <b>someone needs it</b>. A rare combination nobody has a use for is just rare. The skill is finding the problem your particular mix is unusually good at.</p>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; The bill, and the way out</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>The world can&rsquo;t read you</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">What breadth costs</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Society runs on labels, and you don&rsquo;t fit on a badge; faces flicker when your answer to &ldquo;what do you do?&rdquo; takes more than a sentence. The deeper cut is internal. Measure yourself against a specialist in each of your fields and you always lose: the full-time photographer shoots better, the full-time coder ships faster. So you privately conclude you&rsquo;re mediocre at everything &mdash; and miss the one scoreboard where you win, the combination, because nobody built a scoreboard for it.</p>
+
+      <p>The paradox, in the video&rsquo;s words: <strong>the breadth that makes you rare is what makes you invisible.</strong> And the trap is that you accept the judgement of people who don&rsquo;t have the thing you&rsquo;re being judged on.</p>
+      <p>The practical correction is to stop running the comparison one field at a time. Nobody would compare a decathlete to the world&rsquo;s best sprinter and call the decathlete slow. The comparison that means something is against people attempting the same combination &mdash; and there are usually very few of them.</p>
+    </article>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Finish things</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">Principle one &mdash; and the most important sentence in the video</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>There&rsquo;s a counterfeit version of the polymath: <b>the collector</b>. The collector starts everything and completes nothing &mdash; watches the tutorials, buys the equipment, reads the first three chapters, and quietly leaves when the beginner&rsquo;s excitement wears off and the real work starts. That isn&rsquo;t polymathy. It&rsquo;s <b>consumption wearing a costume</b>, and no new interest will fix the fact that none of them is ever carried to the point of producing anything.</p>
+
+      <div class="script">
+        <div class="line"><span class="k bad">Collector</span><q>Starts everything. Leaves when the novelty goes. Owns the equipment, the tutorials, the first three chapters.</q></div>
+        <div class="line"><span class="k good">Polymath</span><q>Stays in each field until something real exists &mdash; a finished project, a performance, a thing outside their head.</q></div>
+      </div>
+
+      <p>The Nobel laureates, the video points out, were not tourists in their side fields: they were <strong>serious amateurs</strong> who performed, exhibited, published and built. So the dividing line is simple. In every field you enter, stay until you&rsquo;ve made something real. <em>You don&rsquo;t need mastery in everything. You need proof in everything.</em></p>
+      <p>This is <a href="../09-finding-your-voice/index.html">topic 09</a> in another costume. Gaiman&rsquo;s attic held a hundred first pages from his teens and nothing finished; his improvement became &ldquo;quantum&rdquo; only when he started finishing. The collector is the attic of first pages, spread across five hobbies instead of one.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; the proof audit</span>
+        <p>List every field you&rsquo;ve taken up in the last three years. Beside each, write the <strong>one finished thing</strong> it produced &mdash; a project, a piece, a performance, anything that exists outside your head.</p>
+        <p>Blanks aren&rsquo;t a verdict; they&rsquo;re a to-do list. Pick the blank you care most about and define the smallest finished thing that would fill it. Then finish that before starting anything new.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Build the bridges on purpose</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">Principle two</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Your edge isn&rsquo;t the interests; it&rsquo;s the connections between them &mdash; and those don&rsquo;t always form on their own, because everyone&rsquo;s mind tends to keep contexts separate. So force the intersection. When you learn something in one field, ask one deliberate question: <b>where else does this apply?</b> Take the pattern from your sport into your business, the structure from music into your writing. The collector has many interests. The polymath has many interests that talk to each other.</p>
+
+      <p>This is the principle that rescues the video from the transfer problem in <a href="#m4">move 4</a>. The research says cross-domain benefit mostly <em>doesn&rsquo;t</em> happen by itself; this principle says don&rsquo;t wait for it to. The question &ldquo;where else does this apply?&rdquo; is the act of analogy made into a habit &mdash; a network of trade routes is worthless, as the video says, if no cargo ever moves.</p>
+
+      <div class="drill">
+        <span class="block-label">Drill &mdash; one crossing a week</span>
+        <p>Once a week, take the most interesting thing you learned in one field and write <strong>two sentences</strong> about where it would apply in another of your fields. Most weeks it&rsquo;ll be a stretch.</p>
+        <p>Every few weeks one of them will be a real idea. Keep them all in one place; that page becomes the map of your intersection.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>Go deep in seasons</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">Principle three &mdash; rotation, not simultaneity</p>
+
+      <p class="shorthand"><span class="block-label">In the lecture</span>Breadth doesn&rsquo;t mean everything at once. Spread across five pursuits in the same week and you&rsquo;ll drown, and each will starve. The pattern in the research isn&rsquo;t simultaneous chaos, it&rsquo;s rotation: the athletes sampled widely, then invested deeply, one commitment at a time. So give each interest a season &mdash; months of primary focus while the others rest in the background. <b>Depth is how a single field pays you. Rotation is how the combination pays you.</b></p>
+
+      <p>This reconciles the two pieces of advice that seem to fight: <em>specialise</em> and <em>stay broad</em>. At any one time, specialise. Across years, rotate. The world-class athletes in <a href="#m3">move 3</a> did exactly this &mdash; broad early, then deep &mdash; and the laureates kept serious side interests <em>alongside</em> a main field, rather than instead of one.</p>
+      <p>And the video&rsquo;s closing image: lived this way, the trait matures. The scattered version is a field of random seedlings, promising and fragile; the integrated one is the forest. The question &ldquo;what do I do?&rdquo; loses its power, because you were never supposed to be a job title. <strong>You were supposed to be a combination.</strong></p>
+
+      <div class="rules">
+        <div class="r"><span class="num">1</span><div><h4>Finish things</h4><p>Proof in every field, not mastery. Stay until something real exists.</p></div></div>
+        <div class="r"><span class="num">2</span><div><h4>Build the bridges on purpose</h4><p>Ask &ldquo;where else does this apply?&rdquo; every time you learn something.</p></div></div>
+        <div class="r"><span class="num">3</span><div><h4>Go deep in seasons</h4><p>One primary interest at a time; rotate across months, not days.</p></div></div>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is polymathy?</span><span class="a">The serious pursuit of multiple fields across a lifetime. &ldquo;Serious&rdquo; is the word that matters.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did the Root-Bernsteins find?</span><span class="a">Nobel-winning scientists were far more likely than typical scientists to pursue arts and crafts seriously &mdash; painting, music, writing, performing.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What can&rsquo;t that finding prove?</span><span class="a">That hobbies cause success. It&rsquo;s a correlation, and &ldquo;it was deliberate&rdquo; is the laureates&rsquo; own account after the fact.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What did the 2022 athletes study find?</span><span class="a">World-class athletes sampled several sports, started their main one later, and progressed more slowly at first than national-level athletes.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">&ldquo;You are not late&hellip;&rdquo;</span><span class="a">&ldquo;&hellip;you are loading.&rdquo; Slow early progress was the signature of the people playing the longest game.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why be careful with the word &ldquo;transfer&rdquo;?</span><span class="a">General far transfer (chess or music training boosting everything) has weak evidence. What works is deliberate analogy &mdash; spotting the same shape of problem in two fields.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is cognitive entrenchment?</span><span class="a">Erik Dane&rsquo;s term: deep expertise stabilises your mental map, making you fast but rigid &mdash; you stop questioning the map.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Single crop or forest?</span><span class="a">The specialist is efficient until one disease kills the field. The forest is messy but survives almost anything.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Advantage one?</span><span class="a">Importing ideas across fields &mdash; you can&rsquo;t import from a country you&rsquo;ve never visited. Your past is a network of trade routes.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Advantage two?</span><span class="a">You know how not to know &mdash; you&rsquo;ve been a beginner many times and know the clumsy weeks pass. Adaptability.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Advantage three, and its unstated condition?</span><span class="a">Owning an intersection &mdash; good at two or three things combined, almost no competition. It only pays if someone needs that combination.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What&rsquo;s the bill for breadth?</span><span class="a">The world can&rsquo;t read you, and you lose every one-field comparison &mdash; so you miss the scoreboard where you win: the combination.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Collector or polymath?</span><span class="a">The collector starts everything and finishes nothing &mdash; consumption wearing a costume. The polymath stays until something real exists.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">&ldquo;You don&rsquo;t need mastery in everything&hellip;&rdquo;</span><span class="a">&ldquo;&hellip;you need proof in everything.&rdquo;</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The question that builds bridges?</span><span class="a">&ldquo;Where else does this apply?&rdquo; &mdash; asked deliberately, every time you learn something.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Depth versus rotation?</span><span class="a">Depth is how a single field pays you; rotation is how the combination pays you. One primary interest per season.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>The Root-Bernstein study&rsquo;s scope.</strong> The well-known paper compares Nobel-winning <em>scientists</em> with other scientists. The video&rsquo;s &ldquo;science, literature, economics and peace&rdquo; and &ldquo;more than two separate areas on average&rdquo; should be checked against the paper before repeating.</li>
+        <li><strong>The 2022 athletes paper</strong> &mdash; Güllich, Macnamara and Hambrick, in <em>Perspectives on Psychological Science</em>. Confirm the sample size (&ldquo;about six thousand&rdquo;) and the Nobel comparison against the paper itself.</li>
+        <li><strong>Far transfer.</strong> The caution above rests on meta-analyses of cognitive training (Sala and Gobet and others). Worth reading one before arguing the point either way.</li>
+        <li><strong>&ldquo;Owning an intersection&rdquo;</strong> has no study behind it in the video; it&rsquo;s an argument.</li>
+        <li><strong>The channel name</strong> is given here as PsychToons, as introduced in the video.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What&rsquo;s mine</h2>
+      </div>
+      <p><strong>From the video:</strong> the problem of the list instead of the label; polymathy and the multipotentialite; the Root-Bernstein findings; the 2022 athletes study and &ldquo;you are not late, you are loading&rdquo;; transfer; Dane&rsquo;s cognitive entrenchment; the single crop and the forest; the three advantages and the trade-routes image; the bill of breadth; the collector and &ldquo;consumption wearing a costume&rdquo;; proof, not mastery; &ldquo;where else does this apply?&rdquo;; going deep in seasons; and &ldquo;you were supposed to be a combination&rdquo;.</p>
+      <p><strong>Mine:</strong> the four-arc structure; the Wapnick attribution; the three cautions on the laureate study; &ldquo;slower early progress&rdquo; as the useful half of the athletes finding; the far-transfer caution and the analogy distinction; the fair reading of Dane; the multiplication behind the intersection and its missing condition; the decathlete comparison; the collector-versus-polymath table; reconciling specialise-and-stay-broad as season-versus-years; every drill; the quiz; the cross-links to topics 05, 09, 12, 13 and 14; and this list.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The video.</strong> PsychToons, on the psychology of polymaths and multipotentialites.</li>
+        <li><strong>Research it cites:</strong> Robert and Michèle Root-Bernstein and colleagues on the arts and crafts of Nobel laureates in science; Erik Dane, <em>Academy of Management Review</em> (2010), on cognitive entrenchment; Arne Güllich, Brooke Macnamara and David Hambrick, <em>Perspectives on Psychological Science</em> (2022), on early sampling in world-class athletes.</li>
+        <li><strong>Added by me:</strong> Emilie Wapnick, who coined &ldquo;multipotentialite&rdquo;; David Epstein, <em>Range</em> (2019), the book behind most of this argument; Giovanni Sala and Fernand Gobet&rsquo;s meta-analyses on far transfer.</li>
+        <li><strong>Related here:</strong> <a href="../05-sources-of-inspiration/index.html">05</a> &mdash; confluence; <a href="../09-finding-your-voice/index.html">09</a> &mdash; finishing things; <a href="../12-conflict/index.html">12</a> &mdash; rotating people through roles; <a href="../13-becoming-a-writer/index.html">13</a> &mdash; immersion; <a href="../14-lessons-from-the-cia/index.html">14</a> &mdash; mixed skill sets in a room.</li>
+      </ul>
+
+      <p class="endnote">Topic 16 of the study notes: a PsychToons video on the psychology of polymaths, written up 26 September 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "polymath.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "polymath.voice.v1", RTK = "polymath.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In my notes|In the lecture|Watch for|Where it comes from|Check this|Drill|Tap to reveal|Invented|Seasoning|The mix, as he describes it)$/;
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead")) return;
+      var t = el.textContent.replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    var sentences = text.match(/[^.!?…]+[.!?…]+[\s]*|[^.!?…]+$/g) || [text];
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+</body>
+</html>
