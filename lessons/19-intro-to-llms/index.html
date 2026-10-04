@@ -469,6 +469,9 @@ main p.nw-sub{ margin:.9rem 0 .35rem; font-family:var(--f-mono); font-size:.62re
 .cand .pc{ text-align:right; }
 .nw details.corpus p{ font-family:var(--f-mono); font-size:.76rem; line-height:1.6; }
 .nw .sl b{ color:var(--ink); font-weight:700; letter-spacing:.04em; font-size:.82rem; text-transform:none; }
+
+main ul.papers{ margin-block:.4rem .2rem; padding-left:1.1rem; }
+main ul.papers li{ margin-block:.3rem; font-size:.95rem; }
 </style>
 </head>
 <body>
@@ -1075,9 +1078,30 @@ main p.nw-sub{ margin:.9rem 0 .35rem; font-family:var(--f-mono); font-size:.62re
         <h2>Sources</h2>
       </div>
       <ul>
-        <li><strong>The lecture.</strong> Andrej Karpathy, “[1hr Talk] Intro to Large Language Models”, YouTube, November 2023 — part 1, on large language models — including its summary slide, “how to train your ChatGPT”.</li>
-        <li><strong>Behind the added material:</strong> Touvron and colleagues, “Llama 2” (Meta, 2023); Vaswani and colleagues, “Attention Is All You Need” (2017); Radford and colleagues on GPT-2 (2019); Delétang and colleagues, “Language Modeling Is Compression” (2023); Berglund and colleagues, “The Reversal Curse” (2023); OpenAI, “Why Language Models Hallucinate” (2025); Templeton and colleagues, “Scaling Monosemanticity” (Anthropic, 2024); Ouyang and colleagues on InstructGPT (2022); Christiano and colleagues on learning from human preferences (2017); Zhou and colleagues, LIMA (2023); Rafailov and colleagues, DPO (2023); Bai and colleagues, Constitutional AI (2022); DeepSeek-R1 (2025); Chiang and colleagues on Chatbot Arena (2024); “The Leaderboard Illusion” (2025); the Stanford AI Index (2024). Also: Tunstall and colleagues on Zephyr (2023); Epoch AI on training costs (2024–25), data centres and the open–closed gap (2024–26); Karpathy’s “2025 year in review” (December 2025); reporting on Scale AI and Meta (June–July 2025).</li>
-        <li><strong>Further reading:</strong> Karpathy’s llama2.c repository — the “run file” — and his longer “Deep Dive into LLMs like ChatGPT” (2025), which expands this part of the talk to several hours.</li>
+        <li><strong>The lecture.</strong> Andrej Karpathy, <a href="https://www.youtube.com/watch?v=zjkBMFhNj_g" target="_blank" rel="noopener">“[1hr Talk] Intro to Large Language Models”</a>, YouTube, November 2023 — part 1, on large language models — including its summary slide, “how to train your ChatGPT”.</li>
+        <li><strong>Papers behind the added material:</strong>
+          <ul class="papers">
+          <li>Touvron and colleagues, <a href="https://arxiv.org/abs/2307.09288" target="_blank" rel="noopener">“Llama 2: Open Foundation and Fine-Tuned Chat Models”</a> (Meta, 2023).</li>
+          <li>Vaswani and colleagues, <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">“Attention Is All You Need”</a> (2017).</li>
+          <li>Radford and colleagues, <a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf" target="_blank" rel="noopener">“Language Models are Unsupervised Multitask Learners”</a> (GPT-2, 2019).</li>
+          <li>Delétang and colleagues, <a href="https://arxiv.org/abs/2309.10668" target="_blank" rel="noopener">“Language Modeling Is Compression”</a> (Google DeepMind, 2023).</li>
+          <li>Berglund and colleagues, <a href="https://arxiv.org/abs/2309.12288" target="_blank" rel="noopener">“The Reversal Curse”</a> (2023).</li>
+          <li>Kalai and colleagues, <a href="https://arxiv.org/abs/2509.04664" target="_blank" rel="noopener">“Why Language Models Hallucinate”</a> (OpenAI, 2025).</li>
+          <li>Templeton and colleagues, <a href="https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html" target="_blank" rel="noopener">“Scaling Monosemanticity”</a> (Anthropic, 2024).</li>
+          <li>Ouyang and colleagues, <a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">“Training language models to follow instructions with human feedback”</a> (InstructGPT, 2022).</li>
+          <li>Christiano and colleagues, <a href="https://arxiv.org/abs/1706.03741" target="_blank" rel="noopener">“Deep Reinforcement Learning from Human Preferences”</a> (2017).</li>
+          <li>Zhou and colleagues, <a href="https://arxiv.org/abs/2305.11206" target="_blank" rel="noopener">“LIMA: Less Is More for Alignment”</a> (2023).</li>
+          <li>Rafailov and colleagues, <a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">“Direct Preference Optimization”</a> (DPO, 2023).</li>
+          <li>Bai and colleagues, <a href="https://arxiv.org/abs/2212.08073" target="_blank" rel="noopener">“Constitutional AI: Harmlessness from AI Feedback”</a> (Anthropic, 2022).</li>
+          <li>DeepSeek-AI, <a href="https://arxiv.org/abs/2501.12948" target="_blank" rel="noopener">“DeepSeek-R1”</a> (2025).</li>
+          <li>Tunstall and colleagues, <a href="https://arxiv.org/abs/2310.16944" target="_blank" rel="noopener">“Zephyr: Direct Distillation of LM Alignment”</a> (2023).</li>
+          <li>Chiang and colleagues, <a href="https://arxiv.org/abs/2403.04132" target="_blank" rel="noopener">“Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference”</a> (2024).</li>
+          <li>Singh and colleagues, <a href="https://arxiv.org/abs/2504.20879" target="_blank" rel="noopener">“The Leaderboard Illusion”</a> (2025).</li>
+          <li>Cottier and colleagues, <a href="https://arxiv.org/abs/2405.21015" target="_blank" rel="noopener">“The rising costs of training frontier AI models”</a> (Epoch AI, 2024).</li>
+          </ul>
+        </li>
+        <li><strong>Other sources:</strong> the <a href="https://hai.stanford.edu/ai-index/2024-ai-index-report" target="_blank" rel="noopener">Stanford AI Index 2024</a>; Epoch AI on <a href="https://epoch.ai/data-insights/open-closed-eci-gap" target="_blank" rel="noopener">the gap between open and closed models</a>; Karpathy’s <a href="https://karpathy.bearblog.dev/year-in-review-2025/" target="_blank" rel="noopener">“2025 year in review”</a>; reporting on Scale AI and Meta (June–July 2025).</li>
+        <li><strong>Further reading:</strong> Karpathy’s <a href="https://github.com/karpathy/llama2.c" target="_blank" rel="noopener">llama2.c repository</a> — the “run file” — and the longer video “Deep Dive into LLMs like ChatGPT” (2025) on <a href="https://www.youtube.com/@AndrejKarpathy" target="_blank" rel="noopener">Karpathy’s YouTube channel</a>, which expands this part of the talk to several hours.</li>
       </ul>
 
       <p class="endnote">Topic 19 of the study notes: part 1 of Andrej Karpathy’s talk <em>Intro to Large Language Models</em>, written up 4 October 2026. <a href="../index.html">Back to all topics</a>.</p>
