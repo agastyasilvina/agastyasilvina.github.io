@@ -1,0 +1,1519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<title>Two Files</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+
+/* ---------- jump strip: numbered squares for phones and tablets, where the rail is hidden ---------- */
+.jump{ border-top:1px solid var(--line-soft); }
+.jump-in{
+  position:relative; display:flex; align-items:center; gap:.3rem; overflow-x:auto; padding-block:.4rem;
+  scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+          mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.jump-in::-webkit-scrollbar{ display:none; }
+.jump a{
+  flex:none; min-width:2.1rem; height:2.1rem; padding-inline:.35rem; display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.76rem; line-height:1; color:var(--muted); text-decoration:none;
+  background:var(--card); border:1px solid var(--line); border-radius:2px;
+}
+.jump a:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.jump a.home{ font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); }
+.jump a.done{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.jump a.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.jump .jsep{ flex:none; width:1px; height:1.3rem; background:var(--line); margin-inline:.25rem; }
+@media (min-width:1080px){ .jump{ display:none; } }
+@media (max-width:1079px){ .move{ scroll-margin-top:7.8rem; } }
+/* ---------- formulas + answers ---------- */
+.formula{
+  font-family:var(--f-mono); font-size:1.02rem; text-align:center; color:var(--ink);
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:2px;
+  padding:.75rem .9rem; overflow-x:auto; white-space:nowrap;
+}
+details.ans{ margin-top:.8rem; border-top:1px dashed var(--line); padding-top:.55rem; }
+details.ans summary{
+  cursor:pointer; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink);
+}
+details.ans p{ margin-block:.55rem 0; font-size:.95rem; color:var(--muted); }
+table.week tr.tot td{ background:var(--surface); font-family:var(--f-mono); font-size:.82rem; color:var(--ink); }
+table.week tr.tot td strong{ font-weight:700; color:var(--accent-ink); }
+table.week.map td.day a{ color:var(--bronze); }
+table.week.route td{ font-family:var(--f-mono); font-size:.84rem; }
+.rgroup{ margin:.3rem 0 0; font-family:var(--f-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); }
+
+/* ---------- labs ---------- */
+.lab{ margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:1rem 1.1rem 1.1rem; }
+.lab .block-label{ color:var(--accent-ink); }
+.lab-grid{ display:grid; grid-template-columns:minmax(0,12.5rem) minmax(0,1fr); gap:1.1rem; align-items:center; margin-top:.4rem; }
+@media (max-width:560px){ .lab-grid{ grid-template-columns:1fr; } }
+.lab .keys{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.9rem; }
+.lab .keys .gate{ min-width:2.6rem; font-weight:700; font-size:.8rem; }
+.lab .say{ margin:.8rem 0 0; font-size:.92rem; line-height:1.5; color:var(--muted); min-height:2.8em; }
+.dial{ width:100%; max-width:12.5rem; height:auto; display:block; margin-inline:auto; overflow:visible; }
+.dial .ring{ fill:none; stroke:var(--line); stroke-width:.014; }
+.dial .axis{ stroke:var(--muted); stroke-width:.01; opacity:.55; }
+.dial .diag{ stroke:var(--line); stroke-width:.01; stroke-dasharray:.04 .04; }
+.dial .proj{ stroke:var(--bronze); stroke-width:.012; stroke-dasharray:.03 .03; }
+.dial .arrow{ stroke:var(--accent); stroke-width:.035; stroke-linecap:round; }
+.dial .tip{ fill:var(--accent); }
+.dial text{ font-family:var(--f-mono); font-size:.13px; fill:var(--muted); }
+.dial text.dim{ opacity:.65; }
+.readout{ display:flex; flex-direction:column; gap:.4rem; font-family:var(--f-mono); font-size:.8rem; }
+.rrow{ display:grid; grid-template-columns:3.3rem 4rem minmax(0,1fr) 3.3rem; gap:.5rem; align-items:center; }
+.rrow.wide{ grid-template-columns:3.6rem minmax(0,1fr) 3.3rem; }
+.rrow .k{ color:var(--ink); }
+.rrow .amp{ color:var(--muted); text-align:right; }
+.rrow .pc{ color:var(--ink); text-align:right; }
+.rrow.rhead{ font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:.2rem; }
+.rrow.rhead span:nth-child(2){ text-align:right; }
+.rrow.rhead span:last-child{ text-align:right; }
+.bar{ position:relative; display:block; height:.6rem; background:var(--line-soft); border-radius:1px; overflow:hidden; }
+.bar i{ position:absolute; left:0; top:0; bottom:0; width:0; background:var(--accent); transition:width .25s ease; }
+.bar.m75::after{ content:""; position:absolute; top:0; bottom:0; left:75%; width:2px; background:var(--flag); }
+.lab .sl{
+  display:flex; flex-direction:column; gap:.3rem; margin-top:.9rem;
+  font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.lab input[type="range"]{ width:100%; accent-color:var(--accent); margin:0; }
+.hist{ margin:.8rem 0 0; font-family:var(--f-mono); font-size:.74rem; color:var(--bronze); overflow-wrap:anywhere; }
+.shots{ margin-top:.8rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); }
+.shots:empty{ display:none; }
+.shots b{ color:var(--ink); font-weight:700; }
+.dots{ display:grid; grid-template-columns:repeat(25,minmax(0,1fr)); gap:2px; margin-top:.45rem; max-width:17rem; }
+.dots i{ display:block; aspect-ratio:1; background:var(--line); border-radius:1px; }
+.dots i.d1{ background:var(--accent); }
+.prow{ display:grid; grid-template-columns:3.2rem minmax(0,1fr); gap:.6rem; align-items:center; margin-top:.7rem; }
+.prow .side{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.bits{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:3px; min-height:1.5rem; max-width:20rem; }
+.bits b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.bits b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.bits b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.gctl{ display:flex; flex-wrap:wrap; gap:.2rem 1.2rem; align-items:flex-end; }
+.gctl .sl{ margin-top:.5rem; }
+.gctl .grow{ flex:1 1 12rem; }
+.gplot{ width:100%; height:auto; display:block; margin-top:.9rem; background:var(--surface); border:1px solid var(--line-soft); border-radius:2px; }
+.gplot .guide{ stroke:var(--line); stroke-width:1; stroke-dasharray:3 3; }
+.gplot .curve{ fill:none; stroke:var(--accent); stroke-width:1.6; stroke-linejoin:round; }
+.gplot .vline{ stroke:var(--flag); stroke-width:1; opacity:.6; }
+.gplot .now{ fill:var(--flag); }
+.gplot text{ font-family:var(--f-mono); font-size:8px; fill:var(--muted); }
+.gread{ margin:.7rem 0 0; font-family:var(--f-mono); font-size:.78rem; line-height:1.6; color:var(--muted); }
+.gread b{ color:var(--ink); font-weight:700; }
+
+
+/* ---------- beyond-the-lecture boxes ---------- */
+.extra{
+  margin-block:1.4rem; padding:.9rem 1rem; background:var(--surface);
+  border:1px solid var(--line-soft); border-left:3px solid var(--accent); border-radius:2px; font-size:.97rem;
+}
+.extra .block-label{ color:var(--accent-ink); }
+.extra p{ margin-block:.5rem; }
+.extra p:first-child{ margin-top:0; }
+.extra p:last-child{ margin-bottom:0; }
+.extra ol,.extra ul{ margin-block:.5rem; }
+.extra li{ margin-block:.3rem; }
+
+/* ---------- repetition-code lab ---------- */
+.cells{ display:flex; gap:4px; min-height:1.5rem; }
+.cells b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; width:1.5rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.cells b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.cells b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.checks{ font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.45; }
+.rep .prow{ grid-template-columns:4.2rem minmax(0,1fr); }
+.rep .readout{ margin-top:1rem; }
+.rep .sl b{ color:var(--ink); font-weight:700; letter-spacing:.04em; font-size:.82rem; }
+.rep .rrow.wide{ grid-template-columns:5.2rem minmax(0,1fr) 3.6rem; }
+.gplot .curve.raw{ stroke:var(--muted); stroke-dasharray:4 3; }
+.legend{ margin:.45rem 0 0; font-family:var(--f-mono); font-size:.7rem; color:var(--muted); }
+.legend .sw{ display:inline-block; width:18px; height:0; border-top:2px solid var(--accent); vertical-align:middle; margin-right:.3rem; }
+.legend .sw.raw{ border-top:2px dashed var(--muted); }
+
+/* ---------- the summary slide, retyped ---------- */
+figure.stages{ margin:1.6rem 0; display:grid; grid-template-columns:1fr; gap:.7rem; }
+@media (min-width:640px){ figure.stages{ grid-template-columns:1fr 1fr; } }
+.stage{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem 1rem; }
+main p.stage-head{ margin:0 0 .45rem; font-family:var(--f-display); font-size:1.45rem; line-height:1.1; display:flex; align-items:baseline; flex-wrap:wrap; gap:.5rem; }
+.stage-head .tag{ font-family:var(--f-mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--bg); background:var(--accent); padding:.18rem .42rem; border-radius:2px; position:relative; top:-.2rem; }
+.stage-head .clock{ margin-left:auto; font-family:var(--f-mono); font-size:.68rem; color:var(--bronze); }
+main .stage ol{ margin:.2rem 0 0; padding-left:1.25rem; }
+main .stage li{ font-size:.94rem; margin-block:.28rem; line-height:1.45; }
+figure.stages figcaption{ grid-column:1/-1; font-family:var(--f-mono); font-size:.72rem; line-height:1.55; color:var(--muted); }
+
+/* ---------- parameters-file calculator ---------- */
+main p.s-out{ margin:.9rem 0 .4rem; display:flex; align-items:baseline; gap:.6rem; }
+.s-out b{ font-family:var(--f-display); font-weight:400; font-size:2.3rem; line-height:1; color:var(--accent-ink); }
+.s-out .s-note{ font-family:var(--f-mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+main .fit p.fitrow{ margin:0; display:flex; justify-content:space-between; gap:1rem; padding:.4rem 0; border-top:1px solid var(--line-soft); font-size:.92rem; }
+.fitrow .ok{ color:var(--accent-ink); font-family:var(--f-mono); font-size:.78rem; }
+.fitrow .meh{ color:var(--bronze); font-family:var(--f-mono); font-size:.78rem; text-align:right; }
+.fitrow .no{ color:var(--flag); font-family:var(--f-mono); font-size:.78rem; }
+
+/* ---------- next-word machine ---------- */
+main p.nw-hint{ margin:.3rem 0 .2rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+.nw .starts{ margin-top:.6rem; }
+main p.nw-text{
+  margin:.9rem 0 0; min-height:4.6em; padding:.75rem .9rem; font-size:1.04rem; line-height:1.75;
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:2px;
+}
+.nw-text .p{ color:var(--muted); }
+.nw-text .g{ color:var(--ink); }
+.nw-text .pick{ background:var(--accent-soft); box-shadow:inset 0 -2px 0 var(--accent); border-radius:2px; padding:0 .08em; }
+main p.nw-sub{ margin:.9rem 0 .35rem; font-family:var(--f-mono); font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.nw-cands{ display:flex; flex-direction:column; gap:.3rem; }
+.cand{
+  display:grid; grid-template-columns:minmax(0,8rem) minmax(0,1fr) 3.4rem; gap:.6rem; align-items:center;
+  width:100%; text-align:left; font-family:var(--f-mono); font-size:.8rem; color:var(--ink);
+  background:none; border:1px solid transparent; border-radius:2px; padding:.15rem .3rem; cursor:pointer;
+}
+.cand:hover{ border-color:var(--line); background:var(--surface); }
+.cand .w{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cand .pc{ text-align:right; }
+.nw details.corpus p{ font-family:var(--f-mono); font-size:.76rem; line-height:1.6; }
+.nw .sl b{ color:var(--ink); font-weight:700; letter-spacing:.04em; font-size:.82rem; text-transform:none; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><b>Two Files</b><span class="mark-sub"> &nbsp;/&nbsp; Topic 19 &middot; Intro to large language models, part 1</span></p>
+    <div class="topbar-tts" id="tts-bar" hidden>
+      <span id="now-reading"></span>
+      <button class="btn" id="tts-play" type="button">&#9654; Read page</button>
+      <button class="btn" id="tts-stop" type="button" hidden>&#9632; Stop</button>
+    </div>
+  </div>
+  <nav class="jump" aria-label="Jump to a section">
+    <div class="wrap jump-in">
+      <a class="home" href="../index.html" aria-label="All topics">All</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m1" aria-label="1. Two files">1</a>
+      <a href="#m2" aria-label="2. Running it">2</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m3" aria-label="3. Compressing the internet">3</a>
+      <a href="#m4" aria-label="4. The next word">4</a>
+      <a href="#m5" aria-label="5. Learning the world">5</a>
+      <a href="#m6" aria-label="6. Dreaming documents">6</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m7" aria-label="7. How it works">7</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m8" aria-label="8. Fine-tuning">8</a>
+      <a href="#m9" aria-label="9. Train your ChatGPT">9</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m10" aria-label="10. Comparisons and RLHF">10</a>
+      <a href="#m11" aria-label="11. Who writes the labels">11</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m12" aria-label="12. The leaderboard">12</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#quiz" aria-label="Self&#8209;quiz">?</a>
+      <a href="#verify" aria-label="To check">!</a>
+      <a href="#mine" aria-label="What’s mine">&#9679;</a>
+      <a href="#sources" aria-label="Sources">&sect;</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Study notes &middot; Topic 19 &middot; Intro to large language models, part 1</p>
+    <h1>Two files — <em>and a lossy zip of the internet.</em></h1>
+    <p class="standfirst">A large language model is a 140-gigabyte file of numbers and about five hundred lines of code to run them. Getting the numbers is the hard part: you squeeze ten terabytes of the internet into them by teaching a network to predict the next word, and what comes out can dream web pages. Then you fine-tune it on a hundred thousand good conversations, and it becomes an assistant. This is the first part of Andrej Karpathy’s talk, followed section by section in its own order, with what’s changed since late 2023 boxed alongside.</p>
+    <div class="metarow">
+      <span><b>12 moves</b> in six arcs</span>
+      <span>Video — <b>Andrej Karpathy</b>, Intro to Large Language Models, part&nbsp;1</span>
+      <span>Notes taken <b>4 Oct 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="The twelve moves">
+    <p class="arclabel">What an LLM is</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> Two files</a></li>
+      <li><a href="#m2"><span class="n">2</span> Running it</a></li>
+    </ol>
+    <p class="arclabel">Where the parameters come from</p>
+    <ol>
+      <li><a href="#m3"><span class="n">3</span> Compressing the internet</a></li>
+      <li><a href="#m4"><span class="n">4</span> The next word</a></li>
+      <li><a href="#m5"><span class="n">5</span> Learning the world</a></li>
+      <li><a href="#m6"><span class="n">6</span> Dreaming documents</a></li>
+    </ol>
+    <p class="arclabel">Inside the network</p>
+    <ol>
+      <li><a href="#m7"><span class="n">7</span> How it works</a></li>
+    </ol>
+    <p class="arclabel">From documents to an assistant</p>
+    <ol>
+      <li><a href="#m8"><span class="n">8</span> Fine-tuning</a></li>
+      <li><a href="#m9"><span class="n">9</span> Train your ChatGPT</a></li>
+    </ol>
+    <p class="arclabel">Refining the assistant</p>
+    <ol>
+      <li><a href="#m10"><span class="n">10</span> Comparisons and RLHF</a></li>
+      <li><a href="#m11"><span class="n">11</span> Who writes the labels</a></li>
+    </ol>
+    <p class="arclabel">The field</p>
+    <ol>
+      <li><a href="#m12"><span class="n">12</span> The leaderboard</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#quiz"><span class="n">?</span> Self&#8209;quiz</a></li>
+      <li><a href="#verify"><span class="n">!</span> To check</a></li>
+      <li><a href="#mine"><span class="n">&#9679;</span> What’s mine</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;12 marked reviewed</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="tts-panel" hidden>
+      <p class="blurb"><b>Read it aloud.</b> Each move has its own <span class="term">Listen</span> button, or use <span class="term">Read page</span> up top. The labs are skipped.</p>
+      <div class="field">
+        <label for="tts-voice">Voice</label>
+        <select class="ctl" id="tts-voice"></select>
+      </div>
+      <div class="field">
+        <label for="tts-rate">Speed</label>
+        <select class="ctl" id="tts-rate">
+          <option value="0.85">0.85&times; &mdash; study</option>
+          <option value="1" selected>1&times; &mdash; normal</option>
+          <option value="1.2">1.2&times; &mdash; revise</option>
+          <option value="1.45">1.45&times; &mdash; skim</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="lead">The talk was posted in November 2023, a re-recording of one Karpathy had just given at an AI security summit run by Scale AI — hence the Scale AI jokes. Its first part, covered here, answers three questions: what a large language model is, how one is trained, and how a text predictor becomes a chatbot. The notes keep to the talk’s order, one move per section, and the talk’s own content is the main text. <strong>Beyond the lecture</strong> boxes add newer facts and the mechanisms the talk skips; a lot has moved since 2023, so they matter more than usual here. <strong>Watch for</strong> boxes flag the few places where the talk slips or has dated. Two labs let you size a model file and run a tiny next-word machine of your own.</p>
+
+    <div class="arc"><h2>Arc A &middot; What an LLM is</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>Two files</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m1">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label>
+        </div>
+      </div>
+      <p class="who">What a large language model physically is</p>
+
+      <p>The talk’s opening answer: a large language model is <strong>just two files</strong>. Its example is <strong>Llama 2 70B</strong>, released by Meta AI — the second generation of the Llama series, and the 70-billion-parameter member of it. The series comes in 7, 13, 34 and 70 billion parameters, and 70B is the biggest.</p>
+      <p>People like this model, Karpathy says, because it’s probably the most powerful <strong>open-weights</strong> model of the day: Meta released the weights, the architecture and a paper, so anyone can work with it. That’s unlike ChatGPT, whose architecture was never released. OpenAI owns it; you can use it through a web page, but you never have the model itself.</p>
+      <p>So Llama 2 70B is two files on your disk:</p>
+      <ul>
+        <li><strong>The parameters file</strong> — the weights of the neural network. There are 70 billion of them, each stored as a 16-bit floating-point number, which takes two bytes. 70 billion × 2 bytes = <strong>140 gigabytes</strong>.</li>
+        <li><strong>The run file</strong> — the code that runs the network using those parameters. It could be written in any language; in C, about <strong>500 lines</strong>, with no other dependencies.</li>
+      </ul>
+      <p>That’s the whole package. Put the two files on a MacBook, compile the C, point the program at the parameters, and you can talk to the model — no internet connection, nothing else needed.</p>
+
+      <div class="lab sizes">
+        <span class="block-label">Try it — how big is the parameters file?</span>
+        <div class="gctl">
+          <label class="sl">Parameters
+            <select class="ctl s-n">
+              <option value="7">7 billion</option>
+              <option value="13">13 billion</option>
+              <option value="70" selected>70 billion</option>
+              <option value="405">405 billion</option>
+            </select>
+          </label>
+          <label class="sl">Each parameter stored as
+            <select class="ctl s-b">
+              <option value="4">32-bit (4 bytes)</option>
+              <option value="2" selected>16-bit (2 bytes)</option>
+              <option value="1">8-bit (1 byte)</option>
+              <option value="0.5">4-bit (half a byte)</option>
+            </select>
+          </label>
+        </div>
+        <p class="s-out"><b class="s-gb">140 GB</b> <span class="s-note">parameters file</span></p>
+        <div class="fit"></div>
+        <p class="say" aria-live="polite"></p>
+      </div>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>The talk’s “run” file is real: Karpathy published <strong>llama2.c</strong> in July 2023, one dependency-free C file — about 700 lines, by its own description — that runs Llama-style models. Two things have since changed what running one on a laptop means. <strong>Quantisation</strong> — storing each parameter in 4 bits instead of 16 — shrinks a 70B model from 140 GB to about 35 GB on paper (try it above) and about 40 GB as real files, small enough for a 64 GB laptop; programs such as llama.cpp, from 2023, made this routine.</p>
+        <p>And “open weights” isn’t quite open source. Llama 2’s licence let anyone use the weights, but required companies with more than 700 million monthly users to ask Meta’s permission, and the training data was never released — so the Open Source Initiative doesn’t count it as open source. Meta itself has since wavered: its 2026 flagship, Muse Spark, is proprietary, though it released a smaller open-weight model, Muse Glimmer, that August.</p>
+      </div>
+
+      <p class="flag"><span class="block-label">Watch for</span>Llama 2 had four sizes on paper but only three in the release. Meta trained a 34-billion-parameter model and reported it in the paper, but held it back, saying it hadn’t had time to test its safety thoroughly enough. The family people could download was 7B, 13B and 70B.</p>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>Running it</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m2">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label>
+        </div>
+      </div>
+      <p class="who">Inference: cheap to run, expensive to make</p>
+
+      <p>The talk demonstrates by sending the model a request — <em>write a poem about the company Scale AI</em> — and the model starts generating, following the instruction and producing a poem. Karpathy explains the running joke: the event where the talk was first given was run by Scale AI, so the slides “pick on” the company throughout to keep things concrete.</p>
+      <p>Then a small confession: the demo video wasn’t the 70-billion-parameter model but the 7-billion one, because the 70B would run about ten times slower. The point stands, though. Running a model — <strong>inference</strong> — needs very little: a small package and a laptop. Everything in the run file, the architecture and its “forward pass”, is understood and open. <em>The magic is in the parameters</em>, and getting them — <strong>training</strong> — is a far more involved, computationally heavy process.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>Why is ten times the parameters about ten times slower? To produce each new word, the computer has to read every one of the parameters from memory once. For a laptop, the limit is usually how fast memory can be read, not how fast it can do arithmetic, so a file ten times bigger takes roughly ten times longer per word. It’s also why shrinking the numbers (the lab above) speeds models up as well as fitting them in.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc B &middot; Where the parameters come from</h2><span class="rule"></span><span class="cnt">4 moves</span></div>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Compressing the internet</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m3">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label>
+        </div>
+      </div>
+      <p class="who">Training: 10 TB, 6,000 GPUs, 12 days, $2 million</p>
+
+      <p>Training, the talk says, is best understood as <strong>compressing a good chunk of the internet</strong>. Because Llama 2 is open, Meta’s paper tells us roughly what was involved:</p>
+
+      <div class="figs">
+        <div class="fig"><b>~10 TB</b><span>of text, from a crawl of the internet</span></div>
+        <div class="fig"><b>~6,000</b><span>GPUs in a cluster</span></div>
+        <div class="fig"><b>~12 days</b><span>of training</span></div>
+        <div class="fig"><b>~$2M</b><span>to get Llama 2 70B</span></div>
+      </div>
+
+      <p>The text comes from crawling websites of every kind and collecting it together. The GPUs are specialised computers built for very heavy workloads like training neural networks. What comes out is the 140 GB parameters file, which you can think of as a <strong>zip file of the internet</strong>, roughly a hundred times smaller than the text that went in.</p>
+      <p>But it isn’t really a zip file. A zip file is <em>lossless</em>: you get the identical text back. This is <strong>lossy compression</strong>: the parameters hold a kind of gestalt of the text, not a copy of it.</p>
+      <p>And these, Karpathy adds, are “rookie numbers” by the standards of the day. For the state-of-the-art models behind ChatGPT, Claude or Bard, multiply them by ten or more. That’s why training runs already cost tens or even hundreds of millions of dollars, with very large clusters and very large datasets. Once you have the parameters, though, running the network is cheap.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>Meta’s paper reports tokens and GPU-hours rather than terabytes and dollars, so the talk’s round numbers are conversions — and they check out. Llama 2 was trained on 2 trillion tokens, and the 70B model took about 1.7 million GPU-hours on Nvidia A100 chips. Spread over 6,000 GPUs that’s about 12 days, and at roughly a dollar per GPU-hour about $2 million. Ten terabytes divided by 140 gigabytes is about 70, so “roughly 100×” is generous.</p>
+        <p>The rookie numbers have kept climbing. Meta trained Llama 3 (2024) on over 15 trillion tokens, and Llama 3.1 405B on about 16,000 H100 GPUs. Sam Altman said GPT-4 cost more than $100 million to train, and the Stanford AI Index estimated Google’s Gemini Ultra at about $191 million in computing alone. Epoch AI estimates that the cost of frontier training runs has grown about 2.4 times a year since 2016, and put xAI’s Grok 4 (2025) at about $490 million. As of October 2026 the largest AI data centre, xAI’s Colossus 2, has computing power equal to about 1.1 million H100s — nearly two hundred times the talk’s 6,000 GPUs. (Bard, one of the talk’s examples, was renamed Gemini in February 2024.)</p>
+      </div>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Predicting the next word</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m4">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label>
+        </div>
+      </div>
+      <p class="who">The one task the network is trained to do</p>
+
+      <p>So what does the network actually do? It tries to <strong>predict the next word in a sequence</strong>. Feed it the words <em>cat sat on a</em>; inside, the parameters are spread through a network of connected neurons that “fire in a certain way”, and out comes a prediction for the next word — say, <em>mat</em>, with 97% probability. That’s fundamentally the whole problem it solves.</p>
+      <p>This is also why the talk calls training compression. There’s a close mathematical link between <strong>prediction and compression</strong>: if you can predict the next word very accurately, you can use that to compress the dataset. A next-word predictor <em>is</em>, in a precise sense, a compressor of the text it learned from.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>Two refinements. First, models don’t really see words but <strong>tokens</strong> — common words, pieces of words and punctuation, from a fixed vocabulary. The talk says “word” to keep things simple, and so do these notes. Second, the prediction–compression link is concrete. A compressor needs to spend fewer bits on likely things and more on surprising ones; give it a good predictor and it can encode text in fewer bits than any general-purpose zip program, a technique called arithmetic coding that goes back to Claude Shannon’s information theory.</p>
+        <p>How good a compressor? DeepMind’s 2023 paper “Language Modeling Is Compression” found that its Chinchilla 70B model, trained mainly on text, squeezed image patches to under half their size and audio to about a fifth — beating PNG and FLAC, formats designed for exactly those jobs. The catch: those figures don’t count the size of the model itself, which dwarfs the data. (For scale: in English a token averages about three-quarters of a word, and Llama 2’s vocabulary has 32,000 tokens.)</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill — be the network</span>
+        <p>Fill each blank, and notice what you had to know: “The capital of Australia is ___.” “Water boils at 100 degrees ___.” “Twinkle, twinkle, little ___.” Each blank is easy only if you’ve absorbed a fact or a pattern. The lab in <a href="#m6">move 6</a> shows a tiny machine making the same kind of guess.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Prediction teaches the world</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m5">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label>
+        </div>
+      </div>
+      <p class="who">The Ruth Handler page</p>
+
+      <p>Why is the result such a “magical artifact”? Next-word prediction sounds like a simple objective, but it’s a powerful one, because <strong>doing it well forces the network to learn a lot about the world</strong>.</p>
+      <p>The talk’s example is a random Wikipedia page from the day the slides were made, about <strong>Ruth Handler</strong>. Imagine being the network, reading the page word by word and trying to predict each next word. Karpathy highlights in red the words that carry the most information — names, dates, what Handler did. To predict those, the parameters have to <em>know</em> them: who Ruth Handler was, when Handler was born and died, what Handler achieved. Across the whole internet, the task of next-word prediction packs an enormous amount of knowledge into the weights.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>Ruth Handler co-founded the toy company Mattel and created the Barbie doll, launched in 1959; Handler was born in 1916 and died in 2002. The bigger idea has a history too. OpenAI’s GPT-2 paper (2019) showed that a model trained only to predict the next word could already translate, summarise and answer questions roughly, without being taught any of them — the first strong sign that prediction alone builds broad knowledge and skill.</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill — the red words</span>
+        <p>Take any short article and underline every word you could only predict if you already knew a fact — names, numbers, dates, causes. Those are the words that force a model to store knowledge. The rest (“the”, “was”, “in”) it gets from grammar alone.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Dreaming documents</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m6">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label>
+        </div>
+      </div>
+      <p class="who">Sampling, and why it hallucinates</p>
+
+      <p>Once trained, the network is used in a simple loop: predict the next word, <strong>sample</strong> one — pick a word according to the predicted probabilities — feed it back in, predict again, and keep going. Run that and the network <strong>“dreams” internet documents</strong>: it was trained on web pages, so let loose, it produces web-page dreams. The talk shows three:</p>
+      <ul>
+        <li><strong>Java code</strong> — something that looks like a real program.</li>
+        <li><strong>An Amazon product listing</strong> — title, author, ISBN number, the lot, all made up. The ISBN almost certainly doesn’t exist: the network has simply learned that after “ISBN:” comes a number of about that length, and puts in whatever looks reasonable. It’s parroting the <em>distribution</em> of its training data.</li>
+        <li><strong>A Wikipedia-style article</strong> about the <strong>blacknose dace</strong>, which turns out to be a real fish. This text doesn’t appear word for word anywhere in the training data, yet what it says about the fish is roughly correct. The network has knowledge of the fish without copying any document about it.</li>
+      </ul>
+      <p>That is lossy compression in action: the network remembers the gestalt, produces the right <em>form</em>, and fills it with what it knows. And you can never be 100% sure whether a given output is a <strong>hallucination</strong> — an incorrect answer — or correct. Some of it may be memorised and some not, and you don’t know which is which. Mostly, it is dreaming text from the distribution it learned.</p>
+
+      <div class="lab nw">
+        <span class="block-label">Try it — a tiny next-word machine</span>
+        <p class="nw-hint">This machine has read only the short text in the box below it, and it looks at just the last two words before guessing. Pick a start, then sample word by word, or let it dream.</p>
+        <div class="keys starts">
+          <button class="btn" type="button" data-start="the cat sat on the">the cat sat on the</button>
+          <button class="btn" type="button" data-start="the glimmerfish is">the glimmerfish is</button>
+          <button class="btn" type="button" data-start="Ada Quill was">Ada Quill was</button>
+          <button class="btn" type="button" data-start="title :">title:</button>
+          <button class="btn" type="button" data-start="">blank page</button>
+        </div>
+        <p class="nw-text" aria-live="polite"></p>
+        <p class="nw-sub">Next-word guesses</p>
+        <div class="nw-cands"></div>
+        <label class="sl"><span>Temperature: <b class="nw-tv">1.0</b></span><input class="nw-t" type="range" min="0" max="20" step="1" value="10"></label>
+        <div class="keys">
+          <button class="btn" type="button" data-act="sample">Sample next word</button>
+          <button class="btn" type="button" data-act="top">Take the likeliest</button>
+          <button class="btn" type="button" data-act="dream">Dream 30 words</button>
+          <button class="btn" type="button" data-act="back">Undo</button>
+        </div>
+        <p class="say">Highlighted words are the places where the machine had a real choice. Unhighlighted stretches are copied straight out of one sentence it read — memorised.</p>
+        <details class="ans corpus"><summary>Everything this machine has read</summary><p class="nw-corpus"></p></details>
+      </div>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>The fish is real: the blacknose dace is a small minnow of clear, fast streams in eastern North America. <strong>Temperature</strong>, the lab’s slider, is the dial on sampling: near zero the model always takes the likeliest word; higher, it takes more chances, which makes text more varied and more often wrong. <strong>Memorisation</strong> is real too: models occasionally reproduce long passages of their training text word for word, which researchers have extracted on purpose, and which sits behind copyright cases such as The New York Times’s suit against OpenAI (December 2023).</p>
+        <p>On why hallucination persists, OpenAI argued in September 2025 that training and benchmarks reward confident guessing over admitting uncertainty — the way a multiple-choice exam rewards a guess over a blank.</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill — catch it hallucinating</span>
+        <p>Start from “Ada Quill was” or “title:” and dream a few times. Then check the result against the machine’s reading in the box. You’ll get sentences in exactly the right form — a birth year, a founding, a book with an author and a page count — with the facts quietly swapped between people and books. That’s the ISBN in the talk’s Amazon dream, at toy scale.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc C &middot; Inside the network</h2><span class="rule"></span><span class="cnt">1 move</span></div>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>How does it work?</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m7">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label>
+        </div>
+      </div>
+      <p class="who">A transformer we can build but can’t read</p>
+
+      <p>“This is where things complicate a little bit.” The network is a <strong>transformer</strong>, and the remarkable thing is that we understand its architecture in full detail: we know exactly what mathematical operation happens at every stage. The problem is that the hundred-billion-odd parameters are <strong>spread throughout</strong> it. All we know is how to adjust them, step by step, so that the whole network gets better at predicting the next word. We can measure that it’s improving. We don’t know how the parameters collaborate to do it.</p>
+      <p>We have rough, high-level models of what’s going on — the network seems to build and maintain a kind of <strong>knowledge database</strong> — but even that database is strange and imperfect. The talk’s example is the viral <strong>reversal curse</strong>. Ask GPT-4, the best model of the day, <em>who is Tom Cruise’s mother?</em> and it says Mary Lee Pfeiffer, correctly. Ask <em>who is Mary Lee Pfeiffer’s son?</em> and it says it doesn’t know. The knowledge is “one-dimensional”: not stored so it can be reached from every direction, but only from the direction it was learned in.</p>
+      <p>So think of large language models as <strong>mostly inscrutable artifacts</strong>. They’re unlike anything else in engineering — not like a car, where we understand every part — because they come out of a long optimisation process. A field called <strong>interpretability</strong>, or mechanistic interpretability, tries to work out what each part does, and can partly, but not fully. For now they’re treated mostly as <strong>empirical artifacts</strong>: give them inputs, measure the outputs, study their behaviour in many situations. That’s why working with them needs correspondingly sophisticated <strong>evaluations</strong>.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>The transformer comes from a 2017 Google paper, “Attention Is All You Need”. Its key step, <strong>attention</strong>, lets every word look back at all the earlier words and weigh which ones matter for the next prediction. The “adjusting” the talk mentions is <strong>gradient descent</strong>: after each prediction, every parameter is nudged slightly in whichever direction would have made the right word more likely.</p>
+        <p>Interpretability has moved since 2023. Anthropic’s “Scaling Monosemanticity” (May 2024) found millions of human-readable “features” inside a production model — one for the Golden Gate Bridge which, turned up, made the model talk about the bridge constantly (“Golden Gate Claude”) — and its 2025 attribution-graph work traced some of the internal steps a model takes to reach an answer. MIT Technology Review named mechanistic interpretability one of its ten breakthrough technologies of 2026 — but nobody can yet read a whole model. The reversal curse comes from a September 2023 paper by Lukas Berglund and colleagues: GPT-4 named celebrities’ parents correctly about 79% of the time, but named the celebrities from their parents only 33% of the time.</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill — ask it backwards</span>
+        <p>Ask a chatbot a fact in one direction and then in reverse: “Who wrote <em>Pride and Prejudice</em>?” and “Which famous novel did Jane Austen publish in 1813?” Then try something more obscure, where the reverse direction is rare on the web. The obscure pairs are where the curse still shows.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc D &middot; From documents to an assistant</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Fine-tuning into an assistant</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m8">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label>
+        </div>
+      </div>
+      <p class="who">Same training, different documents</p>
+
+      <p>Everything so far produces an <strong>internet document generator</strong>. That’s the first stage of training, called <strong>pre-training</strong>. But a document generator isn’t much use for most tasks; we want to ask questions and get answers. So there’s a second stage, <strong>fine-tuning</strong>, which produces an <strong>assistant model</strong>.</p>
+      <p>The method is surprisingly simple: <strong>keep the training identical</strong> — still next-word prediction — and <strong>swap the dataset</strong>. Instead of internet documents, train on documents collected by hand. Companies hire people, give them <strong>labelling instructions</strong>, and ask them to write questions and then the ideal answers. One training example might be a user asking for a short introduction to the term <em>monopsony</em> in economics, followed by the answer a person wrote, shaped by the labelling documentation that engineers at a company like OpenAI or Anthropic produce.</p>
+      <p>The two stages want different data:</p>
+      <div class="tablewrap">
+        <table class="week">
+          <thead><tr><th></th><th>Pre-training</th><th>Fine-tuning</th></tr></thead>
+          <tbody>
+            <tr><td class="day">Data</td><td>Internet text, tens or hundreds of terabytes</td><td>Conversations written by people, e.g. 100,000</td></tr>
+            <tr><td class="day">Priority</td><td>Quantity — and much of it is low quality</td><td>Quality over quantity</td></tr>
+            <tr><td class="day">What it gives</td><td>Knowledge</td><td>“Alignment”: the format of a helpful assistant</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>After fine-tuning, the model “subscribes to the form” of its new training documents. Ask it something it never saw — <em>can you help me with this code? It seems like there’s a bug</em>, with a line printing “hello world” — and it answers in the style of a helpful assistant, sampling word by word as before. Karpathy calls this remarkable, empirical and not fully understood: the model changes its formatting to that of an assistant, yet can still reach and use all the knowledge it built up in pre-training.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>Real datasets are smaller than the talk’s 100,000. OpenAI’s InstructGPT (2022) used about 13,000 written demonstrations; Meta stopped at 27,540 for Llama 2-Chat, under the heading “quality is all you need”; and the LIMA paper (2023) got a capable assistant from just 1,000 carefully chosen examples. LIMA called this the <strong>superficial alignment hypothesis</strong> — nearly all knowledge comes from pre-training, and fine-tuning mostly teaches the format — which is the talk’s knowledge-versus-alignment split in a single phrase.</p>
+        <p>Mechanically, each conversation is written out as one document with special markers for who is speaking, so ordinary next-word training can learn to answer in the assistant’s turn.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>How to train your ChatGPT</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m9">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label>
+        </div>
+      </div>
+      <p class="who">The talk’s summary: two stages, two clocks</p>
+
+      <p>The talk then sums up the recipe on a single slide:</p>
+
+      <figure class="stages">
+        <div class="stage">
+          <p class="stage-head"><span class="tag">Stage 1</span> Pretraining <span class="clock">every ~year</span></p>
+          <ol>
+            <li>Download ~10 TB of text.</li>
+            <li>Get a cluster of ~6,000 GPUs.</li>
+            <li>Compress the text into a neural network: pay ~$2M, wait ~12 days.</li>
+            <li>Obtain the <strong>base model</strong>.</li>
+          </ol>
+        </div>
+        <div class="stage">
+          <p class="stage-head"><span class="tag">Stage 2</span> Finetuning <span class="clock">every ~week &#8635;</span></p>
+          <ol>
+            <li>Write labeling instructions.</li>
+            <li>Hire people (or use Scale AI), collect 100K high-quality ideal Q&amp;A responses, and/or comparisons.</li>
+            <li>Finetune the base model on this data, wait ~1 day.</li>
+            <li>Obtain the <strong>assistant model</strong>.</li>
+            <li>Run a lot of evaluations.</li>
+            <li>Deploy.</li>
+            <li>Monitor, collect misbehaviors, go to step 1.</li>
+          </ol>
+        </div>
+        <figcaption>The talk’s slide “Summary: how to train your ChatGPT”, retyped. Stage 1 is the expensive one and runs on a slow clock; stage 2 loops back to its own first step.</figcaption>
+      </figure>
+
+      <p>Talking it through, Karpathy adds the reasons behind each clock. Pre-training needs a GPU cluster — special-purpose machines for parallel workloads, not something you can pick up at Best Buy — and costs a few million dollars, so it happens inside companies perhaps once a year or every several months. Fine-tuning is far cheaper: a day or so instead of months. Companies like Scale AI work with you to produce the documents your instructions describe.</p>
+      <p>The loop at the end is how assistants improve. When the deployed model misbehaves, you take the conversation where it went wrong and ask a person to <strong>overwrite the bad response with the correct one</strong>. That conversation goes into the training data, and next time you fine-tune, the model does better in that situation. Because fine-tuning is cheap, this can happen every week or even every day, and companies iterate much faster on it than on pre-training.</p>
+      <p>One more point: Meta released both kinds of Llama 2 model. The <strong>base model</strong> isn’t directly usable — ask it a question and it may give you more questions, because it’s only an internet document sampler. Its value is that Meta has done the very expensive stage 1 for you, so you can do your own fine-tuning, which gives you a lot of freedom. And for anyone who just wants to ask questions, Meta released the <strong>assistant models</strong> too.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>Scale AI, the talk’s running joke, became a big story in June 2025: Meta invested about $14.3 billion for 49% of the company and hired its chief executive, Alexandr Wang, to lead a new “superintelligence” lab, and several of Scale’s other large customers pulled back. Google, OpenAI and others wound down their work with Scale, which cut 14% of its staff that July.</p>
+        <p>The slide’s recipe has also grown. Since OpenAI’s o1 (September 2024) and DeepSeek-R1 (January 2025), leading models get a long <strong>reinforcement-learning</strong> stage after fine-tuning, practising on problems whose answers can be checked automatically, such as maths and code. Karpathy wrote in December 2025 that this “reinforcement learning from verifiable rewards” had become “the de facto new major stage”, so training is now usually described in three steps: pre-training, supervised fine-tuning, and reinforcement learning.</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill — which stage fixes it?</span>
+        <p>For each problem, say which stage you’d go back to: (a) the assistant answers rudely; (b) it knows nothing about a field that barely exists online; (c) it formats code badly; (d) it doesn’t know about events after its training data was collected.</p>
+        <details class="ans"><summary>Answers</summary>
+          <p>(a) Fine-tuning: write better example responses — cheap, this week. (b) Pre-training: knowledge comes from the big text stage, so it needs more of that text — expensive. (c) Fine-tuning. (d) Neither cheaply: it needs new pre-training data, or tools such as web search (which the talk’s later parts cover).</p>
+        </details>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc E &middot; Refining the assistant</h2><span class="rule"></span><span class="cnt">2 moves</span></div>
+
+    <article class="move" id="m10">
+      <div class="movehead">
+        <span class="n">10</span>
+        <h2>Comparisons and RLHF</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m10">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="10"> Done</label>
+        </div>
+      </div>
+      <p class="who">An optional stage 3: judging is easier than writing</p>
+
+      <p>The slide’s stage 2 says “and/or comparisons”, and the talk “double-clicks” on that, because there’s an optional <strong>stage 3</strong> that uses <strong>comparison labels</strong>.</p>
+      <p>The reason: for a human labeller, it’s often much easier to <strong>compare</strong> candidate answers than to <strong>write</strong> one. Suppose the task is <em>write a haiku about paperclips</em>. Many people couldn’t write a good haiku. But show them several haikus generated by the stage-2 assistant, and they can easily pick the best. Stage 3 uses those comparisons to fine-tune the model further. Karpathy skips the mathematics; at OpenAI the process is called <strong>reinforcement learning from human feedback</strong>, or <strong>RLHF</strong>, and it gives these models extra performance.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>RLHF predates ChatGPT: Paul Christiano and colleagues showed in 2017 how to train from human comparisons. The usual recipe has two steps. First, train a separate <strong>reward model</strong> to predict which of two answers people prefer. Then use reinforcement learning to push the assistant towards answers the reward model scores highly, on a leash that stops it drifting too far from its fine-tuned self. It pays: in the InstructGPT paper, people preferred a 1.3-billion-parameter RLHF model to the original 175-billion-parameter GPT-3. And it takes a lot of judging — Meta collected about 1.4 million comparisons for Llama 2-Chat.</p>
+        <p>Newer methods trim the recipe. DPO (2023) learns from the comparisons directly, with no reward model — Zephyr 7B Beta, on the talk’s leaderboard, was an early well-known example — and the reasoning models of 2024–25 learn from answers that can be checked automatically instead of from human judgement.</p>
+      </div>
+
+      <div class="drill">
+        <span class="block-label">Drill — feel the difference</span>
+        <p>Time yourself writing a haiku about paperclips. Then ask a chatbot for three and time yourself choosing the best. The gap between the two times is the whole economic case for comparison labels.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m11">
+      <div class="movehead">
+        <span class="n">11</span>
+        <h2>Who writes the labels</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m11">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="11"> Done</label>
+        </div>
+      </div>
+      <p class="who">Helpful, truthful, harmless — and a slider</p>
+
+      <p>A glimpse of real labelling instructions: an excerpt from OpenAI’s <strong>InstructGPT</strong> paper, asking labellers to make responses <strong>helpful, truthful and harmless</strong>. Real labelling documents can grow to tens or hundreds of pages and get complicated, but that is roughly what they look like.</p>
+      <p>Then a correction to the picture so far. The process has been described as humans doing all the work, and that’s “not exactly right”, and growing less right. The models themselves keep getting better, so labels are increasingly made by <strong>human–machine collaboration</strong>:</p>
+      <ul>
+        <li>models sample answers, and people cherry-pick the best parts into one single best answer;</li>
+        <li>models check a labeller’s work;</li>
+        <li>models create the comparisons, with people in an oversight role.</li>
+      </ul>
+      <p>Think of it as a <strong>slider</strong> between all-human and all-machine labelling. As the models improve, the slider keeps moving towards the machine.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>InstructGPT’s labels came from about 40 contractors, hired through Upwork and — fittingly, given the talk’s running joke — Scale AI. The slider has moved a long way since. Anthropic’s <strong>Constitutional AI</strong> (December 2022) has the model critique and revise its own answers against a written list of principles, and replaces many human comparisons with AI-generated ones (“RLAIF”). Synthetic data — examples written by other models — is now a large part of how assistants are trained. And companies have begun publishing their rulebooks, such as OpenAI’s Model Spec (2024).</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Arc F &middot; The field</h2><span class="rule"></span><span class="cnt">1 move</span></div>
+
+    <article class="move" id="m12">
+      <div class="movehead">
+        <span class="n">12</span>
+        <h2>The leaderboard</h2>
+        <div class="movetools">
+          <button class="btn listen" type="button" data-target="m12">&#9654; Listen</button>
+          <label class="rev"><input type="checkbox" class="revbox" data-move="12"> Done</label>
+        </div>
+      </div>
+      <p class="who">Chatbot Arena, and the gap between closed and open models</p>
+
+      <p>Part one closes with a leaderboard: <strong>Chatbot Arena</strong>, run by a team at Berkeley. It ranks models by <strong>Elo rating</strong>, calculated much as in chess, where players’ ratings come from their results against each other. On the website you type a question, get answers from two anonymous models, and pick the winner; the wins and losses add up to ratings. Higher is better.</p>
+      <p>What it showed in late 2023:</p>
+      <ul>
+        <li><strong>At the top, proprietary models</strong> — closed, no access to the weights, usually used through a web page: the GPT series from OpenAI, the Claude series from Anthropic, and a few from other companies. The best performers.</li>
+        <li><strong>Just below, open-weights models</strong> — weights available, much more known about them, usually with a paper: Meta’s Llama 2 series, and further down <strong>Zephyr 7B Beta</strong>, built on the Mistral series from a French start-up.</li>
+      </ul>
+      <p>The dynamic, as Karpathy describes it: closed models work much better, but you can’t download them, fine-tune them or really work with them — only use them through a web interface. The open ecosystem works worse but may be good enough for your application, and it’s trying to boost performance and chase the proprietary models.</p>
+      <p>That is where the recording ends, at the close of the talk’s first part. Its later parts turn to the future of language models and to their security.</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lecture</span>The Elo arithmetic: a 100-point gap means the stronger model wins about 64% of head-to-heads; 200 points, about 76%; 400 points, about 91%.</p>
+        <p>The arena itself has changed. It replaced online Elo with the closely related Bradley–Terry model in December 2023, became a company, LMArena, in 2025, and renamed itself simply Arena in January 2026. It has drawn criticism too. An April 2025 paper, “The Leaderboard Illusion”, found that large providers tested many private variants and published only the best — Meta tried 27 before Llama 4 — and that same month Meta was criticised for advertising the arena score of an unreleased “experimental” Llama 4 tuned for chatting; the model it actually released ranked 32nd. Votes measure which answer people prefer, style and length included, not only which is right. As of 2 October 2026, its text leaderboard was led by Google’s Gemini 4 and a run of Anthropic’s Claude models, with OpenAI’s best in 20th place.</p>
+        <p>And the gap the talk describes has narrowed sharply. DeepSeek-R1 (January 2025, released under the permissive MIT licence) matched OpenAI’s o1 on many tests, and OpenAI itself released open-weight models, gpt-oss, in August 2025. Epoch AI put the lag of the best open models behind the best closed ones at about a year in late 2024 and about four months by mid-2026. The strongest open models now come mostly from Chinese labs — Moonshot’s Kimi (the top open model on the arena, 16th), Z.ai’s GLM, DeepSeek, and Alibaba’s Qwen, which has become the community’s most common base model. Zephyr itself came from Hugging Face, built on Mistral 7B; Mistral AI was founded in Paris in April 2023.</p>
+      </div>
+
+      <p class="flag"><span class="block-label">Watch for</span>“Elo” isn’t an acronym, though it’s often written ELO: it’s named after Arpad Elo, the physicist who devised the chess rating system. And treat the late-2023 leaderboard as a snapshot — the order has turned over many times since.</p>
+
+      <p>Part one in seven lines:</p>
+      <div class="rules">
+        <div class="r"><span class="num">1</span><div><h4>Two files</h4><p>A model is its parameters plus a few hundred lines of code to run them.</p></div></div>
+        <div class="r"><span class="num">2</span><div><h4>Training is compression</h4><p>Terabytes of text squeezed, lossily, into gigabytes of parameters.</p></div></div>
+        <div class="r"><span class="num">3</span><div><h4>The task</h4><p>Predict the next word. Doing it well forces the network to learn about the world.</p></div></div>
+        <div class="r"><span class="num">4</span><div><h4>Dreams</h4><p>Sampling word by word produces text in the right form, part memory, part invention — and you can’t tell which.</p></div></div>
+        <div class="r"><span class="num">5</span><div><h4>Inscrutable</h4><p>We know the architecture exactly and the parameters hardly at all, so we judge models by evaluation.</p></div></div>
+        <div class="r"><span class="num">6</span><div><h4>Two stages</h4><p>Pre-training gives knowledge, yearly and expensive; fine-tuning gives the assistant, weekly and cheap.</p></div></div>
+        <div class="r"><span class="num">7</span><div><h4>Comparisons</h4><p>Judging is easier than writing, so human preferences tune the model further: RLHF.</p></div></div>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">revision &amp; checking</span></div>
+
+    <article class="move" id="quiz">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Self-quiz</h2>
+      </div>
+      <p>Cover the answers, work down the deck. Tap a card to check yourself.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What are the two files?</span><span class="a">The parameters — 140 GB for Llama 2 70B, at two bytes per parameter — and a run file, about 500 lines of C.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Open weights against ChatGPT?</span><span class="a">Llama 2’s weights, architecture and paper are public, so you can run and modify it yourself. ChatGPT can only be used through OpenAI’s interface.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Inference against training?</span><span class="a">Inference runs the model — cheap, a laptop will do. Training obtains the parameters — a GPU cluster and millions of dollars.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Llama 2 70B’s training, in four numbers?</span><span class="a">About 10 TB of text, 6,000 GPUs, 12 days and $2 million.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why a “lossy” zip of the internet?</span><span class="a">The parameters are about a hundred times smaller than the text and keep its gestalt, not a copy you could get back word for word.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is the network trained to do?</span><span class="a">Predict the next word (strictly, token), given the words so far — “cat sat on a” → “mat”, 97%.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why are prediction and compression linked?</span><span class="a">A good predictor lets you spend fewer bits on likely words, so it can encode the text compactly.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why does next-word prediction teach the world?</span><span class="a">To predict the informative words — names, dates, deeds, as on the Ruth Handler page — the parameters have to store the facts.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What is a “dream”?</span><span class="a">Text produced by sampling a word, feeding it back in, and repeating: the right form, filled with facts part remembered and part invented — like the made-up ISBN.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What makes hallucination hard to spot?</span><span class="a">Remembered and invented details come out in the same confident form, and you can’t tell from the text which is which.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What do we know, and not know, about the transformer?</span><span class="a">We know every mathematical operation in it exactly. We don’t know what its billions of parameters are doing together.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The reversal curse?</span><span class="a">GPT-4 knew Tom Cruise’s mother is Mary Lee Pfeiffer, but not who Mary Lee Pfeiffer’s son is. Knowledge learned in one direction.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How does fine-tuning differ from pre-training?</span><span class="a">The same next-word training on different data: about 100,000 high-quality conversations written by people, instead of terabytes of web text.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Pre-training gives ___; fine-tuning gives ___.</span><span class="a">Knowledge; “alignment” — the format and manner of a helpful assistant.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The two clocks?</span><span class="a">Pre-training about once a year, because it’s expensive; fine-tuning about every week, because it’s cheap.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How is a misbehaviour fixed?</span><span class="a">A person overwrites the bad response with a good one; the conversation joins the training data for the next fine-tune.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">What use is a base model?</span><span class="a">Ask it a question and it may reply with more questions. But the expensive stage is done, so anyone can fine-tune their own assistant on top.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Why comparison labels?</span><span class="a">Judging is easier than writing: few people can write a good haiku about paperclips, but anyone can pick the best of three. They feed RLHF.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">InstructGPT’s three words for labellers?</span><span class="a">Helpful, truthful, harmless.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">The labelling slider?</span><span class="a">From all-human to all-machine labelling. As models improve, it moves towards the machine, with people overseeing.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">How does Chatbot Arena rank models?</span><span class="a">People vote blind between two answers; the wins and losses become chess-style ratings.</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q">Closed against open, in late 2023?</span><span class="a">Closed models led; open models such as Llama 2 and Mistral-based Zephyr trailed, but could be downloaded, fine-tuned and were often good enough.</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="verify">
+      <div class="movehead">
+        <span class="n">!</span>
+        <h2>To check</h2>
+      </div>
+      <ul>
+        <li><strong>The talk’s training numbers are estimates.</strong> 10 TB, 6,000 GPUs, 12 days and $2 million are conversions from what Meta published — 2 trillion tokens and about 1.7 million A100 GPU-hours for the 70B model.</li>
+        <li><strong>The 97% for “mat”</strong> is an illustration, not a measurement.</li>
+        <li><strong>The reversal-curse example</strong> is now so famous that newer models may answer it; the effect shows more reliably with obscure pairs. The 79% and 33% figures are from Berglund and colleagues (2023).</li>
+        <li><strong>Costs:</strong> Altman’s “more than $100 million” for GPT-4 was a remark, not an audited figure; the Gemini Ultra estimate is the Stanford AI Index’s (2024).</li>
+        <li><strong>Scale AI and Meta:</strong> the $14.3 billion for 49% figure is as reported in June 2025.</li>
+        <li><strong>Anything about leaderboards and “the best model”</strong> is as of October 2026 at the latest, and changes month to month.</li>
+        <li><strong>Where the recording stops:</strong> at the end of the talk’s first part. The later parts — the future of LLMs and LLM security — are for the next notes.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="mine">
+      <div class="movehead">
+        <span class="n">&#9679;</span>
+        <h2>What’s mine</h2>
+      </div>
+      <p><strong>From the lecture</strong> (everything in the main text of each move): the two files and the Llama 2 70B example; 140 GB from two-byte parameters; the 500-line run file; open weights against ChatGPT; the Scale AI poem and the 7B confession; inference against training; the internet as a lossy zip, with its 10 TB, 6,000 GPUs, 12 days and $2 million, and the “rookie numbers”; next-word prediction and “cat sat on a … mat”; prediction as compression; the Ruth Handler page; dreaming documents — the Java code, the Amazon listing with its invented ISBN, the blacknose dace; hallucination; the transformer we can’t read; the reversal curse; inscrutable, empirical artifacts and evaluations; fine-tuning by swapping the dataset; the monopsony and hello-world examples; knowledge against alignment; the summary slide and its two clocks; fixing misbehaviours; base and assistant models; comparisons, the paperclip haiku and RLHF; InstructGPT’s helpful, truthful, harmless; the labelling slider; and the Chatbot Arena leaderboard with its closed-against-open dynamic.</p>
+      <p><strong>Mine:</strong> every Beyond the lecture and Watch for box; the parameters-file calculator; the next-word machine and the short fictional text it learns from; the memory-bandwidth explanation of speed; the drills; the quiz; and the seven-line summary.</p>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lecture.</strong> Andrej Karpathy, “[1hr Talk] Intro to Large Language Models”, YouTube, November 2023 — part 1, on large language models — including its summary slide, “how to train your ChatGPT”.</li>
+        <li><strong>Behind the added material:</strong> Touvron and colleagues, “Llama 2” (Meta, 2023); Vaswani and colleagues, “Attention Is All You Need” (2017); Radford and colleagues on GPT-2 (2019); Delétang and colleagues, “Language Modeling Is Compression” (2023); Berglund and colleagues, “The Reversal Curse” (2023); OpenAI, “Why Language Models Hallucinate” (2025); Templeton and colleagues, “Scaling Monosemanticity” (Anthropic, 2024); Ouyang and colleagues on InstructGPT (2022); Christiano and colleagues on learning from human preferences (2017); Zhou and colleagues, LIMA (2023); Rafailov and colleagues, DPO (2023); Bai and colleagues, Constitutional AI (2022); DeepSeek-R1 (2025); Chiang and colleagues on Chatbot Arena (2024); “The Leaderboard Illusion” (2025); the Stanford AI Index (2024). Also: Tunstall and colleagues on Zephyr (2023); Epoch AI on training costs (2024–25), data centres and the open–closed gap (2024–26); Karpathy’s “2025 year in review” (December 2025); reporting on Scale AI and Meta (June–July 2025).</li>
+        <li><strong>Further reading:</strong> Karpathy’s llama2.c repository — the “run file” — and his longer “Deep Dive into LLMs like ChatGPT” (2025), which expands this part of the talk to several hours.</li>
+      </ul>
+
+      <p class="endnote">Topic 19 of the study notes: part 1 of Andrej Karpathy’s talk <em>Intro to Large Language Models</em>, written up 4 October 2026. <a href="../index.html">Back to all topics</a>.</p>
+
+    </article>
+  </main>
+</div>
+
+<script>
+/* labs: the parameters-file calculator (move 1) and the tiny next-word machine (move 6) */
+(function(){
+  "use strict";
+  function pct(p){
+    var v = Math.round(p * 1000) / 10;
+    return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + "%";
+  }
+  function each(sel, fn){ Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
+
+  /* ---------- how big is the parameters file? ---------- */
+  each(".sizes", function(root){
+    var selN = root.querySelector(".s-n"), selB = root.querySelector(".s-b");
+    var out = root.querySelector(".s-gb"), fit = root.querySelector(".fit"), say = root.querySelector(".say");
+    var DEVICES = [["A 16 GB laptop", 16], ["A 64 GB laptop", 64], ["One 80 GB data-centre GPU", 80], ["A server with eight of those GPUs", 640]];
+    var BYTES = { "4": "4 bytes", "2": "2 bytes", "1": "1 byte", "0.5": "half a byte" };
+    function gbText(g){ return (g >= 100 || g % 1 === 0 ? Math.round(g).toLocaleString("en-GB") : g.toFixed(1)) + " GB"; }
+    function paint(){
+      var n = parseFloat(selN.value), b = parseFloat(selB.value), gb = n * b;
+      out.textContent = gbText(gb);
+      fit.innerHTML = DEVICES.map(function(d){
+        var cls, txt;
+        if (gb <= d[1] * 0.8) { cls = "ok"; txt = "fits"; }
+        else if (gb <= d[1]) { cls = "meh"; txt = "only just — no room left to work"; }
+        else { cls = "no"; txt = "too big"; }
+        return '<p class="fitrow"><span>' + d[0] + '</span><span class="' + cls + '">' + txt + "</span></p>";
+      }).join("");
+      var msg = n + " billion parameters × " + BYTES[selB.value] + " each = " + gbText(gb) + ".";
+      if (n === 70 && b === 2) msg += " That’s the lecture’s number. The text it was trained on, about 10 TB, is roughly 70 times bigger.";
+      else if (b < 2) msg += " Storing each number in fewer bits (“quantisation”) is how people now run big open models on a laptop, at some cost in quality.";
+      else if (b === 4) msg += " Full 32-bit numbers are mostly used during training, not for running a model.";
+      say.textContent = msg;
+    }
+    selN.addEventListener("change", paint);
+    selB.addEventListener("change", paint);
+    paint();
+  });
+
+  /* ---------- the tiny next-word machine ---------- */
+  var CORPUS = [
+    "the cat sat on the mat . the cat sat on the mat and slept . the dog sat on the mat . the cat sat on the sofa . the old cat sat on the warm mat .",
+    "the glimmerfish is a small silver fish found in the cold streams of northern Brindle . it eats insects and lives for about four years .",
+    "the stonepike is a large green fish found in the deep lakes of southern Varrow . it eats smaller fish and lives for about twenty years .",
+    "the reedfinch is a small brown bird found in the wet meadows of northern Brindle . it eats seeds and lives for about six years .",
+    "Ada Quill was an inventor born in Brindle in 1902 . Quill founded a toy company in Varrow and died in 1981 .",
+    "Otto Fenn was a painter born in Varrow in 1890 . Fenn founded an art school in Brindle and died in 1960 .",
+    "title : The Silver River . author : Ada Quill . year : 1931 . pages : 212 .",
+    "title : A Green Lake . author : Otto Fenn . year : 1928 . pages : 340 .",
+    "title : Small Brown Birds . author : Otto Fenn . year : 1937 . pages : 96 ."
+  ];
+  function tally(map, key, word){
+    var m = map[key] || (map[key] = {});
+    m[word] = (m[word] || 0) + 1;
+  }
+  var stream = CORPUS.join(" ").split(/\s+/), bi = {}, tri = {}, starts = {};
+  CORPUS.forEach(function(line){ tally(starts, "", line.split(/\s+/)[0]); });
+  for (var i = 0; i < stream.length - 1; i++) {
+    tally(bi, stream[i], stream[i + 1]);
+    if (i < stream.length - 2) tally(tri, stream[i] + " " + stream[i + 1], stream[i + 2]);
+  }
+  function options(ctx){
+    var n = ctx.length, table;
+    if (n === 0) table = starts[""];
+    else if (n >= 2 && tri[ctx[n - 2] + " " + ctx[n - 1]]) table = tri[ctx[n - 2] + " " + ctx[n - 1]];
+    else table = bi[ctx[n - 1]] || starts[""];
+    return Object.keys(table).map(function(w){ return [w, table[w]]; })
+      .sort(function(a, b){ return b[1] - a[1]; });
+  }
+  function weigh(opts, T){
+    if (T <= 0) {
+      return opts.map(function(o, i){ return [o[0], i === 0 ? 1 : 0]; });
+    }
+    var w = opts.map(function(o){ return Math.pow(o[1], 1 / T); });
+    var sum = w.reduce(function(a, b){ return a + b; }, 0);
+    return opts.map(function(o, i){ return [o[0], w[i] / sum]; });
+  }
+  function show(text){ return text.replace(/ ([.:])/g, "$1"); }
+
+  each(".nw", function(root){
+    var textEl = root.querySelector(".nw-text"), cands = root.querySelector(".nw-cands");
+    var tSlider = root.querySelector(".nw-t"), tVal = root.querySelector(".nw-tv");
+    var promptLen = 0, toks = [], picks = [], timer = null;
+    root.querySelector(".nw-corpus").textContent = show(CORPUS.join(" "));
+    function T(){ return (parseInt(tSlider.value, 10) || 0) / 10; }
+    function render(){
+      var html = "";
+      toks.forEach(function(w, i){
+        var sep = (i === 0 || w === "." || w === ":") ? "" : " ";
+        var cls = i < promptLen ? "p" : "g" + (picks[i] ? " pick" : "");
+        html += sep + '<span class="' + cls + '">' + w + "</span>";
+      });
+      textEl.innerHTML = html || '<span class="p">(blank page)</span>';
+      var opts = weigh(options(toks), T()).slice(0, 6);
+      cands.innerHTML = opts.map(function(o){
+        return '<button class="cand" type="button" data-word="' + o[0] + '"><span class="w">' + o[0] +
+          '</span><span class="bar"><i style="width:' + (o[1] * 100).toFixed(1) + '%"></i></span><span class="pc">' + pct(o[1]) + "</span></button>";
+      }).join("");
+      tVal.textContent = T().toFixed(1) + (T() === 0 ? " (always the likeliest)" : "");
+    }
+    function add(word, choice){
+      toks.push(word);
+      picks[toks.length - 1] = choice;
+    }
+    function step(mode){
+      var raw = options(toks), opts = weigh(raw, mode === "top" ? 0 : T());
+      var choice = raw.length > 1, r = Math.random(), acc = 0, word = opts[0][0];
+      if (mode !== "top") {
+        for (var k = 0; k < opts.length; k++) { acc += opts[k][1]; if (r < acc) { word = opts[k][0]; break; } }
+      }
+      add(word, choice);
+    }
+    function stop(){ if (timer) { clearInterval(timer); timer = null; } }
+    function start(text){
+      stop();
+      toks = text ? text.split(/\s+/) : [];
+      promptLen = toks.length;
+      picks = [];
+      render();
+    }
+    Array.prototype.forEach.call(root.querySelectorAll("[data-start]"), function(b){
+      b.addEventListener("click", function(){ start(b.getAttribute("data-start")); });
+    });
+    cands.addEventListener("click", function(e){
+      var b = e.target.closest(".cand");
+      if (!b) return;
+      stop();
+      add(b.getAttribute("data-word"), options(toks).length > 1);
+      render();
+    });
+    tSlider.addEventListener("input", render);
+    Array.prototype.forEach.call(root.querySelectorAll("[data-act]"), function(b){
+      b.addEventListener("click", function(){
+        var act = b.getAttribute("data-act");
+        if (act === "back") { stop(); if (toks.length > promptLen) { toks.pop(); picks.length = toks.length; } render(); return; }
+        if (act === "dream") {
+          stop();
+          var left = 30;
+          var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (reduce) { while (left-- > 0) step("sample"); render(); return; }
+          timer = setInterval(function(){ step("sample"); render(); if (--left <= 0) stop(); }, 90);
+          return;
+        }
+        stop();
+        step(act === "top" ? "top" : "sample");
+        render();
+      });
+    });
+    start("the cat sat on the");
+  });
+})();
+</script>
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- flashcards ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".fc"), function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var RK = "llm1.reviewed.v1", store = {};
+  try { store = JSON.parse(localStorage.getItem(RK) || "{}") || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function paintCount(){
+    var n = 0;
+    boxes.forEach(function(b){ if (b.checked) n++; });
+    if (counter) counter.textContent = String(n);
+  }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){
+      store[b.dataset.move] = b.checked;
+      try { localStorage.setItem(RK, JSON.stringify(store)); } catch (e) {}
+      paintCount();
+    });
+  });
+  paintCount();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var targets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    targets.forEach(function(el, i){
+      if (el && el.getBoundingClientRect().top <= 140) best = i;
+    });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); }
+  }, { passive: true });
+  markRail();
+
+  /* ---------- read aloud ---------- */
+  var synth = window.speechSynthesis;
+  var listenBtns = Array.prototype.slice.call(document.querySelectorAll(".listen"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    listenBtns.forEach(function(b){ b.hidden = true; });
+    return;
+  }
+  var bar = document.getElementById("tts-bar");
+  var panel = document.getElementById("tts-panel");
+  var playBtn = document.getElementById("tts-play");
+  var stopBtn = document.getElementById("tts-stop");
+  var nowEl = document.getElementById("now-reading");
+  var voiceSel = document.getElementById("tts-voice");
+  var rateSel = document.getElementById("tts-rate");
+  bar.hidden = false;
+  panel.hidden = false;
+
+  var VK = "llm1.voice.v1", RTK = "llm1.rate.v1";
+  var voices = [];
+  function fillVoices(){
+    var all = synth.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all;
+    voiceSel.textContent = "";
+    if (!voices.length) {
+      var o = document.createElement("option");
+      o.textContent = "System default";
+      voiceSel.appendChild(o);
+      return;
+    }
+    voices.forEach(function(v){
+      var opt = document.createElement("option");
+      opt.value = v.voiceURI;
+      opt.textContent = v.name + " · " + v.lang;
+      voiceSel.appendChild(opt);
+    });
+    var saved = null;
+    try { saved = localStorage.getItem(VK); } catch (e) {}
+    if (saved) voiceSel.value = saved;
+  }
+  fillVoices();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = fillVoices;
+  voiceSel.addEventListener("change", function(){
+    try { localStorage.setItem(VK, voiceSel.value); } catch (e) {}
+  });
+  try {
+    var savedRate = localStorage.getItem(RTK);
+    if (savedRate) rateSel.value = savedRate;
+  } catch (e) {}
+  rateSel.addEventListener("change", function(){
+    try { localStorage.setItem(RTK, rateSel.value); } catch (e) {}
+  });
+
+  var SKIP = /^(In the chapter|Watch for|Drill|Tap to reveal)$/;
+  /* read the notation aloud sensibly: |0⟩ as "ket 0", superscripts as powers */
+  var SAY = [
+    [/\|([^|\u27E9\s]{1,3})\u27E9/g, " ket $1 "],
+    [/\u03B1/g, " alpha "], [/\u03B2/g, " beta "], [/\u03C0/g, " pi "],
+    [/\u221A/g, " root "], [/\u2248/g, " about "], [/\u00D7/g, " times "], [/\u00F7/g, " divided by "],
+    [/\u2212/g, " minus "], [/\u2192/g, " to "], [/\u00B0/g, " degrees "]
+  ];
+  function speakable(el){
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll(".block-label"), function(x){ x.textContent = x.textContent + ": "; });
+    Array.prototype.forEach.call(c.querySelectorAll("sup"), function(x){
+      var s = x.textContent.trim();
+      x.textContent = s === "2" ? " squared " : s === "3" ? " cubed " : " to the " + s + " ";
+    });
+    var t = c.textContent;
+    SAY.forEach(function(r){ t = t.replace(r[0], r[1]); });
+    return t;
+  }
+  function textOf(sec){
+    var parts = [];
+    Array.prototype.forEach.call(sec.querySelectorAll("h2,h3,h4,p,li,cite,.line,td,th"), function(el){
+      if (el.closest(".movetools") || el.closest(".fc") || el.closest("thead") || el.closest(".lab") || el.closest("details")) return;
+      var t = speakable(el).replace(/\s+/g, " ").trim();
+      if (t && !SKIP.test(t)) parts.push(t);
+    });
+    var out = "";
+    parts.forEach(function(p){
+      out += p + (/[.!?…:]$/.test(p) ? " " : ". ");
+    });
+    return out;
+  }
+  function chunk(text){
+    /* split only where punctuation is followed by a space, so 0.707 stays whole */
+    var bits = text.split(/([.!?…]+\s+)/), sentences = [];
+    for (var i = 0; i < bits.length; i += 2) sentences.push(bits[i] + (bits[i + 1] || ""));
+    var out = [], buf = "";
+    sentences.forEach(function(s){
+      if (buf && (buf + s).length > 180) { out.push(buf.trim()); buf = s; }
+      else { buf += s; }
+    });
+    if (buf.trim()) out.push(buf.trim());
+    return out;
+  }
+
+  var queue = [], qi = 0, chunks = [], ci = 0, token = 0, mode = "idle", scrollAlong = false;
+
+  function resetButtons(){
+    listenBtns.forEach(function(b){ b.innerHTML = "▶ Listen"; b.classList.remove("on"); });
+  }
+  function setIdle(){
+    mode = "idle";
+    resetButtons();
+    playBtn.innerHTML = "▶ Read page";
+    stopBtn.hidden = true;
+    nowEl.textContent = "";
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+  }
+  function stopAll(){
+    token++;
+    try { synth.cancel(); } catch (e) {}
+    setIdle();
+  }
+  function speakChunk(myToken){
+    if (myToken !== token) return;
+    if (ci >= chunks.length) {
+      qi++;
+      if (qi >= queue.length) { stopAll(); return; }
+      startSection(myToken);
+      return;
+    }
+    var u = new window.SpeechSynthesisUtterance(chunks[ci]);
+    u.rate = parseFloat(rateSel.value) || 1;
+    u.lang = "en-GB";
+    var chosen = voices.filter(function(v){ return v.voiceURI === voiceSel.value; })[0];
+    if (chosen) { u.voice = chosen; u.lang = chosen.lang; }
+    u.onend = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    u.onerror = function(){ if (myToken !== token) return; ci++; speakChunk(myToken); };
+    synth.speak(u);
+  }
+  function startSection(myToken){
+    var sec = queue[qi];
+    Array.prototype.forEach.call(document.querySelectorAll(".move.reading"), function(s){ s.classList.remove("reading"); });
+    sec.classList.add("reading");
+    resetButtons();
+    var btn = sec.querySelector(".listen");
+    if (btn) { btn.innerHTML = "■ Stop"; btn.classList.add("on"); }
+    var heading = sec.querySelector("h2");
+    nowEl.textContent = heading ? "▸ " + heading.textContent : "";
+    if (scrollAlong) sec.scrollIntoView({ block: "start", behavior: "smooth" });
+    chunks = chunk(textOf(sec));
+    ci = 0;
+    speakChunk(myToken);
+  }
+  function play(sections, follow){
+    stopAll();
+    scrollAlong = !!follow;
+    queue = sections;
+    qi = 0;
+    mode = "playing";
+    stopBtn.hidden = false;
+    playBtn.innerHTML = "❚❚ Pause";
+    startSection(++token);
+  }
+
+  listenBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var sec = document.getElementById(btn.dataset.target);
+      if (!sec) return;
+      if (btn.classList.contains("on")) { stopAll(); return; }
+      play([sec], false);
+    });
+  });
+  playBtn.addEventListener("click", function(){
+    if (mode === "playing") {
+      try { synth.pause(); } catch (e) {}
+      mode = "paused";
+      playBtn.innerHTML = "▶ Resume";
+      return;
+    }
+    if (mode === "paused") {
+      try { synth.resume(); } catch (e) {}
+      mode = "playing";
+      playBtn.innerHTML = "❚❚ Pause";
+      return;
+    }
+    play(Array.prototype.slice.call(document.querySelectorAll(".move:not([data-noread])")), true);
+  });
+  stopBtn.addEventListener("click", stopAll);
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+<script>
+/* jump strip: show which section you're in, and which moves are marked done */
+(function(){
+  "use strict";
+  var strip = document.querySelector(".jump-in");
+  if (!strip) return;
+  var links = Array.prototype.slice.call(strip.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var smooth = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var current = -2, ticking = false;
+  function mark(){
+    ticking = false;
+    if (strip.offsetParent === null) return;
+    var line = strip.getBoundingClientRect().bottom + 32, best = -1;
+    targets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= line) best = i; });
+    if (best === current) return;
+    current = best;
+    links.forEach(function(a, i){
+      a.classList.toggle("active", i === best);
+      if (i === best) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+    if (best >= 0) {
+      var a = links[best], left = a.offsetLeft - (strip.clientWidth - a.offsetWidth) / 2;
+      if (strip.scrollTo) strip.scrollTo({ left: left, behavior: smooth ? "smooth" : "auto" });
+      else strip.scrollLeft = left;
+    }
+  }
+  function done(){
+    Array.prototype.forEach.call(document.querySelectorAll(".revbox"), function(b){
+      var art = b.closest("article");
+      var a = art && strip.querySelector('a[href="#' + art.id + '"]');
+      if (a) a.classList.toggle("done", b.checked);
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(mark); }
+  }, { passive: true });
+  window.addEventListener("resize", function(){ current = -2; mark(); });
+  document.addEventListener("change", function(e){
+    if (e.target && e.target.classList && e.target.classList.contains("revbox")) done();
+  });
+  done();
+  mark();
+})();
+</script>
+</body>
+</html>
