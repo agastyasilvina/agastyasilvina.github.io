@@ -30,6 +30,12 @@ Grouped the same way as the contents page, newest first within each group.
 | 07 | [Love and relationships](07-love-and-relationships/index.html) — Cynics on authenticity, Epicureans on friendship over romance, Aristotle's second self, estrangement and the Hierocles circles. | MasterClass, *Using Ancient Wisdom to Solve Modern Problems* — Ryan Holiday and guests |
 | 01 | [Communication](01-communication/index.html) — Socratic good faith, steelmanning, the tactical pause, giving and taking feedback, haters. | MasterClass, *Using Ancient Wisdom to Solve Modern Problems* — Ryan Holiday and guests |
 
+### Mind & wellbeing
+
+| # | Topic | Source |
+| --- | --- | --- |
+| 22 | [Grief and resilience, part 1](22-understanding-grief/index.html) — "I'm fine" as grief in different clothes, grief against grieving, the body budget, the adrenaline superpower and the crash, gas, brake and battery, protest and despair, "gone but also everlasting", and incorporating against avoiding. With guided muscle-relaxation and breathing exercises. | MasterClass, Prince Harry with Dr Mary-Frances O'Connor |
+
 ### Thinking & judgement
 
 | # | Topic | Source |
@@ -59,8 +65,8 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 22-<topic-slug>
-# build 22-<topic-slug>/index.html, with the numbered squares under its top bar
+mkdir 23-<topic-slug>
+# build 23-<topic-slug>/index.html, with the numbered squares under its top bar
 # then add its row to the right category in index.html, and its square to the strip
 ```
 
