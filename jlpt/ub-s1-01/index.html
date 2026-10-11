@@ -552,7 +552,7 @@ main td[lang="ja"], main td.day[lang="ja"]{ font-family:"Noto Sans JP","Hiragino
   <main>
 
     <div class="listencard" id="ja-ctl">
-      <p class="blurb"><b>Hear it.</b> Tap <span class="term">▶</span> beside any Japanese line to hear it read by your device’s Japanese voice. Use the buttons up top to hide the furigana or the English — with English hidden, tap a translation to peek.</p>
+      <p class="blurb"><b>Hear it.</b> Tap <span class="term">▶</span> beside any Japanese line to hear it read by your device’s Japanese voice. Use the buttons up top to hide the furigana or the English — with English hidden, tap a translation to peek. These settings carry over from lesson to lesson.</p>
       <div class="field">
         <label for="ja-rate">Speed</label>
         <select class="ctl" id="ja-rate">
@@ -987,7 +987,7 @@ main td[lang="ja"], main td.day[lang="ja"]{ font-family:"Noto Sans JP","Hiragino
         <li><strong>Mine:</strong> the English renderings, every other example sentence, the ように/ために comparison, the spoken-forms table, the 遭う/会う/合う table, the note on the chime, the quiz and the flashcards.</li>
         <li><strong>JLPT levels</strong> are approximate. The JLPT hasn’t published official grammar or vocabulary lists since 2010; “around N4” follows the common study lists.</li>
       </ul>
-      <p class="endnote">JLPT study notes, lesson 1: JapanesePod101 Upper Beginner Season 1, Lesson 1, written up 11 October 2026. <a href="../index.html">Back to JLPT study</a>.</p>
+      <p class="endnote">JLPT study notes, lesson 1: JapanesePod101 Upper Beginner Season 1, Lesson 1, written up 11 October 2026. Next, <a href="../ub-s1-02/index.html">lesson 2</a>, or <a href="../index.html">back to JLPT study</a>.</p>
     </article>
   </main>
 </div>
@@ -995,21 +995,21 @@ main td[lang="ja"], main td.day[lang="ja"]{ font-family:"Noto Sans JP","Hiragino
 <script>
 (function(){
   "use strict";
-  var KEY = "jlpt.ub1.";
+  var KEY = "jlpt.ub1.", SHARED = "jlpt.";   /* furigana, English and speed carry across lessons; "done" marks don't */
   function each(sel, fn){ Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
-  function load(k, d){ try { var v = localStorage.getItem(KEY + k); return v === null ? d : v; } catch (e) { return d; } }
-  function save(k, v){ try { localStorage.setItem(KEY + k, v); } catch (e) {} }
+  function load(k, d, p){ try { var v = localStorage.getItem((p || KEY) + k); return v === null ? d : v; } catch (e) { return d; } }
+  function save(k, v, p){ try { localStorage.setItem((p || KEY) + k, v); } catch (e) {} }
 
   /* ---------- furigana and English toggles ---------- */
   var root = document.documentElement;
   each("[data-toggle]", function(btn){
     var name = btn.getAttribute("data-toggle");          /* "furi" or "en" */
-    var on = load(name, "1") === "1";
+    var on = load(name, "1", SHARED) === "1";
     function paint(){
       root.classList.toggle("no-" + name, !on);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
     }
-    btn.addEventListener("click", function(){ on = !on; save(name, on ? "1" : "0"); paint(); });
+    btn.addEventListener("click", function(){ on = !on; save(name, on ? "1" : "0", SHARED); paint(); });
     paint();
   });
   /* with English hidden, tap a translation to peek at it */
@@ -1101,8 +1101,8 @@ main td[lang="ja"], main td.day[lang="ja"]{ font-family:"Noto Sans JP","Hiragino
   }
   pickVoice();
   if ("onvoiceschanged" in synth) synth.onvoiceschanged = pickVoice;
-  try { var r = load("rate", ""); if (r) rateSel.value = r; } catch (e) {}
-  rateSel.addEventListener("change", function(){ save("rate", rateSel.value); });
+  try { var r = load("rate", "", SHARED); if (r) rateSel.value = r; } catch (e) {}
+  rateSel.addEventListener("change", function(){ save("rate", rateSel.value, SHARED); });
   function plain(el){
     var c = el.cloneNode(true);
     Array.prototype.forEach.call(c.querySelectorAll("rt, rp, .say"), function(x){ x.remove(); });
