@@ -1,0 +1,1333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Noto+Sans+JP:wght@400;700&display=swap">
+<title>Bite-Size</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+
+/* ---------- jump strip: numbered squares for phones and tablets, where the rail is hidden ---------- */
+.jump{ border-top:1px solid var(--line-soft); }
+.jump-in{
+  position:relative; display:flex; align-items:center; gap:.3rem; overflow-x:auto; padding-block:.4rem;
+  scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+          mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.jump-in::-webkit-scrollbar{ display:none; }
+.jump a{
+  flex:none; min-width:2.1rem; height:2.1rem; padding-inline:.35rem; display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.76rem; line-height:1; color:var(--muted); text-decoration:none;
+  background:var(--card); border:1px solid var(--line); border-radius:2px;
+}
+.jump a:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.jump a.home{ font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); }
+.jump a.done{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.jump a.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.jump .jsep{ flex:none; width:1px; height:1.3rem; background:var(--line); margin-inline:.25rem; }
+@media (min-width:1080px){ .jump{ display:none; } }
+@media (max-width:1079px){ .move{ scroll-margin-top:7.8rem; } }
+/* ---------- formulas + answers ---------- */
+.formula{
+  font-family:var(--f-mono); font-size:1.02rem; text-align:center; color:var(--ink);
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:2px;
+  padding:.75rem .9rem; overflow-x:auto; white-space:nowrap;
+}
+details.ans{ margin-top:.8rem; border-top:1px dashed var(--line); padding-top:.55rem; }
+details.ans summary{
+  cursor:pointer; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink);
+}
+details.ans p{ margin-block:.55rem 0; font-size:.95rem; color:var(--muted); }
+table.week tr.tot td{ background:var(--surface); font-family:var(--f-mono); font-size:.82rem; color:var(--ink); }
+table.week tr.tot td strong{ font-weight:700; color:var(--accent-ink); }
+table.week.map td.day a{ color:var(--bronze); }
+table.week.route td{ font-family:var(--f-mono); font-size:.84rem; }
+.rgroup{ margin:.3rem 0 0; font-family:var(--f-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); }
+
+/* ---------- labs ---------- */
+.lab{ margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:1rem 1.1rem 1.1rem; }
+.lab .block-label{ color:var(--accent-ink); }
+.lab-grid{ display:grid; grid-template-columns:minmax(0,12.5rem) minmax(0,1fr); gap:1.1rem; align-items:center; margin-top:.4rem; }
+@media (max-width:560px){ .lab-grid{ grid-template-columns:1fr; } }
+.lab .keys{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.9rem; }
+.lab .keys .gate{ min-width:2.6rem; font-weight:700; font-size:.8rem; }
+.lab .say{ margin:.8rem 0 0; font-size:.92rem; line-height:1.5; color:var(--muted); min-height:2.8em; }
+.dial{ width:100%; max-width:12.5rem; height:auto; display:block; margin-inline:auto; overflow:visible; }
+.dial .ring{ fill:none; stroke:var(--line); stroke-width:.014; }
+.dial .axis{ stroke:var(--muted); stroke-width:.01; opacity:.55; }
+.dial .diag{ stroke:var(--line); stroke-width:.01; stroke-dasharray:.04 .04; }
+.dial .proj{ stroke:var(--bronze); stroke-width:.012; stroke-dasharray:.03 .03; }
+.dial .arrow{ stroke:var(--accent); stroke-width:.035; stroke-linecap:round; }
+.dial .tip{ fill:var(--accent); }
+.dial text{ font-family:var(--f-mono); font-size:.13px; fill:var(--muted); }
+.dial text.dim{ opacity:.65; }
+.readout{ display:flex; flex-direction:column; gap:.4rem; font-family:var(--f-mono); font-size:.8rem; }
+.rrow{ display:grid; grid-template-columns:3.3rem 4rem minmax(0,1fr) 3.3rem; gap:.5rem; align-items:center; }
+.rrow.wide{ grid-template-columns:3.6rem minmax(0,1fr) 3.3rem; }
+.rrow .k{ color:var(--ink); }
+.rrow .amp{ color:var(--muted); text-align:right; }
+.rrow .pc{ color:var(--ink); text-align:right; }
+.rrow.rhead{ font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:.2rem; }
+.rrow.rhead span:nth-child(2){ text-align:right; }
+.rrow.rhead span:last-child{ text-align:right; }
+.bar{ position:relative; display:block; height:.6rem; background:var(--line-soft); border-radius:1px; overflow:hidden; }
+.bar i{ position:absolute; left:0; top:0; bottom:0; width:0; background:var(--accent); transition:width .25s ease; }
+.bar.m75::after{ content:""; position:absolute; top:0; bottom:0; left:75%; width:2px; background:var(--flag); }
+.lab .sl{
+  display:flex; flex-direction:column; gap:.3rem; margin-top:.9rem;
+  font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.lab input[type="range"]{ width:100%; accent-color:var(--accent); margin:0; }
+.hist{ margin:.8rem 0 0; font-family:var(--f-mono); font-size:.74rem; color:var(--bronze); overflow-wrap:anywhere; }
+.shots{ margin-top:.8rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); }
+.shots:empty{ display:none; }
+.shots b{ color:var(--ink); font-weight:700; }
+.dots{ display:grid; grid-template-columns:repeat(25,minmax(0,1fr)); gap:2px; margin-top:.45rem; max-width:17rem; }
+.dots i{ display:block; aspect-ratio:1; background:var(--line); border-radius:1px; }
+.dots i.d1{ background:var(--accent); }
+.prow{ display:grid; grid-template-columns:3.2rem minmax(0,1fr); gap:.6rem; align-items:center; margin-top:.7rem; }
+.prow .side{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.bits{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:3px; min-height:1.5rem; max-width:20rem; }
+.bits b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.bits b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.bits b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.gctl{ display:flex; flex-wrap:wrap; gap:.2rem 1.2rem; align-items:flex-end; }
+.gctl .sl{ margin-top:.5rem; }
+.gctl .grow{ flex:1 1 12rem; }
+.gplot{ width:100%; height:auto; display:block; margin-top:.9rem; background:var(--surface); border:1px solid var(--line-soft); border-radius:2px; }
+.gplot .guide{ stroke:var(--line); stroke-width:1; stroke-dasharray:3 3; }
+.gplot .curve{ fill:none; stroke:var(--accent); stroke-width:1.6; stroke-linejoin:round; }
+.gplot .vline{ stroke:var(--flag); stroke-width:1; opacity:.6; }
+.gplot .now{ fill:var(--flag); }
+.gplot text{ font-family:var(--f-mono); font-size:8px; fill:var(--muted); }
+.gread{ margin:.7rem 0 0; font-family:var(--f-mono); font-size:.78rem; line-height:1.6; color:var(--muted); }
+.gread b{ color:var(--ink); font-weight:700; }
+
+
+/* ---------- beyond-the-lecture boxes ---------- */
+.extra{
+  margin-block:1.4rem; padding:.9rem 1rem; background:var(--surface);
+  border:1px solid var(--line-soft); border-left:3px solid var(--accent); border-radius:2px; font-size:.97rem;
+}
+.extra .block-label{ color:var(--accent-ink); }
+.extra p{ margin-block:.5rem; }
+.extra p:first-child{ margin-top:0; }
+.extra p:last-child{ margin-bottom:0; }
+.extra ol,.extra ul{ margin-block:.5rem; }
+.extra li{ margin-block:.3rem; }
+
+/* ---------- repetition-code lab ---------- */
+.cells{ display:flex; gap:4px; min-height:1.5rem; }
+.cells b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; width:1.5rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.cells b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.cells b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.checks{ font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.45; }
+.rep .prow{ grid-template-columns:4.2rem minmax(0,1fr); }
+.rep .readout{ margin-top:1rem; }
+.rep .sl b{ color:var(--ink); font-weight:700; letter-spacing:.04em; font-size:.82rem; }
+.rep .rrow.wide{ grid-template-columns:5.2rem minmax(0,1fr) 3.6rem; }
+.gplot .curve.raw{ stroke:var(--muted); stroke-dasharray:4 3; }
+.legend{ margin:.45rem 0 0; font-family:var(--f-mono); font-size:.7rem; color:var(--muted); }
+.legend .sw{ display:inline-block; width:18px; height:0; border-top:2px solid var(--accent); vertical-align:middle; margin-right:.3rem; }
+.legend .sw.raw{ border-top:2px dashed var(--muted); }
+
+
+/* ---------- JLPT pages ---------- */
+:lang(ja), [lang="ja"]{ font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",var(--f-body); }
+.home-link{ text-decoration:none; color:inherit; }
+.topbar .tools{ margin-left:auto; display:flex; gap:.4rem; }
+.btn.tg{ font-family:var(--f-mono); }
+.btn.tg[aria-pressed="true"]{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.btn.tg[aria-pressed="false"]{ opacity:.6; }
+ruby rt{ font-size:.5em; color:var(--muted); font-weight:400; letter-spacing:0; }
+.no-furi rt{ visibility:hidden; }
+.jp{ margin-block:1rem; padding:.7rem .9rem; background:var(--card); border:1px solid var(--line-soft); border-left:3px solid var(--accent); border-radius:2px; }
+main .jp p{ margin:0; }
+main .jp p.ja{ font-size:1.22rem; line-height:2.15; }
+main .jp p.en{ margin-top:.25rem; font-size:.95rem; color:var(--muted); line-height:1.5; }
+main .jp p.note{ margin-top:.5rem; padding-top:.45rem; border-top:1px dashed var(--line-soft); font-size:.88rem; color:var(--muted); }
+.who-says{ font-family:var(--f-mono); font-size:.7rem; color:var(--bronze); white-space:nowrap; }
+.say{
+  display:inline-grid; place-items:center; width:1.75rem; height:1.75rem; margin-right:.5rem; vertical-align:.15em;
+  font-size:.7rem; line-height:1; color:var(--accent-ink); background:var(--accent-soft);
+  border:1px solid var(--accent); border-radius:50%; cursor:pointer; padding:0;
+}
+.say:hover{ background:var(--accent); color:var(--bg); }
+.say.on{ background:var(--accent); color:var(--bg); }
+.no-en .en{ color:transparent !important; background:var(--line-soft); border-radius:2px; cursor:pointer; user-select:none; }
+.no-en .en *{ color:transparent !important; }
+.no-en .en.peek, .no-en .en.peek *{ color:var(--muted) !important; background:none; }
+.vocab{ display:grid; grid-template-columns:1fr; gap:.7rem; margin-block:1.2rem; }
+@media (min-width:700px){ .vocab{ grid-template-columns:1fr 1fr; } }
+.word{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.75rem .85rem; }
+main .word p{ margin:0; }
+main .word p.w-head{ display:flex; align-items:baseline; justify-content:space-between; gap:.5rem; }
+.w-ja{ font-size:1.45rem; line-height:2; }
+.w-pos{ font-family:var(--f-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); white-space:nowrap; }
+main .word p.w-en{ font-size:.94rem; line-height:1.45; }
+.word .jp{ margin:.6rem 0 0; padding:.45rem .6rem; border-left-width:2px; }
+main .word .jp p.ja{ font-size:1.02rem; line-height:2; }
+main .word .jp p.en{ font-size:.88rem; }
+main p.qz-bar{ display:flex; justify-content:space-between; align-items:center; gap:1rem; font-family:var(--f-mono); font-size:.74rem; color:var(--muted); }
+.qz{ border-top:1px solid var(--line-soft); padding-block:.9rem; }
+main .qz p{ margin:0; }
+main .qz p.q{ font-size:1.12rem; line-height:2.1; }
+main .qz p.en{ font-size:.88rem; color:var(--muted); }
+.opts{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.55rem; }
+.btn.opt{ text-transform:none; letter-spacing:0; font-size:.98rem; padding:.35rem .8rem; }
+.btn.opt.good{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.btn.opt.bad{ background:var(--flag-soft); border-color:var(--flag); color:var(--flag); }
+main .qz p.why{ margin-top:.5rem; font-size:.92rem; color:var(--ink); }
+.fc .q[lang="ja"]{ font-size:1.3rem; font-weight:400; line-height:2; }
+.listencard p.small{ flex-basis:100%; font-size:.82rem; }
+main td[lang="ja"], main td.day[lang="ja"]{ font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",var(--f-body); font-size:1rem; color:var(--ink); }
+
+
+/* ---------- lesson 3: the whole dialogue first ---------- */
+.dlg-bar{ margin:.8rem 0 .4rem; }
+.btn.say-all.on{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.dlg{ display:flex; flex-direction:column; margin-top:.4rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.2rem .9rem; }
+.dl{ display:grid; grid-template-columns:6.6rem minmax(0,1fr); column-gap:.8rem; padding:.5rem 0; border-top:1px solid var(--line-soft); }
+.dl:first-child{ border-top:0; }
+.dl.now{ background:var(--accent-soft); box-shadow:-.9rem 0 0 var(--accent-soft), .9rem 0 0 var(--accent-soft); }
+.dl .spk{ grid-row:1 / span 2; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); padding-top:.65rem; }
+main .dl p{ margin:0; }
+main .dl p.ja{ font-size:1.12rem; line-height:2.05; }
+main .dl p.en{ font-size:.9rem; line-height:1.45; color:var(--muted); }
+main .dl p.en-sfx{ font-size:.88rem; font-style:italic; color:var(--muted); padding-block:.3rem; }
+@media (max-width:560px){ .dl{ grid-template-columns:1fr; } .dl .spk{ grid-row:auto; padding-top:0; } }
+
+/* ---------- a two-column table that fits a phone ---------- */
+table.week.narrow{ min-width:0; }
+table.week.narrow td.day{ white-space:normal; }
+table.week.narrow.keep td.day{ white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><a class="home-link" href="../index.html"><b>JLPT</b></a><span class="mark-sub"> &nbsp;/&nbsp; Lower Intermediate S2 #1 &middot; Bite-size</span></p>
+    <div class="tools">
+      <button class="btn tg" type="button" data-toggle="furi" aria-pressed="true">ふりがな</button>
+      <button class="btn tg" type="button" data-toggle="en" aria-pressed="true">English</button>
+    </div>
+  </div>
+  <nav class="jump" aria-label="Jump to a section">
+    <div class="wrap jump-in">
+      <a class="home" href="../index.html" aria-label="All JLPT lessons">All</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m1" aria-label="1. The recipe">1</a>
+      <a href="#m2" aria-label="2. The chat around it">2</a>
+      <a href="#m3" aria-label="3. Key lines">3</a>
+      <a href="#m4" aria-label="4. Vocabulary">4</a>
+      <a href="#m5" aria-label="5. Spoons and cups">5</a>
+      <a href="#m6" aria-label="6. Instructions, plain form">6</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m7" aria-label="7. Kitchen Japanese">7</a>
+      <a href="#m8" aria-label="8. から揚げ and 片栗粉">8</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m9" aria-label="9. Quiz">9</a>
+      <a href="#cards" aria-label="Flashcards">?</a>
+      <a href="#sources" aria-label="Sources">&sect;</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">JLPT study &middot; JapanesePod101 Lower Intermediate S2 #1 &middot; around N3</p>
+    <h1>Cut, soak, coat, fry — <em>reading a Japanese recipe.</em></h1>
+    <p class="standfirst">No conversation this time: the lesson is a recipe. Chef Gonzaemon’s Japanese-style fried chicken, <span lang="ja">から揚げ</span>, is written the way Japanese recipes, manuals and game instructions are, in the plain non-past form. Along the way: kitchen words like <span lang="ja">一口大</span>, <span lang="ja">まんべんなく</span> and <span lang="ja">中火</span>, what <span lang="ja">片栗粉</span> really is, and why a Japanese cup isn’t an American one.</p>
+    <div class="metarow">
+      <span><b>9 sections</b>, with the whole recipe first</span>
+      <span>Lesson — <b>JapanesePod101</b>, “Recipe – Fried Chicken”</span>
+      <span>Notes taken <b>13 Oct 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="Sections">
+    <p class="arclabel">The lesson</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The recipe</a></li>
+      <li><a href="#m2"><span class="n">2</span> The chat around it</a></li>
+      <li><a href="#m3"><span class="n">3</span> Key lines</a></li>
+      <li><a href="#m4"><span class="n">4</span> Vocabulary</a></li>
+      <li><a href="#m5"><span class="n">5</span> Spoons and cups</a></li>
+      <li><a href="#m6"><span class="n">6</span> Instructions, plain form</a></li>
+    </ol>
+    <p class="arclabel">Around the lesson</p>
+    <ol>
+      <li><a href="#m7"><span class="n">7</span> Kitchen Japanese</a></li>
+      <li><a href="#m8"><span class="n">8</span> から揚げ and 片栗粉</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> Quiz</a></li>
+      <li><a href="#cards"><span class="n">?</span> Flashcards</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;9 marked done</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="ja-ctl">
+      <p class="blurb"><b>Hear it.</b> Tap <span class="term">▶</span> beside any Japanese line to hear it read by your device’s Japanese voice, or play the whole recipe below. Use the buttons up top to hide the furigana or the English — with English hidden, tap a translation to peek. These settings carry over from lesson to lesson.</p>
+      <div class="field">
+        <label for="ja-rate">Speed</label>
+        <select class="ctl" id="ja-rate">
+          <option value="0.6">0.6&times; &mdash; slow</option>
+          <option value="0.85" selected>0.85&times; &mdash; study</option>
+          <option value="1">1&times; &mdash; natural</option>
+        </select>
+      </div>
+      <p class="blurb small" id="ja-note" hidden>No Japanese voice was found on this device; it may read the lines with another voice. Phones usually have one; on a computer you may need to add a Japanese text-to-speech voice.</p>
+    </div>
+
+    <div class="arc"><h2>The lesson</h2><span class="rule"></span><span class="cnt">6 sections</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>The recipe</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label></div>
+      </div>
+      <p class="who">The whole recipe, retold for review</p>
+
+      <p>The lesson’s recipe, retold in my own wording so you can review it in one place: the same dish, steps, words and grammar, but a different cooking show and chef, amounts for four people instead of two, and every step and tip rephrased. The lesson’s exact lines are in section 3. Hide the English with the button at the top to test yourself.</p>
+      <div class="dlg-bar"><button class="btn say-all" type="button">▶ Play the whole recipe</button></div>
+      <div class="dlg">
+        <div class="dl"><span class="spk">Host</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>「みんなのキッチン」へようこそ！<ruby>今日<rt>きょう</rt></ruby>は、<ruby>山田<rt>やまだ</rt></ruby>シェフの<ruby>人気<rt>にんき</rt></ruby>メニュー、<ruby>和風<rt>わふう</rt></ruby>から<ruby>揚<rt>あ</rt></ruby>げを<ruby>作<rt>つく</rt></ruby>りましょう。とってもおいしいんですよ！</p><p class="en">Welcome to “Everyone’s Kitchen”! Today let’s make Chef Yamada’s much-loved Japanese-style fried chicken. It’s really delicious!</p></div>
+        <div class="dl"><span class="spk">Ingredients</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>材<rt>ざい</rt>料<rt>りょう</rt></ruby>（4<ruby>人分<rt>にんぶん</rt></ruby>）：<br><ruby>鶏<rt>とり</rt></ruby>もも<ruby>肉<rt>にく</rt></ruby>　600g、<br>にんにく　2かけ、<br>しょうが　2かけ、<br>しょうゆ　<ruby>大<rt>おお</rt></ruby>さじ2、<br><ruby>酒<rt>さけ</rt></ruby>　<ruby>大<rt>おお</rt></ruby>さじ2、<br><ruby>片栗粉<rt>かたくりこ</rt></ruby>　<ruby>大<rt>おお</rt></ruby>さじ4、<br><ruby>揚<rt>あ</rt></ruby>げ<ruby>油<rt>あぶら</rt></ruby>　<ruby>適宜<rt>てきぎ</rt></ruby></p><p class="en">Ingredients (serves 4):<br>600 g chicken thigh<br>2 cloves of garlic<br>2 knobs of ginger<br>2 tbsp soy sauce<br>2 tbsp sake<br>4 tbsp potato starch<br>oil for frying, as needed</p></div>
+        <div class="dl"><span class="spk">Step 1</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>鶏<rt>とり</rt></ruby>もも<ruby>肉<rt>にく</rt></ruby>は<ruby>余分<rt>よぶん</rt></ruby>な<ruby>脂<rt>あぶら</rt></ruby>を<ruby>取<rt>と</rt></ruby>って、<ruby>一口大<rt>ひとくちだい</rt></ruby>に<ruby>切<rt>き</rt></ruby>る。</p><p class="en">Trim the excess fat from the chicken thighs and cut them into bite-size pieces.</p></div>
+        <div class="dl"><span class="spk">Step 2</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>にんにくとしょうがは<ruby>皮<rt>かわ</rt></ruby>をむいて、すりおろす。</p><p class="en">Peel the garlic and the ginger, and grate them.</p></div>
+        <div class="dl"><span class="spk">Step 3</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ボウルにしょうゆと<ruby>酒<rt>さけ</rt></ruby>をそれぞれ<ruby>大<rt>おお</rt></ruby>さじ2<ruby>杯<rt>はい</rt></ruby>ずつ<ruby>入<rt>い</rt></ruby>れ、すりおろしたにんにくとしょうがを<ruby>加<rt>くわ</rt></ruby>えて<ruby>混<rt>ま</rt></ruby>ぜる。</p><p class="en">Put 2 tablespoons each of soy sauce and sake in a bowl, add the grated garlic and ginger, and mix.</p></div>
+        <div class="dl"><span class="spk">Step 4</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>3のたれに<ruby>鶏肉<rt>とりにく</rt></ruby>を<ruby>入<rt>い</rt></ruby>れ、<ruby>味<rt>あじ</rt></ruby>がよくしみこむように、<ruby>手<rt>て</rt></ruby>で<ruby>軽<rt>かる</rt></ruby>くもむ。そのまま<ruby>冷蔵庫<rt>れいぞうこ</rt></ruby>で30<ruby>分<rt>ぷん</rt></ruby>ほどおく。</p><p class="en">Put the chicken into the sauce from step 3 and rub it gently with your hands so the flavour soaks in well. Leave it in the fridge like that for about 30 minutes.</p></div>
+        <div class="dl"><span class="spk">Step 5</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ビニール<ruby>袋<rt>ぶくろ</rt></ruby>に<ruby>片栗粉<rt>かたくりこ</rt></ruby>を<ruby>入<rt>い</rt></ruby>れ、<ruby>鶏肉<rt>とりにく</rt></ruby>を<ruby>加<rt>くわ</rt></ruby>えたら、<ruby>袋<rt>ふくろ</rt></ruby>を<ruby>振<rt>ふ</rt></ruby>って<ruby>全体<rt>ぜんたい</rt></ruby>にまんべんなくまぶす。</p><p class="en">Put the potato starch in a plastic bag, add the chicken, then shake the bag to coat every piece evenly.</p></div>
+        <div class="dl"><span class="spk">Step 6</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>深<rt>ふか</rt></ruby>めのフライパンに<ruby>揚<rt>あ</rt></ruby>げ<ruby>油<rt>あぶら</rt></ruby>を<ruby>入<rt>い</rt></ruby>れる。<ruby>量<rt>りょう</rt></ruby>は、<ruby>鶏肉<rt>とりにく</rt></ruby>を<ruby>入<rt>い</rt></ruby>れたときにかぶるくらいまで。</p><p class="en">Pour the frying oil into a deep frying pan: enough to cover the chicken when you put it in.</p></div>
+        <div class="dl"><span class="spk">Step 7</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>油<rt>あぶら</rt></ruby>を180<ruby>度<rt>ど</rt></ruby>くらいまで<ruby>熱<rt>ねっ</rt></ruby>したら、<ruby>中火<rt>ちゅうび</rt></ruby>にして<ruby>鶏肉<rt>とりにく</rt></ruby>を<ruby>入<rt>い</rt></ruby>れ、4〜5<ruby>分<rt>ふん</rt></ruby>かけてからりと<ruby>揚<rt>あ</rt></ruby>げる。</p><p class="en">Heat the oil to about 180 °C, turn the heat down to medium, add the chicken, and fry for 4–5 minutes until crisp.</p></div>
+        <div class="dl"><span class="spk">Tip</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>片栗粉<rt>かたくりこ</rt></ruby>がなければ、<ruby>代<rt>か</rt></ruby>わりに<ruby>小麦粉<rt>こむぎこ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>ってもよい。</p><p class="en">If you have no potato starch, you can use wheat flour instead.</p></div>
+        <div class="dl"><span class="spk">Tip</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>スーパーで<ruby>売<rt>う</rt></ruby>っている「から<ruby>揚<rt>あ</rt></ruby>げ<ruby>粉<rt>こ</rt></ruby>」を<ruby>使<rt>つか</rt></ruby>う<ruby>場合<rt>ばあい</rt></ruby>は、<ruby>下味<rt>したあじ</rt></ruby>がついているので、<ruby>手順<rt>てじゅん</rt></ruby>2と3は<ruby>省<rt>しょう</rt>略<rt>りゃく</rt></ruby>できる。<ruby>粉<rt>こな</rt></ruby>を<ruby>鶏肉<rt>とりにく</rt></ruby>に<ruby>直<rt>ちょく</rt>接<rt>せつ</rt></ruby>まぶすだけでよい。</p><p class="en">If you use the karaage mix sold in supermarkets, it’s already seasoned, so you can skip steps 2 and 3. Just coat the chicken with it directly.</p></div>
+        <div class="dl"><span class="spk">Tip</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>粉<rt>こな</rt></ruby>をまぶしたら、<ruby>揚<rt>あ</rt></ruby>げる<ruby>前<rt>まえ</rt></ruby>に<ruby>軽<rt>かる</rt></ruby>くはたいて、<ruby>余分<rt>よぶん</rt></ruby>な<ruby>粉<rt>こな</rt></ruby>を<ruby>落<rt>お</rt></ruby>とした<ruby>方<rt>ほう</rt></ruby>がいい。</p><p class="en">Once it’s coated, it’s better to pat off the excess flour before frying.</p></div>
+        <div class="dl"><span class="spk">Tip</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>揚<rt>あ</rt></ruby>げ<ruby>時間<rt>じかん</rt></ruby>は<ruby>肉<rt>にく</rt></ruby>の<ruby>大<rt>おお</rt></ruby>きさによって<ruby>変<rt>か</rt></ruby>わる。<ruby>心配<rt>しんぱい</rt></ruby>なときは、<ruby>試<rt>ため</rt></ruby>しに<ruby>一<rt>ひと</rt></ruby>つ<ruby>切<rt>き</rt></ruby>ってみて、<ruby>中<rt>なか</rt></ruby>まで<ruby>火<rt>ひ</rt></ruby>が<ruby>通<rt>とお</rt></ruby>っているか<ruby>確<rt>たし</rt></ruby>かめるとよい。</p><p class="en">Frying time depends on the size of the pieces. If you’re not sure, cut one open as a test and check that it’s cooked all the way through.</p></div>
+        <div class="dl"><span class="spk">Host</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>やっぱり<ruby>揚<rt>あ</rt></ruby>げたてのから<ruby>揚<rt>あ</rt></ruby>げは<ruby>最高<rt>さいこう</rt></ruby>ですね！みなさんも、ぜひおうちで<ruby>作<rt>つく</rt></ruby>ってみてください。</p><p class="en">Freshly fried karaage really is the best! Do try making it at home.</p></div>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>The chat around it</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label></div>
+      </div>
+      <p class="who">Natsuko, Naomi and Peter, before and after the recipe</p>
+
+      <p>It’s recipe number one, so Natsuko welcomes the cooks among the listeners, and Naomi apologises to the vegetarians: today it’s chicken, <span lang="ja">鳥のから揚げ</span>. What comes to mind when you hear <span lang="ja">から揚げ</span>? For Natsuko, boxed lunches, and the menu at an <span lang="ja">居酒屋</span>, a Japanese-style pub. Peter points out a difference: in the US, “fried chicken” suggests big pieces on the bone, but Japanese karaage comes as small, round, boneless pieces. A bit like chicken nuggets, Natsuko says, though Naomi prefers karaage. The theme, Naomi says, is giving instructions.</p>
+
+      <h3>After the recipe</h3>
+      <p>Everyone is hungry. Listeners in Japan, or near a Japanese food shop, can buy potato starch, Naomi says; if you can’t, wheat flour is still plenty tasty. Natsuko doesn’t deep-fry at home, so rarely makes karaage, but loves eating it.</p>
+      <p>So where should a visitor to Japan go for good karaage? It’s everywhere, Natsuko says: bento shops (<span lang="ja">お弁当屋さん</span>) and <span lang="ja">居酒屋</span>. Naomi adds stations, even airports — Natsuko’s plan for stepping off the plane: grab a <span lang="ja">から揚げ弁当</span> — and convenience stores. And Peter’s tip for the <span lang="ja">居酒屋</span>: if you can’t read the menu, just order karaage, because they’re bound to have it.</p>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Key lines</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label></div>
+      </div>
+      <p class="who">The lesson’s own lines that carry its patterns</p>
+
+      <p>Five lines from the lesson’s recipe, quoted exactly for study. The English is my own rendering.</p>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>3で<ruby>作<rt>つく</rt></ruby>ったたれに<ruby>鶏肉<rt>とりにく</rt></ruby>を<ruby>入<rt>い</rt></ruby>れて、<ruby>味<rt>あじ</rt></ruby>がしみこむように<ruby>軽<rt>かる</rt></ruby>くもむ。<ruby>味<rt>あじ</rt></ruby>がしみこむまで、<ruby>約<rt>やく</rt></ruby>30<ruby>分間<rt>ぷんかん</rt></ruby>おく。</p>
+        <p class="en">Put the chicken in the sauce made in step 3 and rub it lightly so the flavour soaks in. Leave it for about 30 minutes, until the flavour has soaked in. <span class="who-says">— step 4</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">〜ように</span>, “so that”, the <span lang="ja">ように</span> of <a href="../ub-s1-01/index.html#m4">UB lesson 1</a>; <span lang="ja">〜まで</span>, “until”; <span lang="ja">おく</span>, “leave it, let it stand”, here a verb in its own right. Every verb is plain: <span lang="ja">もむ</span>, <span lang="ja">おく</span>.</p>
+      </div>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ビニール<ruby>袋<rt>ぶくろ</rt></ruby>に<ruby>片栗粉<rt>かたくりこ</rt></ruby>を<ruby>入<rt>い</rt></ruby>れ、そこに<ruby>鶏肉<rt>とりにく</rt></ruby>を<ruby>入<rt>い</rt></ruby>れて、まんべんなく<ruby>片栗粉<rt>かたくりこ</rt></ruby>をまぶす。</p>
+        <p class="en">Put the potato starch in a plastic bag, put the chicken in it, and coat the chicken evenly with the starch. <span class="who-says">— step 5</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">入れ、</span> is the stem of <span lang="ja">入れる</span> used as “and”, the written partner of <span lang="ja">入れて</span> (section 6); <span lang="ja">そこに</span>, “into it”; <span lang="ja">まんべんなく</span>, “evenly”; <span lang="ja">まぶす</span>, “coat, dust”.</p>
+      </div>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>油<rt>あぶら</rt></ruby>の<ruby>温度<rt>おんど</rt></ruby>が<ruby>約<rt>やく</rt></ruby>180<ruby>度<rt>ど</rt></ruby>になったら、<ruby>中火<rt>ちゅうび</rt></ruby>にし、<ruby>鶏肉<rt>とりにく</rt></ruby>を<ruby>入<rt>い</rt></ruby>れて、4〜5<ruby>分<rt>ふん</rt></ruby><ruby>程度<rt>ていど</rt></ruby><ruby>揚<rt>あ</rt></ruby>げる。</p>
+        <p class="en">When the oil reaches about 180 degrees, turn the heat to medium, put the chicken in, and fry for about 4–5 minutes. <span class="who-says">— step 7</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">〜になったら</span>, “once it reaches”; <span lang="ja">中火にし</span> = <span lang="ja">中火にして</span>, “set it to medium heat”; <span lang="ja">約</span> before a number and <span lang="ja">程度</span> after it both mean “about”.</p>
+      </div>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>片栗粉<rt>かたくりこ</rt></ruby>が<ruby>手<rt>て</rt></ruby>に<ruby>入<rt>はい</rt></ruby>らない<ruby>場合<rt>ばあい</rt></ruby>は、<ruby>小麦粉<rt>こむぎこ</rt></ruby>でもよい。</p>
+        <p class="en">If you can’t get potato starch, wheat flour will do. <span class="who-says">— a tip</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">手に入る</span>, “to get hold of”; <span lang="ja">〜場合は</span>, “if, in cases where”; <span lang="ja">〜でもよい</span>, “… is fine too”.</p>
+      </div>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>揚<rt>あ</rt></ruby>げる<ruby>時間<rt>じかん</rt></ruby>は、<ruby>肉<rt>にく</rt></ruby>の<ruby>大<rt>おお</rt></ruby>きさによるので、<ruby>不安<rt>ふあん</rt></ruby>なときは、<ruby>中<rt>なか</rt></ruby>まで<ruby>火<rt>ひ</rt></ruby>が<ruby>通<rt>とお</rt></ruby>っているか、<ruby>試<rt>ため</rt></ruby>しに<ruby>切<rt>き</rt></ruby>って<ruby>確認<rt>かくにん</rt></ruby>してみるとよい。</p>
+        <p class="en">The frying time depends on the size of the meat, so if you’re unsure, it’s a good idea to cut a piece as a test and check whether it’s cooked all the way through. <span class="who-says">— a tip</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">〜による</span>, “depends on”; <span lang="ja">火が通る</span>, “to be cooked through”; <span lang="ja">〜か</span> marks an embedded question, “whether”; <span lang="ja">試しに</span>, “as a test”; <span lang="ja">〜てみるとよい</span>, “it’s a good idea to try…”.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Vocabulary</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label></div>
+      </div>
+      <p class="who">The lesson’s word list, in its order</p>
+
+      <p>The hosts’ notes first, then a card for each word with an example of my own.</p>
+      <ul>
+        <li><strong><span lang="ja">材料</span></strong> — ingredients, or materials in general: <span lang="ja">材料は何ですか？</span></li>
+        <li><strong><span lang="ja">片栗粉</span></strong> — potato starch. <span lang="ja">片栗</span> (katakuri) is a plant, the “dogtooth violet”, Naomi says, and <span lang="ja">粉</span>, read <span lang="ja">こ</span> here, is powder or flour. So it’s literally “katakuri powder”, but real katakuri starch is now very expensive, so the powder is made from potatoes instead. About 80% potato starch, Natsuko has heard. Is katakuri native to Japan? Natsuko isn’t sure, but you see a lot of it in the mountains. Section 8 has the answer.</li>
+        <li><strong><span lang="ja">小麦粉</span></strong> — wheat flour: <span lang="ja">小麦</span>, wheat, plus <span lang="ja">粉</span> again. The lesson’s example: <span lang="ja">片栗粉の代わりに、小麦粉を使いました</span>, “I used wheat flour instead of potato starch.”</li>
+        <li><strong><span lang="ja">から揚げ粉</span></strong> — a ready-made flour mix just for karaage, sold in Japanese supermarkets. Naomi’s mother uses it a lot.</li>
+        <li><strong><span lang="ja">鶏もも肉</span></strong> — <span lang="ja">鶏</span>, chicken; <span lang="ja">もも</span>, thigh; <span lang="ja">肉</span>, meat. Not a whole leg on the bone: it’s the big piece of meat, sold boneless. With the bone, it’s <span lang="ja">骨付きもも肉</span>; the lower leg is sometimes sold as <span lang="ja">ドラムスティック</span>.</li>
+        <li><strong><span lang="ja">にんにく</span></strong>, garlic, and <strong><span lang="ja">しょうが</span></strong>, ginger.</li>
+        <li><strong><span lang="ja">たれ</span></strong> — a sauce, for dipping or basting. You’ll be asked at yakitori shops: <span lang="ja">たれにしますか？塩にしますか？</span>, “sauce or salt?”</li>
+        <li><strong><span lang="ja">一口大</span></strong> — bite-size: <span lang="ja">一口</span> is one bite, and <span lang="ja">大</span> here means size, <span lang="ja">大きさ</span>. “One mouthful’s size”.</li>
+        <li><strong><span lang="ja">一かけ</span></strong> — a piece, a clove, a knob; originally <span lang="ja">一かけら</span>, where <span lang="ja">かけら</span> is a fragment, a scrap, a shard. The lesson’s example: <span lang="ja">チョコレートを、一かけ食べました</span>, “I ate a piece of chocolate.”</li>
+        <li><strong><span lang="ja">まんべんなく</span></strong> — an adverb, “evenly, all over”: <span lang="ja">壁をまんべんなく塗ってください</span>, “please paint the wall evenly.”</li>
+        <li><strong><span lang="ja">中火</span></strong> — medium heat; low heat is <span lang="ja">弱火</span>, high heat <span lang="ja">強火</span>: <span lang="ja">強火から中火にして下さい</span>, “turn it down from high to medium.” In the kitchen, Peter says, kanji are extremely useful: even if you can’t read a word aloud, knowing what its kanji mean will get you through.</li>
+      </ul>
+      <p class="flag"><span class="block-label">Watch for</span>“Thigh” is the usual translation, and Japan’s farm ministry uses it too, but a boneless pack of <span lang="ja">鶏もも肉</span> is really the whole leg taken off the bone, drumstick meat included. On the bone, the whole leg is <span lang="ja">骨付きもも</span>. And <span lang="ja">手羽元</span>, which looks like a small drumstick, is part of the wing.</p>
+      <div class="vocab">
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ざいりょう" aria-label="Play">▶</button><ruby>材<rt>ざい</rt>料<rt>りょう</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">ingredients; materials</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>カレーの<ruby>材<rt>ざい</rt>料<rt>りょう</rt></ruby>を<ruby>買<rt>か</rt></ruby>いに、スーパーへ<ruby>行<rt>い</rt></ruby>った。</p><p class="en">I went to the supermarket to buy the ingredients for curry.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="かたくりこ" aria-label="Play">▶</button><ruby>片栗粉<rt>かたくりこ</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">potato starch, named after the katakuri plant — <span lang="ja">水溶き片栗粉</span>, starch mixed with water to thicken a sauce</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>スープに<ruby>水溶<rt>みずど</rt></ruby>き<ruby>片栗粉<rt>かたくりこ</rt></ruby>を<ruby>入<rt>い</rt></ruby>れて、とろみをつける。</p><p class="en">Stir some starch mixed with water into the soup to thicken it.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="こむぎこ" aria-label="Play">▶</button><ruby>小麦粉<rt>こむぎこ</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">wheat flour</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>小麦粉<rt>こむぎこ</rt></ruby>と<ruby>卵<rt>たまご</rt></ruby>と<ruby>牛<rt>ぎゅう</rt>乳<rt>にゅう</rt></ruby>で、ホットケーキを<ruby>焼<rt>や</rt></ruby>いた。</p><p class="en">I made pancakes with flour, eggs and milk.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="からあげこ" aria-label="Play">▶</button>から<ruby>揚<rt>あ</rt></ruby>げ<ruby>粉<rt>こ</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">ready-mixed, seasoned flour for karaage</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>から<ruby>揚<rt>あ</rt></ruby>げ<ruby>粉<rt>こ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>えば、<ruby>下味<rt>したあじ</rt></ruby>をつけなくてもおいしくできる。</p><p class="en">With karaage mix, it comes out tasty even without marinating first.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="とりももにく" aria-label="Play">▶</button><ruby>鶏<rt>とり</rt></ruby>もも<ruby>肉<rt>にく</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">chicken leg meat off the bone, usually called “thigh” — <span lang="ja">骨付き</span>, “on the bone”; <span lang="ja">胸肉</span>, “breast”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>鶏<rt>とり</rt></ruby>もも<ruby>肉<rt>にく</rt></ruby>は、<ruby>胸肉<rt>むねにく</rt></ruby>よりやわらかくてジューシーだ。</p><p class="en">Chicken thigh is more tender and juicier than breast.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="にんにく" aria-label="Play">▶</button>にんにく</span><span class="w-pos">noun</span></p>
+          <p class="w-en en">garlic</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>このラーメンは、にんにくがよく<ruby>効<rt>き</rt></ruby>いている。</p><p class="en">This ramen really packs a garlic punch.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="しょうが" aria-label="Play">▶</button>しょうが</span><span class="w-pos">noun</span></p>
+          <p class="w-en en">ginger — also written <span lang="ja">生姜</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>風邪<rt>かぜ</rt></ruby>をひいたときは、しょうが<ruby>湯<rt>ゆ</rt></ruby>を<ruby>飲<rt>の</rt></ruby>むと<ruby>体<rt>からだ</rt></ruby>が<ruby>温<rt>あたた</rt></ruby>まる。</p><p class="en">When you have a cold, a hot ginger drink warms you up.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="たれ" aria-label="Play">▶</button>たれ</span><span class="w-pos">noun</span></p>
+          <p class="w-en en">a sauce, for dipping, basting or marinating; often written <span lang="ja">タレ</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>焼<rt>や</rt></ruby>き<ruby>鳥<rt>とり</rt></ruby>は、たれと<ruby>塩<rt>しお</rt></ruby>、どっちが<ruby>好<rt>す</rt></ruby>き？</p><p class="en">Do you like your yakitori with sauce or with salt?</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ひとくちだい" aria-label="Play">▶</button><ruby>一口大<rt>ひとくちだい</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">bite-size — <span lang="ja">大</span> here means <span lang="ja">大きさ</span>, size</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>じゃがいもは<ruby>皮<rt>かわ</rt></ruby>をむいて、<ruby>一口大<rt>ひとくちだい</rt></ruby>に<ruby>切<rt>き</rt></ruby>ってください。</p><p class="en">Peel the potatoes and cut them into bite-size pieces.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ひとかけ" aria-label="Play">▶</button><ruby>一<rt>ひと</rt></ruby>かけ</span><span class="w-pos">noun</span></p>
+          <p class="w-en en">a piece; a clove of garlic, a knob of ginger — from <span lang="ja">一かけら</span>, “a fragment”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>パスタのソースに、にんにくを<ruby>一<rt>ひと</rt></ruby>かけ<ruby>入<rt>い</rt></ruby>れた。</p><p class="en">I put a clove of garlic in the pasta sauce.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="まんべんなく" aria-label="Play">▶</button>まんべんなく</span><span class="w-pos">adverb</span></p>
+          <p class="w-en en">evenly, all over, leaving no part out</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>日焼<rt>ひや</rt></ruby>け<ruby>止<rt>ど</rt></ruby>めを、<ruby>顔<rt>かお</rt></ruby><ruby>全体<rt>ぜんたい</rt></ruby>にまんべんなく<ruby>塗<rt>ぬ</rt></ruby>る。</p><p class="en">Spread the sunscreen evenly over your whole face.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ちゅうび" aria-label="Play">▶</button><ruby>中火<rt>ちゅうび</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">medium heat — <span lang="ja">弱火</span>, “low heat”; <span lang="ja">強火</span>, “high heat”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>フライパンを<ruby>中火<rt>ちゅうび</rt></ruby>で<ruby>温<rt>あたた</rt></ruby>めてから、<ruby>卵<rt>たまご</rt></ruby>を<ruby>入<rt>い</rt></ruby>れる。</p><p class="en">Heat the frying pan over medium heat, then add the egg.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>Spoons and cups</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label></div>
+      </div>
+      <p class="who">The lesson’s warning about measurements</p>
+
+      <p>The lesson translates <span lang="ja">大さじ</span> as “tablespoon” and <span lang="ja">小さじ</span> as “teaspoon”, but Naomi warns that the sizes may not match yours: in Japan, <span lang="ja">大さじ</span> is 15 ml and <span lang="ja">小さじ</span> is 5 ml. Other countries use different sizes, Natsuko adds. And the scariest, says Naomi, is the cup. So check what a recipe’s measures mean before you start.</p>
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span>Naomi is right to fear the cup. A Japanese measuring cup, <span lang="ja">1カップ</span>, holds 200 ml; a US cup is about 237 ml (240 ml on American food labels), and the metric cup used in Australia and elsewhere holds 250 ml. Rice has a cup of its own: one <span lang="ja">合</span>, about 180 ml, the size of the cup that comes with a rice cooker. Even spoons differ: an Australian tablespoon holds 20 ml.</p>
+      </div>
+      <div class="tablewrap">
+        <table class="week narrow keep">
+          <thead><tr><th>Measure</th><th>How much</th></tr></thead>
+          <tbody>
+            <tr><td class="day" lang="ja"><ruby>大<rt>おお</rt></ruby>さじ1</td><td>15 ml</td></tr>
+            <tr><td class="day" lang="ja"><ruby>小<rt>こ</rt></ruby>さじ1</td><td>5 ml</td></tr>
+            <tr><td class="day" lang="ja">1カップ</td><td>200 ml</td></tr>
+            <tr><td class="day" lang="ja">1<ruby>合<rt>ごう</rt></ruby></td><td>about 180 ml, for rice</td></tr>
+            <tr><td class="day" lang="ja"><ruby>少<rt>しょう</rt>々<rt>しょう</rt></ruby></td><td>a pinch between thumb and forefinger: about ⅛ teaspoon, 0.6 g of salt</td></tr>
+            <tr><td class="day" lang="ja">ひとつまみ</td><td>a three-finger pinch: about ⅕ teaspoon, 1 g of salt</td></tr>
+            <tr><td class="day" lang="ja"><ruby>適<rt>てき</rt>量<rt>りょう</rt></ruby></td><td>the right amount: put some in, and judge how much</td></tr>
+            <tr><td class="day" lang="ja"><ruby>適宜<rt>てきぎ</rt></ruby></td><td>as you see fit; sometimes it can be left out</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Real pinches tend to be smaller: when one study weighed people’s actual pinches, the averages were just 0.2 g and 0.5 g. The <span lang="ja">杯</span> in <span lang="ja">大さじ1杯</span> is the counter for spoonfuls and cupfuls, and ingredient lists often drop it: <span lang="ja">大さじ1</span>. Half a spoon is written <span lang="ja">大さじ1/2</span> and read <span lang="ja">大さじ半分</span> or <span lang="ja">大さじ2分の1</span>. And temperatures are Celsius: the recipe’s <span lang="ja">180度</span> is about 356°F.</p>
+    </article>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Instructions, plain form</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label></div>
+      </div>
+      <p class="who">The lesson’s focus: how written instructions sound</p>
+
+      <p>There’s no grammar point as such, Naomi says; the theme is reading instructions in Japanese. The one thing to notice: instructions are usually written in the plain non-past form. Today it happens to be a recipe, but computer manuals and game instructions are written the same way, so it pays to get used to it.</p>
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span>What “plain non-past” means in practice: the dictionary form, with no <span lang="ja">ます</span> and no <span lang="ja">ください</span>. <span lang="ja">切る</span>, <span lang="ja">混ぜる</span>, <span lang="ja">揚げる</span> read like English instructions: “cut”, “mix”, “fry”. A cooking show says the same things politely, <span lang="ja">切ります</span> or <span lang="ja">切ってください</span>; a written recipe doesn’t need to. Notice <span lang="ja">よい</span> where speech says <span lang="ja">いい</span>: the same word, in its written form.</p>
+        <p>Written instructions also link their steps in a way speech rarely does. The verb’s stem, the form before <span lang="ja">ます</span>, does the job of the <span lang="ja">て</span>-form, “and”: <span lang="ja">入れ、</span> = <span lang="ja">入れて、</span>, and for <span lang="ja">する</span>, <span lang="ja">し、</span> = <span lang="ja">して、</span>, as in <span lang="ja">中火にし、</span>. You’ll meet it in every manual, news story and set of rules.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>電源<rt>でんげん</rt></ruby>ボタンを<ruby>押<rt>お</rt></ruby>し、<ruby>画面<rt>がめん</rt></ruby>が<ruby>明<rt>あか</rt></ruby>るくなったら<ruby>指<rt>ゆび</rt></ruby>を<ruby>離<rt>はな</rt></ruby>す。</p>
+        <p class="en">Press the power button, and when the screen lights up, let go.</p>
+      </div>
+      <p>The recipe’s other patterns, all worth recognising on sight:</p>
+      <div class="tablewrap">
+        <table class="week narrow keep">
+          <thead><tr><th>Pattern</th><th>Meaning, as in the recipe</th></tr></thead>
+          <tbody>
+            <tr><td class="day" lang="ja">〜ように</td><td>so that: <span lang="ja">味がしみこむように</span> (<a href="../ub-s1-01/index.html#m4">UB lesson 1</a>)</td></tr>
+            <tr><td class="day" lang="ja">〜まで</td><td>until: <span lang="ja">味がしみこむまで</span></td></tr>
+            <tr><td class="day" lang="ja">〜たら</td><td>once, when: <span lang="ja">180度になったら</span></td></tr>
+            <tr><td class="day" lang="ja">〜にする</td><td>set it to, make it: <span lang="ja">中火にする</span></td></tr>
+            <tr><td class="day" lang="ja">それぞれ〜ずつ</td><td>… each: <span lang="ja">それぞれ大さじ1杯ずつ</span></td></tr>
+            <tr><td class="day" lang="ja">約〜・〜程度</td><td>about: <span lang="ja">約30分間</span>, <span lang="ja">4〜5分程度</span></td></tr>
+            <tr><td class="day" lang="ja">〜場合は</td><td>if, in cases where: <span lang="ja">手に入らない場合は</span></td></tr>
+            <tr><td class="day" lang="ja">〜でもよい</td><td>… will do: <span lang="ja">小麦粉でもよい</span></td></tr>
+            <tr><td class="day" lang="ja">〜ばよい</td><td>all you need to do is…: <span lang="ja">まぶせばよい</span></td></tr>
+            <tr><td class="day" lang="ja">〜た方がよい</td><td>it’s better to…: <span lang="ja">落とした方がよい</span></td></tr>
+            <tr><td class="day" lang="ja">〜による</td><td>depends on: <span lang="ja">大きさによる</span></td></tr>
+            <tr><td class="day" lang="ja">〜とよい</td><td>it’s a good idea to…: <span lang="ja">確認してみるとよい</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The recipe’s verbs, each with an example of my own:</p>
+      <div class="vocab">
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="すりおろす" aria-label="Play">▶</button>すりおろす</span><span class="w-pos">う-verb</span></p>
+          <p class="w-en en">to grate</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>りんごをすりおろして、<ruby>赤<rt>あか</rt></ruby>ちゃんに<ruby>食<rt>た</rt></ruby>べさせた。</p><p class="en">I grated an apple and fed it to the baby.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="もむ" aria-label="Play">▶</button>もむ</span><span class="w-pos">う-verb</span></p>
+          <p class="w-en en">to rub, knead, work in by hand; also to massage: <span lang="ja">肩をもむ</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>きゅうりに<ruby>塩<rt>しお</rt></ruby>をふって、<ruby>軽<rt>かる</rt></ruby>くもむ。</p><p class="en">Sprinkle the cucumber with salt and rub it in lightly.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="しみこむ" aria-label="Play">▶</button>しみこむ</span><span class="w-pos">う-verb</span></p>
+          <p class="w-en en">to soak in, sink in — also written <span lang="ja">染み込む</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>雨<rt>あめ</rt></ruby>が<ruby>靴<rt>くつ</rt></ruby>にしみこんで、<ruby>足<rt>あし</rt></ruby>が<ruby>冷<rt>つめ</rt></ruby>たい。</p><p class="en">The rain has soaked into my shoes, and my feet are cold.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="おく" aria-label="Play">▶</button>おく</span><span class="w-pos">う-verb</span></p>
+          <p class="w-en en">to leave, let stand — also written <span lang="ja">置く</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>生地<rt>きじ</rt></ruby>を<ruby>冷蔵庫<rt>れいぞうこ</rt></ruby>で1<ruby>時間<rt>じかん</rt></ruby>おく。</p><p class="en">Let the dough rest in the fridge for an hour.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="まぶす" aria-label="Play">▶</button>まぶす</span><span class="w-pos">う-verb</span></p>
+          <p class="w-en en">to coat, dust, sprinkle all over</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>炊<rt>た</rt></ruby>きたてのご<ruby>飯<rt>はん</rt></ruby>にごまをまぶして、おにぎりを<ruby>作<rt>つく</rt></ruby>った。</p><p class="en">I mixed sesame seeds through freshly cooked rice and made rice balls.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="かぶる" aria-label="Play">▶</button>かぶる</span><span class="w-pos">う-verb</span></p>
+          <p class="w-en en">to be covered (by liquid) — <span lang="ja">かぶるくらいの水</span>, “just enough water to cover”; also to put on a hat: <span lang="ja">帽子をかぶる</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>じゃがいもを、かぶるくらいの<ruby>水<rt>みず</rt></ruby>でゆでる。</p><p class="en">Boil the potatoes in just enough water to cover them.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="あげる" aria-label="Play">▶</button><ruby>揚<rt>あ</rt></ruby>げる</span><span class="w-pos">る-verb</span></p>
+          <p class="w-en en">to deep-fry — <span lang="ja">揚げたて</span>, “fresh from the fryer”; <span lang="ja">揚げ物</span>, “fried food”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>天<rt>てん</rt></ruby>ぷらは、<ruby>揚<rt>あ</rt></ruby>げたてが<ruby>一番<rt>いちばん</rt></ruby>おいしい。</p><p class="en">Tempura is best straight out of the fryer.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="はたく" aria-label="Play">▶</button>はたく</span><span class="w-pos">う-verb</span></p>
+          <p class="w-en en">to pat off, dust off</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>服<rt>ふく</rt></ruby>についたほこりを、<ruby>手<rt>て</rt></ruby>ではたいた。</p><p class="en">I brushed the dust off my clothes with my hand.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ひがとおる" aria-label="Play">▶</button><ruby>火<rt>ひ</rt></ruby>が<ruby>通<rt>とお</rt></ruby>る</span><span class="w-pos">phrase</span></p>
+          <p class="w-en en">to be cooked through — <span lang="ja">火を通す</span>, “to cook something through”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>豚肉<rt>ぶたにく</rt></ruby>は、<ruby>中<rt>なか</rt></ruby>まで<ruby>火<rt>ひ</rt></ruby>が<ruby>通<rt>とお</rt></ruby>るまでしっかり<ruby>焼<rt>や</rt></ruby>いてください。</p><p class="en">Cook pork thoroughly, until it’s done all the way through.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="しょうりゃくする" aria-label="Play">▶</button><ruby>省<rt>しょう</rt>略<rt>りゃく</rt></ruby>する</span><span class="w-pos">する-verb</span></p>
+          <p class="w-en en">to omit, skip, abbreviate</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>時間<rt>じかん</rt></ruby>がないので、<ruby>説明<rt>せつめい</rt></ruby>は<ruby>省<rt>しょう</rt>略<rt>りゃく</rt></ruby>します。</p><p class="en">We’re short of time, so I’ll skip the explanation.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Around the lesson</h2><span class="rule"></span><span class="cnt">2 sections</span></div>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Kitchen Japanese</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label></div>
+      </div>
+      <p class="who">Beyond the lesson: the words that fill every other recipe</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span>Read a few more Japanese recipes and the same words keep coming back. Three groups worth learning together: how to cut, how to cook, and the small phrases in between.</p>
+      </div>
+      <h3>How to cut: <span lang="ja">〜切り</span></h3>
+      <div class="tablewrap">
+        <table class="week narrow keep">
+          <thead><tr><th>Cut</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td class="day" lang="ja">みじん<ruby>切<rt>ぎ</rt></ruby>り</td><td>chopped very fine, minced</td></tr>
+            <tr><td class="day" lang="ja"><ruby>千切<rt>せんぎ</rt></ruby>り</td><td>fine matchsticks, shreds (cabbage, carrot)</td></tr>
+            <tr><td class="day" lang="ja"><ruby>薄切<rt>うすぎ</rt></ruby>り</td><td>thin slices</td></tr>
+            <tr><td class="day" lang="ja"><ruby>輪切<rt>わぎ</rt></ruby>り</td><td>rounds (carrot, lemon)</td></tr>
+            <tr><td class="day" lang="ja"><ruby>半月切<rt>はんげつぎ</rt></ruby>り</td><td>half-moons</td></tr>
+            <tr><td class="day" lang="ja">いちょう<ruby>切<rt>ぎ</rt></ruby>り</td><td>quarter-rounds, shaped like ginkgo leaves</td></tr>
+            <tr><td class="day" lang="ja"><ruby>乱切<rt>らんぎ</rt></ruby>り</td><td>irregular chunks, turning the vegetable between cuts</td></tr>
+            <tr><td class="day" lang="ja">ざく<ruby>切<rt>ぎ</rt></ruby>り</td><td>roughly chopped</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Note the sound change: <span lang="ja">切り</span> becomes <span lang="ja">ぎり</span> after another word, so <span lang="ja">みじん切り</span> is <span lang="ja">みじんぎり</span>.</p>
+      <h3>How to cook</h3>
+      <div class="tablewrap">
+        <table class="week narrow keep">
+          <thead><tr><th>Verb</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td class="day" lang="ja"><ruby>焼<rt>や</rt></ruby>く</td><td>grill, bake, pan-fry, toast: anything with direct heat</td></tr>
+            <tr><td class="day" lang="ja"><ruby>炒<rt>いた</rt></ruby>める</td><td>stir-fry, sauté</td></tr>
+            <tr><td class="day" lang="ja"><ruby>煮<rt>に</rt></ruby>る</td><td>simmer in a seasoned liquid</td></tr>
+            <tr><td class="day" lang="ja">ゆでる</td><td>boil in plain water</td></tr>
+            <tr><td class="day" lang="ja"><ruby>蒸<rt>む</rt></ruby>す</td><td>steam</td></tr>
+            <tr><td class="day" lang="ja"><ruby>揚<rt>あ</rt></ruby>げる</td><td>deep-fry</td></tr>
+            <tr><td class="day" lang="ja"><ruby>煮込<rt>にこ</rt></ruby>む</td><td>stew, simmer for a long time</td></tr>
+            <tr><td class="day" lang="ja"><ruby>沸騰<rt>ふっとう</rt></ruby>する</td><td>come to the boil</td></tr>
+            <tr><td class="day" lang="ja"><ruby>火<rt>ひ</rt></ruby>を<ruby>止<rt>と</rt></ruby>める</td><td>turn off the heat</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>In between</h3>
+      <ul>
+        <li><strong><span lang="ja">下味をつける</span></strong> — to season ahead of cooking, as the karaage marinade does.</li>
+        <li><strong><span lang="ja">水気を切る</span></strong> — to drain off the water.</li>
+        <li><strong><span lang="ja">粗熱を取る</span></strong> — to let something cool a little, until it’s no longer piping hot.</li>
+        <li><strong><span lang="ja">塩こしょう</span></strong> — salt and pepper, as one ingredient.</li>
+        <li><strong><span lang="ja">揚げたて</span></strong>, <strong><span lang="ja">焼きたて</span></strong>, <strong><span lang="ja">炊きたて</span></strong> — fresh from the fryer, the oven, the rice cooker: <span lang="ja">〜たて</span> after a verb’s stem means “just done”.</li>
+      </ul>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>玉<rt>たま</rt></ruby>ねぎはみじん<ruby>切<rt>ぎ</rt></ruby>りにして、<ruby>弱火<rt>よわび</rt></ruby>でじっくり<ruby>炒<rt>いた</rt></ruby>める。</p>
+        <p class="en">Chop the onion finely and fry it slowly over low heat.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>肉<rt>にく</rt></ruby>に<ruby>塩<rt>しお</rt></ruby>こしょうで<ruby>下味<rt>したあじ</rt></ruby>をつけておく。</p>
+        <p class="en">Season the meat with salt and pepper beforehand.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ゆでたじゃがいもは、<ruby>粗熱<rt>あらねつ</rt></ruby>を<ruby>取<rt>と</rt></ruby>ってからつぶす。</p>
+        <p class="en">Let the boiled potatoes cool a little before mashing them.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>から揚げ and 片栗粉</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label></div>
+      </div>
+      <p class="who">Beyond the lesson: the name, the cousins, and the hosts’ open question</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong>The answer to the hosts’ question.</strong> Katakuri, <em>Erythronium japonicum</em>, is native to Japan, from Hokkaido to Kyushu, though rare in Shikoku and Kyushu. It also grows in Korea, north-east China, Sakhalin and the Kuril Islands. It’s a spring ephemeral of moist woodland floors: it flowers in early spring, before the trees come into leaf, then dies back. “Dogtooth violet” is the English name for its whole genus; Japan’s tourism agency calls this species the Asian fawnlily.</p>
+        <p><strong>From katakuri to potato.</strong> Starch from katakuri bulbs was so prized that the plant was over-harvested, and by the end of the Edo period it had become scarce. From the Meiji era on, starch from potatoes grown in Hokkaido, which behaves much the same in cooking, took its place. Real katakuri starch is hardly produced any more.</p>
+      </div>
+      <p class="flag"><span class="block-label">Watch for</span>Natsuko’s “about 80%” undersells it. Japan’s agricultural agency says almost all <span lang="ja">片栗粉</span> on sale today is potato starch, and an encyclopedia adds that some is cornstarch. Only the name stayed.</p>
+
+      <h3>The name, and some cousins</h3>
+      <p>Dictionaries disagree about the <span lang="ja">から</span>. One reading is <span lang="ja">唐揚げ</span>, “Chinese-style frying”, with <span lang="ja">唐</span> meaning China in general. The other is <span lang="ja">空揚げ</span>, “empty frying”: food fried with no batter, at most a dusting of flour or starch. <span lang="ja">デジタル大辞泉</span> files it under <span lang="ja">空揚げ</span> and notes the <span lang="ja">唐揚げ</span> spelling; other dictionaries keep <span lang="ja">唐揚げ</span> for the Chinese-style kind.</p>
+      <ul>
+        <li><strong><span lang="ja">竜田揚げ</span></strong> — marinated in soy sauce and mirin, then coated in <span lang="ja">片栗粉</span> or flour. Its red-brown colour is likened to the autumn maples of the Tatsuta River, famous in classical poetry.</li>
+        <li><strong><span lang="ja">ザンギ</span></strong> — Hokkaido’s name for karaage, with a more strongly seasoned marinade. The farm ministry traces it to a chicken restaurant in Kushiro around 1955.</li>
+        <li><strong><span lang="ja">中津からあげ</span></strong> — Nakatsu, in Ōita, has eaten karaage widely since around 1970, and the name is a registered regional trademark.</li>
+      </ul>
+      <p>Karaage is serious business. The Japan Karaage Association, <span lang="ja">日本唐揚協会</span>, was founded in October 2008 and has run a karaage grand prix, the <span lang="ja">からあげグランプリ</span>, since 2010. As for Naomi’s convenience stores: Lawson’s <span lang="ja">からあげクン</span>, small pieces of chicken breast, has been on sale since 15 April 1986.</p>
+
+      <h3>Frying it right</h3>
+      <p>Japanese frying guides sort oil by temperature. <span lang="ja">中温</span>, medium, is about 170–180℃: dip dry chopsticks in and fine bubbles rise all along them, or drop in a little batter and it sinks halfway before floating back up. That’s the range for karaage; Nisshin OilliO suggests 170℃ for 5–6 minutes, so the lesson’s 180℃ is at the top end. <span lang="ja">高温</span>, 180–190℃, is for crisp finishes and <span lang="ja">二度揚げ</span>, frying twice: fry, let it rest, then fry again, while the heat left in each piece finishes cooking the inside.</p>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>から<ruby>揚<rt>あ</rt></ruby>げは、<ruby>二度揚<rt>にどあ</rt></ruby>げすると、<ruby>外<rt>そと</rt></ruby>はカリッと、<ruby>中<rt>なか</rt></ruby>はジューシーに<ruby>仕上<rt>しあ</rt></ruby>がる。</p>
+        <p class="en">Fry karaage twice and it comes out crisp outside and juicy inside.</p>
+      </div>
+      <p class="flag"><span class="block-label">Watch for</span>Two safety notes from Japan’s ministries. Chicken can carry Campylobacter, so the health ministry advises heating it until the centre reaches 75℃ or more for at least a minute; the lesson’s “cut one open to check” tip is there for exactly this. And the farm ministry says don’t wash raw chicken: the water splashes the bacteria around your sink.</p>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">practice</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Quiz</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label></div>
+      </div>
+      <p class="who">Pick the word that fits. Each answer comes with the reason.</p>
+      <p class="qz-bar"><span class="qz-score"></span> <button class="btn qz-reset" type="button">Start again</button></p>
+      <div class="qz" data-answer="一口大">
+        <p class="q" lang="ja">1. <ruby>玉<rt>たま</rt></ruby>ねぎとにんじんを＿＿＿に<ruby>切<rt>き</rt></ruby>る。</p>
+        <p class="en">Cut the onion and carrot into bite-size pieces.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">一口大</button><button class="btn opt" type="button" lang="ja">一かけ</button><button class="btn opt" type="button" lang="ja">中火</button></div>
+        <p class="why" hidden><span lang="ja">一口大</span>: bite-size. <span lang="ja">一かけ</span> is a piece of garlic, ginger or chocolate.</p>
+      </div>
+      <div class="qz" data-answer="一かけ">
+        <p class="q" lang="ja">2. にんにく＿＿＿をすりおろす。</p>
+        <p class="en">Grate one clove of garlic.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">一かけ</button><button class="btn opt" type="button" lang="ja">一口大</button><button class="btn opt" type="button" lang="ja">大さじ</button></div>
+        <p class="why" hidden><span lang="ja">一かけ</span>: one piece, here a clove. <span lang="ja">大さじ</span> would need a number: <span lang="ja">大さじ</span>1.</p>
+      </div>
+      <div class="qz" data-answer="弱火">
+        <p class="q" lang="ja">3. <ruby>焦<rt>こ</rt></ruby>げないように、＿＿＿でゆっくり<ruby>焼<rt>や</rt></ruby>く。</p>
+        <p class="en">Cook it slowly over low heat so it doesn’t burn.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">弱火</button><button class="btn opt" type="button" lang="ja">強火</button><button class="btn opt" type="button" lang="ja">一口大</button></div>
+        <p class="why" hidden><span lang="ja">弱火</span>: low heat. Slowly, without burning, means low; <span lang="ja">強火</span> is high heat.</p>
+      </div>
+      <div class="qz" data-answer="まぶす">
+        <p class="q" lang="ja">4. <ruby>揚<rt>あ</rt></ruby>げる<ruby>前<rt>まえ</rt></ruby>に、<ruby>鶏肉<rt>とりにく</rt></ruby>に<ruby>片栗粉<rt>かたくりこ</rt></ruby>を＿＿＿。</p>
+        <p class="en">Before frying, coat the chicken with potato starch.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">まぶす</button><button class="btn opt" type="button" lang="ja">すりおろす</button><button class="btn opt" type="button" lang="ja">しみこむ</button></div>
+        <p class="why" hidden><span lang="ja">まぶす</span>: coat or dust all over. <span lang="ja">すりおろす</span> is to grate; <span lang="ja">しみこむ</span> is what a flavour does, soaking in.</p>
+      </div>
+      <div class="qz" data-answer="すりおろして">
+        <p class="q" lang="ja">5. しょうがを＿＿＿、スープに<ruby>入<rt>い</rt></ruby>れる。</p>
+        <p class="en">Grate the ginger and add it to the soup.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">すりおろして</button><button class="btn opt" type="button" lang="ja">まぶして</button><button class="btn opt" type="button" lang="ja">はたいて</button></div>
+        <p class="why" hidden><span lang="ja">すりおろす</span>: grate. You coat (<span lang="ja">まぶす</span>) with a powder, and pat off (<span lang="ja">はたく</span>) the extra.</p>
+      </div>
+      <div class="qz" data-answer="まで">
+        <p class="q" lang="ja">6. <ruby>玉<rt>たま</rt></ruby>ねぎが<ruby>茶色<rt>ちゃいろ</rt></ruby>になる＿＿＿、<ruby>中火<rt>ちゅうび</rt></ruby>で<ruby>炒<rt>いた</rt></ruby>める。</p>
+        <p class="en">Fry the onion over medium heat until it turns brown.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">まで</button><button class="btn opt" type="button" lang="ja">場合は</button><button class="btn opt" type="button" lang="ja">でもよい</button></div>
+        <p class="why" hidden><span lang="ja">〜まで</span>: until.</p>
+      </div>
+      <div class="qz" data-answer="場合は">
+        <p class="q" lang="ja">7. バターがない＿＿＿、サラダ<ruby>油<rt>あぶら</rt></ruby>を<ruby>使<rt>つか</rt></ruby>ってください。</p>
+        <p class="en">If you don’t have butter, use vegetable oil.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">場合は</button><button class="btn opt" type="button" lang="ja">ように</button><button class="btn opt" type="button" lang="ja">まで</button></div>
+        <p class="why" hidden><span lang="ja">〜場合は</span>: if, in cases where. <span lang="ja">ように</span> would mean “so that”.</p>
+      </div>
+      <div class="qz" data-answer="でもよい">
+        <p class="q" lang="ja">8. <ruby>生<rt>なま</rt></ruby>クリームがなければ、<ruby>牛<rt>ぎゅう</rt>乳<rt>にゅう</rt></ruby>＿＿＿。</p>
+        <p class="en">If you don’t have cream, milk will do.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">でもよい</button><button class="btn opt" type="button" lang="ja">ばよい</button><button class="btn opt" type="button" lang="ja">た方がよい</button></div>
+        <p class="why" hidden>A noun + <span lang="ja">でもよい</span>: “… will do”. <span lang="ja">ばよい</span> and <span lang="ja">た方がよい</span> follow verbs: <span lang="ja">入れればよい</span>, <span lang="ja">入れた方がよい</span>.</p>
+      </div>
+      <div class="qz" data-answer="よる">
+        <p class="q" lang="ja">9. <ruby>焼<rt>や</rt></ruby>き<ruby>時間<rt>じかん</rt></ruby>は、オーブンに＿＿＿。</p>
+        <p class="en">Baking time depends on your oven.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">よる</button><button class="btn opt" type="button" lang="ja">なる</button><button class="btn opt" type="button" lang="ja">する</button></div>
+        <p class="why" hidden><span lang="ja">〜による</span>: depends on.</p>
+      </div>
+      <div class="qz" data-answer="割り">
+        <p class="q" lang="ja">10. ボウルに<ruby>卵<rt>たまご</rt></ruby>を＿＿＿、よく<ruby>混<rt>ま</rt></ruby>ぜる。</p>
+        <p class="en">Break the eggs into a bowl and mix well.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">割り</button><button class="btn opt" type="button" lang="ja">割る</button><button class="btn opt" type="button" lang="ja">割った</button></div>
+        <p class="why" hidden>In writing, a verb’s stem works as “and”: <span lang="ja">割り、混ぜる</span> = <span lang="ja">割って混ぜる</span> (section 6).</p>
+      </div>
+    </article>
+
+    <article class="move" id="cards">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Flashcards</h2>
+      </div>
+      <p>Read the Japanese, say the meaning, then tap to check.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>材<rt>ざい</rt>料<rt>りょう</rt></ruby></span><span class="a">ingredients; materials</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>片栗粉<rt>かたくりこ</rt></ruby></span><span class="a">potato starch (named after the katakuri plant)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>小麦粉<rt>こむぎこ</rt></ruby></span><span class="a">wheat flour</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>鶏<rt>とり</rt></ruby>もも<ruby>肉<rt>にく</rt></ruby></span><span class="a">chicken thigh: boned-out leg meat</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>骨付<rt>ほねつ</rt></ruby>き</span><span class="a">on the bone</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">たれ</span><span class="a">sauce, for dipping or basting</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>一口大<rt>ひとくちだい</rt></ruby></span><span class="a">bite-size</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>一<rt>ひと</rt></ruby>かけ</span><span class="a">a piece; a clove of garlic, a knob of ginger</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">まんべんなく</span><span class="a">evenly, all over</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>弱火<rt>よわび</rt></ruby>・<ruby>中火<rt>ちゅうび</rt></ruby>・<ruby>強火<rt>つよび</rt></ruby></span><span class="a">low, medium and high heat</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>大<rt>おお</rt></ruby>さじ・<ruby>小<rt>こ</rt></ruby>さじ</span><span class="a">tablespoon (15 ml), teaspoon (5 ml)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">すりおろす</span><span class="a">to grate</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">もむ</span><span class="a">to rub, knead, work in</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">しみこむ</span><span class="a">to soak in</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">まぶす</span><span class="a">to coat, dust</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>揚<rt>あ</rt></ruby>げる</span><span class="a">to deep-fry</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>火<rt>ひ</rt></ruby>が<ruby>通<rt>とお</rt></ruby>る</span><span class="a">to be cooked through</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">〜<ruby>場合<rt>ばあい</rt></ruby>は</span><span class="a">if, in cases where</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">〜でもよい</span><span class="a">… will do, … is fine too</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>適宜<rt>てきぎ</rt></ruby></span><span class="a">as you see fit; may be left out</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lesson.</strong> <a href="https://www.japanesepod101.com/" target="_blank" rel="noopener">JapanesePod101</a>, Lower Intermediate Season 2, Lesson 1, “Recipe – Fried Chicken” — its recipe, audio and notes. Section 1 retells the recipe in my own wording; section 3 quotes five of its lines, and section 4 its short example sentences. For the original recipe and recording, use the lesson itself.</li>
+        <li><strong>Beyond the lesson:</strong> on <span lang="ja">片栗粉</span>, the Agriculture and Livestock Industries Corporation (<a href="https://alic.go.jp/koho/kikaku03_000637.html" target="_blank" rel="noopener">potato starch</a>, <a href="https://alic.go.jp/koho/kikaku03_001461.html" target="_blank" rel="noopener">history</a>) and <a href="https://kotobank.jp/word/%E7%89%87%E6%A0%97%E7%B2%89-46071" target="_blank" rel="noopener"><span lang="ja">片栗粉</span></a>; on the plant, <a href="https://kotobank.jp/word/%E3%82%AB%E3%82%BF%E3%82%AF%E3%83%AA-46013" target="_blank" rel="noopener"><span lang="ja">カタクリ</span></a>, <a href="http://www.efloras.org/florataxon.aspx?flora_id=2&amp;taxon_id=200027627" target="_blank" rel="noopener">Flora of China</a>, the <a href="https://mobot.org/MOBOT/Research/russia/erythronium.shtml" target="_blank" rel="noopener">Missouri Botanical Garden</a>, the <a href="https://www.rinya.maff.go.jp/kanto/aizu/present/present1_20/05.html" target="_blank" rel="noopener">Forestry Agency</a> and the <a href="https://www.mlit.go.jp/tagengo-db/common/001566200.pdf" target="_blank" rel="noopener">Japan Tourism Agency</a>; measures from <a href="https://park.ajinomoto.co.jp/contents/basic/chomiryo/" target="_blank" rel="noopener">Ajinomoto</a>, <a href="https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b8" target="_blank" rel="noopener">NIST</a>, <a href="https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-101/subpart-A/section-101.9" target="_blank" rel="noopener">US food-label rules</a> and <a href="https://www.foodwatch.com.au/food-measurement-and-conversions/" target="_blank" rel="noopener">Foodwatch</a> (Australia); <a href="https://kotobank.jp/word/%E9%81%A9%E5%AE%9C-575306" target="_blank" rel="noopener"><span lang="ja">適宜</span></a>, <a href="https://eat-treat.jp/columns/1184" target="_blank" rel="noopener">Eat Treat</a> on recipe terms and <a href="https://www.eiyo.ac.jp/eiyojcspecial/dispatch/dispatch01.html" target="_blank" rel="noopener">a study of real pinches</a>; frying from <a href="https://www.nisshin-oillio.com/story/p03-04.html" target="_blank" rel="noopener">Nisshin OilliO</a>, <a href="https://park.ajinomoto.co.jp/contents/basic/friedoil/" target="_blank" rel="noopener">Ajinomoto</a> and <a href="https://www.kikkoman.co.jp/homecook/tsushin/tips0074/" target="_blank" rel="noopener">Kikkoman</a>; the health ministry on <a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/shokuhin/syokuchu/campylobacterqa.html" target="_blank" rel="noopener">Campylobacter</a> and the farm ministry on <a href="https://www.maff.go.jp/j/pr/annual/pdf/toriryouri.pdf" target="_blank" rel="noopener">washing chicken</a>, <a href="https://www.maff.go.jp/j/press/seisan/c_shokuniku/pdf/101116-04.pdf" target="_blank" rel="noopener">chicken cuts</a> (and <a href="https://www.maff.go.jp/j/pr/aff/2009/pdf/aff2009_02_poster05.pdf" target="_blank" rel="noopener">a poster</a>) and <a href="https://www.maff.go.jp/j/keikaku/syokubunka/k_ryouri/search_menu/menu/zangi_hokkaido.html" target="_blank" rel="noopener"><span lang="ja">ザンギ</span></a>; dictionaries on kotobank for <a href="https://kotobank.jp/word/%E7%A9%BA%E6%8F%9A-467161" target="_blank" rel="noopener"><span lang="ja">空揚げ</span></a>, <a href="https://kotobank.jp/word/%E3%81%8B%E3%82%89%E6%8F%9A%E3%81%92-1519218" target="_blank" rel="noopener"><span lang="ja">から揚げ</span></a> and <a href="https://kotobank.jp/word/%E7%AB%9C%E7%94%B0%E6%8F%9A%E3%81%92-897539" target="_blank" rel="noopener"><span lang="ja">竜田揚げ</span></a>; the <a href="https://karaage.ne.jp/aboutus/kyoukai-gaiyou.html" target="_blank" rel="noopener">Japan Karaage Association</a> and its <a href="https://karaage.ne.jp/event/grandprix/" target="_blank" rel="noopener">grand prix</a>; the Patent Office on <a href="https://www.jpo.go.jp/system/trademark/gaiyo/chidan/sosenkyo/document/171201-kyushu/44-012-5549584.pdf" target="_blank" rel="noopener"><span lang="ja">中津からあげ</span></a>; and <a href="https://www.lawson.co.jp/company/news/detail/1520759_2504.html" target="_blank" rel="noopener">Lawson</a> on <span lang="ja">からあげクン</span>.</li>
+        <li><strong>Mine:</strong> the retold recipe, the English renderings, every other example sentence, the word and verb cards, the pattern and kitchen tables, the quiz and the flashcards.</li>
+        <li><strong>JLPT levels</strong> are approximate. The JLPT hasn’t published official lists since 2010; plain-form instructions and words like <span lang="ja">材料</span>, <span lang="ja">一口大</span> and <span lang="ja">中火</span> usually sit around N4–N3.</li>
+      </ul>
+      <p class="endnote">JLPT study notes: JapanesePod101 Lower Intermediate Season 2, Lesson 1, written up 13 October 2026. <a href="../index.html">Back to JLPT study</a>.</p>
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "jlpt.li2-1.", SHARED = "jlpt.";   /* furigana, English and speed carry across lessons; "done" marks don't */
+  function each(sel, fn){ Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
+  function load(k, d, p){ try { var v = localStorage.getItem((p || KEY) + k); return v === null ? d : v; } catch (e) { return d; } }
+  function save(k, v, p){ try { localStorage.setItem((p || KEY) + k, v); } catch (e) {} }
+
+  /* ---------- furigana and English toggles ---------- */
+  var root = document.documentElement;
+  each("[data-toggle]", function(btn){
+    var name = btn.getAttribute("data-toggle");          /* "furi" or "en" */
+    var on = load(name, "1", SHARED) === "1";
+    function paint(){
+      root.classList.toggle("no-" + name, !on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    btn.addEventListener("click", function(){ on = !on; save(name, on ? "1" : "0", SHARED); paint(); });
+    paint();
+  });
+  /* with English hidden, tap a translation to peek at it */
+  document.addEventListener("click", function(e){
+    var en = e.target.closest && e.target.closest(".en");
+    if (en && root.classList.contains("no-en")) en.classList.toggle("peek");
+  });
+
+  /* ---------- flashcards ---------- */
+  each(".fc", function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  each(".qz", function(q){
+    var right = q.getAttribute("data-answer"), why = q.querySelector(".why");
+    Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(b){
+      b.addEventListener("click", function(){
+        Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(o){
+          o.classList.remove("good", "bad");
+          if (o.textContent === right) o.classList.add("good");
+        });
+        if (b.textContent !== right) b.classList.add("bad");
+        why.hidden = false;
+        q.classList.add("done");
+        score();
+      });
+    });
+  });
+  function score(){
+    var all = document.querySelectorAll(".qz").length, done = document.querySelectorAll(".qz.done").length;
+    var good = 0;
+    each(".qz.done", function(q){ if (!q.querySelector(".opt.bad")) good++; });
+    var el = document.querySelector(".qz-score");
+    if (el) el.textContent = done ? good + " of " + done + " right first time (" + all + " questions)" : all + " questions";
+  }
+  score();
+  var reset = document.querySelector(".qz-reset");
+  if (reset) reset.addEventListener("click", function(){
+    each(".qz", function(q){
+      q.classList.remove("done");
+      q.querySelector(".why").hidden = true;
+      Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(o){ o.classList.remove("good", "bad"); });
+    });
+    score();
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var store = {};
+  try { store = JSON.parse(load("reviewed", "{}")) || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function count(){ var n = 0; boxes.forEach(function(b){ if (b.checked) n++; }); if (counter) counter.textContent = String(n); }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){ store[b.dataset.move] = b.checked; save("reviewed", JSON.stringify(store)); count(); });
+  });
+  count();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var railTargets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    railTargets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= 140) best = i; });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){ if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); } }, { passive: true });
+  markRail();
+
+  /* ---------- Japanese speech ---------- */
+  var synth = window.speechSynthesis, rateSel = document.getElementById("ja-rate");
+  var sayBtns = Array.prototype.slice.call(document.querySelectorAll(".say"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    sayBtns.forEach(function(b){ b.hidden = true; });
+    var c = document.getElementById("ja-ctl"); if (c) c.hidden = true;
+    return;
+  }
+  var jaVoice = null;
+  function pickVoice(){
+    var vs = synth.getVoices() || [];
+    jaVoice = vs.filter(function(v){ return /^ja/i.test(v.lang); })[0] || null;
+    var note = document.getElementById("ja-note");
+    if (note) note.hidden = !!jaVoice || !vs.length;
+  }
+  pickVoice();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = pickVoice;
+  try { var r = load("rate", "", SHARED); if (r) rateSel.value = r; } catch (e) {}
+  rateSel.addEventListener("change", function(){ save("rate", rateSel.value, SHARED); });
+  function plain(el){
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll("rt, rp, .say"), function(x){ x.remove(); });
+    return c.textContent.replace(/\s+/g, "");
+  }
+  sayBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var target = btn.closest(".jp") || btn.parentElement;
+      var src = target.querySelector(".ja") || target;
+      var text = btn.getAttribute("data-say") || plain(src);
+      try { synth.cancel(); } catch (e) {}
+      var u = new window.SpeechSynthesisUtterance(text);
+      u.lang = "ja-JP";
+      if (jaVoice) u.voice = jaVoice;
+      u.rate = parseFloat(rateSel.value) || 0.85;
+      sayBtns.forEach(function(b){ b.classList.remove("on"); });
+      btn.classList.add("on");
+      u.onend = u.onerror = function(){ btn.classList.remove("on"); };
+      synth.speak(u);
+    });
+  });
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+<script>
+/* jump strip: show which section you're in, and which moves are marked done */
+(function(){
+  "use strict";
+  var strip = document.querySelector(".jump-in");
+  if (!strip) return;
+  var links = Array.prototype.slice.call(strip.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var smooth = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var current = -2, ticking = false;
+  function mark(){
+    ticking = false;
+    if (strip.offsetParent === null) return;
+    var line = strip.getBoundingClientRect().bottom + 32, best = -1;
+    targets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= line) best = i; });
+    if (best === current) return;
+    current = best;
+    links.forEach(function(a, i){
+      a.classList.toggle("active", i === best);
+      if (i === best) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+    if (best >= 0) {
+      var a = links[best], left = a.offsetLeft - (strip.clientWidth - a.offsetWidth) / 2;
+      if (strip.scrollTo) strip.scrollTo({ left: left, behavior: smooth ? "smooth" : "auto" });
+      else strip.scrollLeft = left;
+    }
+  }
+  function done(){
+    Array.prototype.forEach.call(document.querySelectorAll(".revbox"), function(b){
+      var art = b.closest("article");
+      var a = art && strip.querySelector('a[href="#' + art.id + '"]');
+      if (a) a.classList.toggle("done", b.checked);
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(mark); }
+  }, { passive: true });
+  window.addEventListener("resize", function(){ current = -2; mark(); });
+  document.addEventListener("change", function(e){
+    if (e.target && e.target.classList && e.target.classList.contains("revbox")) done();
+  });
+  done();
+  mark();
+})();
+</script>
+<script>
+/* play the whole dialogue, line by line, in the Japanese voice */
+(function(){
+  "use strict";
+  var btn = document.querySelector(".say-all"), synth = window.speechSynthesis;
+  if (!btn) return;
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") { btn.hidden = true; return; }
+  var rateSel = document.getElementById("ja-rate"), playing = false, LABEL = btn.textContent;
+  function plain(el){
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll("rt, rp, .say"), function(x){ x.remove(); });
+    return c.textContent.replace(/\s+/g, "");
+  }
+  function voice(){ return (synth.getVoices() || []).filter(function(v){ return /^ja/i.test(v.lang); })[0] || null; }
+  function mark(line){
+    Array.prototype.forEach.call(document.querySelectorAll(".dl.now"), function(x){ x.classList.remove("now"); });
+    if (line) line.classList.add("now");
+  }
+  function stop(){
+    playing = false;
+    try { synth.cancel(); } catch (e) {}
+    btn.classList.remove("on");
+    btn.textContent = LABEL;
+    mark(null);
+  }
+  btn.addEventListener("click", function(){
+    if (playing) { stop(); return; }
+    var lines = Array.prototype.slice.call(document.querySelectorAll(".dlg .dl:not(.sfx)")), i = 0, v = voice();
+    try { synth.cancel(); } catch (e) {}
+    playing = true;
+    btn.classList.add("on");
+    btn.textContent = "■ Stop";
+    (function next(){
+      if (!playing) return;
+      if (i >= lines.length) { stop(); return; }
+      var line = lines[i++], u = new window.SpeechSynthesisUtterance(plain(line.querySelector(".ja")));
+      u.lang = "ja-JP";
+      if (v) u.voice = v;
+      u.rate = parseFloat(rateSel && rateSel.value) || 0.85;
+      mark(line);
+      u.onend = u.onerror = function(){ if (playing) setTimeout(next, 350); };
+      synth.speak(u);
+    })();
+  });
+  /* a single line's ▶ takes over from the whole-dialogue player */
+  document.addEventListener("click", function(e){
+    if (playing && e.target.closest && e.target.closest(".say")) stop();
+  }, true);
+  window.addEventListener("pagehide", stop);
+})();
+</script>
+</body>
+</html>
