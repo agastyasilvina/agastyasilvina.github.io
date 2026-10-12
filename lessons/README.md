@@ -34,6 +34,7 @@ Grouped the same way as the contents page, newest first within each group.
 
 | # | Topic | Source |
 | --- | --- | --- |
+| 25 | [Grief and resilience, part 4](25-turning-pain-into-purpose/index.html) — Bill and Margo’s Books, purpose that energises rather than adrenalises, saying something (and owning the wrong thing), the three worries, accepting as a daily practice, the Invictus Games, four ways to use the love, healing in company, the big project, and listening harder — plus the whole class in five lines. With a thirty-second accepting exercise. | MasterClass, Prince Harry with Dr Mary-Frances O'Connor |
 | 24 | [Grief and resilience, part 3](24-rebuilding-after-loss/index.html) — identity as more than one load-bearing wall, the “we” the brain encodes (Aron’s overlapping circles), doing first so identity follows, the purple towels, service and the glass jar, post-traumatic growth beside grief, twenty “I am”s, the ten-day rule, carrying Diana, continuing bonds, and a letter you don’t send. With the circles, the “I am” list and the letter built in. | MasterClass, Prince Harry with Dr Mary-Frances O'Connor |
 | 23 | [Grief and resilience, part 2](23-tools-for-grief/index.html) — a mother’s perfume and exposure with intention, permission to grieve, injury rather than disorder, adversity before the battlefield, separation panic against fear, the poles and flow, samu and the snow globe, psychedelic-assisted therapy and REBUS, crying, grieving styles, grief literacy, and the dual process model. With a samu timer and the growing-around-grief picture. | MasterClass, Prince Harry with Dr Mary-Frances O'Connor |
 | 22 | [Grief and resilience, part 1](22-understanding-grief/index.html) — "I'm fine" as grief in different clothes, grief against grieving, the body budget, the adrenaline superpower and the crash, gas, brake and battery, protest and despair, "gone but also everlasting", and incorporating against avoiding. With guided muscle-relaxation and breathing exercises. | MasterClass, Prince Harry with Dr Mary-Frances O'Connor |
@@ -67,8 +68,8 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 25-<topic-slug>
-# build 25-<topic-slug>/index.html, with the numbered squares under its top bar
+mkdir 26-<topic-slug>
+# build 26-<topic-slug>/index.html, with the numbered squares under its top bar
 # then add its row to the right category in index.html, and its square to the strip
 ```
 
