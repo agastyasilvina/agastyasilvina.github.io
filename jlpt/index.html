@@ -338,6 +338,8 @@ html{ scroll-behavior:smooth; }
 .lessons .lvl{ font-family:var(--f-mono); font-size:.72rem; color:var(--accent-ink); border:1px solid var(--accent); border-radius:2px; padding:.15rem .4rem; white-space:nowrap; }
 .foot{ font-family:var(--f-mono); font-size:.74rem; color:var(--muted); max-width:46rem; margin-bottom:4rem; line-height:1.7; }
 .foot a{ color:var(--accent-ink); }
+.series{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--bronze); font-weight:400; margin:2.6rem 0 0; max-width:46rem; }
+.series + .lessons{ margin:.8rem 0 1.4rem; }
 </style>
 </head>
 <body>
@@ -350,6 +352,8 @@ html{ scroll-behavior:smooth; }
       <a href="ub-s1-01/index.html" aria-label="Lesson 1: Home by five">01</a>
       <a href="ub-s1-02/index.html" aria-label="Lesson 2: Higher ground">02</a>
       <a href="ub-s1-03/index.html" aria-label="Lesson 3: Fire watch">03</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="ui-s4-01/index.html" aria-label="Upper Intermediate S4, lesson 1: Hard-headed">UI1</a>
     </div>
   </nav>
 </header>
@@ -360,12 +364,13 @@ html{ scroll-behavior:smooth; }
     <h1>Japanese, <em>one lesson at a time.</em></h1>
     <p class="standfirst">Study pages for working towards the JLPT, kept apart from the lecture notes. Each one takes a single lesson and unpacks it: the key lines with furigana you can switch off, vocabulary with new example sentences, the grammar point, the casual forms around it, and a quiz. Tap ▶ on any Japanese line to hear it.</p>
     <div class="levels" aria-label="JLPT levels">
-      <span>N5</span><span class="on">N4</span><span>N3</span><span>N2</span><span>N1</span>
+      <span>N5</span><span class="on">N4</span><span>N3</span><span class="on">N2</span><span>N1</span>
     </div>
   </div>
 </section>
 
 <div class="wrap">
+  <h2 class="series">Upper Beginner &middot; Season 1</h2>
   <ol class="lessons">
     <li>
       <span class="n">01</span>
@@ -393,6 +398,18 @@ html{ scroll-behavior:smooth; }
         <span class="meta">JapanesePod101 &middot; Upper Beginner S1 #3 &middot; the whole dialogue first &middot; ご〜ください, おります, 〜ちゃう, fire safety</span>
       </span>
       <span class="lvl">≈ N4</span>
+    </li>
+  </ol>
+  <h2 class="series">Upper Intermediate &middot; Season 4</h2>
+  <ol class="lessons">
+    <li>
+      <span class="n">01</span>
+      <span>
+        <span class="name"><a href="ui-s4-01/index.html">Hard-headed</a></span>
+        <span class="jp-title" lang="ja">頭が固い・頭が上がらない・頭が下がる — idioms with 頭</span>
+        <span class="meta">JapanesePod101 &middot; Upper Intermediate S4 #1 &middot; the whole dialogue first &middot; 頭 idioms, 異動 and 移動, 前例, casual men’s speech</span>
+      </span>
+      <span class="lvl">≈ N2</span>
     </li>
   </ol>
   <p class="foot">Levels are approximate: the JLPT hasn’t published official grammar or vocabulary lists since 2010. The lecture notes live separately, at <a href="../lessons/index.html">/lessons</a>.</p>
