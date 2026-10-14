@@ -51,6 +51,7 @@ Grouped the same way as the contents page, newest first within each group.
 
 | # | Topic | Source |
 | --- | --- | --- |
+| 26 | [Neural networks from scratch, part 1](26-neural-networks-from-scratch/index.html) — what micrograd is and why backpropagation matters, networks as mathematical expressions, scalars against tensors, the derivative as a nudge (3x² − 4x + 5, rise over run, and why too small an h breaks), and the partial derivatives of d = a·b + c; then Prince's chapters 1–4: supervised learning, fitting a line by gradient descent, shallow ReLU networks and universal approximation, and deep networks as folds. Seven labs and seven Python exercises towards building micrograd. | Video — Andrej Karpathy, *The spelled-out intro to neural networks and backpropagation: building micrograd* (2022), up to the Value class; book — Simon J. D. Prince, *Understanding Deep Learning* (2023), chapters 1–4 |
 | 21 | [Multi-agent path finding on rails](21-mapf-on-rails/index.html) — the solver that won the 2020 Flatland Challenge: (cell, heading) search with a direction-aware heuristic, reservation tables and safe intervals, prioritised planning and why the order matters, large neighbourhood search with adaptive neighbourhoods, and running the plan through breakdowns by keeping each cell's visiting order. Labs replay a Python port of the solver. | Paper and code — Jiaoyang Li and colleagues, *Scalable Rail Planning and Replanning: Winning the 2020 Flatland Challenge* (ICAPS 2021) |
 | 20 | [Intro to large language models, part 2](20-llm-future-and-security/index.html) — scaling laws, tool use, multimodality, System 2, self-improvement, custom GPTs and the LLM OS; then jailbreaks, prompt injection and data poisoning. The talk's predictions checked against 2026, with linked papers. | Video — Andrej Karpathy, *Intro to Large Language Models* (2023), parts 2–3 |
 | 19 | [Intro to large language models, part 1](19-intro-to-llms/index.html) — an LLM as two files, training as lossy compression of the internet, next-word prediction and dreaming documents, the transformer we can't read, fine-tuning into an assistant, RLHF, and the Chatbot Arena leaderboard. With what has changed since 2023 boxed. | Video — Andrej Karpathy, *Intro to Large Language Models* (2023), part 1 |
@@ -68,8 +69,8 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 26-<topic-slug>
-# build 26-<topic-slug>/index.html, with the numbered squares under its top bar
+mkdir 27-<topic-slug>
+# build 27-<topic-slug>/index.html, with the numbered squares under its top bar
 # then add its row to the right category in index.html, and its square to the strip
 ```
 
