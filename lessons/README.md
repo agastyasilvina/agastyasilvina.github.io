@@ -14,6 +14,7 @@ Grouped the same way as the contents page, newest first within each group.
 
 | # | Topic | Source |
 | --- | --- | --- |
+| 27 | [World-building](27-world-building/index.html) — all fiction as fantasy, the world outside your window made strange, stolen details, the toilet-and-farmland questions, soap bubbles and misty smudges, rules learned by mistakes, the twenty years behind *The Graveyard Book*, and the childhood worlds that stayed. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
 | 15 | [Character and dialogue](15-character-and-dialogue/index.html) — dialogue is character, what journalism taught him, Delirium, lending characters part of yourself, smash-and-grab research, and funny hats. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
 | 13 | [Becoming a writer](13-becoming-a-writer/index.html) — evoking rather than expressing, the reader deciding what a book means, her route to becoming a writer, and how she works: never from an idea, by hand, downhill-fast. | MasterClass, Margaret Atwood on writing |
 | 11 | [Short stories](11-short-stories/index.html) — The Graveyard Book's first chapter as a map of colliding wants, the short story as close-up magic, Zelazny's last chapter of a novel you didn't write, and taking the boat out. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
@@ -69,8 +70,8 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 27-<topic-slug>
-# build 27-<topic-slug>/index.html, with the numbered squares under its top bar
+mkdir 28-<topic-slug>
+# build 28-<topic-slug>/index.html, with the numbered squares under its top bar
 # then add its row to the right category in index.html, and its square to the strip
 ```
 
