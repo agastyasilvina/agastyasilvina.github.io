@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Noto+Sans+JP:wght@400;700&display=swap">
+<title>Made to Read</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+
+/* ---------- jump strip: numbered squares for phones and tablets, where the rail is hidden ---------- */
+.jump{ border-top:1px solid var(--line-soft); }
+.jump-in{
+  position:relative; display:flex; align-items:center; gap:.3rem; overflow-x:auto; padding-block:.4rem;
+  scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+          mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.jump-in::-webkit-scrollbar{ display:none; }
+.jump a{
+  flex:none; min-width:2.1rem; height:2.1rem; padding-inline:.35rem; display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.76rem; line-height:1; color:var(--muted); text-decoration:none;
+  background:var(--card); border:1px solid var(--line); border-radius:2px;
+}
+.jump a:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.jump a.home{ font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); }
+.jump a.done{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.jump a.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.jump .jsep{ flex:none; width:1px; height:1.3rem; background:var(--line); margin-inline:.25rem; }
+@media (min-width:1080px){ .jump{ display:none; } }
+@media (max-width:1079px){ .move{ scroll-margin-top:7.8rem; } }
+/* ---------- formulas + answers ---------- */
+.formula{
+  font-family:var(--f-mono); font-size:1.02rem; text-align:center; color:var(--ink);
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:2px;
+  padding:.75rem .9rem; overflow-x:auto; white-space:nowrap;
+}
+details.ans{ margin-top:.8rem; border-top:1px dashed var(--line); padding-top:.55rem; }
+details.ans summary{
+  cursor:pointer; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink);
+}
+details.ans p{ margin-block:.55rem 0; font-size:.95rem; color:var(--muted); }
+table.week tr.tot td{ background:var(--surface); font-family:var(--f-mono); font-size:.82rem; color:var(--ink); }
+table.week tr.tot td strong{ font-weight:700; color:var(--accent-ink); }
+table.week.map td.day a{ color:var(--bronze); }
+table.week.route td{ font-family:var(--f-mono); font-size:.84rem; }
+.rgroup{ margin:.3rem 0 0; font-family:var(--f-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); }
+
+/* ---------- labs ---------- */
+.lab{ margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:1rem 1.1rem 1.1rem; }
+.lab .block-label{ color:var(--accent-ink); }
+.lab-grid{ display:grid; grid-template-columns:minmax(0,12.5rem) minmax(0,1fr); gap:1.1rem; align-items:center; margin-top:.4rem; }
+@media (max-width:560px){ .lab-grid{ grid-template-columns:1fr; } }
+.lab .keys{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.9rem; }
+.lab .keys .gate{ min-width:2.6rem; font-weight:700; font-size:.8rem; }
+.lab .say{ margin:.8rem 0 0; font-size:.92rem; line-height:1.5; color:var(--muted); min-height:2.8em; }
+.dial{ width:100%; max-width:12.5rem; height:auto; display:block; margin-inline:auto; overflow:visible; }
+.dial .ring{ fill:none; stroke:var(--line); stroke-width:.014; }
+.dial .axis{ stroke:var(--muted); stroke-width:.01; opacity:.55; }
+.dial .diag{ stroke:var(--line); stroke-width:.01; stroke-dasharray:.04 .04; }
+.dial .proj{ stroke:var(--bronze); stroke-width:.012; stroke-dasharray:.03 .03; }
+.dial .arrow{ stroke:var(--accent); stroke-width:.035; stroke-linecap:round; }
+.dial .tip{ fill:var(--accent); }
+.dial text{ font-family:var(--f-mono); font-size:.13px; fill:var(--muted); }
+.dial text.dim{ opacity:.65; }
+.readout{ display:flex; flex-direction:column; gap:.4rem; font-family:var(--f-mono); font-size:.8rem; }
+.rrow{ display:grid; grid-template-columns:3.3rem 4rem minmax(0,1fr) 3.3rem; gap:.5rem; align-items:center; }
+.rrow.wide{ grid-template-columns:3.6rem minmax(0,1fr) 3.3rem; }
+.rrow .k{ color:var(--ink); }
+.rrow .amp{ color:var(--muted); text-align:right; }
+.rrow .pc{ color:var(--ink); text-align:right; }
+.rrow.rhead{ font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:.2rem; }
+.rrow.rhead span:nth-child(2){ text-align:right; }
+.rrow.rhead span:last-child{ text-align:right; }
+.bar{ position:relative; display:block; height:.6rem; background:var(--line-soft); border-radius:1px; overflow:hidden; }
+.bar i{ position:absolute; left:0; top:0; bottom:0; width:0; background:var(--accent); transition:width .25s ease; }
+.bar.m75::after{ content:""; position:absolute; top:0; bottom:0; left:75%; width:2px; background:var(--flag); }
+.lab .sl{
+  display:flex; flex-direction:column; gap:.3rem; margin-top:.9rem;
+  font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.lab input[type="range"]{ width:100%; accent-color:var(--accent); margin:0; }
+.hist{ margin:.8rem 0 0; font-family:var(--f-mono); font-size:.74rem; color:var(--bronze); overflow-wrap:anywhere; }
+.shots{ margin-top:.8rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); }
+.shots:empty{ display:none; }
+.shots b{ color:var(--ink); font-weight:700; }
+.dots{ display:grid; grid-template-columns:repeat(25,minmax(0,1fr)); gap:2px; margin-top:.45rem; max-width:17rem; }
+.dots i{ display:block; aspect-ratio:1; background:var(--line); border-radius:1px; }
+.dots i.d1{ background:var(--accent); }
+.prow{ display:grid; grid-template-columns:3.2rem minmax(0,1fr); gap:.6rem; align-items:center; margin-top:.7rem; }
+.prow .side{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.bits{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:3px; min-height:1.5rem; max-width:20rem; }
+.bits b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.bits b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.bits b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.gctl{ display:flex; flex-wrap:wrap; gap:.2rem 1.2rem; align-items:flex-end; }
+.gctl .sl{ margin-top:.5rem; }
+.gctl .grow{ flex:1 1 12rem; }
+.gplot{ width:100%; height:auto; display:block; margin-top:.9rem; background:var(--surface); border:1px solid var(--line-soft); border-radius:2px; }
+.gplot .guide{ stroke:var(--line); stroke-width:1; stroke-dasharray:3 3; }
+.gplot .curve{ fill:none; stroke:var(--accent); stroke-width:1.6; stroke-linejoin:round; }
+.gplot .vline{ stroke:var(--flag); stroke-width:1; opacity:.6; }
+.gplot .now{ fill:var(--flag); }
+.gplot text{ font-family:var(--f-mono); font-size:8px; fill:var(--muted); }
+.gread{ margin:.7rem 0 0; font-family:var(--f-mono); font-size:.78rem; line-height:1.6; color:var(--muted); }
+.gread b{ color:var(--ink); font-weight:700; }
+
+
+/* ---------- beyond-the-lecture boxes ---------- */
+.extra{
+  margin-block:1.4rem; padding:.9rem 1rem; background:var(--surface);
+  border:1px solid var(--line-soft); border-left:3px solid var(--accent); border-radius:2px; font-size:.97rem;
+}
+.extra .block-label{ color:var(--accent-ink); }
+.extra p{ margin-block:.5rem; }
+.extra p:first-child{ margin-top:0; }
+.extra p:last-child{ margin-bottom:0; }
+.extra ol,.extra ul{ margin-block:.5rem; }
+.extra li{ margin-block:.3rem; }
+
+/* ---------- repetition-code lab ---------- */
+.cells{ display:flex; gap:4px; min-height:1.5rem; }
+.cells b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; width:1.5rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.cells b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.cells b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.checks{ font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.45; }
+.rep .prow{ grid-template-columns:4.2rem minmax(0,1fr); }
+.rep .readout{ margin-top:1rem; }
+.rep .sl b{ color:var(--ink); font-weight:700; letter-spacing:.04em; font-size:.82rem; }
+.rep .rrow.wide{ grid-template-columns:5.2rem minmax(0,1fr) 3.6rem; }
+.gplot .curve.raw{ stroke:var(--muted); stroke-dasharray:4 3; }
+.legend{ margin:.45rem 0 0; font-family:var(--f-mono); font-size:.7rem; color:var(--muted); }
+.legend .sw{ display:inline-block; width:18px; height:0; border-top:2px solid var(--accent); vertical-align:middle; margin-right:.3rem; }
+.legend .sw.raw{ border-top:2px dashed var(--muted); }
+
+
+/* ---------- JLPT pages ---------- */
+:lang(ja), [lang="ja"]{ font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",var(--f-body); }
+.home-link{ text-decoration:none; color:inherit; }
+.topbar .tools{ margin-left:auto; display:flex; gap:.4rem; }
+.btn.tg{ font-family:var(--f-mono); }
+.btn.tg[aria-pressed="true"]{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.btn.tg[aria-pressed="false"]{ opacity:.6; }
+ruby rt{ font-size:.5em; color:var(--muted); font-weight:400; letter-spacing:0; }
+.no-furi rt{ visibility:hidden; }
+.jp{ margin-block:1rem; padding:.7rem .9rem; background:var(--card); border:1px solid var(--line-soft); border-left:3px solid var(--accent); border-radius:2px; }
+main .jp p{ margin:0; }
+main .jp p.ja{ font-size:1.22rem; line-height:2.15; }
+main .jp p.en{ margin-top:.25rem; font-size:.95rem; color:var(--muted); line-height:1.5; }
+main .jp p.note{ margin-top:.5rem; padding-top:.45rem; border-top:1px dashed var(--line-soft); font-size:.88rem; color:var(--muted); }
+.who-says{ font-family:var(--f-mono); font-size:.7rem; color:var(--bronze); white-space:nowrap; }
+.say{
+  display:inline-grid; place-items:center; width:1.75rem; height:1.75rem; margin-right:.5rem; vertical-align:.15em;
+  font-size:.7rem; line-height:1; color:var(--accent-ink); background:var(--accent-soft);
+  border:1px solid var(--accent); border-radius:50%; cursor:pointer; padding:0;
+}
+.say:hover{ background:var(--accent); color:var(--bg); }
+.say.on{ background:var(--accent); color:var(--bg); }
+.no-en .en{ color:transparent !important; background:var(--line-soft); border-radius:2px; cursor:pointer; user-select:none; }
+.no-en .en *{ color:transparent !important; }
+.no-en .en.peek, .no-en .en.peek *{ color:var(--muted) !important; background:none; }
+.vocab{ display:grid; grid-template-columns:1fr; gap:.7rem; margin-block:1.2rem; }
+@media (min-width:700px){ .vocab{ grid-template-columns:1fr 1fr; } }
+.word{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.75rem .85rem; }
+main .word p{ margin:0; }
+main .word p.w-head{ display:flex; align-items:baseline; justify-content:space-between; gap:.5rem; }
+.w-ja{ font-size:1.45rem; line-height:2; }
+.w-pos{ font-family:var(--f-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); white-space:nowrap; }
+main .word p.w-en{ font-size:.94rem; line-height:1.45; }
+.word .jp{ margin:.6rem 0 0; padding:.45rem .6rem; border-left-width:2px; }
+main .word .jp p.ja{ font-size:1.02rem; line-height:2; }
+main .word .jp p.en{ font-size:.88rem; }
+main p.qz-bar{ display:flex; justify-content:space-between; align-items:center; gap:1rem; font-family:var(--f-mono); font-size:.74rem; color:var(--muted); }
+.qz{ border-top:1px solid var(--line-soft); padding-block:.9rem; }
+main .qz p{ margin:0; }
+main .qz p.q{ font-size:1.12rem; line-height:2.1; }
+main .qz p.en{ font-size:.88rem; color:var(--muted); }
+.opts{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.55rem; }
+.btn.opt{ text-transform:none; letter-spacing:0; font-size:.98rem; padding:.35rem .8rem; }
+.btn.opt.good{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.btn.opt.bad{ background:var(--flag-soft); border-color:var(--flag); color:var(--flag); }
+main .qz p.why{ margin-top:.5rem; font-size:.92rem; color:var(--ink); }
+.fc .q[lang="ja"]{ font-size:1.3rem; font-weight:400; line-height:2; }
+.listencard p.small{ flex-basis:100%; font-size:.82rem; }
+main td[lang="ja"], main td.day[lang="ja"]{ font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",var(--f-body); font-size:1rem; color:var(--ink); }
+
+
+/* ---------- lesson 3: the whole dialogue first ---------- */
+.dlg-bar{ margin:.8rem 0 .4rem; }
+.btn.say-all.on{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.dlg{ display:flex; flex-direction:column; margin-top:.4rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.2rem .9rem; }
+.dl{ display:grid; grid-template-columns:6.6rem minmax(0,1fr); column-gap:.8rem; padding:.5rem 0; border-top:1px solid var(--line-soft); }
+.dl:first-child{ border-top:0; }
+.dl.now{ background:var(--accent-soft); box-shadow:-.9rem 0 0 var(--accent-soft), .9rem 0 0 var(--accent-soft); }
+.dl .spk{ grid-row:1 / span 2; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); padding-top:.65rem; }
+main .dl p{ margin:0; }
+main .dl p.ja{ font-size:1.12rem; line-height:2.05; }
+main .dl p.en{ font-size:.9rem; line-height:1.45; color:var(--muted); }
+main .dl p.en-sfx{ font-size:.88rem; font-style:italic; color:var(--muted); padding-block:.3rem; }
+@media (max-width:560px){ .dl{ grid-template-columns:1fr; } .dl .spk{ grid-row:auto; padding-top:0; } }
+
+/* ---------- a two-column table that fits a phone ---------- */
+table.week.narrow{ min-width:0; }
+table.week.narrow td.day{ white-space:normal; }
+table.week.narrow.keep td.day{ white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><a class="home-link" href="../index.html"><b>JLPT</b></a><span class="mark-sub"> &nbsp;/&nbsp; Lower Intermediate S2 #4 &middot; Made to read</span></p>
+    <div class="tools">
+      <button class="btn tg" type="button" data-toggle="furi" aria-pressed="true">ふりがな</button>
+      <button class="btn tg" type="button" data-toggle="en" aria-pressed="true">English</button>
+    </div>
+  </div>
+  <nav class="jump" aria-label="Jump to a section">
+    <div class="wrap jump-in">
+      <a class="home" href="../index.html" aria-label="All JLPT lessons">All</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m1" aria-label="1. The dialogue">1</a>
+      <a href="#m2" aria-label="2. The scene">2</a>
+      <a href="#m3" aria-label="3. Key lines">3</a>
+      <a href="#m4" aria-label="4. Vocabulary">4</a>
+      <a href="#m5" aria-label="5. させられる">5</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m6" aria-label="6. Forming it">6</a>
+      <a href="#m7" aria-label="7. Made to feel">7</a>
+      <a href="#m8" aria-label="8. Books at a fixed price">8</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m9" aria-label="9. Quiz">9</a>
+      <a href="#cards" aria-label="Flashcards">?</a>
+      <a href="#sources" aria-label="Sources">&sect;</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">JLPT study &middot; JapanesePod101 Lower Intermediate S2 #4 &middot; around N3</p>
+    <h1>Made to read? <em>Let them choose.</em></h1>
+    <p class="standfirst">Part two of lesson 3’s parents’ meeting. This time a parent talks with the teacher: to keep reading from feeling forced, the parent chooses books together with the child, even when the child’s picks are a letdown. The grammar point is the causative-passive, <span lang="ja">させられる</span>, “to be made to”: <span lang="ja">読書させられる</span>, “to be made to read”. It has a gentler use for feelings too: <span lang="ja">がっかりさせられる</span>, “to be let down”, and <span lang="ja">実感させられる</span>, “to have something brought home to you”.</p>
+    <div class="metarow">
+      <span><b>9 sections</b>, with the whole dialogue first</span>
+      <span>Lesson — <b>JapanesePod101</b>, “Making the Rugrats Read 2”</span>
+      <span>Notes taken <b>14 Oct 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="Sections">
+    <p class="arclabel">The lesson</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The dialogue</a></li>
+      <li><a href="#m2"><span class="n">2</span> The scene</a></li>
+      <li><a href="#m3"><span class="n">3</span> Key lines</a></li>
+      <li><a href="#m4"><span class="n">4</span> Vocabulary</a></li>
+      <li><a href="#m5"><span class="n">5</span> させられる</a></li>
+    </ol>
+    <p class="arclabel">Around the lesson</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> Forming it</a></li>
+      <li><a href="#m7"><span class="n">7</span> Made to feel</a></li>
+      <li><a href="#m8"><span class="n">8</span> Books at a fixed price</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> Quiz</a></li>
+      <li><a href="#cards"><span class="n">?</span> Flashcards</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;9 marked done</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="ja-ctl">
+      <p class="blurb"><b>Hear it.</b> Tap <span class="term">▶</span> beside any Japanese line to hear it read by your device’s Japanese voice, or play the whole dialogue below. Use the buttons up top to hide the furigana or the English — with English hidden, tap a translation to peek. These settings carry over from lesson to lesson.</p>
+      <div class="field">
+        <label for="ja-rate">Speed</label>
+        <select class="ctl" id="ja-rate">
+          <option value="0.6">0.6&times; &mdash; slow</option>
+          <option value="0.85" selected>0.85&times; &mdash; study</option>
+          <option value="1">1&times; &mdash; natural</option>
+        </select>
+      </div>
+      <p class="blurb small" id="ja-note" hidden>No Japanese voice was found on this device; it may read the lines with another voice. Phones usually have one; on a computer you may need to add a Japanese text-to-speech voice.</p>
+    </div>
+
+    <div class="arc"><h2>The lesson</h2><span class="rule"></span><span class="cnt">5 sections</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>The dialogue</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label></div>
+      </div>
+      <p class="who">The whole scene, retold for review</p>
+
+      <p>The lesson’s dialogue, retold in my own wording so you can review it in one place. It keeps the same scene, words and grammar, but the teacher is the principal from <a href="../li-s2-03/index.html#m1">lesson 3’s retelling</a>, the books come from the library, every line is rephrased, and two lines are new. The last line is lesson 3’s grumbling parent again, in the back row, thinking rather than speaking. The lesson’s exact key lines are in section 3. Hide the English with the button at the top to test yourself.</p>
+      <div class="dlg-bar"><button class="btn say-all" type="button">▶ Play the whole dialogue</button></div>
+      <div class="dlg">
+        <div class="dl sfx"><span class="spk">Scene</span><p class="en-sfx">The same parents’ meeting, now at question time. The principal turns to the room, and one parent puts up a hand.</p></div>
+        <div class="dl"><span class="spk">Principal</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>では、お<ruby>子<rt>こ</rt></ruby>さんに<ruby>読書<rt>どくしょ</rt></ruby>の<ruby>習<rt>しゅう</rt>慣<rt>かん</rt></ruby>をつけさせるために、ご<ruby>家庭<rt>かてい</rt></ruby>でどんな<ruby>工夫<rt>くふう</rt></ruby>をなさっているか、どなたか<ruby>聞<rt>き</rt></ruby>かせていただけませんか。</p><p class="en">Now, could one of you tell us what you do at home to get your children into the habit of reading?</p></div>
+        <div class="dl"><span class="spk">Parent</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>はい。うちでは、<ruby>子<rt>こ</rt></ruby>どもが「<ruby>無理<rt>むり</rt></ruby>やり<ruby>読<rt>よ</rt></ruby>まされている」と<ruby>感<rt>かん</rt></ruby>じないように、<ruby>読<rt>よ</rt></ruby>む<ruby>本<rt>ほん</rt></ruby>は<ruby>自分<rt>じぶん</rt></ruby>で<ruby>選<rt>えら</rt></ruby>ばせるようにしています。</p><p class="en">Yes. At home, so that our child never feels forced to read, we make a point of letting them pick their books themselves.</p></div>
+        <div class="dl"><span class="spk">Principal</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>それはいいですね。<ruby>人<rt>ひと</rt></ruby>に<ruby>言<rt>い</rt></ruby>われて<ruby>読<rt>よ</rt></ruby>むのではなく、<ruby>自<rt>じ</rt>主<rt>しゅ</rt>的<rt>てき</rt></ruby>に<ruby>読<rt>よ</rt></ruby>むことが<ruby>何<rt>なに</rt></ruby>より<ruby>大切<rt>たいせつ</rt></ruby>ですから。</p><p class="en">That’s good. Reading of their own accord, not because someone told them to, matters more than anything.</p></div>
+        <div class="dl"><span class="spk">Parent</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ただ、<ruby>正<rt>しょう</rt>直<rt>じき</rt></ruby>なところ、<ruby>子<rt>こ</rt></ruby>どもが<ruby>選<rt>えら</rt></ruby>んでくる<ruby>本<rt>ほん</rt></ruby>には、がっかりさせられることもあるんです。<ruby>毎回<rt>まいかい</rt></ruby>、<ruby>恐<rt>きょう</rt>竜<rt>りゅう</rt></ruby>の<ruby>図鑑<rt>ずかん</rt></ruby>ばかりで……。</p><p class="en">Though to be honest, the books my child comes back with can be a letdown. Every single time, it’s dinosaur encyclopaedias…</p></div>
+        <div class="dl"><span class="spk">Principal</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>図鑑<rt>ずかん</rt></ruby>でも<ruby>漫画<rt>まんが</rt></ruby>でも<ruby>構<rt>かま</rt></ruby>いませんよ。<ruby>口<rt>くち</rt></ruby>を<ruby>出<rt>だ</rt></ruby>さずに、<ruby>選<rt>えら</rt></ruby>んだ<ruby>本<rt>ほん</rt></ruby>をそのまま<ruby>読<rt>よ</rt></ruby>ませてあげてください。</p><p class="en">Encyclopaedias, comics, it doesn’t matter. Don’t step in: let them read the books they chose, just as they are.</p></div>
+        <div class="dl"><span class="spk">Parent</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>そうなんですよね。この<ruby>間<rt>あいだ</rt></ruby>も、<ruby>息子<rt>むすこ</rt></ruby>が<ruby>嬉<rt>うれ</rt></ruby>しそうに<ruby>図鑑<rt>ずかん</rt></ruby>をめくる<ruby>姿<rt>すがた</rt></ruby>に、やっぱり<ruby>好<rt>す</rt></ruby>きな<ruby>本<rt>ほん</rt></ruby>を<ruby>読<rt>よ</rt></ruby>むのがいちばんなんだと<ruby>実感<rt>じっかん</rt></ruby>させられました。</p><p class="en">That’s just it. Only the other day, the sight of my son happily turning the pages of his encyclopaedia brought it home to me: reading what you love really is what counts.</p></div>
+        <div class="dl"><span class="spk">Principal</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ありがとうございます。ほかのご<ruby>家庭<rt>かてい</rt></ruby>は、いかがでしょうか。</p><p class="en">Thank you. How about other families?</p></div>
+        <div class="dl"><span class="spk">Back row, thinking</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>（<ruby>図鑑<rt>ずかん</rt></ruby>ならまだいいわよ。うちの<ruby>子<rt>こ</rt></ruby>なんて、ゲームの<ruby>攻<rt>こう</rt>略<rt>りゃく</rt>本<rt>ぼん</rt></ruby>しか<ruby>読<rt>よ</rt></ruby>まないんだから。）</p><p class="en">(Encyclopaedias, I’d take that. Mine reads nothing but game walkthroughs.)</p></div>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>The scene</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label></div>
+      </div>
+      <p class="who">Natsuko, Naomi and Peter, before and after the dialogue</p>
+
+      <p>Peter opens with the title, “Making the Rugrats Read, Part 2”: if you missed part one, listen to that first. (That’s <a href="../li-s2-03/index.html">lesson 3</a>.) Who’s talking? Since it carries on from last time, Natsuko explains, it’s the teacher and the parents (<span lang="ja">保護者</span>) again, but today they have a conversation. Last time, Peter sums up, the teacher gave a speech to the parents; this time a parent talks with the teacher. The topic is reading again (<span lang="ja">読書</span>), and this time both sides use polite Japanese.</p>
+      <h3>After the dialogue</h3>
+      <p>Where do the hosts buy books? Naomi buys them at a bookshop, but gets heavy books and books in English from Amazon. Natsuko uses Amazon a lot too. How many books a month, Peter asks Natsuko? “Don’t ask.” Surely more than ten? Lately, Natsuko says, the plan is not to buy any, which Naomi finds impressive. Naomi buys books in batches, all at once. And because books in Japan aren’t discounted, Naomi also goes to used-book shops (<span lang="ja">古本屋</span>): clever, says Natsuko. Peter adds that at shops like Book-Off, which sell used books, you can get some very good deals. (Why no discounts? See section 8.)</p>
+      <p>Phrases worth taking from the chat:</p>
+      <ul>
+        <li><strong><span lang="ja">聞かないで下さい</span></strong> — “don’t ask”: <span lang="ja">〜ないで下さい</span>, “please don’t…”.</li>
+        <li><strong><span lang="ja">絶対10冊以上でしょ？</span></strong> — “it’s got to be more than ten, right?”: <span lang="ja">絶対</span>, “definitely”, with <span lang="ja">でしょ</span> checking a guess.</li>
+        <li><strong><span lang="ja">最近買わないようにしてるんです</span></strong> — “lately I’m trying not to buy any”: <span lang="ja">〜ないようにする</span>, “to make a point of not doing” (more in section 3).</li>
+        <li><strong><span lang="ja">まとめて買います</span></strong> — “I buy them all at once.”</li>
+        <li><strong><span lang="ja">古本屋に行ったりしますね</span></strong> — “I go to used-book shops and so on”: <span lang="ja">〜たりする</span> gives one example among others.</li>
+        <li><strong><span lang="ja">かしこいですね</span></strong> — “that’s smart.”</li>
+      </ul>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Key lines</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label></div>
+      </div>
+      <p class="who">The parent’s two lines that carry the grammar</p>
+
+      <p>The lesson’s dialogue is only six lines long, so just these two are quoted exactly; section 1 covers the rest in my retelling. The English is my own rendering.</p>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>子<rt>こ</rt></ruby>どもが、<ruby>無理<rt>むり</rt></ruby>やり<ruby>読書<rt>どくしょ</rt></ruby>させられたと<ruby>感<rt>かん</rt></ruby>じないように、<ruby>子<rt>こ</rt></ruby>どもと<ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>本<rt>ほん</rt></ruby>を<ruby>選<rt>えら</rt></ruby>ぶようにしています。</p>
+        <p class="en">So that my child never feels forced into reading, I make a point of choosing books together with them. <span class="who-says">— the parent</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">読書させられた</span>, the causative-passive of <span lang="ja">読書する</span>: “was made to read” (section 5); <span lang="ja">無理やり</span>, “against their will”, a word that loves the causative (section 4); <span lang="ja">〜と感じないように</span>, “so that they don’t feel that…”, with the <a href="../ub-s1-01/index.html#m4"><span lang="ja">ように</span> of “so that”</a>; <span lang="ja">〜ようにしています</span>, “I make a point of…”.</p>
+      </div>
+      <p class="flag"><span class="block-label">Watch for</span>The lesson’s English for this line has the parent trying “to read to the children”. The Japanese doesn’t say that: <span lang="ja">本を選ぶ</span> is choosing books, and the parent does it together with the child (<span lang="ja">子どもと一緒に</span>).</p>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>嬉<rt>うれ</rt></ruby>しそうに<ruby>読<rt>よ</rt></ruby>む<ruby>姿<rt>すがた</rt></ruby>に、やっぱり<ruby>読<rt>よ</rt></ruby>みたい<ruby>本<rt>ほん</rt></ruby>を<ruby>読<rt>よ</rt></ruby>むのが<ruby>大切<rt>たいせつ</rt></ruby>だと<ruby>実感<rt>じっかん</rt></ruby>させられました。</p>
+        <p class="en">Watching how happily they read brought it home to me that, after all, what matters is reading the books you want to read. <span class="who-says">— the parent</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">嬉しそうに</span>, “happily”: <span lang="ja">〜そう</span>, “looking…”, used as an adverb; <span lang="ja">読む姿</span>, “the sight of them reading” (section 4); <span lang="ja">姿に</span>, with <span lang="ja">に</span> marking what caused the feeling; <span lang="ja">実感させられました</span>, the causative-passive used for a feeling (section 7); <span lang="ja">やっぱり</span>, “after all, just as you’d think”.</p>
+      </div>
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span>Two kinds of <span lang="ja">ように</span> meet in the first line. <span lang="ja">感じないように</span> is “so that they don’t feel”, a purpose. <span lang="ja">選ぶようにしています</span> is <span lang="ja">〜ようにする</span>, “to make a point of doing”, and Natsuko uses its negative in the chat: <span lang="ja">買わないようにしてるんです</span>, “I’m trying not to buy any”. Use <span lang="ja">〜ようにしている</span> for a habit you keep up, and <span lang="ja">〜ようにする</span> for a resolution:</p>
+        <ul>
+          <li><span lang="ja">寝る前にスマホを見ないようにしている。</span> — I make a point of not looking at my phone before bed.</li>
+          <li><span lang="ja">これからは、毎日少しずつ読むようにします。</span> — From now on, I’ll make sure I read a little every day.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Vocabulary</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label></div>
+      </div>
+      <p class="who">The lesson’s word list, in its order</p>
+
+      <p>The hosts’ notes first, then a card for each word, plus a few more from the dialogue and the chat, each with an example of my own.</p>
+      <ul>
+        <li><strong><span lang="ja">習慣</span></strong> (<span lang="ja">しゅうかん</span>) — custom, habit. Careful, Natsuko warns: it sounds exactly like <span lang="ja">週間</span>, a week’s span, as in <span lang="ja">1週間</span>, “one week”.</li>
+        <li><strong><span lang="ja">無理やり</span></strong> — forcibly, against someone’s will: <span lang="ja">無理やりドアを開けた</span>, “I forced the door open.” It often goes with the causative, Naomi notes, and Natsuko gives two: <span lang="ja">無理やり本を読ませる</span>, “to make someone read a book against their will”; <span lang="ja">無理やりビールを飲ませる</span>, “to make someone drink beer against their will”. Surely that never happens to Natsuko? Never, Natsuko says: <span lang="ja">無理やり飲まされたことはありません。いつも自主的に飲んでます</span>, “I’ve never been made to drink. I always drink of my own free will.” Which, Naomi notes, is the next word.</li>
+        <li><strong><span lang="ja">自主的</span></strong> — voluntary, of your own accord. <span lang="ja">自主的な</span> is the adjective and <span lang="ja">自主的に</span> the adverb: <span lang="ja">自主的に道をそうじする</span>, “to clean the streets voluntarily”.</li>
+        <li><strong><span lang="ja">がっかりする</span></strong> — to be disappointed. Peter files <span lang="ja">がっかり</span> under onomatopoeia, and Naomi adds that you sometimes hear <span lang="ja">がっくり</span> instead: both cover being let down, deflated, feeling low. Naomi pictures your head dropping, <span lang="ja">ガクッ</span>. The example: <span lang="ja">テストが0点だった。がっかりした</span>, “I got zero on the test. I was so disappointed.” Didn’t they see that coming, Naomi wonders. Naomi also mentions a comedian, <span lang="ja">やっくん</span>, who was always saying <span lang="ja">がっかりだよ！</span>, “I’m so disappointed!”</li>
+        <li><strong><span lang="ja">実感する</span></strong> — to feel something for real, to realise. <span lang="ja">実</span> is reality, or fruit, and <span lang="ja">感</span> feeling, so <span lang="ja">実感</span> is a real feeling and <span lang="ja">実感する</span> to realise: <span lang="ja">病気になって健康の大切さを実感した</span>, “When I got ill, I realised how important health is.” Not a way Naomi would like to learn it.</li>
+        <li><strong><span lang="ja">姿</span></strong> — figure, appearance. The hosts find two kanji hidden in it: <span lang="ja">次</span>, “next”, on top, and <span lang="ja">女</span>, “woman”, underneath. So, “the next woman”? Peter offers a cheeky reading (the figure you notice while you’re still with your current partner), Natsuko is lost for words and invites listeners to comment with a better one, and Natsuko’s mnemonic follows: <span lang="ja">次の女は姿で見つける</span>, “you find the next woman by her figure”. Peter, playing the purist, announces <span lang="ja">私はNatsukoさんとNaomi先生にがっかりしています</span>, “I’m disappointed in Natsuko and Naomi-sensei”, and calls it kanji abuse. Which leads straight to the grammar.</li>
+      </ul>
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong>Three <span lang="ja">しゅうかん</span>.</strong> <span lang="ja">習慣</span>, “habit”, <span lang="ja">週間</span>, “a week’s span”, and <span lang="ja">週刊</span>, “weekly”, as in <span lang="ja">週刊誌</span>, “a weekly magazine”, are all read <span lang="ja">しゅうかん</span>. Pitch accent won’t tell them apart either: in standard Japanese all three are flat. Only context will. Two of them meet in <span lang="ja">読書週間</span>, Book Week, which has run every year since 1948 from 27 October to 9 November, the two weeks around Culture Day. This year’s, the 80th, starts on 27 October, with the slogan <span lang="ja">静かだけど、冒険中。</span>, “quiet, but on an adventure”.</p>
+        <p><strong><span lang="ja">無理やり</span></strong> is often written <span lang="ja">無理矢理</span>, but its <span lang="ja">矢理</span> is there for the sound only, an ateji. Dictionaries spell the word <span lang="ja">無理遣り</span>: the <span lang="ja">やり</span> is the verb <span lang="ja">やる</span>, “to do”.</p>
+        <p><strong><span lang="ja">がっかり</span> or <span lang="ja">がっくり</span>?</strong> Dictionaries define <span lang="ja">がっかり</span> as losing heart when your hopes come to nothing. <span lang="ja">がっくり</span> starts in the body: something suddenly bending or giving way, as in <span lang="ja">がっくりとひざをつく</span>, “to sink to your knees”, or a head dropping forward, just as Naomi pictured it. From there it covers a sudden loss of spirit, <span lang="ja">がっくりくる</span>, and a sharp fall, as in <span lang="ja">客足ががっくり減る</span>, “customer numbers fall off sharply”.</p>
+      </div>
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong>The real story of <span lang="ja">姿</span>.</strong> Sorry, Peter: the <span lang="ja">次</span> is there for its sound. <span lang="ja">姿</span> is a sound-and-meaning character, with <span lang="ja">女</span> for the meaning and <span lang="ja">次</span> for the reading, <span lang="ja">シ</span>, which the two share. The Shuowen Jiezi, the classic Chinese character dictionary of about 100 AD, defines it as <span lang="ja">態</span>, “bearing, manner”. <span lang="ja">資</span>, “resources”, and <span lang="ja">恣</span>, “self-indulgent”, take their reading <span lang="ja">シ</span> from <span lang="ja">次</span> the same way. Words to know: <span lang="ja">姿勢</span>, “posture”; <span lang="ja">容姿</span>, “looks”; and <span lang="ja">〜姿</span> for what someone has on, as in <span lang="ja">着物姿</span>, “in a kimono”.</p>
+        <p><strong>The comedian</strong> was Sakurazuka Yakkun (<span lang="ja">桜塚やっくん</span>). In a sailor-style school uniform and carrying a bamboo sword, Sakurazuka played Sukeban Kyōko (<span lang="ja">スケバン恐子</span>), a schoolgirl gang leader whose catchphrase was <span lang="ja">がっかりだよ！</span>, first on the TV show <span lang="ja">エンタの神様</span> in 2006. The lesson came out in early 2008, when the line was everywhere. Sakurazuka died in a road accident on an expressway in Yamaguchi in October 2013, aged 37.</p>
+      </div>
+      <div class="vocab">
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="しゅうかん" aria-label="Play">▶</button><ruby>習<rt>しゅう</rt>慣<rt>かん</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">custom, habit — <span lang="ja">習慣をつける</span>, “to get into a habit”; <span lang="ja">習慣になる</span>, “to become a habit”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>寝<rt>ね</rt></ruby>る<ruby>前<rt>まえ</rt></ruby>に<ruby>日記<rt>にっき</rt></ruby>を<ruby>書<rt>か</rt></ruby>くのが、<ruby>習<rt>しゅう</rt>慣<rt>かん</rt></ruby>になった。</p><p class="en">Writing my diary before bed has become a habit.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="むりやり" aria-label="Play">▶</button><ruby>無理<rt>むり</rt></ruby>やり</span><span class="w-pos">adverb</span></p>
+          <p class="w-en en">forcibly, against someone’s will — also written <span lang="ja">無理矢理</span>; loves the causative</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>弟<rt>おとうと</rt></ruby>は、<ruby>嫌<rt>いや</rt></ruby>がる<ruby>犬<rt>いぬ</rt></ruby>を<ruby>無理<rt>むり</rt></ruby>やりお<ruby>風呂<rt>ふろ</rt></ruby>に<ruby>入<rt>い</rt></ruby>れた。</p><p class="en">My little brother forced the unwilling dog into the bath.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="じしゅてき" aria-label="Play">▶</button><ruby>自<rt>じ</rt>主<rt>しゅ</rt>的<rt>てき</rt></ruby></span><span class="w-pos">な-adjective</span></p>
+          <p class="w-en en">voluntary, of your own accord — <span lang="ja">自主的に</span>; <span lang="ja">自主練</span>, “practice on your own”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>試合<rt>しあい</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>の<ruby>日<rt>ひ</rt></ruby>、<ruby>選手<rt>せんしゅ</rt></ruby>たちは<ruby>自<rt>じ</rt>主<rt>しゅ</rt>的<rt>てき</rt></ruby>に<ruby>練<rt>れん</rt>習<rt>しゅう</rt></ruby>した。</p><p class="en">The day before the match, the players practised of their own accord.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="がっかり" aria-label="Play">▶</button>がっかり</span><span class="w-pos">adverb · する-verb</span></p>
+          <p class="w-en en">disappointed, let down — <span lang="ja">がっかりする</span>, “to be disappointed”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>楽<rt>たの</rt></ruby>しみにしていた<ruby>花火<rt>はなび</rt></ruby><ruby>大会<rt>たいかい</rt></ruby>が<ruby>雨<rt>あめ</rt></ruby>で<ruby>中止<rt>ちゅうし</rt></ruby>になって、がっかりした。</p><p class="en">The fireworks I’d been looking forward to were rained off. I was so disappointed.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="じっかん" aria-label="Play">▶</button><ruby>実感<rt>じっかん</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">a real sense of something; to feel it keenly, to realise — <span lang="ja">実感がわかない</span>, “it hasn’t sunk in”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>一人<rt>ひとり</rt></ruby><ruby>暮<rt>ぐ</rt></ruby>らしを<ruby>始<rt>はじ</rt></ruby>めて、<ruby>親<rt>おや</rt></ruby>のありがたさを<ruby>実感<rt>じっかん</rt></ruby>している。</p><p class="en">Since I started living on my own, I’ve really come to appreciate my parents.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="すがた" aria-label="Play">▶</button><ruby>姿<rt>すがた</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">figure, appearance; the sight of someone doing something — <span lang="ja">後ろ姿</span>, “someone seen from behind”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>駅<rt>えき</rt></ruby>のホームで、<ruby>祖父<rt>そふ</rt></ruby>の<ruby>後<rt>うし</rt></ruby>ろ<ruby>姿<rt>すがた</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけた。</p><p class="en">On the station platform, I spotted my grandfather from behind.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="かく" aria-label="Play">▶</button><ruby>各<rt>かく</rt></ruby>〜</span><span class="w-pos">prefix</span></p>
+          <p class="w-en en">each, every — <span lang="ja">各ご家庭</span>, “each household”; <span lang="ja">各国</span>, “each country”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>各<rt>かく</rt></ruby><ruby>部屋<rt>へや</rt></ruby>にエアコンがついている。</p><p class="en">Every room has air conditioning.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="しょうかい" aria-label="Play">▶</button><ruby>紹<rt>しょう</rt>介<rt>かい</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">introducing; presenting, sharing — <span lang="ja">自己紹介</span>, “self-introduction”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>友達<rt>ともだち</rt></ruby>に、おすすめの<ruby>本<rt>ほん</rt></ruby>を<ruby>紹<rt>しょう</rt>介<rt>かい</rt></ruby>してもらった。</p><p class="en">A friend told me about a book they recommend.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="くふう" aria-label="Play">▶</button><ruby>工夫<rt>くふう</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">a clever idea; finding a better way to do something</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>野菜<rt>やさい</rt></ruby>を<ruby>細<rt>こま</rt></ruby>かく<ruby>切<rt>き</rt></ruby>るなど、<ruby>工夫<rt>くふう</rt></ruby>して<ruby>子<rt>こ</rt></ruby>どもに<ruby>食<rt>た</rt></ruby>べさせている。</p><p class="en">I find ways to get my kids to eat vegetables, like chopping them up small.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="そのまま" aria-label="Play">▶</button>そのまま</span><span class="w-pos">adverb</span></p>
+          <p class="w-en en">as it is, just like that, without changing anything</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>靴<rt>くつ</rt></ruby>は、そのままで<ruby>結構<rt>けっこう</rt></ruby>です。</p><p class="en">No need to take your shoes off.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="うれしそう" aria-label="Play">▶</button><ruby>嬉<rt>うれ</rt></ruby>しそう</span><span class="w-pos">な-adjective</span></p>
+          <p class="w-en en">looking happy — <span lang="ja">嬉しそうに</span>, “happily”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>犬<rt>いぬ</rt></ruby>が<ruby>嬉<rt>うれ</rt></ruby>しそうにしっぽを<ruby>振<rt>ふ</rt></ruby>っている。</p><p class="en">The dog is happily wagging its tail.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="やっぱり" aria-label="Play">▶</button>やっぱり</span><span class="w-pos">adverb</span></p>
+          <p class="w-en en">after all; just as you thought — casual for <span lang="ja">やはり</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>迷<rt>まよ</rt></ruby>ったけど、やっぱりこっちの<ruby>色<rt>いろ</rt></ruby>にします。</p><p class="en">I couldn’t decide, but I’ll go with this colour after all.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="まとめて" aria-label="Play">▶</button>まとめて</span><span class="w-pos">adverb</span></p>
+          <p class="w-en en">all together, in one go — <span lang="ja">まとめ買い</span>, “buying in bulk”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>洗<rt>せん</rt>濯<rt>たく</rt></ruby>は、<ruby>週<rt>しゅう</rt>末<rt>まつ</rt></ruby>にまとめてする。</p><p class="en">I do all the laundry in one go at the weekend.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ふるほんや" aria-label="Play">▶</button><ruby>古<rt>ふる</rt>本<rt>ほん</rt>屋<rt>や</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">used-book shop — <span lang="ja">古本</span>, “a secondhand book”</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>古<rt>ふる</rt>本<rt>ほん</rt>屋<rt>や</rt></ruby>で、もう<ruby>売<rt>う</rt></ruby>っていない<ruby>漫画<rt>まんが</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけた。</p><p class="en">I found a manga at a used-book shop that you can’t buy new any more.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>させられる</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label></div>
+      </div>
+      <p class="who">The grammar point: the causative-passive, “to be made to”</p>
+
+      <p>Today’s grammar point is the causative-passive. Natsuko’s reaction: <span lang="ja">うわっ</span>, “yikes”. It first appears in the parent’s line about children who might feel they were made to read: <span lang="ja">子どもが無理やり読書させられた</span>, “the children were forced to read”. Peter and Naomi build it up in three steps:</p>
+      <div class="rules">
+        <div class="r">
+          <span class="num">1</span>
+          <div>
+            <h4>The causative: “make”</h4>
+            <p><span lang="ja">勉強させる</span> is “make the kids study”. For reading, <span lang="ja">読書する</span> becomes <span lang="ja">読書させる</span>: <em><span lang="ja">する</span> turns into <span lang="ja">させる</span></em>.</p>
+          </div>
+        </div>
+        <div class="r">
+          <span class="num">2</span>
+          <div>
+            <h4>Add who is made to do it</h4>
+            <p>The person made to act takes <span lang="ja">に</span>: <span lang="ja">子どもたちに読書をさせる</span>, “make the children read”.</p>
+          </div>
+        </div>
+        <div class="r">
+          <span class="num">3</span>
+          <div>
+            <h4>Make it passive</h4>
+            <p>Put the children first, as the subject, and add the passive: <em><span lang="ja">させる</span> becomes <span lang="ja">させられる</span></em>. <span lang="ja">子どもが読書させられた</span>: “the children were made to read”.</p>
+          </div>
+        </div>
+      </div>
+      <p>For the details, Peter says, see the lesson notes (section 6 has them here), but it’s an interesting construction, and Natsuko adds that it’s used quite a lot in Japanese. It often comes with <span lang="ja">がっかり</span>, Naomi says: <span lang="ja">がっかりさせられる</span>. When Peter said <span lang="ja">がっかりしました</span> a moment ago, <span lang="ja">がっかりさせられました</span> would have worked too. The hosts try it on each other: <span lang="ja">Naomiにがっかりさせられる</span>, “to be let down by Naomi”, and <span lang="ja">Peterにがっかりさせられる</span>, “to be let down by Peter” (purely as examples, Natsuko stresses). And one more, Peter remembers, the one you’ll hear most: <span lang="ja">勉強させられる</span>, “to be made to study”. Causative plus passive: made to do something.</p>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>子<rt>こ</rt></ruby>どもの<ruby>頃<rt>ころ</rt></ruby>は、<ruby>毎日<rt>まいにち</rt></ruby><ruby>塾<rt>じゅく</rt></ruby>で<ruby>勉<rt>べん</rt>強<rt>きょう</rt></ruby>させられていた。</p>
+        <p class="en">As a kid, I was made to study at cram school every day.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>罰<rt>ばつ</rt></ruby>として、<ruby>放課後<rt>ほうかご</rt></ruby>に<ruby>教<rt>きょう</rt>室<rt>しつ</rt></ruby>を<ruby>掃除<rt>そうじ</rt></ruby>させられた。</p>
+        <p class="en">As a punishment, I was made to clean the classroom after school.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>新人<rt>しんじん</rt></ruby>のころは、<ruby>電話<rt>でんわ</rt></ruby><ruby>番<rt>ばん</rt></ruby>ばかりさせられた。</p>
+        <p class="en">When I was new, all they had me do was answer the phones.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>嫌<rt>いや</rt></ruby>いやながら、<ruby>弟<rt>おとうと</rt></ruby>にゲームの<ruby>相手<rt>あいて</rt></ruby>をさせられた。</p>
+        <p class="en">Much against my will, my little brother roped me into playing his game with him.</p>
+      </div>
+      <p class="flag"><span class="block-label">Watch for</span>Three look-alike endings: <span lang="ja">読ませる</span>, the causative, “make or let someone read”; <span lang="ja">読まれる</span>, the passive, “be read”; and <span lang="ja">読ませられる</span>, the causative-passive, “be made to read”. With <span lang="ja">る</span>-verbs, keep <span lang="ja">食べさせられる</span>, “be made to eat”, apart from <span lang="ja">食べられる</span>, which is “can eat” or “be eaten”.</p>
+    </article>
+
+    <div class="arc"><h2>Around the lesson</h2><span class="rule"></span><span class="cnt">3 sections</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>Forming it</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label></div>
+      </div>
+      <p class="who">Beyond the lesson: any verb’s causative-passive, and the short form you’ll hear</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span>The hosts leave the details to the lesson notes, so here they are. Start from the causative (<a href="../li-s2-03/index.html#m7">lesson 3, section 7</a>). It’s a <span lang="ja">る</span>-verb itself, so it takes the ordinary passive ending (<a href="../ub-s1-02/index.html#m5">Upper Beginner S1 #2</a>): <span lang="ja">読ませる</span> → <span lang="ja">読ませられる</span>.</p>
+      </div>
+      <div class="tablewrap">
+        <table class="week narrow keep">
+          <thead><tr><th>Verb</th><th>Made to</th><th>Short form</th></tr></thead>
+          <tbody>
+            <tr><td class="day" lang="ja"><ruby>読<rt>よ</rt></ruby>む</td><td lang="ja"><ruby>読<rt>よ</rt></ruby>ませられる</td><td lang="ja"><ruby>読<rt>よ</rt></ruby>まされる</td></tr>
+            <tr><td class="day" lang="ja"><ruby>飲<rt>の</rt></ruby>む</td><td lang="ja"><ruby>飲<rt>の</rt></ruby>ませられる</td><td lang="ja"><ruby>飲<rt>の</rt></ruby>まされる</td></tr>
+            <tr><td class="day" lang="ja"><ruby>待<rt>ま</rt></ruby>つ</td><td lang="ja"><ruby>待<rt>ま</rt></ruby>たせられる</td><td lang="ja"><ruby>待<rt>ま</rt></ruby>たされる</td></tr>
+            <tr><td class="day" lang="ja"><ruby>行<rt>い</rt></ruby>く</td><td lang="ja"><ruby>行<rt>い</rt></ruby>かせられる</td><td lang="ja"><ruby>行<rt>い</rt></ruby>かされる</td></tr>
+            <tr><td class="day" lang="ja"><ruby>話<rt>はな</rt></ruby>す</td><td lang="ja"><ruby>話<rt>はな</rt></ruby>させられる</td><td>—</td></tr>
+            <tr><td class="day" lang="ja"><ruby>食<rt>た</rt></ruby>べる</td><td lang="ja"><ruby>食<rt>た</rt></ruby>べさせられる</td><td>—</td></tr>
+            <tr><td class="day" lang="ja">する</td><td lang="ja">させられる</td><td>—</td></tr>
+            <tr><td class="day" lang="ja"><ruby>来<rt>く</rt></ruby>る</td><td lang="ja"><ruby>来<rt>こ</rt></ruby>させられる</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li><strong>The short form.</strong> With <span lang="ja">う</span>-verbs, <span lang="ja">〜せられる</span> usually shrinks to <span lang="ja">〜される</span> in speech: <span lang="ja">読まされる</span>, <span lang="ja">飲まされる</span>, <span lang="ja">待たされる</span>. Natsuko’s <span lang="ja">無理やり飲まされた</span> in section 4 is one. Verbs ending in <span lang="ja">す</span> keep the full form: <span lang="ja">話させられる</span>, never <span lang="ja">話さされる</span>. In standard Japanese, <span lang="ja">る</span>-verbs, <span lang="ja">する</span> and <span lang="ja">来る</span> have only the full form too.</li>
+        <li><strong>Who did what.</strong> The person made to act is the subject, with <span lang="ja">は</span> or <span lang="ja">が</span>; whoever made them takes <span lang="ja">に</span>: <span lang="ja">私は母に野菜を食べさせられた</span>, “my mother made me eat my vegetables.” From the mother’s side it’s the plain causative: <span lang="ja">母は私に野菜を食べさせた</span>.</li>
+        <li><strong>It means you didn’t want to.</strong> Made to wait, made to drink, made to apologise: that’s why <span lang="ja">無理やり</span> pairs with it so well. If someone let you do something you wanted to do, use <span lang="ja">〜させてもらう</span> instead: <span lang="ja">父に車を運転させてもらった</span>, “my dad let me drive the car.”</li>
+        <li><strong>The other side of a shop phrase.</strong> <span lang="ja">お待たせしました</span>, “sorry to keep you waiting”, is the causative <span lang="ja">待たせる</span>. The customer, meanwhile, <span lang="ja">待たされた</span>: was kept waiting.</li>
+      </ul>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>彼女<rt>かのじょ</rt></ruby>はいつも<ruby>遅<rt>おく</rt></ruby>れてくる。<ruby>今日<rt>きょう</rt></ruby>も<ruby>三<rt>さん</rt>十<rt>じゅっ</rt>分<rt>ぷん</rt></ruby><ruby>待<rt>ま</rt></ruby>たされた。</p>
+        <p class="en">She’s always late. Today she kept me waiting half an hour again.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>先生<rt>せんせい</rt></ruby>に、みんなの<ruby>前<rt>まえ</rt></ruby>で<ruby>作文<rt>さくぶん</rt></ruby>を<ruby>読<rt>よ</rt></ruby>まされた。</p>
+        <p class="en">The teacher made me read my essay out in front of everyone.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>日曜日<rt>にちようび</rt></ruby>なのに、<ruby>上司<rt>じょうし</rt></ruby>に<ruby>会社<rt>かいしゃ</rt></ruby>へ<ruby>行<rt>い</rt></ruby>かされた。</p>
+        <p class="en">It was Sunday, but my boss made me go into the office.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>初<rt>はじ</rt></ruby>めて<ruby>父<rt>ちち</rt></ruby>に<ruby>車<rt>くるま</rt></ruby>を<ruby>運転<rt>うんてん</rt></ruby>させてもらった。</p>
+        <p class="en">For the first time, my dad let me drive the car.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>Made to feel</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label></div>
+      </div>
+      <p class="who">Beyond the lesson: がっかりさせられる, 実感させられる, 考えさせられる</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span>Two of the dialogue’s three causative-passives have nothing to do with being forced. With a verb of feeling or thinking, <span lang="ja">〜させられる</span> says the feeling came from outside: something made you feel it. Whatever caused it takes <span lang="ja">に</span>: <span lang="ja">子どもが選ぶ本にがっかりさせられる</span>, “to be let down by the books the children choose”, and <span lang="ja">嬉しそうに読む姿に…実感させられました</span>, “the sight of them reading happily brought it home to me”.</p>
+      </div>
+      <p>The lesson itself uses three forms of <span lang="ja">がっかり</span>. Peter: <span lang="ja">私はNatsukoさんとNaomi先生にがっかりしています</span>. Naomi: Peter could have said <span lang="ja">がっかりさせられました</span>. And Natsuko, offering to give up on the lesson: <span lang="ja">がっかりされちゃったから</span>, “now that Peter’s disappointed in us”. Here is the whole family, with the causative that links them:</p>
+      <div class="tablewrap">
+        <table class="week narrow keep">
+          <thead><tr><th>Form</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td class="day" lang="ja">がっかりする</td><td>to be disappointed</td></tr>
+            <tr><td class="day" lang="ja">がっかりさせる</td><td>to disappoint someone, let them down</td></tr>
+            <tr><td class="day" lang="ja">がっかりさせられる</td><td>to be let down by something or someone</td></tr>
+            <tr><td class="day" lang="ja">がっかりされる</td><td>to have someone be disappointed in you</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>So which is it, <span lang="ja">がっかりした</span> or <span lang="ja">がっかりさせられた</span>? Both describe the same disappointment. <span lang="ja">がっかりした</span> simply reports how you felt; <span lang="ja">がっかりさせられた</span> points at whatever caused it, with a hint that it was done to you. The same goes for a handful of other verbs, which turn up constantly in reviews and comment sections:</p>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>この<ruby>本<rt>ほん</rt></ruby>には、<ruby>考<rt>かんが</rt></ruby>えさせられることが<ruby>多<rt>おお</rt></ruby>かった。</p>
+        <p class="en">This book gave me a lot to think about.</p>
+        <p class="note"><span lang="ja">考えさせられる</span>: “it makes you think”. Almost a set phrase.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>小<rt>ちい</rt></ruby>さな<ruby>子<rt>こ</rt></ruby>どもの<ruby>集<rt>しゅう</rt>中<rt>ちゅう</rt>力<rt>りょく</rt></ruby>には、いつも<ruby>感心<rt>かんしん</rt></ruby>させられる。</p>
+        <p class="en">Small children’s powers of concentration never fail to impress me.</p>
+        <p class="note"><span lang="ja">感心させられる</span>: to be impressed, to have to admire.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>彼<rt>かれ</rt></ruby>の<ruby>日本語<rt>にほんご</rt></ruby>のうまさには、<ruby>驚<rt>おどろ</rt></ruby>かされた。</p>
+        <p class="en">I was amazed at how good his Japanese was.</p>
+        <p class="note"><span lang="ja">驚かされる</span>: to be taken by surprise, the short form for <span lang="ja">驚く</span>.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>試合<rt>しあい</rt></ruby>に<ruby>負<rt>ま</rt></ruby>けて、<ruby>自分<rt>じぶん</rt></ruby>の<ruby>実<rt>じつ</rt>力<rt>りょく</rt></ruby><ruby>不足<rt>ぶそく</rt></ruby>を<ruby>思<rt>おも</rt></ruby>い<ruby>知<rt>し</rt></ruby>らされた。</p>
+        <p class="en">Losing the match made me painfully aware of how far I still have to go.</p>
+        <p class="note"><span lang="ja">思い知らされる</span>: to be made to see something, the hard way.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>Books at a fixed price</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label></div>
+      </div>
+      <p class="who">Beyond the lesson: why Naomi hunts for used books</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong>A price the publisher sets.</strong> Naomi is right: new books in Japan aren’t discounted, and the law allows it. The Antimonopoly Act normally stops a maker from fixing what shops charge, but article 23 makes an exception for copyrighted works (<span lang="ja">著作物</span>): books, magazines, newspapers, records, music tapes and music CDs. Under this resale price maintenance, <span lang="ja">再販制度</span> for short, a new book costs the same in every shop: its <span lang="ja">定価</span>, the list price printed on it. In March 2001 the Fair Trade Commission decided to keep the system “for the time being”. Competition policy pointed to scrapping it, the Commission said, but there was no national consensus, and public comments had run 28,048 to keep it against 338 to scrap it. That “for the time being” still stands.</p>
+        <p><strong>What it doesn’t cover.</strong> E-books, for one: the exception is for goods, and the Commission treats e-books as information, so their prices can be cut. Used books, for another, and that’s Naomi’s way round it.</p>
+        <p><strong>Book-Off.</strong> BOOKOFF opened its first shop in Sagamihara, Kanagawa, in May 1990, and made its name with a new kind of shop, the <span lang="ja">新古書店</span>: fairly recent books, in nearly new condition, sold cheaply. In July 2026 the group ran about 700 shops in Japan and about 830 worldwide. The old-style <span lang="ja">古本屋</span> lives on in Tokyo’s Jimbocho, where about 130 used-book shops line the streets.</p>
+        <p><strong>And Amazon?</strong> Amazon.co.jp opened on 1 November 2000, selling books. Points can work like a discount, and that has caused friction: Amazon Student, launched in 2012, gave 10% back in points on books, and in May 2014 three small publishers stopped supplying Amazon for six months, saying the points broke their fixed-price agreements.</p>
+      </div>
+      <p>Meanwhile, bookshops are disappearing. At the end of March 2026 Japan had 9,993, fewer than 10,000 for the first time, and 510 municipalities, 29.3% of them, had none at all, up from 26.2% in 2022. The Ministry of Economy, Trade and Industry set up a project team to support bookshops in March 2024, and published a plan to revive them in June 2025.</p>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">practice</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Quiz</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label></div>
+      </div>
+      <p class="who">Pick the word or form that fits. Each answer comes with the reason.</p>
+      <p class="qz-bar"><span class="qz-score"></span> <button class="btn qz-reset" type="button">Start again</button></p>
+      <div class="qz" data-answer="させられた">
+        <p class="q" lang="ja">1. <ruby>子<rt>こ</rt></ruby>どもの<ruby>頃<rt>ころ</rt></ruby>、<ruby>毎日<rt>まいにち</rt></ruby>ピアノを<ruby>練<rt>れん</rt>習<rt>しゅう</rt></ruby>＿＿＿。</p>
+        <p class="en">As a child, I was made to practise the piano every day.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">させられた</button><button class="btn opt" type="button" lang="ja">させた</button><button class="btn opt" type="button" lang="ja">された</button></div>
+        <p class="why" hidden><span lang="ja">練習させられた</span>: was made to practise. <span lang="ja">練習させた</span> would mean I made someone else practise.</p>
+      </div>
+      <div class="qz" data-answer="飲まされた">
+        <p class="q" lang="ja">2. <ruby>会社<rt>かいしゃ</rt></ruby>の<ruby>飲<rt>の</rt></ruby>み<ruby>会<rt>かい</rt></ruby>で、<ruby>先輩<rt>せんぱい</rt></ruby>にお<ruby>酒<rt>さけ</rt></ruby>を<ruby>無理<rt>むり</rt></ruby>やり＿＿＿。</p>
+        <p class="en">At the office party, a senior colleague forced me to drink.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">飲まされた</button><button class="btn opt" type="button" lang="ja">飲ませた</button><button class="btn opt" type="button" lang="ja">飲まれた</button></div>
+        <p class="why" hidden><span lang="ja">飲まされた</span>: the spoken short form of <span lang="ja">飲ませられた</span>, “was made to drink”.</p>
+      </div>
+      <div class="qz" data-answer="待たされた">
+        <p class="q" lang="ja">3. <ruby>病<rt>びょう</rt>院<rt>いん</rt></ruby>で<ruby>二時間<rt>にじかん</rt></ruby>も＿＿＿。</p>
+        <p class="en">I was kept waiting at the hospital for two whole hours.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">待たされた</button><button class="btn opt" type="button" lang="ja">待たせた</button><button class="btn opt" type="button" lang="ja">待たれた</button></div>
+        <p class="why" hidden><span lang="ja">待たされる</span>: to be kept waiting. <span lang="ja">お待たせしました</span>, “sorry to keep you waiting”, is the causative <span lang="ja">待たせる</span>.</p>
+      </div>
+      <div class="qz" data-answer="話させられた">
+        <p class="q" lang="ja">4. <ruby>会議<rt>かいぎ</rt></ruby>で、<ruby>急<rt>きゅう</rt></ruby>に<ruby>英語<rt>えいご</rt></ruby>で＿＿＿。</p>
+        <p class="en">At the meeting, I was suddenly made to speak in English.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">話させられた</button><button class="btn opt" type="button" lang="ja">話さされた</button><button class="btn opt" type="button" lang="ja">話された</button></div>
+        <p class="why" hidden>Verbs ending in <span lang="ja">す</span> keep the full form: <span lang="ja">話させられる</span>. There is no short form <span lang="ja">話さされる</span>.</p>
+      </div>
+      <div class="qz" data-answer="食べさせられた">
+        <p class="q" lang="ja">5. <ruby>嫌<rt>きら</rt></ruby>いなピーマンを、<ruby>母<rt>はは</rt></ruby>に<ruby>全部<rt>ぜんぶ</rt></ruby>＿＿＿。</p>
+        <p class="en">My mother made me eat every one of the green peppers I hate.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">食べさせられた</button><button class="btn opt" type="button" lang="ja">食べられた</button><button class="btn opt" type="button" lang="ja">食べさせた</button></div>
+        <p class="why" hidden><span lang="ja">食べさせられた</span>: was made to eat. <span lang="ja">食べられた</span> would be “could eat” or “was eaten”.</p>
+      </div>
+      <div class="qz" data-answer="考えさせられた">
+        <p class="q" lang="ja">6. この<ruby>映画<rt>えいが</rt></ruby>には、いろいろと＿＿＿。</p>
+        <p class="en">This film really made me think.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">考えさせられた</button><button class="btn opt" type="button" lang="ja">考えられた</button><button class="btn opt" type="button" lang="ja">考えさせた</button></div>
+        <p class="why" hidden><span lang="ja">考えさせられる</span>: something made you think. The cause, <span lang="ja">この映画</span>, takes <span lang="ja">に</span>.</p>
+      </div>
+      <div class="qz" data-answer="がっかりさせられた">
+        <p class="q" lang="ja">7. <ruby>楽<rt>たの</rt></ruby>しみにしていた<ruby>新作<rt>しんさく</rt></ruby>だったが、<ruby>内容<rt>ないよう</rt></ruby>には＿＿＿。</p>
+        <p class="en">I’d been looking forward to the new release, but the story was a letdown.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">がっかりさせられた</button><button class="btn opt" type="button" lang="ja">がっかりさせた</button><button class="btn opt" type="button" lang="ja">がっかりされた</button></div>
+        <p class="why" hidden><span lang="ja">がっかりさせられた</span>: I was let down by it. <span lang="ja">がっかりされた</span> would mean someone was disappointed in me.</p>
+      </div>
+      <div class="qz" data-answer="無理やり">
+        <p class="q" lang="ja">8. <ruby>嫌<rt>いや</rt></ruby>がる<ruby>子<rt>こ</rt></ruby>どもに、＿＿＿<ruby>薬<rt>くすり</rt></ruby>を<ruby>飲<rt>の</rt></ruby>ませた。</p>
+        <p class="en">I made my child take the medicine, though they hated it.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">無理やり</button><button class="btn opt" type="button" lang="ja">自主的に</button><button class="btn opt" type="button" lang="ja">そのまま</button></div>
+        <p class="why" hidden><span lang="ja">無理やり</span>: by force, against someone’s will. It goes naturally with the causative.</p>
+      </div>
+      <div class="qz" data-answer="自主的に">
+        <p class="q" lang="ja">9. <ruby>誰<rt>だれ</rt></ruby>にも<ruby>言<rt>い</rt></ruby>われていないのに、<ruby>彼<rt>かれ</rt></ruby>は＿＿＿ごみを<ruby>拾<rt>ひろ</rt></ruby>っている。</p>
+        <p class="en">No one asked him to, but he picks up litter of his own accord.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">自主的に</button><button class="btn opt" type="button" lang="ja">無理やり</button><button class="btn opt" type="button" lang="ja">がっかり</button></div>
+        <p class="why" hidden><span lang="ja">自主的に</span>: of your own accord, voluntarily.</p>
+      </div>
+      <div class="qz" data-answer="習慣">
+        <p class="q" lang="ja">10. <ruby>毎朝<rt>まいあさ</rt></ruby><ruby>六時<rt>ろくじ</rt></ruby>に<ruby>起<rt>お</rt></ruby>きる＿＿＿をつけたい。</p>
+        <p class="en">I want to get into the habit of getting up at six every morning.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">習慣</button><button class="btn opt" type="button" lang="ja">週間</button><button class="btn opt" type="button" lang="ja">週刊</button></div>
+        <p class="why" hidden><span lang="ja">習慣をつける</span>: to form a habit. <span lang="ja">週間</span> is a week’s span; <span lang="ja">週刊</span>, “weekly”, as in a weekly magazine.</p>
+      </div>
+      <div class="qz" data-answer="実感">
+        <p class="q" lang="ja">11. <ruby>合格<rt>ごうかく</rt></ruby>したけど、まだ＿＿＿がわかない。</p>
+        <p class="en">I passed, but it still hasn’t sunk in.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">実感</button><button class="btn opt" type="button" lang="ja">習慣</button><button class="btn opt" type="button" lang="ja">姿</button></div>
+        <p class="why" hidden><span lang="ja">実感がわかない</span>: it doesn’t feel real yet.</p>
+      </div>
+      <div class="qz" data-answer="姿">
+        <p class="q" lang="ja">12. <ruby>久<rt>ひさ</rt></ruby>しぶりに、<ruby>元気<rt>げんき</rt></ruby>な<ruby>祖母<rt>そぼ</rt></ruby>の＿＿＿を<ruby>見<rt>み</rt></ruby>て<ruby>安心<rt>あんしん</rt></ruby>した。</p>
+        <p class="en">It was a relief to see my grandmother looking well after so long.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">姿</button><button class="btn opt" type="button" lang="ja">習慣</button><button class="btn opt" type="button" lang="ja">工夫</button></div>
+        <p class="why" hidden><span lang="ja">姿</span>: someone’s figure, how they look; the sight of them.</p>
+      </div>
+    </article>
+
+    <article class="move" id="cards">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Flashcards</h2>
+      </div>
+      <p>Read the Japanese, say the meaning, then tap to check.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">〜させられる</span><span class="a">to be made to do something (causative-passive)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>読<rt>よ</rt></ruby>まされる</span><span class="a">to be made to read (spoken short form)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>待<rt>ま</rt></ruby>たされる</span><span class="a">to be kept waiting</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>話<rt>はな</rt></ruby>させられる</span><span class="a">to be made to speak (<span lang="ja">す</span>-verbs keep the full form)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>考<rt>かんが</rt></ruby>えさせられる</span><span class="a">to be made to think; it makes you think</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">がっかりさせられる</span><span class="a">to be let down by something</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">がっかりさせる</span><span class="a">to disappoint someone</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">がっかりされる</span><span class="a">to have someone be disappointed in you</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">〜させてもらう</span><span class="a">to be allowed to; get someone to let you</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>習<rt>しゅう</rt>慣<rt>かん</rt></ruby></span><span class="a">custom, habit</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>週<rt>しゅう</rt>間<rt>かん</rt></ruby></span><span class="a">a week’s span; <span lang="ja">一週間</span>, “one week”</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>無理<rt>むり</rt></ruby>やり</span><span class="a">forcibly, against someone’s will</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>自<rt>じ</rt>主<rt>しゅ</rt>的<rt>てき</rt></ruby>に</span><span class="a">of your own accord</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">がっくり</span><span class="a">crushed, deflated; going limp</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>実感<rt>じっかん</rt></ruby>する</span><span class="a">to feel it keenly, to realise</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>実感<rt>じっかん</rt></ruby>がわかない</span><span class="a">it hasn’t sunk in yet</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>姿<rt>すがた</rt></ruby></span><span class="a">figure, appearance; the sight of someone</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>後<rt>うし</rt></ruby>ろ<ruby>姿<rt>すがた</rt></ruby></span><span class="a">someone seen from behind</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>工夫<rt>くふう</rt></ruby></span><span class="a">a clever idea, a better way</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>古<rt>ふる</rt>本<rt>ほん</rt>屋<rt>や</rt></ruby></span><span class="a">used-book shop</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">まとめて<ruby>買<rt>か</rt></ruby>う</span><span class="a">to buy all at once, in bulk</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">〜ようにしている</span><span class="a">to make a point of doing</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lesson.</strong> <a href="https://www.japanesepod101.com/" target="_blank" rel="noopener">JapanesePod101</a>, Lower Intermediate Season 2, Lesson 4, “Making the Rugrats Read 2” — its dialogue, audio and notes. Section 1 retells the dialogue in my own wording; section 3 quotes two of its six lines, and sections 2, 4 and 5 its short example sentences and phrases. For the original dialogue and recording, use the lesson itself.</li>
+        <li><strong>Beyond the lesson:</strong> on fixed book prices, the Japan Fair Trade Commission’s <a href="https://www.jftc.go.jp/dk/dk_qa.html" target="_blank" rel="noopener">questions and answers</a> (Q12, and Q13 on e-books), <a href="https://www.jftc.go.jp/hourei_files/chosakuken.pdf" target="_blank" rel="noopener">its 2001 decision</a> and <a href="https://www.jftc.go.jp/dk/guideline/lawdk.html" target="_blank" rel="noopener">the Antimonopoly Act</a>; Amazon on <a href="https://press.aboutamazon.com/jp/2000/11/%E3%82%A2%E3%83%9E%E3%82%BE%E3%83%B3-%E3%82%B3%E3%83%A0-%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%82%B5%E3%82%A4%E3%83%88amazon-co-jp%E3%82%92%E3%82%AA%E3%83%BC%E3%83%97%E3%83%B3" target="_blank" rel="noopener">its 2000 launch</a>, and Impress Watch on <a href="https://internet.watch.impress.co.jp/docs/news/556289.html" target="_blank" rel="noopener">Amazon Student</a> and <a href="https://internet.watch.impress.co.jp/docs/news/647894.html" target="_blank" rel="noopener">the 2014 supply halt</a>; BOOKOFF’s <a href="https://www.bookoffgroup.co.jp/en/our-company/top-en/about-us/" target="_blank" rel="noopener">company profile</a> and <a href="https://www.bookoffgroup.co.jp/sustainable-260713/" target="_blank" rel="noopener">July 2026 release</a>; kotobank on <a href="https://kotobank.jp/word/%E6%96%B0%E5%8F%A4%E6%9B%B8%E5%BA%97-183021" target="_blank" rel="noopener"><span lang="ja">新古書店</span></a>; Chiyoda City on <a href="https://visit-chiyoda.tokyo/app/spot/detail/50" target="_blank" rel="noopener">Jimbocho</a>; nippon.com on <a href="https://www.nippon.com/en/japan-data/h02808/" target="_blank" rel="noopener">bookshop numbers</a>, NDL Current Awareness on <a href="https://current.ndl.go.jp/car/225645" target="_blank" rel="noopener">towns without one</a>, and METI’s <a href="https://www.meti.go.jp/press/2025/06/20250610004/20250610004.html" target="_blank" rel="noopener">bookshop plan</a>; the organisers, <span lang="ja">読書推進運動協議会</span>, on <a href="http://www.dokusyo.or.jp/jigyo/jigyo.htm" target="_blank" rel="noopener">Book Week</a> and <a href="http://www.dokusyo.or.jp/" target="_blank" rel="noopener">this year’s slogan</a>; on the words, kotobank on <a href="https://kotobank.jp/word/%E7%84%A1%E7%90%86%E9%81%A3%E3%82%8A-642553" target="_blank" rel="noopener"><span lang="ja">無理遣り</span></a>, <a href="https://kotobank.jp/word/%E3%81%8C%E3%81%A4%E3%81%8B%E3%82%8A-3209281" target="_blank" rel="noopener"><span lang="ja">がっかり</span></a>, <a href="https://kotobank.jp/word/%E3%81%8C%E3%81%A4%E3%81%8F%E3%82%8A-3209285" target="_blank" rel="noopener"><span lang="ja">がっくり</span></a>, <a href="https://kotobank.jp/word/%E5%AE%9F%E6%84%9F-521144" target="_blank" rel="noopener"><span lang="ja">実感</span></a> and <a href="https://kotobank.jp/word/%E5%A7%BF-515242" target="_blank" rel="noopener"><span lang="ja">姿</span></a>, Japanese Wiktionary on <a href="https://ja.wiktionary.org/wiki/%E5%A7%BF" target="_blank" rel="noopener"><span lang="ja">姿</span></a>, and Wiktionary on the accent of <a href="https://en.wiktionary.org/wiki/%E7%BF%92%E6%85%A3" target="_blank" rel="noopener"><span lang="ja">習慣</span></a> and <a href="https://en.wiktionary.org/wiki/%E9%80%B1%E5%88%8A" target="_blank" rel="noopener"><span lang="ja">週刊</span></a>; on the causative-passive, Tae Kim’s <a href="https://guidetojapanese.org/learn/grammar/causepass" target="_blank" rel="noopener">guide</a> and <a href="https://doi.org/10.18910/102193" target="_blank" rel="noopener"><span lang="ja">孫聴雨</span> (2025)</a>, a corpus study of its forms and of its use for feelings; and on Sakurazuka Yakkun, <a href="https://www.j-cast.com/2013/10/06185536.html" target="_blank" rel="noopener">J-Cast</a> and <a href="https://en.wikipedia.org/wiki/Yakkun_Sakurazuka" target="_blank" rel="noopener">Wikipedia</a>.</li>
+        <li><strong>Mine:</strong> the retold dialogue, the English renderings, every other example sentence, the word cards, the tables, the notes on <span lang="ja">ようにする</span>, on forming the causative-passive and on its use for feelings, the quiz and the flashcards.</li>
+        <li><strong>JLPT levels</strong> are approximate. The JLPT hasn’t published official lists since 2010; the causative-passive is usually taught around N4 to N3, and words like <span lang="ja">習慣</span>, <span lang="ja">実感</span> and <span lang="ja">自主的</span> around N3 to N2.</li>
+      </ul>
+      <p class="endnote">JLPT study notes: JapanesePod101 Lower Intermediate Season 2, Lesson 4, written up 14 October 2026. Previous, <a href="../li-s2-03/index.html">lesson 3</a>, or <a href="../index.html">back to JLPT study</a>.</p>
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "jlpt.li2-4.", SHARED = "jlpt.";   /* furigana, English and speed carry across lessons; "done" marks don't */
+  function each(sel, fn){ Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
+  function load(k, d, p){ try { var v = localStorage.getItem((p || KEY) + k); return v === null ? d : v; } catch (e) { return d; } }
+  function save(k, v, p){ try { localStorage.setItem((p || KEY) + k, v); } catch (e) {} }
+
+  /* ---------- furigana and English toggles ---------- */
+  var root = document.documentElement;
+  each("[data-toggle]", function(btn){
+    var name = btn.getAttribute("data-toggle");          /* "furi" or "en" */
+    var on = load(name, "1", SHARED) === "1";
+    function paint(){
+      root.classList.toggle("no-" + name, !on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    btn.addEventListener("click", function(){ on = !on; save(name, on ? "1" : "0", SHARED); paint(); });
+    paint();
+  });
+  /* with English hidden, tap a translation to peek at it */
+  document.addEventListener("click", function(e){
+    var en = e.target.closest && e.target.closest(".en");
+    if (en && root.classList.contains("no-en")) en.classList.toggle("peek");
+  });
+
+  /* ---------- flashcards ---------- */
+  each(".fc", function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  each(".qz", function(q){
+    var right = q.getAttribute("data-answer"), why = q.querySelector(".why");
+    Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(b){
+      b.addEventListener("click", function(){
+        Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(o){
+          o.classList.remove("good", "bad");
+          if (o.textContent === right) o.classList.add("good");
+        });
+        if (b.textContent !== right) b.classList.add("bad");
+        why.hidden = false;
+        q.classList.add("done");
+        score();
+      });
+    });
+  });
+  function score(){
+    var all = document.querySelectorAll(".qz").length, done = document.querySelectorAll(".qz.done").length;
+    var good = 0;
+    each(".qz.done", function(q){ if (!q.querySelector(".opt.bad")) good++; });
+    var el = document.querySelector(".qz-score");
+    if (el) el.textContent = done ? good + " of " + done + " right first time (" + all + " questions)" : all + " questions";
+  }
+  score();
+  var reset = document.querySelector(".qz-reset");
+  if (reset) reset.addEventListener("click", function(){
+    each(".qz", function(q){
+      q.classList.remove("done");
+      q.querySelector(".why").hidden = true;
+      Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(o){ o.classList.remove("good", "bad"); });
+    });
+    score();
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var store = {};
+  try { store = JSON.parse(load("reviewed", "{}")) || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function count(){ var n = 0; boxes.forEach(function(b){ if (b.checked) n++; }); if (counter) counter.textContent = String(n); }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){ store[b.dataset.move] = b.checked; save("reviewed", JSON.stringify(store)); count(); });
+  });
+  count();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var railTargets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    railTargets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= 140) best = i; });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){ if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); } }, { passive: true });
+  markRail();
+
+  /* ---------- Japanese speech ---------- */
+  var synth = window.speechSynthesis, rateSel = document.getElementById("ja-rate");
+  var sayBtns = Array.prototype.slice.call(document.querySelectorAll(".say"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    sayBtns.forEach(function(b){ b.hidden = true; });
+    var c = document.getElementById("ja-ctl"); if (c) c.hidden = true;
+    return;
+  }
+  var jaVoice = null;
+  function pickVoice(){
+    var vs = synth.getVoices() || [];
+    jaVoice = vs.filter(function(v){ return /^ja/i.test(v.lang); })[0] || null;
+    var note = document.getElementById("ja-note");
+    if (note) note.hidden = !!jaVoice || !vs.length;
+  }
+  pickVoice();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = pickVoice;
+  try { var r = load("rate", "", SHARED); if (r) rateSel.value = r; } catch (e) {}
+  rateSel.addEventListener("change", function(){ save("rate", rateSel.value, SHARED); });
+  function plain(el){
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll("rt, rp, .say"), function(x){ x.remove(); });
+    return c.textContent.replace(/\s+/g, "");
+  }
+  sayBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var target = btn.closest(".jp") || btn.parentElement;
+      var src = target.querySelector(".ja") || target;
+      var text = btn.getAttribute("data-say") || plain(src);
+      try { synth.cancel(); } catch (e) {}
+      var u = new window.SpeechSynthesisUtterance(text);
+      u.lang = "ja-JP";
+      if (jaVoice) u.voice = jaVoice;
+      u.rate = parseFloat(rateSel.value) || 0.85;
+      sayBtns.forEach(function(b){ b.classList.remove("on"); });
+      btn.classList.add("on");
+      u.onend = u.onerror = function(){ btn.classList.remove("on"); };
+      synth.speak(u);
+    });
+  });
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+<script>
+/* jump strip: show which section you're in, and which moves are marked done */
+(function(){
+  "use strict";
+  var strip = document.querySelector(".jump-in");
+  if (!strip) return;
+  var links = Array.prototype.slice.call(strip.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var smooth = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var current = -2, ticking = false;
+  function mark(){
+    ticking = false;
+    if (strip.offsetParent === null) return;
+    var line = strip.getBoundingClientRect().bottom + 32, best = -1;
+    targets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= line) best = i; });
+    if (best === current) return;
+    current = best;
+    links.forEach(function(a, i){
+      a.classList.toggle("active", i === best);
+      if (i === best) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+    if (best >= 0) {
+      var a = links[best], left = a.offsetLeft - (strip.clientWidth - a.offsetWidth) / 2;
+      if (strip.scrollTo) strip.scrollTo({ left: left, behavior: smooth ? "smooth" : "auto" });
+      else strip.scrollLeft = left;
+    }
+  }
+  function done(){
+    Array.prototype.forEach.call(document.querySelectorAll(".revbox"), function(b){
+      var art = b.closest("article");
+      var a = art && strip.querySelector('a[href="#' + art.id + '"]');
+      if (a) a.classList.toggle("done", b.checked);
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(mark); }
+  }, { passive: true });
+  window.addEventListener("resize", function(){ current = -2; mark(); });
+  document.addEventListener("change", function(e){
+    if (e.target && e.target.classList && e.target.classList.contains("revbox")) done();
+  });
+  done();
+  mark();
+})();
+</script>
+<script>
+/* play the whole dialogue, line by line, in the Japanese voice */
+(function(){
+  "use strict";
+  var btn = document.querySelector(".say-all"), synth = window.speechSynthesis;
+  if (!btn) return;
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") { btn.hidden = true; return; }
+  var rateSel = document.getElementById("ja-rate"), playing = false, LABEL = btn.textContent;
+  function plain(el){
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll("rt, rp, .say"), function(x){ x.remove(); });
+    return c.textContent.replace(/\s+/g, "");
+  }
+  function voice(){ return (synth.getVoices() || []).filter(function(v){ return /^ja/i.test(v.lang); })[0] || null; }
+  function mark(line){
+    Array.prototype.forEach.call(document.querySelectorAll(".dl.now"), function(x){ x.classList.remove("now"); });
+    if (line) line.classList.add("now");
+  }
+  function stop(){
+    playing = false;
+    try { synth.cancel(); } catch (e) {}
+    btn.classList.remove("on");
+    btn.textContent = LABEL;
+    mark(null);
+  }
+  btn.addEventListener("click", function(){
+    if (playing) { stop(); return; }
+    var lines = Array.prototype.slice.call(document.querySelectorAll(".dlg .dl:not(.sfx)")), i = 0, v = voice();
+    try { synth.cancel(); } catch (e) {}
+    playing = true;
+    btn.classList.add("on");
+    btn.textContent = "■ Stop";
+    (function next(){
+      if (!playing) return;
+      if (i >= lines.length) { stop(); return; }
+      var line = lines[i++], u = new window.SpeechSynthesisUtterance(plain(line.querySelector(".ja")));
+      u.lang = "ja-JP";
+      if (v) u.voice = v;
+      u.rate = parseFloat(rateSel && rateSel.value) || 0.85;
+      mark(line);
+      u.onend = u.onerror = function(){ if (playing) setTimeout(next, 350); };
+      synth.speak(u);
+    })();
+  });
+  /* a single line's ▶ takes over from the whole-dialogue player */
+  document.addEventListener("click", function(e){
+    if (playing && e.target.closest && e.target.closest(".say")) stop();
+  }, true);
+  window.addEventListener("pagehide", stop);
+})();
+</script>
+</body>
+</html>
