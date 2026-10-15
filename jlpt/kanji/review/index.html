@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Spaced review of the JLPT kanji course.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Noto+Sans+JP:wght@400;700&display=swap">
+<link rel="stylesheet" href="../kanji.css">
+<title>Kanji review</title>
+<script src="../data.js" defer></script>
+<script src="../kanji.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><a href="../../index.html"><b>JLPT</b></a> &nbsp;/&nbsp; <a href="../index.html">Kanji</a><span class="mark-sub"> &nbsp;/&nbsp; Today's review</span></p>
+    <div class="tools">
+      <button class="btn tg" type="button" data-toggle="furi" aria-pressed="true">ふりがな</button>
+      <button class="btn tg" type="button" data-toggle="en" aria-pressed="true">English</button>
+    </div>
+  </div>
+  <nav class="jump phone" aria-label="Jump">
+    <div class="wrap jump-in">
+      <a class="home" href="../index.html" aria-label="Kanji course home">All</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="../l01/index.html" aria-label="Lesson 1">01</a>
+      <a href="../l02/index.html" aria-label="Lesson 2">02</a>
+      <a href="../l03/index.html" aria-label="Lesson 3">03</a>
+      <a href="../l04/index.html" aria-label="Lesson 4">04</a>
+      <a href="../l05/index.html" aria-label="Lesson 5">05</a>
+      <a href="../l06/index.html" aria-label="Lesson 6">06</a>
+      <a href="../l07/index.html" aria-label="Lesson 7">07</a>
+      <a href="../l08/index.html" aria-label="Lesson 8">08</a>
+      <a href="../l09/index.html" aria-label="Lesson 9">09</a>
+      <a href="../l10/index.html" aria-label="Lesson 10">10</a>
+      <a href="../l11/index.html" aria-label="Lesson 11">11</a>
+      <a href="../l12/index.html" aria-label="Lesson 12">12</a>
+      <a href="../l13/index.html" aria-label="Lesson 13">13</a>
+    </div>
+  </nav>
+</header>
+<div class="wrap" style="padding-block:1.2rem 4rem; max-width:44rem">
+  <section id="review">
+    <div class="deckbar"><span class="counts"></span><a class="btn" href="../index.html#opts" style="margin-left:auto">Settings</a></div>
+    <div class="card" aria-live="polite"></div>
+    <button class="btn big showbtn" type="button">Show the answer</button>
+    <div class="grades" hidden>
+      <button class="grade again" type="button" data-g="1">Again<small></small></button>
+      <button class="grade" type="button" data-g="2">Hard<small></small></button>
+      <button class="grade good" type="button" data-g="3">Good<small></small></button>
+      <button class="grade" type="button" data-g="4">Easy<small></small></button>
+    </div>
+    <p class="kbd">Space: show / Good &nbsp;·&nbsp; 1 Again · 2 Hard · 3 Good · 4 Easy</p>
+    <div class="done" hidden><h3>Done for now.</h3><p class="when"></p><p><a class="btn" href="../index.html">Back to the lessons</a></p></div>
+    <div class="empty done" hidden><h3>Nothing to review yet.</h3><p>Open a lesson and press <b>Add to my reviews</b>, or add one from the <a href="../index.html">course home</a>.</p></div>
+  </section>
+  <div class="panel" id="ja-ctl">
+  <span class="lab">Hear it</span>
+  <p>Tap <span class="term">▶</span> beside a word or sentence to hear your device's Japanese voice. Speed:
+  <select class="ctl" id="ja-rate" aria-label="Speech speed">
+    <option value="0.6">0.6× slow</option><option value="0.85" selected>0.85× study</option><option value="1">1× natural</option>
+  </select></p>
+  <p id="ja-note" hidden>No Japanese voice was found on this device, so it may read with another voice. Phones usually have one.</p>
+</div>
+</div>
+</body>
+</html>
