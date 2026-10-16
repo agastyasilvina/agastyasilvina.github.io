@@ -52,6 +52,7 @@ Grouped the same way as the contents page, newest first within each group.
 
 | # | Topic | Source |
 | --- | --- | --- |
+| 29 | [Neural networks from scratch, part 3](29-a-neuron-and-why-backprop/index.html) — a model of a neuron (weights, bias, tanh), tanh as one node at any level of abstraction, backprop by hand through the neuron (1 − o², pluses distribute, w2.grad = 0), then why networks need backpropagation: four ways to get gradients and what they cost, credit assignment, reverse mode, and neural networks against deep learning; section 7.4 of the book. With labs. | Video — Andrej Karpathy, “building micrograd”; book — Simon J. D. Prince, *Understanding Deep Learning*, section 7.4 |
 | 28 | [Neural networks from scratch, part 2](28-backprop-by-hand/index.html) — micrograd’s Value class (__add__, __mul__, _prev, _op, labels, grad), draw_dot, the forward pass to L = −8, backpropagation by hand node by node, the chain rule and its car and bicycle, plus routes and times swaps, gradient checks, one step uphill; then chapter 7.1–7.3 of the book, with its sin–exp–cos toy model. With labs. | Video — Andrej Karpathy, “building micrograd”; book — Simon J. D. Prince, *Understanding Deep Learning*, chapter 7 |
 | 26 | [Neural networks from scratch, part 1](26-neural-networks-from-scratch/index.html) — what micrograd is and why backpropagation matters, networks as mathematical expressions, scalars against tensors, the derivative as a nudge (3x² − 4x + 5, rise over run, and why too small an h breaks), and the partial derivatives of d = a·b + c; then Prince's chapters 1–4: supervised learning, fitting a line by gradient descent, shallow ReLU networks and universal approximation, and deep networks as folds. Seven labs and seven Python exercises towards building micrograd. | Video — Andrej Karpathy, *The spelled-out intro to neural networks and backpropagation: building micrograd* (2022), up to the Value class; book — Simon J. D. Prince, *Understanding Deep Learning* (2023), chapters 1–4 |
 | 21 | [Multi-agent path finding on rails](21-mapf-on-rails/index.html) — the solver that won the 2020 Flatland Challenge: (cell, heading) search with a direction-aware heuristic, reservation tables and safe intervals, prioritised planning and why the order matters, large neighbourhood search with adaptive neighbourhoods, and running the plan through breakdowns by keeping each cell's visiting order. Labs replay a Python port of the solver. | Paper and code — Jiaoyang Li and colleagues, *Scalable Rail Planning and Replanning: Winning the 2020 Flatland Challenge* (ICAPS 2021) |
@@ -71,8 +72,8 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 29-<topic-slug>
-# build 29-<topic-slug>/index.html, with the numbered squares under its top bar
+mkdir 30-<topic-slug>
+# build 30-<topic-slug>/index.html, with the numbered squares under its top bar
 # then add its row to the right category in index.html, and its square to the strip
 ```
 
