@@ -14,6 +14,7 @@ Grouped the same way as the contents page, newest first within each group.
 
 | # | Topic | Source |
 | --- | --- | --- |
+| 32 | [Writer’s block](32-writers-block/index.html) — writer’s block as a fancy word for being stuck; starting one step away; reading it again as a stranger; the wrong turning a town or two back, and whose story it is; stuck as a sign to go deeper; *Anansi Boys* stopped for two months by a comedy that wanted a murder; *How to Talk to Girls at Parties* written in a day with a new point of view; and a novel as a drive through fog. With labs. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
 | 27 | [World-building](27-world-building/index.html) — all fiction as fantasy, the world outside your window made strange, stolen details, the toilet-and-farmland questions, soap bubbles and misty smudges, rules learned by mistakes, the twenty years behind *The Graveyard Book*, and the childhood worlds that stayed. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
 | 15 | [Character and dialogue](15-character-and-dialogue/index.html) — dialogue is character, what journalism taught him, Delirium, lending characters part of yourself, smash-and-grab research, and funny hats. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
 | 13 | [Becoming a writer](13-becoming-a-writer/index.html) — evoking rather than expressing, the reader deciding what a book means, her route to becoming a writer, and how she works: never from an idea, by hand, downhill-fast. | MasterClass, Margaret Atwood on writing |
@@ -52,6 +53,7 @@ Grouped the same way as the contents page, newest first within each group.
 
 | # | Topic | Source |
 | --- | --- | --- |
+| 31 | [Neural networks from scratch, part 5](31-training-a-neural-net/index.html) — training the network: a tiny dataset, the loss (squared error, summed), `loss.backward()` through four forward passes, `parameters()`, the update and its minus sign, the learning rate, the training loop and the `zero_grad` bug; what a neural net is, up to GPT; micrograd’s own code, its moons demo (batches, max-margin loss, L2, learning-rate decay) and PyTorch’s tanh kernels; then chapters 5–6 of the book: losses from maximum likelihood, least squares, cross-entropy, gradient descent, SGD, momentum and Adam. With labs, and the whole of micrograd as an exercise. | Video — Andrej Karpathy, “building micrograd”; book — Simon J. D. Prince, *Understanding Deep Learning*, chapters 5–6 |
 | 30 | [Neural networks from scratch, part 4](30-automatic-backward-and-an-mlp/index.html) — micrograd’s backward pass made automatic: a `_backward` closure for each operation, the “NoneType is not callable” slip, topological sort and `backward()`, the `+=` bug and the multivariable chain rule; constants and `__rmul__`, exp, powers, division and subtraction; tanh taken apart with identical gradients; the same numbers in PyTorch; Neuron, Layer and MLP; then sections 7.4.3–7.6 of the book: graphs that branch, vanishing and exploding values and gradients, and He initialisation. With labs. | Video — Andrej Karpathy, “building micrograd”; book — Simon J. D. Prince, *Understanding Deep Learning*, sections 7.4.3–7.6 |
 | 29 | [Neural networks from scratch, part 3](29-a-neuron-and-why-backprop/index.html) — a model of a neuron (weights, bias, tanh), tanh as one node at any level of abstraction, backprop by hand through the neuron (1 − o², pluses distribute, w2.grad = 0), then why networks need backpropagation: four ways to get gradients and what they cost, credit assignment, reverse mode, and neural networks against deep learning; section 7.4 of the book. With labs. | Video — Andrej Karpathy, “building micrograd”; book — Simon J. D. Prince, *Understanding Deep Learning*, section 7.4 |
 | 28 | [Neural networks from scratch, part 2](28-backprop-by-hand/index.html) — micrograd’s Value class (__add__, __mul__, _prev, _op, labels, grad), draw_dot, the forward pass to L = −8, backpropagation by hand node by node, the chain rule and its car and bicycle, plus routes and times swaps, gradient checks, one step uphill; then chapter 7.1–7.3 of the book, with its sin–exp–cos toy model. With labs. | Video — Andrej Karpathy, “building micrograd”; book — Simon J. D. Prince, *Understanding Deep Learning*, chapter 7 |
@@ -73,8 +75,8 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 31-<topic-slug>
-# build 31-<topic-slug>/index.html, with the numbered squares under its top bar
+mkdir 33-<topic-slug>
+# build 33-<topic-slug>/index.html, with the numbered squares under its top bar
 # then add its row to the right category in index.html, and its square to the strip
 ```
 
