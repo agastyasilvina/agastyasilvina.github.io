@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Noto+Sans+JP:wght@400;700&display=swap">
+<title>Two Yen, Please</title>
+<style>
+:root{
+  color-scheme: light dark;
+  padding: env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+img{ max-width:100%; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  font-synthesis-weight:none;
+}
+h1,h2,h3,h4{ margin:0; text-wrap:balance; }
+p{ margin:0; }
+a{ color:var(--accent-ink); text-decoration-thickness:1px; text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+.wrap{ width:100%; max-width:76rem; margin-inline:auto; padding-inline:20px; }
+.eyebrow{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{ display:flex; align-items:center; gap:1rem; min-height:3.1rem; }
+.mark{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:600px){ .mark-sub{ display:none; } }
+.topbar-tts{ margin-left:auto; display:flex; align-items:center; gap:.4rem; }
+#now-reading{ font-family:var(--f-mono); font-size:.7rem; color:var(--accent-ink); max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:540px){ #now-reading{ display:none; } }
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.34rem .6rem; border-radius:2px; cursor:pointer; line-height:1.3;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn[aria-pressed="true"],.btn.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+select.ctl{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.3rem .35rem; max-width:11rem;
+}
+
+/* ---------- hero ---------- */
+.hero{ padding-block:clamp(2.4rem,7vw,4.6rem) clamp(1.8rem,4vw,3rem); border-bottom:1px solid var(--line); }
+.hero h1{
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.7rem,8.4vw,5.2rem); line-height:.96; letter-spacing:-.015em;
+  margin-block:1.1rem .9rem; max-width:16ch;
+}
+.hero h1 em{ font-style:italic; color:var(--accent-ink); }
+.standfirst{ max-width:38rem; font-size:1.15rem; line-height:1.55; color:var(--ink); }
+.metarow{
+  display:flex; flex-wrap:wrap; gap:.4rem 1.4rem; margin-top:1.6rem;
+  font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+}
+.metarow span b{ color:var(--ink); font-weight:400; }
+
+/* ---------- layout ---------- */
+.layout{ padding-block:2.4rem 4rem; }
+@media (min-width:1080px){
+  .layout{ display:grid; grid-template-columns:14rem minmax(0,1fr); gap:4rem; align-items:start; }
+}
+.rail{ display:none; }
+@media (min-width:1080px){
+  .rail{ display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + 4.6rem); }
+}
+.rail ol{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem; }
+.rail a{
+  display:flex; gap:.55rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted);
+  text-decoration:none; padding:.2rem 0; line-height:1.35;
+}
+.rail a:hover{ color:var(--accent-ink); }
+.rail a.active{ color:var(--ink); }
+.rail a.active .n{ background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.rail .n{
+  flex:none; width:1.35rem; height:1.35rem; display:grid; place-items:center;
+  border:1px solid var(--line); border-radius:2px; font-size:.68rem;
+}
+.rail .arclabel{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin:1.2rem 0 .4rem;
+}
+.rail .arclabel:first-child{ margin-top:0; }
+.railfoot{ margin-top:1.6rem; padding-top:1rem; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+main{ max-width:41rem; }
+@media (min-width:1080px){ .wrap.layout{ max-width:64rem; } }
+
+/* ---------- prose ---------- */
+main p{ margin-block:1rem; }
+main p.lead{ font-size:1.12rem; }
+main h3{ font-family:var(--f-body); font-weight:700; font-size:1.02rem; margin-block:1.8rem .5rem; }
+main ul,main ol{ margin-block:1rem; padding-left:1.15rem; }
+main li{ margin-block:.45rem; padding-left:.2rem; }
+main li::marker{ color:var(--accent); }
+strong{ font-weight:700; }
+.term{ font-family:var(--f-mono); font-size:.95em; background:var(--accent-soft); padding:.05em .3em; border-radius:2px; }
+
+/* ---------- arcs + moves ---------- */
+.arc{ margin-block:3.4rem 1.6rem; display:flex; align-items:baseline; gap:.9rem; }
+.arc:first-of-type{ margin-top:0; }
+.arc h2{
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+  color:var(--bronze); white-space:nowrap;
+}
+.arc .rule{ flex:1; height:1px; background:var(--line); }
+.arc .cnt{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); }
+
+.move{ padding-block:2.2rem; border-top:1px solid var(--line-soft); scroll-margin-top:5rem; }
+.move:first-of-type{ border-top:0; padding-top:.4rem; }
+.move.reading{ background:linear-gradient(to right, var(--accent-soft), transparent 70%); box-shadow:-20px 0 0 var(--accent-soft); }
+.movehead{ display:flex; align-items:flex-start; gap:.8rem; flex-wrap:wrap; }
+.movehead .n{
+  flex:none; font-family:var(--f-mono); font-size:.82rem; color:var(--bg); background:var(--accent);
+  width:1.9rem; height:1.9rem; display:grid; place-items:center; border-radius:2px; margin-top:.35rem;
+}
+.movehead h2{
+  font-family:var(--f-display); font-weight:400; font-size:clamp(1.85rem,4.6vw,2.5rem);
+  line-height:1.08; letter-spacing:-.01em; flex:1 1 14rem;
+}
+.movetools{ display:flex; gap:.4rem; align-items:center; margin-left:auto; padding-top:.5rem; }
+.who{ font-family:var(--f-mono); font-size:.72rem; color:var(--muted); margin-top:.5rem; }
+.who b{ color:var(--bronze); font-weight:400; }
+
+/* ---------- repeated blocks ---------- */
+.block-label{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:.4rem;
+}
+.shorthand{
+  margin-block:1.3rem; padding:.85rem 0 .85rem 1.1rem; border-left:2px dotted var(--line);
+  font-family:var(--f-mono); font-size:.88rem; line-height:1.55; color:var(--muted); white-space:pre-line;
+}
+.shorthand .block-label{ color:var(--accent-ink); }
+.source{
+  margin-block:1.4rem; padding:.8rem 0 .8rem 1.1rem; border-left:2px solid var(--bronze);
+  font-family:var(--f-mono); font-size:.82rem; line-height:1.55; color:var(--muted);
+}
+.source b{ color:var(--ink); font-weight:400; }
+.source .block-label{ color:var(--bronze); }
+.drill{
+  margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem 1.1rem 1.1rem 2.9rem; position:relative;
+}
+.drill::before{
+  content:""; position:absolute; left:2rem; top:0; bottom:0; width:1px; background:var(--flag); opacity:.35;
+}
+.drill .block-label{ color:var(--flag); }
+.drill ol,.drill ul{ margin-block:.5rem 0; padding-left:1.1rem; }
+.drill p{ margin-block:.5rem; }
+.drill p:first-of-type{ margin-top:0; }
+.script{ margin-block:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+.script .line{
+  display:grid; grid-template-columns:5.2rem minmax(0,1fr); gap:.7rem; align-items:baseline;
+  border-bottom:1px solid var(--line-soft); padding-bottom:.5rem;
+}
+.script .line:last-child{ border-bottom:0; }
+.script .k{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.script .bad{ color:var(--flag); }
+.script .good{ color:var(--accent-ink); }
+.script q{ font-style:italic; }
+@media (max-width:460px){ .script .line{ grid-template-columns:1fr; gap:.15rem; } }
+blockquote.pull{
+  margin:1.9rem 0; padding:0; font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,3.6vw,1.75rem); line-height:1.25; letter-spacing:-.005em;
+}
+blockquote.pull p{ margin:0; }
+blockquote.pull cite{
+  display:block; margin-top:.7rem; font-family:var(--f-mono); font-style:normal;
+  font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.flag{
+  margin-block:1.4rem; border:1px dashed var(--flag); background:var(--flag-soft);
+  border-radius:2px; padding:.85rem 1rem; font-size:.95rem;
+}
+.flag .block-label{ color:var(--flag); }
+.flag p{ margin-block:.35rem; }
+.flag p:first-of-type{ margin-top:0; }
+.flag p:last-child{ margin-bottom:0; }
+
+/* ---------- listen card ---------- */
+.listencard{
+  background:var(--surface); border:1px solid var(--line); border-radius:2px;
+  padding:1.1rem; margin-block:0 2.4rem; display:flex; flex-wrap:wrap; gap:.8rem 1.4rem; align-items:flex-end;
+}
+.listencard .field{ display:flex; flex-direction:column; gap:.3rem; }
+.listencard .field label{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.listencard .blurb{ flex:1 1 14rem; font-size:.9rem; color:var(--muted); line-height:1.5; }
+
+/* ---------- week table ---------- */
+.tablewrap{ overflow-x:auto; margin-block:1.4rem; border:1px solid var(--line); border-radius:2px; }
+table.week{ border-collapse:collapse; width:100%; min-width:30rem; background:var(--card); }
+table.week th,table.week td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line-soft); vertical-align:top; font-size:.94rem; }
+table.week thead th{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--surface); }
+table.week tbody tr:last-child td{ border-bottom:0; }
+table.week td.day{ font-family:var(--f-mono); font-size:.78rem; color:var(--bronze); white-space:nowrap; }
+
+/* ---------- flashcards ---------- */
+.deck{ display:grid; grid-template-columns:repeat(auto-fill,minmax(15rem,1fr)); gap:.7rem; margin-block:1.4rem; }
+.fc{
+  text-align:left; font-family:inherit; font-size:.95rem; color:var(--ink); line-height:1.45;
+  background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.9rem;
+  cursor:pointer; display:flex; flex-direction:column; gap:.5rem; min-height:7.4rem;
+}
+.fc:hover{ border-color:var(--accent); }
+.fc .q{ font-weight:700; }
+.fc .a{ color:var(--muted); border-top:1px solid var(--line-soft); padding-top:.5rem; }
+.fc .tap{ margin-top:auto; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink); }
+.fc[aria-expanded="false"] .a{ display:none; }
+.fc[aria-expanded="true"]{ background:var(--surface); border-color:var(--accent); }
+.fc[aria-expanded="true"] .tap{ display:none; }
+
+/* ---------- misc ---------- */
+.rev{ display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; }
+.rev input{ accent-color:var(--accent); width:.95rem; height:.95rem; }
+details.raw{ margin-block:1.6rem; border:1px solid var(--line); border-radius:2px; background:var(--card); }
+details.raw summary{ cursor:pointer; padding:.8rem 1rem; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-ink); }
+details.raw pre{ margin:0; padding:0 1rem 1rem; overflow-x:auto; font-family:var(--f-mono); font-size:.82rem; line-height:1.6; color:var(--muted); white-space:pre-wrap; }
+.endnote{ border-top:1px solid var(--line); margin-top:3.4rem; padding-top:1.4rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.7; }
+.endnote a{ color:var(--accent-ink); }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- figure row ---------- */
+.figs{ display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.7rem; margin-block:1.5rem; }
+.fig{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.85rem; }
+.fig b{ display:block; font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1.05; color:var(--accent-ink); }
+.fig span{ display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:.35rem; }
+
+/* ---------- the lie / the truth ledger ---------- */
+.ledger{ display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin-block:1.6rem; }
+@media (max-width:560px){ .ledger{ grid-template-columns:1fr; } }
+.ledger .col{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.95rem 1rem; }
+.ledger h4{
+  font-family:var(--f-mono); font-size:.66rem; letter-spacing:.15em; text-transform:uppercase;
+  margin-bottom:.5rem; font-weight:700;
+}
+.ledger .made h4{ color:var(--flag); }
+.ledger .real h4{ color:var(--accent-ink); }
+.ledger ul{ margin:0; padding-left:1rem; }
+.ledger li{ margin-block:.35rem; font-size:.93rem; line-height:1.5; }
+.ledger .made li::marker{ color:var(--flag); }
+.ledger .real li::marker{ color:var(--accent); }
+.ledger .foot{ grid-column:1/-1; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.6; }
+
+
+/* ---------- numbered rules ---------- */
+.rules{ margin-block:1.5rem; display:flex; flex-direction:column; }
+.rules .r{ display:grid; grid-template-columns:2rem minmax(0,1fr); gap:.85rem; padding-block:.8rem; border-top:1px solid var(--line-soft); }
+.rules .r:first-child{ border-top:0; padding-top:0; }
+.rules .r .num{
+  font-family:var(--f-mono); font-size:.72rem; color:var(--bg); background:var(--accent);
+  border-radius:2px; height:1.6rem; display:grid; place-items:center;
+}
+.rules .r h4{ font-family:var(--f-body); font-weight:700; font-size:1rem; margin-bottom:.15rem; }
+.rules .r p{ margin:0; font-size:.95rem; color:var(--muted); line-height:1.55; }
+.rules .r p em{ color:var(--accent-ink); font-style:normal; }
+
+/* ---------- jump strip: numbered squares for phones and tablets, where the rail is hidden ---------- */
+.jump{ border-top:1px solid var(--line-soft); }
+.jump-in{
+  position:relative; display:flex; align-items:center; gap:.3rem; overflow-x:auto; padding-block:.4rem;
+  scrollbar-width:none; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+          mask-image:linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.jump-in::-webkit-scrollbar{ display:none; }
+.jump a{
+  flex:none; min-width:2.1rem; height:2.1rem; padding-inline:.35rem; display:grid; place-items:center;
+  font-family:var(--f-mono); font-size:.76rem; line-height:1; color:var(--muted); text-decoration:none;
+  background:var(--card); border:1px solid var(--line); border-radius:2px;
+}
+.jump a:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.jump a.home{ font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); }
+.jump a.done{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.jump a.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.jump .jsep{ flex:none; width:1px; height:1.3rem; background:var(--line); margin-inline:.25rem; }
+@media (min-width:1080px){ .jump{ display:none; } }
+@media (max-width:1079px){ .move{ scroll-margin-top:7.8rem; } }
+/* ---------- formulas + answers ---------- */
+.formula{
+  font-family:var(--f-mono); font-size:1.02rem; text-align:center; color:var(--ink);
+  background:var(--surface); border:1px solid var(--line-soft); border-radius:2px;
+  padding:.75rem .9rem; overflow-x:auto; white-space:nowrap;
+}
+details.ans{ margin-top:.8rem; border-top:1px dashed var(--line); padding-top:.55rem; }
+details.ans summary{
+  cursor:pointer; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink);
+}
+details.ans p{ margin-block:.55rem 0; font-size:.95rem; color:var(--muted); }
+table.week tr.tot td{ background:var(--surface); font-family:var(--f-mono); font-size:.82rem; color:var(--ink); }
+table.week tr.tot td strong{ font-weight:700; color:var(--accent-ink); }
+table.week.map td.day a{ color:var(--bronze); }
+table.week.route td{ font-family:var(--f-mono); font-size:.84rem; }
+.rgroup{ margin:.3rem 0 0; font-family:var(--f-mono); font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); }
+
+/* ---------- labs ---------- */
+.lab{ margin-block:1.6rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:1rem 1.1rem 1.1rem; }
+.lab .block-label{ color:var(--accent-ink); }
+.lab-grid{ display:grid; grid-template-columns:minmax(0,12.5rem) minmax(0,1fr); gap:1.1rem; align-items:center; margin-top:.4rem; }
+@media (max-width:560px){ .lab-grid{ grid-template-columns:1fr; } }
+.lab .keys{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.9rem; }
+.lab .keys .gate{ min-width:2.6rem; font-weight:700; font-size:.8rem; }
+.lab .say{ margin:.8rem 0 0; font-size:.92rem; line-height:1.5; color:var(--muted); min-height:2.8em; }
+.dial{ width:100%; max-width:12.5rem; height:auto; display:block; margin-inline:auto; overflow:visible; }
+.dial .ring{ fill:none; stroke:var(--line); stroke-width:.014; }
+.dial .axis{ stroke:var(--muted); stroke-width:.01; opacity:.55; }
+.dial .diag{ stroke:var(--line); stroke-width:.01; stroke-dasharray:.04 .04; }
+.dial .proj{ stroke:var(--bronze); stroke-width:.012; stroke-dasharray:.03 .03; }
+.dial .arrow{ stroke:var(--accent); stroke-width:.035; stroke-linecap:round; }
+.dial .tip{ fill:var(--accent); }
+.dial text{ font-family:var(--f-mono); font-size:.13px; fill:var(--muted); }
+.dial text.dim{ opacity:.65; }
+.readout{ display:flex; flex-direction:column; gap:.4rem; font-family:var(--f-mono); font-size:.8rem; }
+.rrow{ display:grid; grid-template-columns:3.3rem 4rem minmax(0,1fr) 3.3rem; gap:.5rem; align-items:center; }
+.rrow.wide{ grid-template-columns:3.6rem minmax(0,1fr) 3.3rem; }
+.rrow .k{ color:var(--ink); }
+.rrow .amp{ color:var(--muted); text-align:right; }
+.rrow .pc{ color:var(--ink); text-align:right; }
+.rrow.rhead{ font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:.2rem; }
+.rrow.rhead span:nth-child(2){ text-align:right; }
+.rrow.rhead span:last-child{ text-align:right; }
+.bar{ position:relative; display:block; height:.6rem; background:var(--line-soft); border-radius:1px; overflow:hidden; }
+.bar i{ position:absolute; left:0; top:0; bottom:0; width:0; background:var(--accent); transition:width .25s ease; }
+.bar.m75::after{ content:""; position:absolute; top:0; bottom:0; left:75%; width:2px; background:var(--flag); }
+.lab .sl{
+  display:flex; flex-direction:column; gap:.3rem; margin-top:.9rem;
+  font-family:var(--f-mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.lab input[type="range"]{ width:100%; accent-color:var(--accent); margin:0; }
+.hist{ margin:.8rem 0 0; font-family:var(--f-mono); font-size:.74rem; color:var(--bronze); overflow-wrap:anywhere; }
+.shots{ margin-top:.8rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); }
+.shots:empty{ display:none; }
+.shots b{ color:var(--ink); font-weight:700; }
+.dots{ display:grid; grid-template-columns:repeat(25,minmax(0,1fr)); gap:2px; margin-top:.45rem; max-width:17rem; }
+.dots i{ display:block; aspect-ratio:1; background:var(--line); border-radius:1px; }
+.dots i.d1{ background:var(--accent); }
+.prow{ display:grid; grid-template-columns:3.2rem minmax(0,1fr); gap:.6rem; align-items:center; margin-top:.7rem; }
+.prow .side{ font-family:var(--f-mono); font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.bits{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:3px; min-height:1.5rem; max-width:20rem; }
+.bits b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.bits b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.bits b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.gctl{ display:flex; flex-wrap:wrap; gap:.2rem 1.2rem; align-items:flex-end; }
+.gctl .sl{ margin-top:.5rem; }
+.gctl .grow{ flex:1 1 12rem; }
+.gplot{ width:100%; height:auto; display:block; margin-top:.9rem; background:var(--surface); border:1px solid var(--line-soft); border-radius:2px; }
+.gplot .guide{ stroke:var(--line); stroke-width:1; stroke-dasharray:3 3; }
+.gplot .curve{ fill:none; stroke:var(--accent); stroke-width:1.6; stroke-linejoin:round; }
+.gplot .vline{ stroke:var(--flag); stroke-width:1; opacity:.6; }
+.gplot .now{ fill:var(--flag); }
+.gplot text{ font-family:var(--f-mono); font-size:8px; fill:var(--muted); }
+.gread{ margin:.7rem 0 0; font-family:var(--f-mono); font-size:.78rem; line-height:1.6; color:var(--muted); }
+.gread b{ color:var(--ink); font-weight:700; }
+
+
+/* ---------- beyond-the-lecture boxes ---------- */
+.extra{
+  margin-block:1.4rem; padding:.9rem 1rem; background:var(--surface);
+  border:1px solid var(--line-soft); border-left:3px solid var(--accent); border-radius:2px; font-size:.97rem;
+}
+.extra .block-label{ color:var(--accent-ink); }
+.extra p{ margin-block:.5rem; }
+.extra p:first-child{ margin-top:0; }
+.extra p:last-child{ margin-bottom:0; }
+.extra ol,.extra ul{ margin-block:.5rem; }
+.extra li{ margin-block:.3rem; }
+
+/* ---------- repetition-code lab ---------- */
+.cells{ display:flex; gap:4px; min-height:1.5rem; }
+.cells b{
+  font-family:var(--f-mono); font-weight:400; font-size:.8rem; width:1.5rem; height:1.5rem;
+  display:grid; place-items:center; border:1px solid var(--line); border-radius:2px; background:var(--surface); color:var(--muted);
+}
+.cells b.one{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.cells b.miss{ box-shadow:0 0 0 2px var(--flag); }
+.checks{ font-family:var(--f-mono); font-size:.76rem; color:var(--muted); line-height:1.45; }
+.rep .prow{ grid-template-columns:4.2rem minmax(0,1fr); }
+.rep .readout{ margin-top:1rem; }
+.rep .sl b{ color:var(--ink); font-weight:700; letter-spacing:.04em; font-size:.82rem; }
+.rep .rrow.wide{ grid-template-columns:5.2rem minmax(0,1fr) 3.6rem; }
+.gplot .curve.raw{ stroke:var(--muted); stroke-dasharray:4 3; }
+.legend{ margin:.45rem 0 0; font-family:var(--f-mono); font-size:.7rem; color:var(--muted); }
+.legend .sw{ display:inline-block; width:18px; height:0; border-top:2px solid var(--accent); vertical-align:middle; margin-right:.3rem; }
+.legend .sw.raw{ border-top:2px dashed var(--muted); }
+
+
+/* ---------- JLPT pages ---------- */
+:lang(ja), [lang="ja"]{ font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",var(--f-body); }
+.home-link{ text-decoration:none; color:inherit; }
+.topbar .tools{ margin-left:auto; display:flex; gap:.4rem; }
+.btn.tg{ font-family:var(--f-mono); }
+.btn.tg[aria-pressed="true"]{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.btn.tg[aria-pressed="false"]{ opacity:.6; }
+ruby rt{ font-size:.5em; color:var(--muted); font-weight:400; letter-spacing:0; }
+.no-furi rt{ visibility:hidden; }
+.jp{ margin-block:1rem; padding:.7rem .9rem; background:var(--card); border:1px solid var(--line-soft); border-left:3px solid var(--accent); border-radius:2px; }
+main .jp p{ margin:0; }
+main .jp p.ja{ font-size:1.22rem; line-height:2.15; }
+main .jp p.en{ margin-top:.25rem; font-size:.95rem; color:var(--muted); line-height:1.5; }
+main .jp p.note{ margin-top:.5rem; padding-top:.45rem; border-top:1px dashed var(--line-soft); font-size:.88rem; color:var(--muted); }
+.who-says{ font-family:var(--f-mono); font-size:.7rem; color:var(--bronze); white-space:nowrap; }
+.say{
+  display:inline-grid; place-items:center; width:1.75rem; height:1.75rem; margin-right:.5rem; vertical-align:.15em;
+  font-size:.7rem; line-height:1; color:var(--accent-ink); background:var(--accent-soft);
+  border:1px solid var(--accent); border-radius:50%; cursor:pointer; padding:0;
+}
+.say:hover{ background:var(--accent); color:var(--bg); }
+.say.on{ background:var(--accent); color:var(--bg); }
+.no-en .en{ color:transparent !important; background:var(--line-soft); border-radius:2px; cursor:pointer; user-select:none; }
+.no-en .en *{ color:transparent !important; }
+.no-en .en.peek, .no-en .en.peek *{ color:var(--muted) !important; background:none; }
+.vocab{ display:grid; grid-template-columns:1fr; gap:.7rem; margin-block:1.2rem; }
+@media (min-width:700px){ .vocab{ grid-template-columns:1fr 1fr; } }
+.word{ background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.75rem .85rem; }
+main .word p{ margin:0; }
+main .word p.w-head{ display:flex; align-items:baseline; justify-content:space-between; gap:.5rem; }
+.w-ja{ font-size:1.45rem; line-height:2; }
+.w-pos{ font-family:var(--f-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); white-space:nowrap; }
+main .word p.w-en{ font-size:.94rem; line-height:1.45; }
+.word .jp{ margin:.6rem 0 0; padding:.45rem .6rem; border-left-width:2px; }
+main .word .jp p.ja{ font-size:1.02rem; line-height:2; }
+main .word .jp p.en{ font-size:.88rem; }
+main p.qz-bar{ display:flex; justify-content:space-between; align-items:center; gap:1rem; font-family:var(--f-mono); font-size:.74rem; color:var(--muted); }
+.qz{ border-top:1px solid var(--line-soft); padding-block:.9rem; }
+main .qz p{ margin:0; }
+main .qz p.q{ font-size:1.12rem; line-height:2.1; }
+main .qz p.en{ font-size:.88rem; color:var(--muted); }
+.opts{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.55rem; }
+.btn.opt{ text-transform:none; letter-spacing:0; font-size:.98rem; padding:.35rem .8rem; }
+.btn.opt.good{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.btn.opt.bad{ background:var(--flag-soft); border-color:var(--flag); color:var(--flag); }
+main .qz p.why{ margin-top:.5rem; font-size:.92rem; color:var(--ink); }
+.fc .q[lang="ja"]{ font-size:1.3rem; font-weight:400; line-height:2; }
+.listencard p.small{ flex-basis:100%; font-size:.82rem; }
+main td[lang="ja"], main td.day[lang="ja"]{ font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",var(--f-body); font-size:1rem; color:var(--ink); }
+
+
+/* ---------- lesson 3: the whole dialogue first ---------- */
+.dlg-bar{ margin:.8rem 0 .4rem; }
+.btn.say-all.on{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.dlg{ display:flex; flex-direction:column; margin-top:.4rem; background:var(--card); border:1px solid var(--line); border-radius:2px; padding:.2rem .9rem; }
+.dl{ display:grid; grid-template-columns:6.6rem minmax(0,1fr); column-gap:.8rem; padding:.5rem 0; border-top:1px solid var(--line-soft); }
+.dl:first-child{ border-top:0; }
+.dl.now{ background:var(--accent-soft); box-shadow:-.9rem 0 0 var(--accent-soft), .9rem 0 0 var(--accent-soft); }
+.dl .spk{ grid-row:1 / span 2; font-family:var(--f-mono); font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); padding-top:.65rem; }
+main .dl p{ margin:0; }
+main .dl p.ja{ font-size:1.12rem; line-height:2.05; }
+main .dl p.en{ font-size:.9rem; line-height:1.45; color:var(--muted); }
+main .dl p.en-sfx{ font-size:.88rem; font-style:italic; color:var(--muted); padding-block:.3rem; }
+@media (max-width:560px){ .dl{ grid-template-columns:1fr; } .dl .spk{ grid-row:auto; padding-top:0; } }
+
+/* ---------- a two-column table that fits a phone ---------- */
+table.week.narrow{ min-width:0; }
+table.week.narrow td.day{ white-space:normal; }
+table.week.narrow.keep td.day{ white-space:nowrap; }
+
+/* ---------- kanji cards (as in Upper Beginner S1 #2) ---------- */
+.kpair{ display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-top:.45rem; }
+.kpair.one{ grid-template-columns:1fr; }
+.kpair .k{ display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:.6rem; align-items:center; padding:.45rem .55rem; background:var(--surface); border:1px solid var(--line-soft); border-radius:2px; }
+.kpair .kj{ grid-row:1 / span 2; font-size:2.1rem; line-height:1; color:var(--ink); }
+.kpair .gl{ font-weight:700; font-size:.92rem; line-height:1.3; }
+.kpair .rd{ font-size:.8rem; line-height:1.45; color:var(--muted); }
+.nw{ white-space:nowrap; }
+main .word p.kn{ margin-top:.55rem; font-size:.9rem; line-height:1.55; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <p class="mark"><a class="home-link" href="../index.html"><b>JLPT</b></a><span class="mark-sub"> &nbsp;/&nbsp; Lower Intermediate S2 #22 &middot; Two yen, please</span></p>
+    <div class="tools">
+      <button class="btn tg" type="button" data-toggle="furi" aria-pressed="true">ふりがな</button>
+      <button class="btn tg" type="button" data-toggle="en" aria-pressed="true">English</button>
+    </div>
+  </div>
+  <nav class="jump" aria-label="Jump to a section">
+    <div class="wrap jump-in">
+      <a class="home" href="../index.html" aria-label="All JLPT lessons">All</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m1" aria-label="1. The dialogue">1</a>
+      <a href="#m2" aria-label="2. The scene">2</a>
+      <a href="#m3" aria-label="3. Key lines">3</a>
+      <a href="#m4" aria-label="4. Vocabulary">4</a>
+      <a href="#m5" aria-label="5. なさる and いたす">5</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m6" aria-label="6. The map of keigo">6</a>
+      <a href="#m7" aria-label="7. 結構, 粗品, 馬鹿">7</a>
+      <a href="#m8" aria-label="8. The passbook">8</a>
+      <span class="jsep" aria-hidden="true"></span>
+      <a href="#m9" aria-label="9. Quiz">9</a>
+      <a href="#cards" aria-label="Flashcards">?</a>
+      <a href="#sources" aria-label="Sources">&sect;</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">JLPT study &middot; JapanesePod101 Lower Intermediate S2 #22 &middot; around N3</p>
+    <h1>How much would you like to pay in? <em>Two yen.</em></h1>
+    <p class="standfirst">Part 2 of “Mo’ Money, Mo’ Problems”. Taiga fills in the form, opens the account with a grand total of two yen, collects a passbook and a free gift, and hands the teller a business card. The grammar point is keigo: the respectful <span lang="ja">ご入金なさいますか</span>, for the customer’s actions, and the humble <span lang="ja">お呼びいたします</span>, for the bank’s own. Plus the government’s map of keigo, the many faces of <span lang="ja">結構</span>, <span lang="ja">粗品</span> and <span lang="ja">馬鹿</span>, and what happened to the passbook.</p>
+    <div class="metarow">
+      <span><b>9 sections</b>, with the whole dialogue first</span>
+      <span>Lesson — <b>JapanesePod101</b>, “Mo’ Money, Mo’ Problems 2”</span>
+      <span>Notes taken <b>18 Oct 2026</b></span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap layout">
+
+  <nav class="rail" aria-label="Sections">
+    <p class="arclabel">The lesson</p>
+    <ol>
+      <li><a href="#m1"><span class="n">1</span> The dialogue</a></li>
+      <li><a href="#m2"><span class="n">2</span> The scene</a></li>
+      <li><a href="#m3"><span class="n">3</span> Key lines</a></li>
+      <li><a href="#m4"><span class="n">4</span> Vocabulary</a></li>
+      <li><a href="#m5"><span class="n">5</span> なさる and いたす</a></li>
+    </ol>
+    <p class="arclabel">Around the lesson</p>
+    <ol>
+      <li><a href="#m6"><span class="n">6</span> The map of keigo</a></li>
+      <li><a href="#m7"><span class="n">7</span> 結構, 粗品, 馬鹿</a></li>
+      <li><a href="#m8"><span class="n">8</span> The passbook</a></li>
+    </ol>
+    <p class="arclabel">Work it</p>
+    <ol>
+      <li><a href="#m9"><span class="n">9</span> Quiz</a></li>
+      <li><a href="#cards"><span class="n">?</span> Flashcards</a></li>
+      <li><a href="#sources"><span class="n">&sect;</span> Sources</a></li>
+    </ol>
+    <p class="railfoot"><span id="rev-count">0</span>&thinsp;/&thinsp;9 marked done</p>
+  </nav>
+
+  <main>
+
+    <div class="listencard" id="ja-ctl">
+      <p class="blurb"><b>Hear it.</b> Tap <span class="term">▶</span> beside any Japanese line to hear it read by your device’s Japanese voice, or play the whole dialogue below. Use the buttons up top to hide the furigana or the English — with English hidden, tap a translation to peek. These settings carry over from lesson to lesson.</p>
+      <div class="field">
+        <label for="ja-rate">Speed</label>
+        <select class="ctl" id="ja-rate">
+          <option value="0.6">0.6&times; &mdash; slow</option>
+          <option value="0.85" selected>0.85&times; &mdash; study</option>
+          <option value="1">1&times; &mdash; natural</option>
+        </select>
+      </div>
+      <p class="blurb small" id="ja-note" hidden>No Japanese voice was found on this device; it may read the lines with another voice. Phones usually have one; on a computer you may need to add a Japanese text-to-speech voice.</p>
+    </div>
+
+    <div class="arc"><h2>The lesson</h2><span class="rule"></span><span class="cnt">5 sections</span></div>
+
+    <article class="move" id="m1">
+      <div class="movehead">
+        <span class="n">1</span>
+        <h2>The dialogue</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="1"> Done</label></div>
+      </div>
+      <p class="who">The whole scene, retold for review</p>
+
+      <p>The lesson’s dialogue, retold in my own wording so you can review it in one place. It keeps the same scene, characters, words and grammar, and picks up from <a href="../li-s2-21/index.html#m1">my retelling of lesson 21</a>. Every line is rephrased, and the last two are new: the teller reads the business card. The lesson’s exact key lines are in section 3. Hide the English with the button at the top to test yourself.</p>
+      <div class="dlg-bar"><button class="btn say-all" type="button">▶ Play the whole dialogue</button></div>
+      <div class="dlg">
+        <div class="dl sfx"><span class="spk">Scene</span><p class="en-sfx">The same bank, window 2. A form lies on the counter in front of Taiga.</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>お<ruby>名前<rt>なまえ</rt></ruby>とご<ruby>住<rt>じゅう</rt>所<rt>しょ</rt></ruby>を、こちらの<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>み<ruby>用紙<rt>ようし</rt></ruby>にご<ruby>記入<rt>きにゅう</rt></ruby>ください。</p><p class="en">Please write your name and address on this application form.</p></div>
+        <div class="dl"><span class="spk">Taiga</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>……はい、<ruby>書<rt>か</rt></ruby>けた。これでいいですか。</p><p class="en">…There, done. Is this all right?</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ありがとうございます。では、<ruby>最初<rt>さいしょ</rt></ruby>にいくらご<ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby>なさいますか。</p><p class="en">Thank you. And how much would you like to pay in to start with?</p></div>
+        <div class="dl"><span class="spk">Taiga</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>え、お<ruby>金<rt>かね</rt></ruby>、<ruby>入<rt>い</rt></ruby>れなきゃいけないの？</p><p class="en">What, I have to put money in?</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>金額<rt>きんがく</rt></ruby>はおいくらでも<ruby>結構<rt>けっこう</rt></ruby>です。1<ruby>円<rt>えん</rt></ruby>からでも<ruby>大丈夫<rt>だいじょうぶ</rt></ruby>ですよ。</p><p class="en">Any amount is fine. Even one yen will do.</p></div>
+        <div class="dl"><span class="spk">Taiga</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>へえ。じゃあ、ちょっと<ruby>奮発<rt>ふんぱつ</rt></ruby>して2<ruby>円<rt>えん</rt></ruby>で。</p><p class="en">Huh. Then I’ll splash out: two yen.</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>かしこまりました。<ruby>準備<rt>じゅんび</rt></ruby>ができましたらお<ruby>名前<rt>なまえ</rt></ruby>をお<ruby>呼<rt>よ</rt></ruby>びいたしますので、おかけになってお<ruby>待<rt>ま</rt></ruby>ちください。</p><p class="en">Certainly. I’ll call your name when everything’s ready, so please take a seat and wait.</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>虎<rt>とら</rt>畑<rt>ばたけ</rt></ruby><ruby>様<rt>さま</rt></ruby>、<ruby>虎畑大河<rt>とらばたけたいが</rt></ruby><ruby>様<rt>さま</rt></ruby>、いらっしゃいますか。</p><p class="en">Torabatake-sama? Taiga Torabatake-sama?</p></div>
+        <div class="dl"><span class="spk">Taiga</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>はいはーい！<ruby>大河<rt>たいが</rt></ruby>でいいですよ。</p><p class="en">Here! Just call me Taiga.</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>こちらが<ruby>虎<rt>とら</rt>畑<rt>ばたけ</rt></ruby><ruby>様<rt>さま</rt></ruby>の<ruby>通<rt>つう</rt>帳<rt>ちょう</rt></ruby>でございます。キャッシュカードは、1<ruby>週<rt>しゅう</rt>間<rt>かん</rt></ruby>から10<ruby>日<rt>とおか</rt></ruby>ほどでご<ruby>自宅<rt>じたく</rt></ruby>にお<ruby>送<rt>おく</rt></ruby>りいたします。</p><p class="en">Here is your passbook. Your cash card will be posted to your home in about a week to ten days.</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>それと、こちらはささやかですが、<ruby>粗品<rt>そしな</rt></ruby>でございます。</p><p class="en">And this is just a small gift from us.</p></div>
+        <div class="dl"><span class="spk">Taiga</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>お、どうも。あ、そうそう、これ<ruby>僕<rt>ぼく</rt></ruby>の<ruby>名刺<rt>めいし</rt></ruby>。<ruby>暇<rt>ひま</rt></ruby>なとき、メールでも<ruby>電話<rt>でんわ</rt></ruby>でもちょうだい。じゃ、またね。バーイ！</p><p class="en">Oh, thanks. Oh, right, here’s my card. Email or call me when you’re free. See you. Bye!</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>……え？<ruby>今<rt>いま</rt></ruby>の、<ruby>何<rt>なに</rt></ruby>？<ruby>馬鹿<rt>ばか</rt></ruby>なの？</p><p class="en">…Huh? What was that? Is that guy an idiot?</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>……「<ruby>株式会社<rt>かぶしきがいしゃ</rt></ruby>タイガー　<ruby>代<rt>だい</rt>表<rt>ひょう</rt>取<rt>とり</rt>締<rt>しまり</rt>役<rt>やく</rt></ruby>」？<ruby>社<rt>しゃ</rt>長<rt>ちょう</rt></ruby>なの？</p><p class="en">…“Tiger Inc., President”? A company president?</p></div>
+        <div class="dl"><span class="spk">Teller</span><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>……2<ruby>円<rt>えん</rt></ruby>しか<ruby>入<rt>い</rt></ruby>れないのに。</p><p class="en">…With a two-yen deposit, too.</p></div>
+      </div>
+    </article>
+
+    <article class="move" id="m2">
+      <div class="movehead">
+        <span class="n">2</span>
+        <h2>The scene</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="2"> Done</label></div>
+      </div>
+      <p class="who">Naomi, Yuichi and Peter, before and after the dialogue</p>
+
+      <p>“More Money, More Problems”, part 2. Yuichi recaps: <span lang="ja">Taigaさんという人が、銀行で口座を開こうとしています</span>. It’s a bank conversation, Naomi says, so it’s polite Japanese again. The grammar points: <span lang="ja">お……なさる</span> and <span lang="ja">ご……なさる</span>, Yuichi says, with <span lang="ja">なさる</span> the honorific verb for <span lang="ja">する</span>, Peter adds; and <span lang="ja">ご……いたす</span> or <span lang="ja">お……いたす</span>, Naomi says, with <span lang="ja">いたす</span> the humble form of <span lang="ja">する</span>. Plus more essential vocabulary for the bank, as Taiga carries on opening the account.</p>
+      <h3>After the dialogue</h3>
+      <p>An unusual name, Naomi says: <span lang="ja">とらばたけたいが</span>. It sounds strong, says Yuichi: <span lang="ja">とら</span>, tiger, and <span lang="ja">はたけ</span>, field, so “Tigerfield”. Naomi should definitely go and play at Tigerfield once, Peter says; Naomi will go… and then won’t: <span lang="ja">行ってきます。行かないよ</span>.</p>
+      <p>Phrases worth taking from the chat:</p>
+      <ul>
+        <li><strong><span lang="ja">めずらしい名前</span></strong> — an unusual name.</li>
+        <li><strong><span lang="ja">強そうな名前</span></strong> — a name that sounds strong: <span lang="ja">〜そう</span>, “looks, sounds”.</li>
+        <li><strong><span lang="ja">ていねいな会話</span></strong> — polite conversation.</li>
+      </ul>
+    </article>
+
+    <article class="move" id="m3">
+      <div class="movehead">
+        <span class="n">3</span>
+        <h2>Key lines</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="3"> Done</label></div>
+      </div>
+      <p class="who">The teller’s keigo: respectful for Taiga, humble for the bank</p>
+
+      <p>The lesson’s dialogue is thirteen lines long, so these three are quoted exactly; section 1 covers the rest in my retelling. The English is my own rendering.</p>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ありがとうございます。<ruby>本日<rt>ほんじつ</rt></ruby>、おいくらご<ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby>なさいますか。</p>
+        <p class="en">Thank you. How much will you be paying in today? <span class="who-says">— Teller</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">本日</span>, the formal “today”; <span lang="ja">おいくら</span>, a polite <span lang="ja">いくら</span>; <span lang="ja">ご入金なさいますか</span>, the grammar point: ご + <span lang="ja">入金</span> + <span lang="ja">なさる</span>, respectful because it’s the customer who pays in (section 5).</p>
+      </div>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>かしこまりました。<ruby>用意<rt>ようい</rt></ruby>が<ruby>出来<rt>でき</rt></ruby>ましたら、お<ruby>名前<rt>なまえ</rt></ruby>をお<ruby>呼<rt>よ</rt></ruby>びいたしますので、<ruby>少<rt>しょう</rt>々<rt>しょう</rt></ruby>お<ruby>待<rt>ま</rt></ruby>ちください。</p>
+        <p class="en">Certainly. I’ll call your name when everything’s ready, so please wait a moment. <span class="who-says">— Teller</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">かしこまりました</span>, “certainly”; <span lang="ja">出来ましたら</span>, a polite <span lang="ja">たら</span> (<a href="../li-s2-16/index.html#m5">lesson 16</a>); <span lang="ja">お呼びいたします</span>, humble: the teller’s own action, done for the customer; <span lang="ja">ので</span>, “so”; <span lang="ja">少々お待ちください</span>, “one moment, please”.</p>
+      </div>
+
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>こちらが、<ruby>虎畑大河<rt>とらばたけたいが</rt></ruby><ruby>様<rt>さま</rt></ruby>の<ruby>通<rt>つう</rt>帳<rt>ちょう</rt></ruby>でございます。キャッシュカードは1<ruby>週<rt>しゅう</rt>間<rt>かん</rt></ruby>から10<ruby>日<rt>とおか</rt></ruby><ruby>後<rt>ご</rt></ruby>に、ご<ruby>自宅<rt>じたく</rt></ruby>にお<ruby>送<rt>おく</rt></ruby>りいたします。</p>
+        <p class="en">Here is your passbook, Torabatake-sama. Your cash card will be sent to your home in a week to ten days. <span class="who-says">— Teller</span></p>
+        <p class="note"><b>Grammar:</b> <span lang="ja">でございます</span>, an extra-polite <span lang="ja">です</span>; <span lang="ja">〜から〜後に</span>, “in … to …”; <span lang="ja">ご自宅</span>, your home, with a respectful <span lang="ja">ご</span>; <span lang="ja">お送りいたします</span>, humble again: the bank sends it.</p>
+      </div>
+    </article>
+
+    <article class="move" id="m4">
+      <div class="movehead">
+        <span class="n">4</span>
+        <h2>Vocabulary</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="4"> Done</label></div>
+      </div>
+      <p class="who">The hosts’ words, in their order</p>
+
+      <p>The hosts’ notes first, then a card for each word, plus more from the dialogue, each with an example of my own.</p>
+      <ul>
+        <li><strong><span lang="ja">もうしこみようし</span></strong> (<span lang="ja">申し込み用紙</span>) — an application form: <span lang="ja">申し込み</span>, an application or proposal, from <span lang="ja">申し込む</span>, to apply or propose; <span lang="ja">用</span>, use or purpose; and <span lang="ja">紙</span>, paper.</li>
+        <li><strong><span lang="ja">きにゅう</span></strong> (<span lang="ja">記入</span>) — filling in a form: <span lang="ja">記</span>, to write, and <span lang="ja">入</span>, to put in, so <span lang="ja">書いて入れることを記入といいます</span>, Yuichi explains. <span lang="ja">申し込み用紙に記入して下さい</span>, “please fill out the application form”; the dialogue adds the polite <span lang="ja">ご</span>: <span lang="ja">申込用紙にご記入下さい</span>.</li>
+        <li><strong><span lang="ja">にゅうきん</span></strong> (<span lang="ja">入金</span>) — a deposit, payment, money received: <span lang="ja">自分の口座に1万円入金する</span>, “I paid 10,000 yen into my account.” The opposite is <span lang="ja">引き出し</span>, from <a href="../li-s2-21/index.html#m4">lesson 21</a>.</li>
+        <li><strong><span lang="ja">つうちょう</span></strong> (<span lang="ja">通帳</span>) — a bank book, passbook: <span lang="ja">通帳を3冊持っています</span>, says Yuichi, “I have three passbooks.” Some accounts have no passbook these days, Naomi says: online banks, Yuichi guesses. If Peter opened an account now, it would definitely be at Shinsei Bank: everything online, in English too, and free transfers, for personal accounts at least, Peter thinks. No passbook, Naomi notes. Online banking is further ahead in America, Peter says, where people move money almost entirely online. Naomi finds it scary and can’t do it; Peter puts that down to age and is quickly told off. Many people in the US won’t bank online either, Peter adds: what if you log in and the balance says zero? Still, Naomi is now thinking of opening a Shinsei account.</li>
+        <li><strong><span lang="ja">そしな</span></strong> (<span lang="ja">粗品</span>) — a small present from a company: <span lang="ja">粗</span>, rough or coarse, and <span lang="ja">品</span>, product, a humble expression, used only in business, Naomi says, never privately: not <span lang="ja">「誕生日おめでとう、Peter。これ、粗品」</span>. Business bait, <span lang="ja">えさ</span>, Peter calls it; to get you to come to the shop, Yuichi says. In a shop you’ll hear <span lang="ja">いつもありがとうございます。こちらは粗品でございます</span>. Researching this story, Naomi talked to a teller at Sumitomo Mitsui and came home with armfuls: a memo pad, a mouse pad and more. Tissues too, says Yuichi. Naomi felt a little guilty.</li>
+        <li><strong><span lang="ja">けっこう</span></strong> (<span lang="ja">結構</span>) — splendid, nice, well enough: a tricky word, Naomi says, whose meaning depends on the context. As an adverb, <span lang="ja">結構いいです</span>, “it’s pretty good”; and <span lang="ja">結構です</span> can mean “that’s enough, I’m good”. Offered coffee, <span lang="ja">コーヒーでいいですか？</span>, Yuichi says <span lang="ja">コーヒーで結構です</span>, “coffee’s fine”; asked <span lang="ja">何か飲みますか？</span>, plain <span lang="ja">結構です</span> is “no thanks”. In the dialogue, <span lang="ja">1円でも結構です</span>: “even one yen is enough.”</li>
+      </ul>
+      <p>The lesson notes add <span lang="ja">キャッシュカード</span>, <span lang="ja">自宅</span> (one’s home), <span lang="ja">名刺</span> (a business card) and <span lang="ja">馬鹿</span> (a fool). The cards below cover them all, with more words from the dialogue.</p>
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong>What the dictionaries say.</strong> <span lang="ja">記入</span> is writing into a set form, as in <span lang="ja">必要事項を記入する</span>, “fill in the required details”, and <span lang="ja">用紙</span> is paper in a fixed format for a particular use: <span lang="ja">所定の用紙に書く</span>, “write on the form provided”. <span lang="ja">通帳</span> is a book for recording the dates and amounts of savings, or of goods bought and sold on credit; it can also be read <span lang="ja">かよいちょう</span>.</p>
+        <p><strong><span lang="ja">名刺</span></strong> comes from China, where a <span lang="ja">刺</span> was a slip of shaved bamboo or wood with a name written on it. In Japan, handwritten cards of washi paper with just a name on them were in use by the early 19th century at least, and they were left at a house to show you had called while nobody was in. Printed cards came from the West: officials who dealt with foreigners as Japan opened up at the end of the Edo period used them first, and in 1854 cards giving titles and names were exchanged with the American envoys. They spread from the Meiji era on, and Japan is now said to use business cards more than any other country. The basic manners today: the junior person, the visitor, offers a card first, with both hands.</p>
+      </div>
+      <div class="vocab">
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="もうしこみようし" aria-label="Play">▶</button><ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>み<ruby>用紙<rt>ようし</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">an application form — <span lang="ja">申し込む</span> + <span lang="ja">用</span> + <span lang="ja">紙</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>み<ruby>用紙<rt>ようし</rt></ruby>は、<ruby>窓口<rt>まどぐち</rt></ruby>でもらえます。</p><p class="en">You can get an application form at the counter.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="きにゅう" aria-label="Play">▶</button><ruby>記入<rt>きにゅう</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">filling in (a form) — <span lang="ja">ご記入ください</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>黒<rt>くろ</rt></ruby>いペンで<ruby>記入<rt>きにゅう</rt></ruby>してください。</p><p class="en">Please fill it in with a black pen.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="にゅうきん" aria-label="Play">▶</button><ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">paying in, a deposit — opposite <span lang="ja">出金</span>, <span lang="ja">引き出し</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>明日<rt>あした</rt></ruby>までに、<ruby>代金<rt>だいきん</rt></ruby>を<ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby>してください。</p><p class="en">Please pay the money in by tomorrow.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="しゅっきん" aria-label="Play">▶</button><ruby>出<rt>しゅっ</rt>金<rt>きん</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">taking money out, a withdrawal</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ATMで、1<ruby>万円<rt>まんえん</rt></ruby>を<ruby>出<rt>しゅっ</rt>金<rt>きん</rt></ruby>した。</p><p class="en">I took 10,000 yen out at the ATM.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="つうちょう" aria-label="Play">▶</button><ruby>通<rt>つう</rt>帳<rt>ちょう</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">a bank book, passbook</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>通<rt>つう</rt>帳<rt>ちょう</rt></ruby>と<ruby>印鑑<rt>いんかん</rt></ruby>を<ruby>持<rt>も</rt></ruby>って、<ruby>銀行<rt>ぎんこう</rt></ruby>に<ruby>行<rt>い</rt></ruby>った。</p><p class="en">I went to the bank with my passbook and seal.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="きちょう" aria-label="Play">▶</button><ruby>記帳<rt>きちょう</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">updating a passbook; making an entry</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>久<rt>ひさ</rt></ruby>しぶりに、<ruby>通<rt>つう</rt>帳<rt>ちょう</rt></ruby>に<ruby>記帳<rt>きちょう</rt></ruby>した。</p><p class="en">I updated my passbook for the first time in ages.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="きゃっしゅかーど" aria-label="Play">▶</button>キャッシュカード</span><span class="w-pos">noun</span></p>
+          <p class="w-en en">a bank cash card</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>キャッシュカードをなくして、すぐ<ruby>銀行<rt>ぎんこう</rt></ruby>に<ruby>連絡<rt>れんらく</rt></ruby>した。</p><p class="en">I lost my cash card and called the bank straight away.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="じたく" aria-label="Play">▶</button><ruby>自宅<rt>じたく</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">one’s home — <span lang="ja">ご自宅</span>, your home</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>今日<rt>きょう</rt></ruby>は、<ruby>自宅<rt>じたく</rt></ruby>で<ruby>仕事<rt>しごと</rt></ruby>をしている。</p><p class="en">I’m working from home today.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="そしな" aria-label="Play">▶</button><ruby>粗品<rt>そしな</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">a small gift (humble), a giveaway from a business</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>ご<ruby>来店<rt>らいてん</rt></ruby>の<ruby>方<rt>かた</rt></ruby>に、<ruby>粗品<rt>そしな</rt></ruby>を<ruby>差<rt>さ</rt></ruby>し<ruby>上<rt>あ</rt></ruby>げます。</p><p class="en">A small gift for everyone who visits the shop.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="めいし" aria-label="Play">▶</button><ruby>名刺<rt>めいし</rt></ruby></span><span class="w-pos">noun</span></p>
+          <p class="w-en en">a business card</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>名刺<rt>めいし</rt></ruby>を<ruby>忘<rt>わす</rt></ruby>れて、<ruby>恥<rt>は</rt></ruby>ずかしかった。</p><p class="en">I forgot my business cards. So embarrassing.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ばか" aria-label="Play">▶</button><ruby>馬鹿<rt>ばか</rt></ruby></span><span class="w-pos">noun · な-adjective</span></p>
+          <p class="w-en en">a fool; foolish, silly</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>そんな<ruby>馬鹿<rt>ばか</rt></ruby>なことを<ruby>言<rt>い</rt></ruby>わないで。</p><p class="en">Don’t say such silly things.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="けっこう" aria-label="Play">▶</button><ruby>結構<rt>けっこう</rt></ruby></span><span class="w-pos">な-adjective · adverb</span></p>
+          <p class="w-en en">fine, enough (<span lang="ja">結構です</span>: no, thank you); quite</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>この<ruby>店<rt>みせ</rt></ruby>のラーメン、<ruby>結構<rt>けっこう</rt></ruby>おいしいね。</p><p class="en">The ramen here is pretty good, isn’t it?</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="かしこまりました" aria-label="Play">▶</button>かしこまりました</span><span class="w-pos">phrase</span></p>
+          <p class="w-en en">certainly (humble: I understand and will do it)</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>かしこまりました。すぐにお<ruby>持<rt>も</rt></ruby>ちします。</p><p class="en">Certainly. I’ll bring it right away.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="しょうしょう" aria-label="Play">▶</button><ruby>少<rt>しょう</rt>々<rt>しょう</rt></ruby></span><span class="w-pos">adverb</span></p>
+          <p class="w-en en">a little, a moment — <span lang="ja">少々お待ちください</span></p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>少<rt>しょう</rt>々<rt>しょう</rt></ruby>お<ruby>待<rt>ま</rt></ruby>ちください。</p><p class="en">Just a moment, please.</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ようい" aria-label="Play">▶</button><ruby>用意<rt>ようい</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">preparation, getting ready</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>旅行<rt>りょこう</rt></ruby>の<ruby>用意<rt>ようい</rt></ruby>は、もうできた？</p><p class="en">Are you all packed for the trip?</p></div>
+        </div>
+        <div class="word">
+          <p class="w-head"><span class="w-ja" lang="ja"><button class="say" type="button" data-say="ふんぱつ" aria-label="Play">▶</button><ruby>奮発<rt>ふんぱつ</rt></ruby></span><span class="w-pos">noun · する-verb</span></p>
+          <p class="w-en en">splashing out, treating yourself</p>
+          <div class="jp"><p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>誕生日<rt>たんじょうび</rt></ruby>だから、ちょっと<ruby>奮発<rt>ふんぱつ</rt></ruby>して<ruby>高<rt>たか</rt></ruby>いレストランに<ruby>行<rt>い</rt></ruby>った。</p><p class="en">It was my birthday, so I splashed out on an expensive restaurant.</p></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="move" id="m5">
+      <div class="movehead">
+        <span class="n">5</span>
+        <h2>なさる and いたす</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="5"> Done</label></div>
+      </div>
+      <p class="who">The grammar point: raise the customer, lower yourself</p>
+
+      <p>Honorific expressions, Peter explains, are for talking about someone else’s action: you raise that person up, as if looking up to them. Here the honorific verb that replaces <span lang="ja">する</span> is <span lang="ja">なさる</span>: exactly the same meaning, “to do”, just far more polite. It’s an old verb that behaves like <span lang="ja">くださる</span>: drop the <span lang="ja">る</span> and add <span lang="ja">います</span>, <span lang="ja">なさいます</span>. So <span lang="ja">おいくらご入金なさいますか</span> means the same as <span lang="ja">いくら入金しますか</span>, Naomi says, but the plain version isn’t polite enough for business.</p>
+      <p>The humble form is for your own action: you lower yourself. <span lang="ja">お名前をお呼びいたします</span>, “I’ll call your name”, is built in steps, Peter shows: <span lang="ja">名前を呼ぶ</span>; polite, <span lang="ja">名前を呼びます</span>; humble, the prefix <span lang="ja">お</span> plus the ます-stem plus <span lang="ja">する</span>, <span lang="ja">お呼びする</span>, politely <span lang="ja">お呼びします</span>; and with <span lang="ja">いたす</span>, the humble verb for “to do”, in place of <span lang="ja">する</span>, <span lang="ja">お呼びいたします</span>. All the same meaning, at a higher level of respect. And you’ve used this pattern all along, Peter says: <span lang="ja">お願いします</span> is <span lang="ja">お</span> + <span lang="ja">願い</span> + <span lang="ja">します</span>, and very polite people say <span lang="ja">よろしくお願いいたします</span>. Naomi sums it up: for someone else’s action, <span lang="ja">します</span> becomes <span lang="ja">なさいます</span>; for your own, <span lang="ja">いたします</span>.</p>
+      <p>At Japanese school, Peter says, it was always honorific Japanese with the teacher: <span lang="ja">Naomi先生、昨日何をなさいましたか？</span> <span lang="ja">何もしませんでした。Peterさんは何をしましたか？</span> <span lang="ja">私は勉強いたしました</span>: raising the teacher, lowering yourself, about as polite as Japanese gets. Then a role-play. Classmates: <span lang="ja">今夜、何する？</span> <span lang="ja">新宿に行く</span>. Co-workers: <span lang="ja">今夜何しますか？</span> <span lang="ja">新宿に行きます</span>. A student to a teacher: <span lang="ja">Naomi先生、今夜、何をなさいますか？</span>, and the teacher, being higher up, can answer plainly: <span lang="ja">新宿に行きます</span>. The teacher asks back, <span lang="ja">今夜何しますか、Yuichiさんは？</span>, and the student answers humbly: <span lang="ja">テストがあるので、勉強いたします</span>. Would a normal student really talk to a teacher like that? Not usually, Naomi says; Yuichi just uses <span lang="ja">します</span> with a professor. But with customers, you must.</p>
+      <div class="rules">
+        <div class="r">
+          <span class="num">1</span>
+          <div>
+            <h4>Respectful: their actions</h4>
+            <p><span lang="ja">ご入金なさる</span>, <span lang="ja">お待ちになる</span>. <em>ご/お + stem + なさる, or お + ます-stem + になる.</em></p>
+          </div>
+        </div>
+        <div class="r">
+          <span class="num">2</span>
+          <div>
+            <h4>Humble: your actions</h4>
+            <p><span lang="ja">お呼びする</span>, <span lang="ja">ご案内いたします</span>. <em>お/ご + ます-stem + する, or more politely いたす.</em></p>
+          </div>
+        </div>
+        <div class="r">
+          <span class="num">3</span>
+          <div>
+            <h4>Some verbs have their own words</h4>
+            <p><span lang="ja">する → なさる</span>, <span lang="ja">来る・いる → いらっしゃる</span>, <span lang="ja">見る → ご覧になる</span>, <span lang="ja">寝る → お休みになる</span>. <em>The lesson notes’ list.</em></p>
+          </div>
+        </div>
+      </div>
+      <p>The lesson notes add that お usually goes on Japanese words and everyday words, and ご on words from Chinese, though with many exceptions; since most する compounds come from Chinese, you’ll meet <span lang="ja">ご〜なさる</span> far more often than <span lang="ja">お〜なさる</span>: <span lang="ja">ご旅行なさる</span>, <span lang="ja">ご出発なさる</span>, but <span lang="ja">お引越しなさる</span>. Their examples: <span lang="ja">明日は、何時にご出発なさいますか</span>; <span lang="ja">ここでお待ちになりますか</span>; and for the humble side, <span lang="ja">お部屋までご案内いたします</span>, “I’ll show you to your room.”</p>
+      <div class="tablewrap">
+        <table class="week narrow keep">
+          <thead><tr><th>Plain</th><th>Respectful (them)</th><th>Humble (me)</th></tr></thead>
+          <tbody>
+            <tr><td class="day" lang="ja">する</td><td><span lang="ja">なさる</span></td><td><span lang="ja">いたす</span></td></tr>
+            <tr><td class="day" lang="ja"><ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby>する</td><td><span lang="ja">ご<ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby>なさる</span></td><td><span lang="ja">ご<ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby>いたす</span></td></tr>
+            <tr><td class="day" lang="ja"><ruby>呼<rt>よ</rt></ruby>ぶ</td><td><span lang="ja">お<ruby>呼<rt>よ</rt></ruby>びになる</span></td><td><span lang="ja">お<ruby>呼<rt>よ</rt></ruby>びする, お<ruby>呼<rt>よ</rt></ruby>びいたす</span></td></tr>
+            <tr><td class="day" lang="ja"><ruby>待<rt>ま</rt></ruby>つ</td><td><span lang="ja">お<ruby>待<rt>ま</rt></ruby>ちになる</span></td><td><span lang="ja">お<ruby>待<rt>ま</rt></ruby>ちする</span></td></tr>
+            <tr><td class="day" lang="ja"><ruby>来<rt>く</rt></ruby>る</td><td><span lang="ja">いらっしゃる</span></td><td>see section 6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong>What the dictionaries say.</strong> <span lang="ja">なさる</span> is the respectful word for <span lang="ja">する</span> or <span lang="ja">なす</span>, and as a helper verb it comes as <span lang="ja">お…なさる</span> or <span lang="ja">ご…なさる</span>. Before <span lang="ja">ます</span> the usual form is <span lang="ja">なさいます</span>, not <span lang="ja">なさります</span>; <span lang="ja">くださる</span> does the same, becoming <span lang="ja">ください</span> before <span lang="ja">ます</span>, just as Peter says. <span lang="ja">いたす</span> is the humble <span lang="ja">する</span>, used mostly as <span lang="ja">いたします</span>, and the dictionary’s example of its helper use is the lesson’s pattern: <span lang="ja">お静かにお願いいたします</span>, “please be quiet”.</p>
+        <p><strong>The government’s rules.</strong> The 2007 guide to keigo, more in section 6, lists <span lang="ja">ご〜なさる</span> among the respectful forms, with <span lang="ja">御利用なさる</span> as its example: it can only be made from する verbs, and only where ご suits the word, as it does <span lang="ja">入金</span>. It files <span lang="ja">ご覧になる</span> and <span lang="ja">お休みになる</span> as irregular お〜になる forms, next to <span lang="ja">おいでになる</span>, for going, coming or being somewhere, and <span lang="ja">お召しになる</span>, for wearing. And the humble <span lang="ja">お〜する</span> needs someone on the receiving end: you can <span lang="ja">お届けする</span> or <span lang="ja">ご案内する</span>, deliver something to someone or show someone the way, but there’s no <span lang="ja">お食べする</span>, since eating isn’t done toward anybody. The bank’s <span lang="ja">お呼びする</span> and <span lang="ja">お送りする</span> both have a receiver: Taiga. Using a humble form for the customer’s own action is the classic mistake; <a href="../li-s2-21/index.html#m6">lesson 21</a> has the guide’s example, <span lang="ja">お持ちしますか</span>.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>部<rt>ぶ</rt>長<rt>ちょう</rt></ruby>は、もうお<ruby>帰<rt>かえ</rt></ruby>りになりました。</p>
+        <p class="en">The department head has already gone home.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>明日<rt>あした</rt></ruby>、こちらからお<ruby>電話<rt>でんわ</rt></ruby>いたします。</p>
+        <p class="en">We’ll call you tomorrow.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>先生<rt>せんせい</rt></ruby>は、<ruby>何<rt>なに</rt></ruby>をお<ruby>飲<rt>の</rt></ruby>みになりますか。</p>
+        <p class="en">What would you like to drink, Sensei?</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Around the lesson</h2><span class="rule"></span><span class="cnt">3 sections</span></div>
+
+    <article class="move" id="m6">
+      <div class="movehead">
+        <span class="n">6</span>
+        <h2>The map of keigo</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="6"> Done</label></div>
+      </div>
+      <p class="who">Beyond the lesson: the government’s five kinds of keigo, and double keigo</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong>Five kinds, not three.</strong> The lesson works with the classic split into respectful, humble and polite language. In 2007 the government’s Council for Cultural Affairs published a guide, <span lang="ja">敬語の指針</span>, that divides keigo into five kinds instead:</p>
+        <div class="tablewrap">
+          <table class="week narrow keep">
+            <thead><tr><th>Type</th><th>The guide’s examples, and what it does</th></tr></thead>
+            <tbody>
+              <tr><td class="day" lang="ja"><ruby>尊敬語<rt>そんけいご</rt></ruby></td><td><span lang="ja">いらっしゃる, おっしゃる</span>: raises the person whose action, thing or state you describe, someone on the listener’s side or a third person</td></tr>
+              <tr><td class="day" lang="ja"><ruby>謙譲語<rt>けんじょうご</rt></ruby>Ⅰ</td><td><span lang="ja"><ruby>伺<rt>うかが</rt></ruby>う, <ruby>申<rt>もう</rt></ruby>し<ruby>上<rt>あ</rt></ruby>げる</span>: for an action from your side toward someone, raises the person it’s directed at</td></tr>
+              <tr><td class="day" lang="ja"><ruby>謙譲語<rt>けんじょうご</rt></ruby>Ⅱ<br>(<ruby>丁重語<rt>ていちょうご</rt></ruby>)</td><td><span lang="ja"><ruby>参<rt>まい</rt></ruby>る, <ruby>申<rt>もう</rt></ruby>す</span>: describes your own side’s actions courteously, for the sake of the person you’re talking to</td></tr>
+              <tr><td class="day" lang="ja"><ruby>丁寧語<rt>ていねいご</rt></ruby></td><td><span lang="ja">です, ます</span>: speaks politely to the person you’re talking to</td></tr>
+              <tr><td class="day" lang="ja"><ruby>美化語<rt>びかご</rt></ruby></td><td><span lang="ja">お<ruby>酒<rt>さけ</rt></ruby>, お<ruby>料理<rt>りょうり</rt></ruby></span>: makes things sound more refined</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The old 謙譲語 is split in two, Ⅰ and Ⅱ, and the old 丁寧語 becomes 丁寧語 plus 美化語. The lesson’s forms fit like this. The general humble form <span lang="ja">お(ご)〜する</span>, as in <span lang="ja">お届けする</span> and <span lang="ja">ご案内する</span>, is 謙譲語Ⅰ. <span lang="ja">いたす</span> is 謙譲語Ⅱ, alongside <span lang="ja">参る</span>, <span lang="ja">申す</span> and <span lang="ja">おる</span>. And <span lang="ja">お(ご)〜いたす</span> is both at once. The guide’s example is <span lang="ja">駅で先生をお待ちいたします</span>, “I’ll wait for the teacher at the station”: <span lang="ja">お待ちする</span> raises the teacher, the person you wait for, and <span lang="ja">いたす</span> adds courtesy toward whoever you’re talking to, who may be the teacher or someone else. So the teller’s <span lang="ja">お名前をお呼びいたします</span> raises Taiga, whose name will be called, and is courteous to Taiga as the listener too.</p>
+        <p><strong>Double keigo.</strong> Using the same kind of keigo twice on one word is <span lang="ja">二重敬語</span>: <span lang="ja">お読みになられる</span>, for instance, makes <span lang="ja">お読みになる</span> and then adds a second respectful <span lang="ja">れる</span>. Double keigo is generally considered wrong, the guide says, though some have become established by custom: <span lang="ja">お召し上がりになる</span> and <span lang="ja">お見えになる</span> on the respectful side, and <span lang="ja">お伺いする</span>, <span lang="ja">お伺いいたす</span> and <span lang="ja">お伺い申し上げる</span> on the humble side. Joining two keigo verbs with て, as in <span lang="ja">お読みになっていらっしゃる</span>, isn’t double keigo, and is basically acceptable.</p>
+        <p><strong>Whose side are you on?</strong> The teller lowers the bank, <span lang="ja">お送りいたします</span>, because to a customer the bank is the teller’s own side. The guide calls this ウチ and ソト, inside and outside, and it reaches your boss too: talking to someone from a client company about 田中部長, Department Head Tanaka, you can say <span lang="ja">田中</span> or <span lang="ja">部長の田中</span>, but <span lang="ja">田中部長</span> is inappropriate, because it doesn’t treat the boss as one of your own. In 文化庁’s latest survey of attitudes to the language, published on 2 October 2026, people were asked how a company receptionist should mention Section Chief Suzuki to an outsider: 37.4% chose <span lang="ja">鈴木は…</span>, 35.8% <span lang="ja">課長の鈴木は…</span>, 22.3% <span lang="ja">鈴木課長は…</span> and 3.6% <span lang="ja">鈴木さんは…</span>. Schools are the exception. By ウチ and ソト, a teacher should tell a parent <span lang="ja">田中はおりません</span>, but most people prefer <span lang="ja">田中先生</span>, the guide notes, because schools put the pupil first; in the new survey 71.9% chose <span lang="ja">田中先生は…</span>, and 8.1% plain <span lang="ja">田中は…</span>. And on keigo’s future, 54.4% said it should be treasured as beautiful, traditional Japanese with a rich range of expression, against 32.7% who wanted it simple and easy to understand, to suit a new age.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>明日<rt>あした</rt></ruby>は<ruby>一日<rt>いちにち</rt></ruby>、<ruby>会社<rt>かいしゃ</rt></ruby>におります。</p>
+        <p class="en">I’ll be at the office all day tomorrow. <span class="who-says">— 謙譲語Ⅱ: おる for いる</span></p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>申<rt>もう</rt></ruby>し<ruby>訳<rt>わけ</rt></ruby>ございません。<ruby>部<rt>ぶ</rt>長<rt>ちょう</rt></ruby>の<ruby>田中<rt>たなか</rt></ruby>は、ただいま<ruby>席<rt>せき</rt></ruby>を<ruby>外<rt>はず</rt></ruby>しております。</p>
+        <p class="en">I’m very sorry. Tanaka, our department head, is away from the desk right now. <span class="who-says">— to a caller from outside</span></p>
+      </div>
+    </article>
+
+    <article class="move" id="m7">
+      <div class="movehead">
+        <span class="n">7</span>
+        <h2>結構, 粗品, 馬鹿</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="7"> Done</label></div>
+      </div>
+      <p class="who">Beyond the lesson: a yes that means no, a humble gift, and a Buddhist fool</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong><span lang="ja">結構</span>.</strong> The word’s original sense is a construction, putting something together. As a な-adjective, the dictionary gives three senses: splendid and without a flaw, <span lang="ja">結構な眺め</span>, “a fine view”; fine, satisfactory, <span lang="ja">お値段はいくらでも結構です</span>, “any price will do”, the teller’s sense; and needing nothing more, <span lang="ja">もう結構です</span>, which the larger dictionary says is used to decline politely: <span lang="ja">『お茶はいかがですか』『結構です』</span>. As an adverb it’s “quite”, more than you’d expected: <span lang="ja">結構おもしろい</span>.</p>
+        <p><strong>Yes or no?</strong> Even the government warns about it. A 2018 report from its language council on communication gives the restaurant case: asked whether your plate can be taken away, answer <span lang="ja">結構です</span> or <span lang="ja">いいです</span> and the staff may not know whether to clear it, while one extra word, <span lang="ja">まだ結構です</span> or <span lang="ja">もういいです</span>, prevents the mix-up. The 2020 guidelines on Easy Japanese, for writing to foreign residents, list <span lang="ja">結構です</span> among the expressions to avoid because it has two meanings, and suggest <span lang="ja">良いです</span> or <span lang="ja">要りません</span> instead.</p>
+        <p><strong><span lang="ja">粗品</span>.</strong> 粗 is rough, careless, and it’s also how you show modesty when you offer something: <span lang="ja">粗品</span>, <span lang="ja">粗酒</span>, <span lang="ja">粗茶</span>, as in <span lang="ja">粗茶ですが一服どうぞ</span>, “it’s only poor tea, but do have a cup”. The dictionaries define <span lang="ja">粗品</span> a little more broadly than Naomi: a humble word for a present or a giveaway that you give someone, also read <span lang="ja">そひん</span>. Why run down your own gift? The 2007 keigo guide explains the convention: you may describe things of your own as small, low or poor, as in <span lang="ja">小社</span>, “our small company”, <span lang="ja">愚見</span>, “my foolish opinion”, and <span lang="ja">拙稿</span>, “my clumsy draft”, but that’s a convention of language, not necessarily what you actually think; making your own things small is a way of showing consideration for the other person.</p>
+        <p><strong><span lang="ja">馬鹿</span>.</strong> Horse and deer are there only for the sound: the kanji are 当て字. The dictionaries trace the word to Sanskrit, moha or mahallaka, both about ignorance or folly, said to have spread as monks’ slang. Another theory takes it from <span lang="ja">破家</span>, foolish enough to wreck your household, and the 日本大百科全書 says the origin is disputed. The famous story from the 史記, of the eunuch chancellor Zhao Gao presenting a deer to the Second Emperor and insisting it was a horse, is only a folk etymology, the encyclopedia says. It’s basically an insult, 大辞泉 notes, but it can be said with sympathy, warmth or affection: <span lang="ja">馬鹿だな。そんなに思いつめなくていいのに</span>, “you idiot, you didn’t have to take it so hard”.</p>
+        <p>And it’s an eastern word: <span lang="ja">馬鹿</span> is commoner in the Kantō region, <span lang="ja">阿呆</span> in Kansai. Kansai people do say バカ, the 日本国語大辞典 adds, but there it often sounds harsher than アホ. Where アホ ends and バカ begins is the question behind <span lang="ja">全国アホ・バカ分布考</span>, by Matsumoto Osamu, a producer at the broadcaster 朝日放送: the book follows the hunt, through enquiries to towns and villages all over Japan and old dictionaries, to a finished dialect map, and the 1991 episode of 探偵！ナイトスクープ that completed the map won awards.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button>「お<ruby>皿<rt>さら</rt></ruby>、お<ruby>下<rt>さ</rt></ruby>げしてもよろしいですか。」「あ、まだ<ruby>食<rt>た</rt></ruby>べています。」</p>
+        <p class="en">“May I take your plate?” “Oh, I’m still eating.” <span class="who-says">— no 結構です, no confusion</span></p>
+      </div>
+    </article>
+
+    <article class="move" id="m8">
+      <div class="movehead">
+        <span class="n">8</span>
+        <h2>The passbook</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="8"> Done</label></div>
+      </div>
+      <p class="who">Beyond the lesson: what happened to passbooks, cash cards and Shinsei Bank</p>
+
+      <div class="extra">
+        <p><span class="block-label">Beyond the lesson</span><strong>A week to ten days.</strong> The teller’s timing still holds. MUFG posts a new cash card to your registered address by <span lang="ja">簡易書留</span>, registered mail, marked not to be forwarded, and asks you to get in touch if it hasn’t arrived after a week to ten days; SMBC gives the same “about a week to ten days”. A change-of-address notice at the post office won’t help: the card isn’t forwarded but goes back to the bank, MUFG says. Banks can check your address by post in the same way, as <a href="../li-s2-21/index.html#m7">lesson 21</a> explains.</p>
+        <p><strong>Paper now costs extra.</strong> Since 2021 the three big banks have charged for paper passbooks on new accounts. At Mizuho, accounts opened from 18 January 2021 pay ¥1,100 for each passbook issued or renewed, with customers aged 70 and over exempt. At SMBC, personal accounts opened from 1 April 2021 pay ¥550 a year for a paper passbook, except for under-18s and customers aged 75 and over. At MUFG it’s also ¥550 a year, on accounts opened from 1 April 2022, except for under-18s and customers aged 70 and over. The way round the fee is a web passbook, which shows your balance and history on a phone or computer: Mizuho’s <span lang="ja">みずほe-口座</span>, SMBC’s <span lang="ja">Web通帳</span>, MUFG’s <span lang="ja">Eco通帳</span>.</p>
+        <p><strong>Two yen is allowed.</strong> Mizuho has no rule on how much you pay in when you open an account, and you can open one with ¥0; MUFG takes deposits of ¥1 or more, in steps of ¥1; and a ゆうちょ銀行 account can be opened with ¥0. Leaving the account untouched is another matter. At SMBC, an account opened from 1 April 2021 that sees no deposits or withdrawals for two years pays ¥1,100 a year, unless, for example, it holds ¥10,000 or more or has internet banking set up; and if the balance is less than the fee, the bank takes the lot and closes the account. MUFG, for accounts opened from 1 July 2021, charges ¥1,320 a year once an account has gone two years unused and three months have passed since it was told, with some exceptions, and it too closes an account whose balance won’t cover the fee. Taiga’s two yen wouldn’t last.</p>
+        <p><strong>Shinsei Bank.</strong> Peter’s choice took the name <span lang="ja">新生銀行</span>, “new life bank”, in June 2000, when it was renamed from the Long-Term Credit Bank of Japan, <span lang="ja">日本長期信用銀行</span>. Its English page in June 2008 began “Welcome! We provide an online banking service in English”, adding that the branches mainly worked in Japanese. From November 2007, customers got up to 10, 5 or 3 free online transfers to other banks a month, depending on their business with the bank, then paid ¥300 a transfer; transfers within Shinsei stayed free whatever the balance. On 4 January 2023 it became <span lang="ja">SBI新生銀行</span>, SBI Shinsei Bank, and its English page still offers English internet banking and customer support, with at least one free domestic online transfer a month.</p>
+        <p><strong>Who banks online?</strong> In the government’s survey for 2008, the year of this lesson, 12.6% of people who went online from a computer had used the internet for “financial transactions (net banking, online trading and so on)”. In the survey for 2025, published in May 2026, the figure was 29.4% of internet users, on any device. The two surveys ask differently, and both lump banking in with trading and the like, so they’re only a rough guide.</p>
+      </div>
+      <div class="jp">
+        <p class="ja" lang="ja"><button class="say" type="button" aria-label="Play">▶</button><ruby>紙<rt>かみ</rt></ruby>の<ruby>通<rt>つう</rt>帳<rt>ちょう</rt></ruby>は<ruby>有<rt>ゆう</rt>料<rt>りょう</rt></ruby>なので、アプリで<ruby>残高<rt>ざんだか</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>しています。</p>
+        <p class="en">Paper passbooks cost money, so I check my balance on the app.</p>
+      </div>
+    </article>
+
+    <div class="arc"><h2>Work it</h2><span class="rule"></span><span class="cnt">practice</span></div>
+
+    <article class="move" id="m9">
+      <div class="movehead">
+        <span class="n">9</span>
+        <h2>Quiz</h2>
+        <div class="movetools"><label class="rev"><input type="checkbox" class="revbox" data-move="9"> Done</label></div>
+      </div>
+      <p class="who">Pick the word or form that fits. Each answer comes with the reason.</p>
+      <p class="qz-bar"><span class="qz-score"></span> <button class="btn qz-reset" type="button">Start again</button></p>
+      <div class="qz" data-answer="なさいます">
+        <p class="q" lang="ja">1. おいくらご<ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby>＿＿＿か。</p>
+        <p class="en">How much would you like to pay in?</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">なさいます</button><button class="btn opt" type="button" lang="ja">いたします</button><button class="btn opt" type="button" lang="ja">まいります</button></div>
+        <p class="why" hidden>The customer is the one paying in, so it’s respectful: <span lang="ja">ご〜なさいます</span>.</p>
+      </div>
+      <div class="qz" data-answer="いたします">
+        <p class="q" lang="ja">2. お<ruby>名前<rt>なまえ</rt></ruby>をお<ruby>呼<rt>よ</rt></ruby>び＿＿＿。</p>
+        <p class="en">I’ll call your name.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">いたします</button><button class="btn opt" type="button" lang="ja">なさいます</button><button class="btn opt" type="button" lang="ja">くださいます</button></div>
+        <p class="why" hidden>Your own action, toward the customer, so it’s humble: <span lang="ja">お〜いたします</span>.</p>
+      </div>
+      <div class="qz" data-answer="なります">
+        <p class="q" lang="ja">3. ここでお<ruby>待<rt>ま</rt></ruby>ちに＿＿＿か。</p>
+        <p class="en">Will you be waiting here?</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">なります</button><button class="btn opt" type="button" lang="ja">いたします</button><button class="btn opt" type="button" lang="ja">します</button></div>
+        <p class="why" hidden><span lang="ja">お</span> + <span lang="ja">ます</span>-stem + <span lang="ja">になる</span>: the respectful form, for someone else’s action.</p>
+      </div>
+      <div class="qz" data-answer="いらっしゃいます">
+        <p class="q" lang="ja">4. <ruby>社<rt>しゃ</rt>長<rt>ちょう</rt></ruby>は、<ruby>今<rt>いま</rt></ruby>どちらに＿＿＿か。</p>
+        <p class="en">Where is the company president now?</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">いらっしゃいます</button><button class="btn opt" type="button" lang="ja">おります</button><button class="btn opt" type="button" lang="ja">まいります</button></div>
+        <p class="why" hidden><span lang="ja">いらっしゃる</span>: the respectful <span lang="ja">いる</span>. <span lang="ja">おります</span> and <span lang="ja">まいります</span> are for yourself.</p>
+      </div>
+      <div class="qz" data-answer="ご覧になり">
+        <p class="q" lang="ja">5. この<ruby>写真<rt>しゃしん</rt></ruby>を＿＿＿ましたか。</p>
+        <p class="en">Have you seen this photo?</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">ご覧になり</button><button class="btn opt" type="button" lang="ja">拝見し</button><button class="btn opt" type="button" lang="ja">見られになり</button></div>
+        <p class="why" hidden><span lang="ja">ご覧になる</span>: the respectful <span lang="ja">見る</span>. <span lang="ja">拝見する</span> is humble, for your own looking.</p>
+      </div>
+      <div class="qz" data-answer="お休みになりました">
+        <p class="q" lang="ja">6. <ruby>先生<rt>せんせい</rt></ruby>は、もう＿＿＿。</p>
+        <p class="en">The teacher has already gone to bed.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">お休みになりました</button><button class="btn opt" type="button" lang="ja">お寝になりました</button><button class="btn opt" type="button" lang="ja">お休みいたしました</button></div>
+        <p class="why" hidden><span lang="ja">寝る</span> has its own respectful form: <span lang="ja">お休みになる</span>.</p>
+      </div>
+      <div class="qz" data-answer="ご案内">
+        <p class="q" lang="ja">7. お<ruby>部屋<rt>へや</rt></ruby>まで、＿＿＿いたします。</p>
+        <p class="en">I’ll show you to your room.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">ご案内</button><button class="btn opt" type="button" lang="ja">お案内</button><button class="btn opt" type="button" lang="ja">ご案内に</button></div>
+        <p class="why" hidden><span lang="ja">案内</span> is a word from Chinese, so it takes <span lang="ja">ご</span>: <span lang="ja">ご案内いたします</span>.</p>
+      </div>
+      <div class="qz" data-answer="お送り">
+        <p class="q" lang="ja">8. カードは、ご<ruby>自宅<rt>じたく</rt></ruby>に＿＿＿いたします。</p>
+        <p class="en">We’ll send the card to your home.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">お送り</button><button class="btn opt" type="button" lang="ja">ご送り</button><button class="btn opt" type="button" lang="ja">お送って</button></div>
+        <p class="why" hidden><span lang="ja">お</span> + <span lang="ja">ます</span>-stem + <span lang="ja">いたす</span>: <span lang="ja">お送りいたします</span>.</p>
+      </div>
+      <div class="qz" data-answer="結構">
+        <p class="q" lang="ja">9. 「コーヒー、もう<ruby>一杯<rt>いっぱい</rt></ruby>いかがですか。」「いえ、もう＿＿＿です。」</p>
+        <p class="en">“Another cup of coffee?” “No, I’m fine, thank you.”</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">結構</button><button class="btn opt" type="button" lang="ja">丁寧</button><button class="btn opt" type="button" lang="ja">有名</button></div>
+        <p class="why" hidden><span lang="ja">結構です</span>: “that’s enough”, a polite no.</p>
+      </div>
+      <div class="qz" data-answer="粗品">
+        <p class="q" lang="ja">10. <ruby>口座<rt>こうざ</rt></ruby>を<ruby>開<rt>ひら</rt></ruby>いたら、＿＿＿にティッシュをもらった。</p>
+        <p class="en">When I opened an account, I got a packet of tissues as a free gift.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">粗品</button><button class="btn opt" type="button" lang="ja">名刺</button><button class="btn opt" type="button" lang="ja">通帳</button></div>
+        <p class="why" hidden><span lang="ja">粗品</span>: a small gift from a business.</p>
+      </div>
+      <div class="qz" data-answer="記入">
+        <p class="q" lang="ja">11. この<ruby>用紙<rt>ようし</rt></ruby>に、お<ruby>名前<rt>なまえ</rt></ruby>をご＿＿＿ください。</p>
+        <p class="en">Please write your name on this form.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">記入</button><button class="btn opt" type="button" lang="ja">入金</button><button class="btn opt" type="button" lang="ja">案内</button></div>
+        <p class="why" hidden><span lang="ja">ご記入ください</span>: please fill it in.</p>
+      </div>
+      <div class="qz" data-answer="入金">
+        <p class="q" lang="ja">12. <ruby>給<rt>きゅう</rt>料<rt>りょう</rt></ruby>が<ruby>口座<rt>こうざ</rt></ruby>に＿＿＿された。</p>
+        <p class="en">My salary was paid into my account.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">入金</button><button class="btn opt" type="button" lang="ja">記入</button><button class="btn opt" type="button" lang="ja">出金</button></div>
+        <p class="why" hidden><span lang="ja">入金</span>: money going in. <span lang="ja">出金</span> is money coming out.</p>
+      </div>
+      <div class="qz" data-answer="通帳">
+        <p class="q" lang="ja">13. ATMで、＿＿＿に<ruby>記帳<rt>きちょう</rt></ruby>した。</p>
+        <p class="en">I updated my passbook at the ATM.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">通帳</button><button class="btn opt" type="button" lang="ja">名刺</button><button class="btn opt" type="button" lang="ja">用紙</button></div>
+        <p class="why" hidden><span lang="ja">通帳に記帳する</span>: to update a passbook.</p>
+      </div>
+      <div class="qz" data-answer="名刺">
+        <p class="q" lang="ja">14. <ruby>初<rt>はじ</rt></ruby>めて<ruby>会<rt>あ</rt></ruby>った<ruby>人<rt>ひと</rt></ruby>と、＿＿＿を<ruby>交換<rt>こうかん</rt></ruby>した。</p>
+        <p class="en">I swapped business cards with someone I’d just met.</p>
+        <div class="opts"><button class="btn opt" type="button" lang="ja">名刺</button><button class="btn opt" type="button" lang="ja">粗品</button><button class="btn opt" type="button" lang="ja">印鑑</button></div>
+        <p class="why" hidden><span lang="ja">名刺交換</span>: swapping business cards.</p>
+      </div>
+    </article>
+
+    <article class="move" id="cards">
+      <div class="movehead">
+        <span class="n">?</span>
+        <h2>Flashcards</h2>
+      </div>
+      <p>Read the Japanese, say the meaning, then tap to check.</p>
+      <div class="deck">
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">ご〜なさる</span><span class="a">respectful “do” (their action)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">お〜になる</span><span class="a">respectful form (their action)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">お〜する</span><span class="a">humble form (my action)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">お〜いたす</span><span class="a">humble form, more polite</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">なさる</span><span class="a">to do (respectful)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">いたす</span><span class="a">to do (humble)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">いらっしゃる</span><span class="a">to come, go, be (respectful)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">ご<ruby>覧<rt>らん</rt></ruby>になる</span><span class="a">to see (respectful)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">お<ruby>休<rt>やす</rt></ruby>みになる</span><span class="a">to sleep, rest (respectful)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">お<ruby>願<rt>ねが</rt></ruby>いいたします</span><span class="a">please (very polite)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">かしこまりました</span><span class="a">certainly</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>少<rt>しょう</rt>々<rt>しょう</rt></ruby>お<ruby>待<rt>ま</rt></ruby>ちください</span><span class="a">one moment, please</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">〜でございます</span><span class="a">polite <span lang="ja">です</span></span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>み<ruby>用紙<rt>ようし</rt></ruby></span><span class="a">an application form</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">ご<ruby>記入<rt>きにゅう</rt></ruby>ください</span><span class="a">please fill it in</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>入<rt>にゅう</rt>金<rt>きん</rt></ruby></span><span class="a">paying in</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>出<rt>しゅっ</rt>金<rt>きん</rt></ruby></span><span class="a">taking money out</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>通<rt>つう</rt>帳<rt>ちょう</rt></ruby></span><span class="a">a passbook</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">キャッシュカード</span><span class="a">a cash card</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja">ご<ruby>自宅<rt>じたく</rt></ruby></span><span class="a">your home</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>粗品<rt>そしな</rt></ruby></span><span class="a">a small gift (humble)</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>名刺<rt>めいし</rt></ruby></span><span class="a">a business card</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>結構<rt>けっこう</rt></ruby>です</span><span class="a">that’s fine; no, thank you</span><span class="tap">Tap to reveal</span></button>
+        <button class="fc" type="button" aria-expanded="false"><span class="q" lang="ja"><ruby>馬鹿<rt>ばか</rt></ruby></span><span class="a">a fool; silly</span><span class="tap">Tap to reveal</span></button>
+      </div>
+    </article>
+
+    <article class="move" id="sources">
+      <div class="movehead">
+        <span class="n">&sect;</span>
+        <h2>Sources</h2>
+      </div>
+      <ul>
+        <li><strong>The lesson.</strong> <a href="https://www.japanesepod101.com/" target="_blank" rel="noopener">JapanesePod101</a>, Lower Intermediate Season 2, Lesson 22, “Mo’ Money, Mo’ Problems 2” — its dialogue, audio and lesson notes. Section 1 retells the dialogue in my own wording; section 3 quotes three of its thirteen lines, and sections 2, 4 and 5 its short example sentences and phrases. For the original dialogue and recording, use the lesson itself.</li>
+        <li><strong>Beyond the lesson:</strong> on keigo, 文化庁’s <a href="https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/hokoku/pdf/keigo_tosin.pdf" target="_blank" rel="noopener">敬語の指針</a> (2007, PDF) and its <a href="https://www.bunka.go.jp/koho_hodo_oshirase/hodohappyo/pdf/94441001_03.pdf" target="_blank" rel="noopener">2025 survey</a> of attitudes to the language (published 2026, PDF); on 結構, the Council for Cultural Affairs’ report <a href="https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/hokoku/wakariau/pdf/r1403493_01.pdf" target="_blank" rel="noopener">分かり合うための言語コミュニケーション</a> (2018, PDF) and the <a href="https://www.bunka.go.jp/seisaku/kokugo_nihongo/kyoiku/pdf/92484001_01.pdf" target="_blank" rel="noopener">やさしい日本語 guidelines</a> (2020, PDF); Shinchosha on <a href="https://www.shinchosha.co.jp/book/144121/" target="_blank" rel="noopener">全国アホ・バカ分布考</a>; on banks, Mizuho’s FAQ on <a href="https://www.faq.mizuhobank.co.jp/faq/show/5875?site_domain=default" target="_blank" rel="noopener">passbook fees</a>, <a href="https://www.faq.mizuhobank.co.jp/faq/show/6428?site_domain=default" target="_blank" rel="noopener">who pays</a>, <a href="https://www.faq.mizuhobank.co.jp/faq/show/5874?site_domain=default" target="_blank" rel="noopener"><span lang="ja">みずほe-口座</span></a>, <a href="https://www.faq.mizuhobank.co.jp/faq/show/392?site_domain=default" target="_blank" rel="noopener">opening deposits</a> and <a href="https://www.faq.mizuhobank.co.jp/faq/show/103?site_domain=default" target="_blank" rel="noopener">cards by post</a>; SMBC on <a href="https://www.smbc.co.jp/kojin/fee/card.html" target="_blank" rel="noopener">passbook fees</a>, <a href="https://www.smbc.co.jp/kojin/sougou/kouzakaisetsu/web-tsucho/direct/index02.html" target="_blank" rel="noopener"><span lang="ja">Web通帳</span> and unused accounts</a> and <a href="https://www.smbc.co.jp/kojin/sougou/kouzakaisetsu_simplified/direct/delivery.html" target="_blank" rel="noopener">card delivery</a>; MUFG on <a href="https://www.bk.mufg.jp/kouza/futsu/tsucho_tesuryo/index.html" target="_blank" rel="noopener">passbook fees</a>, <a href="https://www.bk.mufg.jp/tsukau/eco_tsuchou/index.html" target="_blank" rel="noopener"><span lang="ja">Eco通帳</span></a>, <a href="https://www.bk.mufg.jp/tsukau/tetsuduki/card/notreceive/index.html" target="_blank" rel="noopener">card delivery</a> and its <a href="https://www.bk.mufg.jp/kouza/futsu/btm/pdf/t_fu_setsumei.pdf" target="_blank" rel="noopener">account terms</a> (PDF); ゆうちょ銀行 on <a href="https://www.jp-bank.japanpost.jp/kojin/chokin/tujo/kj_cho_tj_index.html" target="_blank" rel="noopener"><span lang="ja">通常貯金</span></a>; SBI Shinsei Bank’s <a href="https://corp.sbishinseibank.co.jp/ja/news/news/20230104a/main/00/link/230104_newcorporatename_j.pdf" target="_blank" rel="noopener">2023 release</a> (PDF) and <a href="https://corp.sbishinseibank.co.jp/ja/about/corporate/history.html" target="_blank" rel="noopener">history</a>, and the Internet Archive’s copies of Shinsei’s <a href="https://web.archive.org/web/20080602214336/http://www.shinseibank.com:80/english/" target="_blank" rel="noopener">English page in 2008</a>, its <a href="https://web.archive.org/web/20080321131814/http://www.shinseibank.com:80/news/news070727_ft_e.html" target="_blank" rel="noopener">2007 notice on transfers</a> and its <a href="https://web.archive.org/web/20261012120029/https://www.sbishinseibank.co.jp/english/" target="_blank" rel="noopener">English page in 2026</a>; 総務省’s 通信利用動向調査 for <a href="https://www.soumu.go.jp/johotsusintokei/statistics/data/090407_1.pdf" target="_blank" rel="noopener">2008</a> and <a href="https://www.soumu.go.jp/johotsusintokei/statistics/data/260529_1.pdf" target="_blank" rel="noopener">2025</a> (PDFs); and kotobank on <a href="https://kotobank.jp/word/%E7%82%BA%E3%81%95%E3%82%8B-588647" target="_blank" rel="noopener"><span lang="ja">なさる</span></a>, <a href="https://kotobank.jp/word/%E4%B8%8B%E3%81%95%E3%82%8B-483809" target="_blank" rel="noopener"><span lang="ja">くださる</span></a>, <a href="https://kotobank.jp/word/%E8%87%B4%E3%81%99-432956" target="_blank" rel="noopener"><span lang="ja">いたす</span></a>, <a href="https://kotobank.jp/word/%E8%A8%98%E5%85%A5-475068" target="_blank" rel="noopener"><span lang="ja">記入</span></a>, <a href="https://kotobank.jp/word/%E7%94%A8%E7%B4%99-9543" target="_blank" rel="noopener"><span lang="ja">用紙</span></a>, <a href="https://kotobank.jp/word/%E9%80%9A%E5%B8%B3-570602" target="_blank" rel="noopener"><span lang="ja">通帳</span></a>, <a href="https://kotobank.jp/word/%E5%90%8D%E5%88%BA-141070" target="_blank" rel="noopener"><span lang="ja">名刺</span></a>, <a href="https://kotobank.jp/word/%E7%B5%90%E6%A7%8B-490460" target="_blank" rel="noopener"><span lang="ja">結構</span></a>, <a href="https://kotobank.jp/word/%E7%B2%97%E5%93%81-554369" target="_blank" rel="noopener"><span lang="ja">粗品</span></a>, <a href="https://kotobank.jp/word/%E7%B2%97-551584" target="_blank" rel="noopener"><span lang="ja">粗</span></a>, <a href="https://kotobank.jp/word/%E7%B2%97%E8%8C%B6-554553" target="_blank" rel="noopener"><span lang="ja">粗茶</span></a>, <a href="https://kotobank.jp/word/%E9%A6%AC%E9%B9%BF-599727" target="_blank" rel="noopener"><span lang="ja">馬鹿</span></a>, <a href="https://kotobank.jp/word/%E3%81%B0%E3%81%8B-356888" target="_blank" rel="noopener"><span lang="ja">ばか</span></a> and <a href="https://kotobank.jp/word/%E9%98%BF%E5%91%86-426781" target="_blank" rel="noopener"><span lang="ja">阿呆</span></a>.</li>
+        <li><strong>Mine:</strong> the retold dialogue and its new ending, the English renderings, every other example sentence, the word cards, the tables, the quiz and the flashcards.</li>
+        <li><strong>JLPT levels</strong> are approximate. The JLPT hasn’t published official lists since 2010; respectful and humble forms such as <span lang="ja">お〜になる</span>, <span lang="ja">お〜する</span> and <span lang="ja">いらっしゃる</span> are usually met around N4 to N3, and words like <span lang="ja">記入</span>, <span lang="ja">通帳</span> and <span lang="ja">結構</span> around N3.</li>
+      </ul>
+      <p class="endnote">JLPT study notes: JapanesePod101 Lower Intermediate Season 2, Lesson 22, written up 18 October 2026. Previous, <a href="../li-s2-21/index.html">lesson 21</a>, or <a href="../index.html">back to JLPT study</a>.</p>
+    </article>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "jlpt.li2-22.", SHARED = "jlpt.";   /* furigana, English and speed carry across lessons; "done" marks don't */
+  function each(sel, fn){ Array.prototype.forEach.call(document.querySelectorAll(sel), fn); }
+  function load(k, d, p){ try { var v = localStorage.getItem((p || KEY) + k); return v === null ? d : v; } catch (e) { return d; } }
+  function save(k, v, p){ try { localStorage.setItem((p || KEY) + k, v); } catch (e) {} }
+
+  /* ---------- furigana and English toggles ---------- */
+  var root = document.documentElement;
+  each("[data-toggle]", function(btn){
+    var name = btn.getAttribute("data-toggle");          /* "furi" or "en" */
+    var on = load(name, "1", SHARED) === "1";
+    function paint(){
+      root.classList.toggle("no-" + name, !on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    btn.addEventListener("click", function(){ on = !on; save(name, on ? "1" : "0", SHARED); paint(); });
+    paint();
+  });
+  /* with English hidden, tap a translation to peek at it */
+  document.addEventListener("click", function(e){
+    var en = e.target.closest && e.target.closest(".en");
+    if (en && root.classList.contains("no-en")) en.classList.toggle("peek");
+  });
+
+  /* ---------- flashcards ---------- */
+  each(".fc", function(card){
+    card.addEventListener("click", function(){
+      card.setAttribute("aria-expanded", card.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  each(".qz", function(q){
+    var right = q.getAttribute("data-answer"), why = q.querySelector(".why");
+    Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(b){
+      b.addEventListener("click", function(){
+        Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(o){
+          o.classList.remove("good", "bad");
+          if (o.textContent === right) o.classList.add("good");
+        });
+        if (b.textContent !== right) b.classList.add("bad");
+        why.hidden = false;
+        q.classList.add("done");
+        score();
+      });
+    });
+  });
+  function score(){
+    var all = document.querySelectorAll(".qz").length, done = document.querySelectorAll(".qz.done").length;
+    var good = 0;
+    each(".qz.done", function(q){ if (!q.querySelector(".opt.bad")) good++; });
+    var el = document.querySelector(".qz-score");
+    if (el) el.textContent = done ? good + " of " + done + " right first time (" + all + " questions)" : all + " questions";
+  }
+  score();
+  var reset = document.querySelector(".qz-reset");
+  if (reset) reset.addEventListener("click", function(){
+    each(".qz", function(q){
+      q.classList.remove("done");
+      q.querySelector(".why").hidden = true;
+      Array.prototype.forEach.call(q.querySelectorAll(".opt"), function(o){ o.classList.remove("good", "bad"); });
+    });
+    score();
+  });
+
+  /* ---------- reviewed checkboxes ---------- */
+  var store = {};
+  try { store = JSON.parse(load("reviewed", "{}")) || {}; } catch (e) { store = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".revbox"));
+  var counter = document.getElementById("rev-count");
+  function count(){ var n = 0; boxes.forEach(function(b){ if (b.checked) n++; }); if (counter) counter.textContent = String(n); }
+  boxes.forEach(function(b){
+    if (store[b.dataset.move]) b.checked = true;
+    b.addEventListener("change", function(){ store[b.dataset.move] = b.checked; save("reviewed", JSON.stringify(store)); count(); });
+  });
+  count();
+
+  /* ---------- rail highlight ---------- */
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
+  var railTargets = railLinks.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var ticking = false;
+  function markRail(){
+    ticking = false;
+    var best = -1;
+    railTargets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= 140) best = i; });
+    railLinks.forEach(function(a, i){ a.classList.toggle("active", i === best); });
+  }
+  window.addEventListener("scroll", function(){ if (!ticking) { ticking = true; window.requestAnimationFrame(markRail); } }, { passive: true });
+  markRail();
+
+  /* ---------- Japanese speech ---------- */
+  var synth = window.speechSynthesis, rateSel = document.getElementById("ja-rate");
+  var sayBtns = Array.prototype.slice.call(document.querySelectorAll(".say"));
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") {
+    sayBtns.forEach(function(b){ b.hidden = true; });
+    var c = document.getElementById("ja-ctl"); if (c) c.hidden = true;
+    return;
+  }
+  var jaVoice = null;
+  function pickVoice(){
+    var vs = synth.getVoices() || [];
+    jaVoice = vs.filter(function(v){ return /^ja/i.test(v.lang); })[0] || null;
+    var note = document.getElementById("ja-note");
+    if (note) note.hidden = !!jaVoice || !vs.length;
+  }
+  pickVoice();
+  if ("onvoiceschanged" in synth) synth.onvoiceschanged = pickVoice;
+  try { var r = load("rate", "", SHARED); if (r) rateSel.value = r; } catch (e) {}
+  rateSel.addEventListener("change", function(){ save("rate", rateSel.value, SHARED); });
+  function plain(el){
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll("rt, rp, .say"), function(x){ x.remove(); });
+    return c.textContent.replace(/\s+/g, "");
+  }
+  sayBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var target = btn.closest(".jp") || btn.parentElement;
+      var src = target.querySelector(".ja") || target;
+      var text = btn.getAttribute("data-say") || plain(src);
+      try { synth.cancel(); } catch (e) {}
+      var u = new window.SpeechSynthesisUtterance(text);
+      u.lang = "ja-JP";
+      if (jaVoice) u.voice = jaVoice;
+      u.rate = parseFloat(rateSel.value) || 0.85;
+      sayBtns.forEach(function(b){ b.classList.remove("on"); });
+      btn.classList.add("on");
+      u.onend = u.onerror = function(){ btn.classList.remove("on"); };
+      synth.speak(u);
+    });
+  });
+  window.addEventListener("pagehide", function(){ try { synth.cancel(); } catch (e) {} });
+})();
+</script>
+<script>
+/* jump strip: show which section you're in, and which moves are marked done */
+(function(){
+  "use strict";
+  var strip = document.querySelector(".jump-in");
+  if (!strip) return;
+  var links = Array.prototype.slice.call(strip.querySelectorAll('a[href^="#"]'));
+  var targets = links.map(function(a){ return document.getElementById(a.getAttribute("href").slice(1)); });
+  var smooth = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var current = -2, ticking = false;
+  function mark(){
+    ticking = false;
+    if (strip.offsetParent === null) return;
+    var line = strip.getBoundingClientRect().bottom + 32, best = -1;
+    targets.forEach(function(el, i){ if (el && el.getBoundingClientRect().top <= line) best = i; });
+    if (best === current) return;
+    current = best;
+    links.forEach(function(a, i){
+      a.classList.toggle("active", i === best);
+      if (i === best) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+    });
+    if (best >= 0) {
+      var a = links[best], left = a.offsetLeft - (strip.clientWidth - a.offsetWidth) / 2;
+      if (strip.scrollTo) strip.scrollTo({ left: left, behavior: smooth ? "smooth" : "auto" });
+      else strip.scrollLeft = left;
+    }
+  }
+  function done(){
+    Array.prototype.forEach.call(document.querySelectorAll(".revbox"), function(b){
+      var art = b.closest("article");
+      var a = art && strip.querySelector('a[href="#' + art.id + '"]');
+      if (a) a.classList.toggle("done", b.checked);
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!ticking) { ticking = true; window.requestAnimationFrame(mark); }
+  }, { passive: true });
+  window.addEventListener("resize", function(){ current = -2; mark(); });
+  document.addEventListener("change", function(e){
+    if (e.target && e.target.classList && e.target.classList.contains("revbox")) done();
+  });
+  done();
+  mark();
+})();
+</script>
+<script>
+/* play the whole dialogue, line by line, in the Japanese voice */
+(function(){
+  "use strict";
+  var btn = document.querySelector(".say-all"), synth = window.speechSynthesis;
+  if (!btn) return;
+  if (!synth || typeof window.SpeechSynthesisUtterance === "undefined") { btn.hidden = true; return; }
+  var rateSel = document.getElementById("ja-rate"), playing = false, LABEL = btn.textContent;
+  function plain(el){
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll("rt, rp, .say"), function(x){ x.remove(); });
+    return c.textContent.replace(/\s+/g, "");
+  }
+  function voice(){ return (synth.getVoices() || []).filter(function(v){ return /^ja/i.test(v.lang); })[0] || null; }
+  function mark(line){
+    Array.prototype.forEach.call(document.querySelectorAll(".dl.now"), function(x){ x.classList.remove("now"); });
+    if (line) line.classList.add("now");
+  }
+  function stop(){
+    playing = false;
+    try { synth.cancel(); } catch (e) {}
+    btn.classList.remove("on");
+    btn.textContent = LABEL;
+    mark(null);
+  }
+  btn.addEventListener("click", function(){
+    if (playing) { stop(); return; }
+    var lines = Array.prototype.slice.call(document.querySelectorAll(".dlg .dl:not(.sfx)")), i = 0, v = voice();
+    try { synth.cancel(); } catch (e) {}
+    playing = true;
+    btn.classList.add("on");
+    btn.textContent = "■ Stop";
+    (function next(){
+      if (!playing) return;
+      if (i >= lines.length) { stop(); return; }
+      var line = lines[i++], u = new window.SpeechSynthesisUtterance(plain(line.querySelector(".ja")));
+      u.lang = "ja-JP";
+      if (v) u.voice = v;
+      u.rate = parseFloat(rateSel && rateSel.value) || 0.85;
+      mark(line);
+      u.onend = u.onerror = function(){ if (playing) setTimeout(next, 350); };
+      synth.speak(u);
+    })();
+  });
+  /* a single line's ▶ takes over from the whole-dialogue player */
+  document.addEventListener("click", function(e){
+    if (playing && e.target.closest && e.target.closest(".say")) stop();
+  }, true);
+  window.addEventListener("pagehide", stop);
+})();
+</script>
+</body>
+</html>
