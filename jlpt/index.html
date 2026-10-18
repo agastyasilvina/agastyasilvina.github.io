@@ -340,6 +340,19 @@ html{ scroll-behavior:smooth; }
 .foot a{ color:var(--accent-ink); }
 .series{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--bronze); font-weight:400; margin:2.6rem 0 0; max-width:46rem; }
 .series + .lessons{ margin:.8rem 0 1.4rem; }
+
+/* ---------- progress tracker ---------- */
+.progress{ max-width:46rem; margin:2.2rem 0 0; padding:1rem 1.1rem; background:var(--surface); border:1px solid var(--line); border-radius:2px; }
+.progress .p-row{ display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .8rem; font-family:var(--f-mono); font-size:.76rem; color:var(--muted); }
+.progress .p-num{ font-family:var(--f-display); font-size:1.9rem; line-height:1; color:var(--accent-ink); }
+.progress .p-part{ color:var(--bronze); }
+.progress .p-bar{ height:6px; margin-top:.75rem; background:var(--line-soft); border-radius:3px; overflow:hidden; }
+.progress .p-fill{ height:100%; width:0; background:var(--accent); }
+.progress .p-note{ margin-top:.65rem; font-family:var(--f-mono); font-size:.7rem; color:var(--muted); line-height:1.6; }
+.track{ display:flex; flex-wrap:wrap; align-items:center; gap:.35rem .7rem; margin-top:.6rem; }
+.track-txt{ font-family:var(--f-mono); font-size:.7rem; color:var(--bronze); }
+.lessons li.is-done .n{ color:var(--accent-ink); }
+.jump a.part{ border-color:var(--accent); }
 </style>
 </head>
 <body>
@@ -376,6 +389,7 @@ html{ scroll-behavior:smooth; }
       <a href="li-s2-18/index.html" aria-label="Lower Intermediate S2, lesson 18: Coffee or something">LI18</a>
       <a href="li-s2-19/index.html" aria-label="Lower Intermediate S2, lesson 19: Speaking of Roppongi">LI19</a>
       <a href="li-s2-20/index.html" aria-label="Lower Intermediate S2, lesson 20: The best date ever">LI20</a>
+      <a href="li-s2-21/index.html" aria-label="Lower Intermediate S2, lesson 21: I’d like to open an account">LI21</a>
       <span class="jsep" aria-hidden="true"></span>
       <a href="ui-s4-01/index.html" aria-label="Upper Intermediate S4, lesson 1: Hard-headed">UI1</a>
       <a href="ui-s4-02/index.html" aria-label="Upper Intermediate S4, lesson 2: Grit your teeth">UI2</a>
@@ -395,6 +409,11 @@ html{ scroll-behavior:smooth; }
 </section>
 
 <div class="wrap">
+  <div class="progress" id="progress-tracker" hidden>
+    <p class="p-row"><span class="p-num">0 of 0</span><span>lessons done</span><span class="p-part"></span></p>
+    <div class="p-bar" aria-hidden="true"><div class="p-fill"></div></div>
+    <p class="p-note">Tap “Mark done” on a lesson, or tick all nine sections on its page. Saved in this browser.</p>
+  </div>
   <h2 class="series">Kanji &middot; N5 to N3</h2>
   <ol class="lessons">
     <li>
@@ -418,7 +437,7 @@ html{ scroll-behavior:smooth; }
   </ol>
   <h2 class="series">Upper Beginner &middot; Season 1</h2>
   <ol class="lessons">
-    <li>
+    <li data-key="jlpt.ub1." data-total="9">
       <span class="n">01</span>
       <span>
         <span class="name"><a href="ub-s1-01/index.html">Home by five</a></span>
@@ -427,7 +446,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N4</span>
     </li>
-    <li>
+    <li data-key="jlpt.ub2." data-total="9">
       <span class="n">02</span>
       <span>
         <span class="name"><a href="ub-s1-02/index.html">Higher ground</a></span>
@@ -436,7 +455,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N4</span>
     </li>
-    <li>
+    <li data-key="jlpt.ub3." data-total="9">
       <span class="n">03</span>
       <span>
         <span class="name"><a href="ub-s1-03/index.html">Fire watch</a></span>
@@ -445,7 +464,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N4</span>
     </li>
-    <li>
+    <li data-key="jlpt.ub4." data-total="9">
       <span class="n">04</span>
       <span>
         <span class="name"><a href="ub-s1-04/index.html">After hours</a></span>
@@ -457,7 +476,7 @@ html{ scroll-behavior:smooth; }
   </ol>
   <h2 class="series">Lower Intermediate &middot; Season 2</h2>
   <ol class="lessons">
-    <li>
+    <li data-key="jlpt.li2-1." data-total="9">
       <span class="n">01</span>
       <span>
         <span class="name"><a href="li-s2-01/index.html">Bite-size</a></span>
@@ -466,7 +485,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-3." data-total="9">
       <span class="n">03</span>
       <span>
         <span class="name"><a href="li-s2-03/index.html">Role model</a></span>
@@ -475,7 +494,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-4." data-total="9">
       <span class="n">04</span>
       <span>
         <span class="name"><a href="li-s2-04/index.html">Made to read</a></span>
@@ -484,7 +503,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-5." data-total="9">
       <span class="n">05</span>
       <span>
         <span class="name"><a href="li-s2-05/index.html">Hold the wasabi</a></span>
@@ -493,7 +512,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-6." data-total="9">
       <span class="n">06</span>
       <span>
         <span class="name"><a href="li-s2-06/index.html">Back in a minute</a></span>
@@ -502,7 +521,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-7." data-total="9">
       <span class="n">07</span>
       <span>
         <span class="name"><a href="li-s2-07/index.html">Mustard on everything</a></span>
@@ -511,7 +530,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-8." data-total="9">
       <span class="n">08</span>
       <span>
         <span class="name"><a href="li-s2-08/index.html">Wasabi power</a></span>
@@ -520,7 +539,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-9." data-total="9">
       <span class="n">09</span>
       <span>
         <span class="name"><a href="li-s2-09/index.html">No subtitles</a></span>
@@ -529,7 +548,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-10." data-total="9">
       <span class="n">10</span>
       <span>
         <span class="name"><a href="li-s2-10/index.html">A word a day</a></span>
@@ -538,7 +557,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-11." data-total="9">
       <span class="n">11</span>
       <span>
         <span class="name"><a href="li-s2-11/index.html">Wrong number</a></span>
@@ -547,7 +566,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-12." data-total="9">
       <span class="n">12</span>
       <span>
         <span class="name"><a href="li-s2-12/index.html">Pass it on</a></span>
@@ -556,7 +575,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-13." data-total="9">
       <span class="n">13</span>
       <span>
         <span class="name"><a href="li-s2-13/index.html">Pinky swear</a></span>
@@ -565,7 +584,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-14." data-total="9">
       <span class="n">14</span>
       <span>
         <span class="name"><a href="li-s2-14/index.html">Change at Ikebukuro</a></span>
@@ -574,7 +593,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-15." data-total="9">
       <span class="n">15</span>
       <span>
         <span class="name"><a href="li-s2-15/index.html">Take the express</a></span>
@@ -583,7 +602,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-16." data-total="9">
       <span class="n">16</span>
       <span>
         <span class="name"><a href="li-s2-16/index.html">The long way round</a></span>
@@ -592,7 +611,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-17." data-total="9">
       <span class="n">17</span>
       <span>
         <span class="name"><a href="li-s2-17/index.html">Too late for pizza</a></span>
@@ -601,7 +620,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-18." data-total="9">
       <span class="n">18</span>
       <span>
         <span class="name"><a href="li-s2-18/index.html">Coffee or something</a></span>
@@ -610,7 +629,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-19." data-total="9">
       <span class="n">19</span>
       <span>
         <span class="name"><a href="li-s2-19/index.html">Speaking of Roppongi</a></span>
@@ -619,7 +638,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
-    <li>
+    <li data-key="jlpt.li2-20." data-total="9">
       <span class="n">20</span>
       <span>
         <span class="name"><a href="li-s2-20/index.html">The best date ever</a></span>
@@ -628,10 +647,19 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N3</span>
     </li>
+    <li data-key="jlpt.li2-21." data-total="9">
+      <span class="n">21</span>
+      <span>
+        <span class="name"><a href="li-s2-21/index.html">I’d like to open an account</a></span>
+        <span class="jp-title" lang="ja">この銀行に口座を開きたいんだけど — 〜けど, the request left unsaid</span>
+        <span class="meta">JapanesePod101 &middot; Lower Intermediate S2 #21 &middot; the whole dialogue first &middot; sentence-final けど and が, 〜んですが to open a request, the bank’s keigo (お持ちですか, お越しください, ご印鑑), seals, ID and receipts since 2008, 預金 or 貯金 and Japan Post Bank, which bill gets cut off first</span>
+      </span>
+      <span class="lvl">≈ N3</span>
+    </li>
   </ol>
   <h2 class="series">Upper Intermediate &middot; Season 4</h2>
   <ol class="lessons">
-    <li>
+    <li data-key="jlpt.ui4-1." data-total="9">
       <span class="n">01</span>
       <span>
         <span class="name"><a href="ui-s4-01/index.html">Hard-headed</a></span>
@@ -640,7 +668,7 @@ html{ scroll-behavior:smooth; }
       </span>
       <span class="lvl">≈ N2</span>
     </li>
-    <li>
+    <li data-key="jlpt.ui4-2." data-total="9">
       <span class="n">02</span>
       <span>
         <span class="name"><a href="ui-s4-02/index.html">Grit your teeth</a></span>
@@ -652,5 +680,63 @@ html{ scroll-behavior:smooth; }
   </ol>
   <p class="foot">Levels are approximate: the JLPT hasn’t published official grammar or vocabulary lists since 2010. The lecture notes live separately, at <a href="../lessons/index.html">/lessons</a>.</p>
 </div>
+<script>
+/* Lesson tracker: each lesson page saves its section ticks as KEY + "reviewed";
+   a lesson counts as done when all of its sections are ticked. */
+(function(){
+  function read(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function write(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+  function ticks(key){ var s; try { s = JSON.parse(read(key + "reviewed") || "{}") || {}; } catch (e) { s = {}; } return s; }
+  function count(key, total){ var s = ticks(key), n = 0; for (var i = 1; i <= total; i++) if (s[String(i)] === true) n++; return n; }
+  var rows = Array.prototype.slice.call(document.querySelectorAll(".lessons li[data-key]"));
+  var squares = {};
+  Array.prototype.forEach.call(document.querySelectorAll(".jump-in a[href]"), function(a){ squares[a.getAttribute("href")] = a; });
+  var panel = document.getElementById("progress-tracker");
+  function total(li){ return Number(li.getAttribute("data-total")) || 9; }
+  function paint(){
+    var done = 0, part = 0;
+    rows.forEach(function(li){
+      var t = total(li), n = count(li.getAttribute("data-key"), t);
+      var state = n >= t ? "done" : (n > 0 ? "part" : "");
+      if (state === "done") done++; else if (state === "part") part++;
+      li.classList.toggle("is-done", state === "done");
+      var btn = li.querySelector(".track-btn"), txt = li.querySelector(".track-txt");
+      btn.setAttribute("aria-pressed", state === "done" ? "true" : "false");
+      btn.textContent = state === "done" ? "✓ Done" : "Mark done";
+      txt.textContent = state === "part" ? n + " / " + t + " sections" : "";
+      var sq = squares[li.querySelector(".name a").getAttribute("href")];
+      if (sq){ sq.classList.toggle("done", state === "done"); sq.classList.toggle("part", state === "part"); }
+    });
+    if (panel){
+      panel.hidden = false;
+      panel.querySelector(".p-num").textContent = done + " of " + rows.length;
+      panel.querySelector(".p-part").textContent = part ? part + " in progress" : "";
+      panel.querySelector(".p-fill").style.width = (rows.length ? 100 * done / rows.length : 0) + "%";
+    }
+  }
+  rows.forEach(function(li){
+    var bar = document.createElement("span"); bar.className = "track";
+    var btn = document.createElement("button"); btn.type = "button"; btn.className = "btn track-btn";
+    var txt = document.createElement("span"); txt.className = "track-txt";
+    bar.appendChild(btn); bar.appendChild(txt);
+    li.children[1].appendChild(bar);
+    btn.addEventListener("click", function(){
+      var key = li.getAttribute("data-key"), t = total(li);
+      if (count(key, t) >= t){
+        if (!window.confirm("Clear the done marks for this lesson?")) return;
+        write(key + "reviewed", "{}");
+      } else {
+        var s = ticks(key);
+        for (var i = 1; i <= t; i++) s[String(i)] = true;
+        write(key + "reviewed", JSON.stringify(s));
+      }
+      paint();
+    });
+  });
+  paint();
+  window.addEventListener("pageshow", paint);
+  window.addEventListener("storage", paint);
+})();
+</script>
 </body>
 </html>

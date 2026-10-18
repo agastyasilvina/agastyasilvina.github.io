@@ -14,6 +14,7 @@ Grouped the same way as the contents page, newest first within each group.
 
 | # | Topic | Source |
 | --- | --- | --- |
+| 34 | [Plot and structure](34-plot-and-structure/index.html) — two lessons in one page: a story needs events and characters, and starts with a break in the pattern; threats from without, within and both; the toolkit of old stories, and knowing the original (Cinderella, *Maleficent*, Beckett and Chekhov’s gun); story against structure, with Little Red Riding Hood told from inside the wolf and seven other ways, *Rashomon* and *Villette*; structure as knitting and the page-10 test; frame stories from the *Thousand and One Nights* to *The Blind Assassin*; and a simple telling first. With labs. | MasterClass, Margaret Atwood on writing |
 | 33 | [Editing and the writer’s life](33-editing-and-the-writers-life/index.html) — the class’s closing lessons: explode, then fix; the method actor’s read and “needs a battle”; “what was that about?”, and the second draft that looks as if you knew all along; notes that are right about the problem and wrong about the fix; perfection and the blank page; Heinlein’s rules by way of Harlan Ellison, and start the next thing; author and first reader; rejection, and a call to Ellison; a writer’s responsibility, *Good Omens* and *Coraline*; and the last advice: write, finish things, go and live. With labs. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
 | 32 | [Writer’s block](32-writers-block/index.html) — writer’s block as a fancy word for being stuck; starting one step away; reading it again as a stranger; the wrong turning a town or two back, and whose story it is; stuck as a sign to go deeper; *Anansi Boys* stopped for two months by a comedy that wanted a murder; *How to Talk to Girls at Parties* written in a day with a new point of view; and a novel as a drive through fog. With labs. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
 | 27 | [World-building](27-world-building/index.html) — all fiction as fantasy, the world outside your window made strange, stolen details, the toilet-and-farmland questions, soap bubbles and misty smudges, rules learned by mistakes, the twenty years behind *The Graveyard Book*, and the childhood worlds that stayed. | MasterClass, *Neil Gaiman Teaches the Art of Storytelling* |
@@ -76,8 +77,8 @@ Grouped the same way as the contents page, newest first within each group.
 ## Adding the next one
 
 ```
-mkdir 34-<topic-slug>
-# build 34-<topic-slug>/index.html, with the numbered squares under its top bar
+mkdir 35-<topic-slug>
+# build 35-<topic-slug>/index.html, with the numbered squares under its top bar
 # then add its row to the right category in index.html, and its square to the strip
 ```
 
