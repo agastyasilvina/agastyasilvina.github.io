@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Banana: single-player Bananagrams. Build one connected grid of words from your tiles, against the clock.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="icon" href="/favicon.ico">
+<title>Banana</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#E8EBE7; --surface:#F4F7F3; --card:#FCFDFB;
+  --ink:#141A18; --muted:#5C6A64; --line:#C7D0CB; --line-soft:#DCE3DE;
+  --accent:#1B6B5B; --accent-ink:#0F4A3E; --accent-soft:#D6E5DF;
+  --bronze:#8A6634; --flag:#9C4237; --flag-soft:#EFDDD9;
+  --board:#F3F5F1; --grid:#E0E6E1;
+  --tile:#FFF3CC; --tile-edge:#D6BF78; --tile-ink:#2A2413; --tile-hl:#FFE28A; --tile-bad:#F6CFC4; --tile-bad-ink:#7B2A1F;
+  --f-display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-body:"Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Courier Prime", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#141B19; --card:#18211E;
+    --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+    --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+    --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+    --board:#111815; --grid:#1B2421;
+    --tile:#EADCAB; --tile-edge:#9A874B; --tile-ink:#1C190F; --tile-hl:#F6D872; --tile-bad:#E9A698; --tile-bad-ink:#3A0F09;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#141B19; --card:#18211E;
+  --ink:#E6ECE9; --muted:#92A39C; --line:#26322E; --line-soft:#1E2926;
+  --accent:#5FC2A8; --accent-ink:#8FD8C4; --accent-soft:#12302A;
+  --bronze:#C29553; --flag:#E08A7E; --flag-soft:#33211E;
+  --board:#111815; --grid:#1B2421;
+  --tile:#EADCAB; --tile-edge:#9A874B; --tile-ink:#1C190F; --tile-hl:#F6D872; --tile-bad:#E9A698; --tile-bad-ink:#3A0F09;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
+html{ -webkit-text-size-adjust:100%; height:100%; }
+body{
+  margin:0; height:100%; height:100dvh; display:flex; flex-direction:column; overflow:hidden;
+  background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:1rem; line-height:1.45;
+  -webkit-tap-highlight-color:transparent; touch-action:manipulation;
+}
+button{ font:inherit; color:inherit; }
+a{ color:var(--accent-ink); text-underline-offset:2px; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+/* ---------- top bar ---------- */
+.topbar{
+  flex:none; display:flex; align-items:center; gap:8px; min-height:46px;
+  padding:env(safe-area-inset-top,0px) max(12px, env(safe-area-inset-right,0px)) 0 max(12px, env(safe-area-inset-left,0px));
+  border-bottom:1px solid var(--line); background:var(--bg);
+}
+.mark{ margin:0 auto 0 0; font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.mark b{ color:var(--ink); font-weight:400; border-bottom:2px solid var(--accent); padding-bottom:1px; }
+@media (max-width:430px){ .mark-sub{ display:none; } }
+.chip{
+  font-family:var(--f-mono); font-size:.8rem; line-height:1; padding:.45rem .6rem; border:1px solid var(--line); border-radius:999px;
+  background:var(--card); color:var(--ink); font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+button.chip{ cursor:pointer; }
+.chip.paused{ color:var(--muted); }
+.btn{
+  font-family:var(--f-mono); font-size:.74rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink); background:var(--card); border:1px solid var(--line);
+  padding:.5rem .7rem; border-radius:3px; cursor:pointer; line-height:1.2; min-height:2.75rem;
+}
+.btn:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.btn.primary:hover{ color:var(--bg); filter:brightness(1.08); }
+.btn[aria-pressed="true"]{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+.btn:disabled{ opacity:.42; cursor:default; filter:none; }
+.btn.slim{ min-height:2.2rem; padding:.35rem .6rem; }
+
+/* ---------- the board: an endless grid you scroll and zoom ---------- */
+.app{ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
+.stage-wrap{ position:relative; flex:1 1 auto; min-height:140px; }
+.stage{ position:absolute; inset:0; overflow:auto; background:var(--board); touch-action:pan-x pan-y; overscroll-behavior:contain; }
+.board{
+  --cell:38px; position:relative; cursor:pointer;
+  width:calc(var(--cols, 20) * var(--cell)); height:calc(var(--rows, 20) * var(--cell));
+  background-image:linear-gradient(to right, var(--grid) 1px, transparent 1px), linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size:var(--cell) var(--cell);
+}
+.t{
+  position:absolute; left:calc(var(--x) * var(--cell) + 2px); top:calc(var(--y) * var(--cell) + 2px);
+  width:calc(var(--cell) - 4px); height:calc(var(--cell) - 4px);
+  display:flex; align-items:center; justify-content:center; border-radius:calc(var(--cell) * .16);
+  background:var(--tile); color:var(--tile-ink); box-shadow:0 2px 0 var(--tile-edge);
+  font-weight:700; font-size:calc(var(--cell) * .56); line-height:1;
+  pointer-events:none; user-select:none; -webkit-user-select:none;
+}
+.t.hl{ background:var(--tile-hl); }
+.t.bad{ background:var(--tile-bad); color:var(--tile-bad-ink); }
+.t.loose{ outline:2px dashed var(--bronze); outline-offset:1px; }
+.cur{
+  position:absolute; left:calc(var(--x) * var(--cell)); top:calc(var(--y) * var(--cell)); width:var(--cell); height:var(--cell);
+  border:3px solid var(--accent); border-radius:calc(var(--cell) * .2); pointer-events:none;
+}
+.cur::after{ content:""; position:absolute; border:7px solid transparent; }
+.cur.h::after{ left:100%; top:50%; margin:-7px 0 0 1px; border-left-color:var(--accent); }
+.cur.v::after{ top:100%; left:50%; margin:1px 0 0 -7px; border-top-color:var(--accent); }
+body.dumping .cur{ border-color:var(--bronze); }
+.zoom{ position:absolute; right:10px; bottom:10px; display:flex; flex-direction:column; gap:6px; }
+.zoom .btn{ width:2.6rem; min-height:2.6rem; padding:0; font-size:1.1rem; letter-spacing:0; box-shadow:0 1px 3px rgba(0,0,0,.12); }
+
+/* ---------- the dock: messages, word box, your hand, actions ---------- */
+.dock{
+  flex:none; display:flex; flex-direction:column; gap:8px; background:var(--bg); border-top:1px solid var(--line);
+  padding:8px max(12px, env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px, env(safe-area-inset-left,0px));
+}
+.status{ display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; min-height:1.6rem; font-size:.92rem; line-height:1.35; }
+.msg.ok{ color:var(--accent-ink); }
+.msg.bad{ color:var(--flag); }
+.mini{
+  font-family:var(--f-mono); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink);
+  padding:.3rem .5rem; border:1px solid var(--line); border-radius:3px; background:var(--card); cursor:pointer;
+}
+.def{
+  position:relative; flex:1 1 100%; margin-top:2px; padding:.45rem 2rem .5rem .65rem; font-size:.88rem; line-height:1.4;
+  background:var(--surface); border:1px solid var(--line-soft); border-left:3px solid var(--accent); border-radius:3px;
+}
+.def b{ letter-spacing:.04em; }
+.def .pos{ font-family:var(--f-mono); font-size:.68rem; letter-spacing:.06em; color:var(--muted); }
+.def .ex{ display:block; margin-top:2px; font-style:italic; color:var(--muted); }
+.def .x{ position:absolute; top:2px; right:2px; width:1.9rem; height:1.9rem; border:0; background:none; color:var(--muted); font-size:1.1rem; cursor:pointer; }
+.shake{ animation:shake .35s; }
+@keyframes shake{ 20%{ transform:translateX(-4px); } 40%{ transform:translateX(4px); } 60%{ transform:translateX(-3px); } 80%{ transform:translateX(2px); } }
+.wordrow{ display:flex; gap:6px; margin:0; }
+.wordrow input{
+  flex:1 1 auto; min-width:0; min-height:2.75rem; padding:.45rem .6rem; font-family:var(--f-mono); font-size:1rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:3px;
+}
+.wordrow input::placeholder{ text-transform:none; letter-spacing:0; color:var(--muted); }
+.wordrow .dir{ width:2.75rem; padding:0; font-size:1.25rem; letter-spacing:0; }
+.rackhead{ display:flex; align-items:center; gap:6px; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.rackhead span{ margin-right:auto; }
+.rack{ display:flex; flex-wrap:wrap; gap:6px; min-height:2.6rem; max-height:9.2rem; overflow-y:auto; padding-bottom:2px; }
+.tile{
+  width:2.5rem; height:2.5rem; padding:0; border:0; border-radius:6px; cursor:pointer;
+  background:var(--tile); color:var(--tile-ink); box-shadow:0 2px 0 var(--tile-edge);
+  font-family:var(--f-body); font-weight:700; font-size:1.3rem; line-height:1;
+}
+.tile:active{ transform:translateY(2px); box-shadow:none; }
+.tile.new{ animation:pop .45s ease-out; }
+@keyframes pop{ 0%{ transform:scale(.4); opacity:0; } 70%{ transform:scale(1.12); } 100%{ transform:scale(1); opacity:1; } }
+body.dumping .tile{ outline:2px dashed var(--bronze); outline-offset:1px; }
+.empty-hand{ margin:0; align-self:center; font-size:.9rem; color:var(--muted); }
+.actions{ display:grid; grid-template-columns:1.5fr repeat(4, minmax(0,1fr)); gap:6px; }
+.actions .btn{ padding-inline:.25rem; }
+#backBtn{ font-size:1.05rem; letter-spacing:0; }
+#peelBtn.ready{ animation:glow 1.6s ease-in-out infinite; }
+@keyframes glow{ 50%{ box-shadow:0 0 0 4px var(--accent-soft); } }
+@media (prefers-reduced-motion: reduce){ .tile.new, .shake, #peelBtn.ready{ animation:none; } }
+@media (min-width:900px) and (min-height:520px){
+  .app{ flex-direction:row; }
+  .dock{ width:24rem; border-top:0; border-left:1px solid var(--line); overflow-y:auto; justify-content:flex-end; }
+  .rack{ max-height:none; }
+}
+
+/* ---------- cards: start, pause, menu, help, the finish ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px;
+  background:rgba(14,20,18,.35); background:color-mix(in srgb, var(--bg) 70%, transparent);
+  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+}
+.card{
+  width:min(100%, 27rem); max-height:100%; overflow-y:auto; background:var(--card); border:1px solid var(--line);
+  border-radius:6px; padding:20px 18px; box-shadow:0 12px 32px rgba(0,0,0,.18);
+}
+.card h1, .card h2{ margin:0; font-family:var(--f-display); font-weight:400; line-height:1.05; }
+.card h1{ font-size:2.6rem; }
+.card h2{ font-size:2rem; }
+.card p{ margin:.6rem 0 0; }
+.label{ margin:16px 0 8px !important; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.sizes{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; }
+.size{
+  display:flex; flex-direction:column; align-items:center; gap:2px; padding:.6rem .3rem; cursor:pointer;
+  border:1px solid var(--line); border-radius:4px; background:var(--surface); color:var(--ink);
+}
+.size b{ font-family:var(--f-display); font-weight:400; font-size:1.9rem; line-height:1; }
+.size span{ font-size:.8rem; }
+.size i{ font-style:normal; font-family:var(--f-mono); font-size:.66rem; color:var(--muted); }
+.size[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent-ink); }
+.row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+.row .btn{ flex:1 1 auto; }
+.note{ font-size:.86rem; color:var(--muted); }
+.note.bad{ color:var(--flag); }
+.big-time{ font-family:var(--f-display); font-size:3.4rem; line-height:1; font-variant-numeric:tabular-nums; }
+.menu{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+.menu .btn{ display:block; text-align:left; text-decoration:none; }
+.rules ol{ margin:.6rem 0 0; padding-left:1.2rem; }
+.rules li{ margin:.4rem 0; }
+.small{ font-size:.82rem; color:var(--muted); }
+textarea{
+  width:100%; min-height:9rem; margin-top:10px; padding:.5rem; font-family:var(--f-mono); font-size:1rem;
+  color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:3px;
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <p class="mark"><b>Banana</b><span class="mark-sub"> &nbsp;/&nbsp; solo word grid</span></p>
+  <button class="chip" id="clock" type="button" aria-label="Pause the clock">0:00</button>
+  <span class="chip" id="bunchChip" title="Tiles left in the bunch">Bunch</span>
+  <button class="btn slim" id="menuBtn" type="button">Menu</button>
+</header>
+
+<div class="app">
+  <div class="stage-wrap">
+    <div class="stage" id="stage">
+      <div class="board" id="board" aria-label="Your board">
+        <div id="tiles"></div>
+        <div class="cur h" id="cur"></div>
+      </div>
+    </div>
+    <div class="zoom">
+      <button class="btn" id="zin" type="button" aria-label="Zoom in">+</button>
+      <button class="btn" id="zout" type="button" aria-label="Zoom out">&minus;</button>
+      <button class="btn" id="zfit" type="button" aria-label="Fit and centre the board">&#8982;</button>
+    </div>
+  </div>
+
+  <div class="dock">
+    <div class="status" id="status" aria-live="polite"></div>
+    <form class="wordrow" id="wordForm" autocomplete="off">
+      <button class="btn dir" id="dirBtn" type="button" aria-label="Across: tap for down">&rarr;</button>
+      <input id="wordIn" type="text" placeholder="Type a word, then Place" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="A whole word to place at the cursor">
+      <button class="btn primary" type="submit">Place</button>
+    </form>
+    <div class="rackhead">
+      <span id="handCount">Hand</span>
+      <button class="mini" id="sortBtn" type="button">A&ndash;Z</button>
+      <button class="mini" id="mixBtn" type="button">Mix</button>
+    </div>
+    <div class="rack" id="rack"></div>
+    <div class="actions">
+      <button class="btn primary" id="peelBtn" type="button">Peel</button>
+      <button class="btn" id="dumpBtn" type="button" aria-pressed="false">Dump</button>
+      <button class="btn" id="hintBtn" type="button">Hint</button>
+      <button class="btn" id="undoBtn" type="button">Undo</button>
+      <button class="btn" id="backBtn" type="button" aria-label="Take back the last tile">&#9003;</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <section class="card" id="startCard" hidden>
+    <h1>Banana</h1>
+    <p>Single-player Bananagrams: build one connected grid of words from your tiles, against the clock.</p>
+    <p class="label">How many tiles</p>
+    <div class="sizes" id="sizes">
+      <button class="size" type="button" data-size="40"><b>40</b><span>Quick</span><i></i></button>
+      <button class="size" type="button" data-size="72"><b>72</b><span>Half bunch</span><i></i></button>
+      <button class="size" type="button" data-size="144"><b>144</b><span>Full bunch</span><i></i></button>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="splitBtn" type="button" disabled>Split!</button>
+      <button class="btn" type="button" data-open="helpCard">How to play</button>
+      <button class="btn" id="startBack" type="button" data-back hidden>Cancel</button>
+    </div>
+    <p class="note dict-note">Loading the dictionary&hellip;</p>
+  </section>
+
+  <section class="card" id="pauseCard" hidden>
+    <h2>Paused</h2>
+    <p class="big-time" id="pauseTime">0:00</p>
+    <p class="note" id="pauseNote"></p>
+    <div class="row">
+      <button class="btn primary" id="resumeBtn" type="button">Resume</button>
+      <button class="btn" type="button" data-open="startCard">New game</button>
+    </div>
+    <p class="note dict-note"></p>
+  </section>
+
+  <section class="card" id="endCard" hidden>
+    <h2>Bananas!</h2>
+    <p class="big-time" id="endTime">0:00</p>
+    <p id="endNote"></p>
+    <p class="note" id="endStats"></p>
+    <div class="row">
+      <button class="btn primary" type="button" data-open="startCard">Play again</button>
+      <button class="btn" id="seeGrid" type="button">See your grid</button>
+    </div>
+  </section>
+
+  <section class="card" id="menuCard" hidden>
+    <h2>Menu</h2>
+    <div class="menu">
+      <button class="btn primary" type="button" data-back>Back to the game</button>
+      <button class="btn" type="button" data-open="helpCard">How to play</button>
+      <button class="btn" id="takeAllBtn" type="button">Take every tile back</button>
+      <button class="btn" type="button" data-open="wordsCard">My words</button>
+      <button class="btn" id="newBtn" type="button">New game</button>
+      <a class="btn" href="/">Back to the site</a>
+    </div>
+  </section>
+
+  <section class="card" id="helpCard" hidden>
+    <h2>How to play</h2>
+    <div class="rules">
+      <p><b>The goal:</b> use every tile in one grid of real words, joined up like a crossword. Across words read left to right, down words top to bottom.</p>
+      <ol>
+        <li><b>Aim:</b> tap a square. Tap it again to turn between &rarr; across and &darr; down.</li>
+        <li><b>Spell:</b> tap tiles in your hand, or type on a keyboard. Each tile lands at the cursor, which moves along the arrow and hops over tiles already there. Or type a whole word in the box and press Place.</li>
+        <li><b>Peel:</b> when your hand is empty and every word checks out, Peel to draw one more tile.</li>
+        <li><b>Dump:</b> stuck with a hard letter? Give one tile back and take three.</li>
+        <li><b>Bananas!</b> When the bunch is empty and so is your hand, call Bananas! to stop the clock.</li>
+      </ol>
+      <p><b>Stuck?</b> Hint finds a word that fits, with its meaning and an example sentence. Tap any word on your board, then What&rsquo;s&nbsp;&hellip;?, to look it up.</p>
+      <p><b>Fixing things:</b> &#9003; takes back the last tile. Tap a tile on the board, then Take back, to lift a whole word. Undo steps back. Red tiles are in a word the dictionary doesn&rsquo;t know; a dashed outline means that piece isn&rsquo;t joined to the rest.</p>
+      <p><b>Moving around:</b> drag to scroll, pinch or use + and &minus; to zoom, and &#8982; to fit the grid on screen.</p>
+      <p class="small">Keyboard: letters type, arrows move (or turn), Space turns, Backspace takes back, Enter peels, Ctrl+Z undoes.</p>
+      <p class="small">Words: the ENABLE list (public domain, 172,820 words), plus qi, za, ok and ew, and any you add under My words. Meanings and examples: WordNet 3.0, copyright 2006 by Princeton University (licence at the top of meanings.txt).</p>
+    </div>
+    <div class="row"><button class="btn primary" type="button" data-back>Got it</button></div>
+  </section>
+
+  <section class="card" id="wordsCard" hidden>
+    <h2>My words</h2>
+    <p class="note">Words the dictionary doesn&rsquo;t know but you do. One per line; they count as real words in your games.</p>
+    <textarea id="mineText" spellcheck="false" autocapitalize="none" aria-label="My words"></textarea>
+    <div class="row">
+      <button class="btn primary" id="mineSave" type="button">Save</button>
+      <button class="btn" type="button" data-back>Cancel</button>
+    </div>
+  </section>
+</div>
+
+<noscript><p style="padding:16px">Banana needs JavaScript.</p></noscript>
+
+<script>
+/* Banana: single-player Bananagrams.
+   It follows the sketch it grew from: the alphabet and how many of each letter, the bunch
+   (reservedTokens in the sketch), a board that grows in every direction, and init, select,
+   rearrange, show, peel and exchange.
+   words.txt is the ENABLE word list (public domain, norvig.com/ngrams/enable1.txt) plus
+   qi, za, ok and ew: lower case, one word per line, sorted. */
+(function(){
+  "use strict";
+
+  /* ---------------------------------------------------------------- the tiles */
+  var ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var AMOUNTS = [13, 3, 3, 6, 18, 3, 4, 3, 12, 2, 2, 5, 3, 8, 11, 3, 2, 9, 6, 9, 6, 3, 3, 2, 3, 2];   // the 144 of a Bananagrams bunch
+  var HAND = 21;                                   // tiles in your hand at the split
+  var DIRS = { h: [0, 1], v: [1, 0] };             // across, down
+  var HARD = { J: 3, Q: 3, X: 3, Z: 3, K: 1, V: 1, W: 1 };
+  var ZMIN = 22, ZMAX = 64;
+  var K = { game: "banana.game.v1", best: "banana.best.v1", mine: "banana.words.v1", prefs: "banana.prefs.v1" };
+
+  function $(id){ return document.getElementById(id); }
+  var stage = $("stage"), board = $("board"), tilesEl = $("tiles"), curEl = $("cur"), rack = $("rack"), statusEl = $("status");
+  var wordIn = $("wordIn"), clock = $("clock"), bunchChip = $("bunchChip"), handCount = $("handCount"), overlay = $("overlay");
+  var peelBtn = $("peelBtn"), dumpBtn = $("dumpBtn"), hintBtn = $("hintBtn"), undoBtn = $("undoBtn"), backBtn = $("backBtn"), dirBtn = $("dirBtn");
+
+  function load(k, d){ try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
+  function store(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function drop(k){ try { localStorage.removeItem(k); } catch (e) {} }
+
+  /* a repeatable game with ?seed=N in the address */
+  var seedArg = /[?&]seed=(\d+)/.exec(location.search);
+  var rand = seedArg ? mulberry32(+seedArg[1]) : Math.random;
+  function mulberry32(a){
+    return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  }
+  function shuffle(a){ for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rand() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  var prefs = load(K.prefs, {});
+  if (typeof prefs !== "object" || !prefs) prefs = {};
+  var cell = Math.max(ZMIN, Math.min(ZMAX, +prefs.cell || (innerWidth < 600 ? 38 : 46)));
+  board.style.setProperty("--cell", cell + "px");
+
+  /* ---------------------------------------------------------------- the dictionary */
+  var DICT = null, WORDS = null, mine = new Set(load(K.mine, []));
+  function isWord(s){ if (!DICT) return true; s = s.toLowerCase(); return DICT.has(s) || mine.has(s); }
+  function loadWords(){
+    notes("Loading the dictionary…", false);
+    fetch("words.txt").then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); }).then(function(text){
+      WORDS = text.split("\n").filter(Boolean);
+      DICT = new Set(WORDS);
+      notes(WORDS.length.toLocaleString("en") + " words ready.", false);
+      $("splitBtn").disabled = false; $("resumeBtn").disabled = false;
+      if (G) changed();
+      loadMeanings();
+    }).catch(function(){
+      notes("Couldn’t load the dictionary. Check your connection, then reload the page.", true);
+    });
+  }
+
+  /* meanings for hints: meanings.txt is built from WordNet 3.0 (licence at its top) for everyday words of up to
+     eight letters: "lemma TAB pos TAB definition TAB example", and "=word TAB lemma" for forms the rules below
+     would get wrong ("-" means no meaning). The game plays fine without it. */
+  var MEAN = null, FORMS = null;
+  var FORM_RULES = [["ies", "y"], ["ses", "s"], ["xes", "x"], ["zes", "z"], ["ches", "ch"], ["shes", "sh"], ["men", "man"], ["es", "e"], ["es", ""],
+                    ["s", ""], ["ed", "e"], ["ed", ""], ["ing", "e"], ["ing", ""], ["est", "e"], ["est", ""], ["er", "e"], ["er", ""]];
+  var POS = { n: "noun", v: "verb", a: "adjective", r: "adverb" };
+  function loadMeanings(){
+    fetch("meanings.txt").then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); }).then(function(text){
+      var m = new Map(), f = new Map();
+      text.split("\n").forEach(function(line){
+        if (!line || line[0] === "#") return;
+        var p = line.split("\t");
+        if (line[0] === "=") f.set(p[0].slice(1), p[1]); else m.set(p[0], p);
+      });
+      MEAN = m; FORMS = f;
+      if (G) drawStatus();
+    }).catch(function(){});
+  }
+  /* { word, lemma, pos, def, ex } for a word on the list (running: from run), or null */
+  function meaning(word){
+    var w = word.toLowerCase(), l = null;
+    if (!MEAN || w.length > 8) return null;
+    if (FORMS.has(w)) l = FORMS.get(w);
+    else if (MEAN.has(w)) l = w;
+    else for (var i = 0; i < FORM_RULES.length && !l; i++) {
+      var s = FORM_RULES[i][0];
+      if (w.length > s.length && w.slice(-s.length) === s && MEAN.has(w.slice(0, -s.length) + FORM_RULES[i][1])) l = w.slice(0, -s.length) + FORM_RULES[i][1];
+    }
+    var e = l && MEAN.get(l);
+    return e ? { word: word.toUpperCase(), lemma: e[0], pos: POS[e[1]], def: e[2], ex: e[3] } : null;
+  }
+  function notes(text, bad){ [].forEach.call(document.querySelectorAll(".dict-note"), function(p){ p.textContent = text; p.classList.toggle("bad", bad); }); }
+
+  /* ---------------------------------------------------------------- the game */
+  /* G = { size, bunch: [letters], hand: [tiles], board: { "r,c": tile }, cur: { r, c, dir }, spent, t0, peels, dumps, hints, nextId, view, done }
+     tile = { id, ch }. Squares are r,c from the first square, which is 0,0; the board has no edges. */
+  var G = null, chk = null;
+  var ui = { msg: "", kind: "", addable: "", fresh: {}, dumping: false, def: null, card: null, stack: [], resume: false, away: false };
+  var undo = [], trail = [], skipped = [];
+
+  function key(r, c){ return r + "," + c; }
+  function at(r, c){ return G.board[key(r, c)] || null; }
+  function put(r, c, t){ G.board[key(r, c)] = t; }
+  function lift(r, c){ var t = at(r, c); if (t) delete G.board[key(r, c)]; return t; }
+  function newTile(ch){ return { id: G.nextId++, ch: ch }; }
+  function inHand(ch){ for (var i = 0; i < G.hand.length; i++) if (G.hand[i].ch === ch) return G.hand[i]; return null; }
+  function count(ch){ return G.hand.filter(function(t){ return t.ch === ch; }).length; }
+  function fromHand(t){ var i = G.hand.indexOf(t); if (i >= 0) G.hand.splice(i, 1); return t; }
+  function other(dir){ return dir === "h" ? "v" : "h"; }
+  function onBoard(){ return Object.keys(G.board).map(function(k){ var p = k.split(","); return { r: +p[0], c: +p[1], t: G.board[k] }; }); }
+  function plural(n, w){ return n + " " + w + (n === 1 ? "" : "s"); }
+  function an(ch){ return ("AEFHILMNORSX".indexOf(ch) >= 0 ? "an " : "a ") + ch; }
+  function counts(letters){ var a = new Array(26).fill(0); letters.forEach(function(ch){ a[ch.charCodeAt(0) - 65]++; }); return a; }
+
+  /* init: fill the bunch, shuffle it, take 21 */
+  function init(size){
+    var bag = [];
+    for (var i = 0; i < 26; i++) for (var n = 0; n < AMOUNTS[i]; n++) bag.push(ALPHABETS[i]);
+    shuffle(bag);
+    G = { size: size, bunch: bag.slice(0, size), hand: [], board: {}, cur: { r: 0, c: 0, dir: "h" },
+          spent: 0, t0: 0, peels: 0, dumps: 0, hints: 0, nextId: 1, view: null, done: false };
+    for (var k = 0; k < HAND; k++) G.hand.push(newTile(G.bunch.pop()));
+    undo = []; trail = []; skipped = [];
+    act();
+    ui.def = null;
+    chk = check();
+    stage.scrollTop = stage.scrollLeft = 0;
+    save();
+  }
+
+  /* the validator: every run of two or more tiles, across or down, must be a word, and the tiles must make one piece */
+  function check(){
+    var keys = Object.keys(G.board), words = [], bad = [];
+    keys.forEach(function(k){
+      var p = k.split(","), r = +p[0], c = +p[1];
+      ["h", "v"].forEach(function(dir){
+        var d = DIRS[dir];
+        if (at(r - d[0], c - d[1]) || !at(r + d[0], c + d[1])) return;    // not the start of a word
+        var cells = [], s = "";
+        for (var rr = r, cc = c; at(rr, cc); rr += d[0], cc += d[1]) { cells.push([rr, cc]); s += at(rr, cc).ch; }
+        var w = { text: s, cells: cells, dir: dir, ok: isWord(s) };
+        words.push(w);
+        if (!w.ok) bad.push(w);
+      });
+    });
+    var seen = {}, groups = [];
+    keys.forEach(function(k){
+      if (seen[k]) return;
+      var g = [], todo = [k];
+      seen[k] = 1;
+      while (todo.length) {
+        var q = todo.pop(), p = q.split(","), r = +p[0], c = +p[1];
+        g.push(q);
+        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function(d){
+          var n = key(r + d[0], c + d[1]);
+          if (G.board[n] && !seen[n]) { seen[n] = 1; todo.push(n); }
+        });
+      }
+      groups.push(g);
+    });
+    groups.sort(function(a, b){ return b.length - a.length; });
+    var loose = {};
+    groups.slice(1).forEach(function(g){ g.forEach(function(k){ loose[k] = 1; }); });
+    return { words: words, bad: bad, groups: groups.length, loose: loose, count: keys.length,
+             ok: keys.length > 1 && !bad.length && groups.length === 1 };
+  }
+  function problem(){
+    if (chk.count < 2) return "A grid needs a word of at least two letters.";
+    if (chk.bad.length) return "Not in the dictionary: " + chk.bad.map(function(w){ return w.text; }).join(", ") + ".";
+    if (chk.groups > 1) return "Your grid is in " + chk.groups + " pieces: join them into one.";
+    return "";
+  }
+  function wordAt(r, c, dir){
+    if (!at(r, c)) return null;
+    var d = DIRS[dir], sr = r, sc = c, cells = [], s = "";
+    while (at(sr - d[0], sc - d[1])) { sr -= d[0]; sc -= d[1]; }
+    for (var rr = sr, cc = sc; at(rr, cc); rr += d[0], cc += d[1]) { cells.push([rr, cc]); s += at(rr, cc).ch; }
+    return cells.length > 1 ? { text: s, cells: cells, dir: dir } : null;
+  }
+
+  /* every move goes through here: clear the last message, then change things */
+  function act(){ ui.msg = ""; ui.kind = ""; ui.addable = ""; ui.fresh = {}; ui.dumping = false; }
+  function changed(){ chk = check(); show(); save(); }
+  function say(msg, kind){
+    ui.msg = msg; ui.kind = kind || "";
+    drawStatus();
+    if (kind === "bad") { statusEl.classList.remove("shake"); void statusEl.offsetWidth; statusEl.classList.add("shake"); }
+  }
+  function snapshot(){ undo.push(JSON.stringify({ b: G.board, h: G.hand, c: G.cur })); if (undo.length > 300) undo.shift(); }
+  function playing(){ return !!(G && !G.done && G.t0 && overlay.hidden); }
+
+  /* typing, one tile at a time: the tile lands at the cursor, then the cursor moves along the arrow,
+     hopping over tiles already there. Keyboard typists can type those letters too: they're skipped. */
+  function typeLetter(ch, typed, tile){
+    if (typed && skipped.length && skipped[0] === ch) { skipped.shift(); return; }
+    act();
+    skipped = [];
+    var r = G.cur.r, c = G.cur.c, here = at(r, c);
+    if (typed && here && here.ch === ch) { trail.push({ r: r, c: c, id: null }); advance(); show(); ensureVisible(); save(); return; }
+    var t = tile || inHand(ch);
+    if (!t) return say("No " + ch + " in your hand.", "bad");
+    snapshot();
+    if (here) G.hand.push(lift(r, c));          // typing over a tile swaps it back into your hand
+    put(r, c, fromHand(t));
+    trail.push({ r: r, c: c, id: t.id });
+    advance();
+    changed();
+    ensureVisible();
+  }
+  function advance(){
+    var d = DIRS[G.cur.dir];
+    G.cur.r += d[0]; G.cur.c += d[1];
+    while (at(G.cur.r, G.cur.c)) {
+      skipped.push(at(G.cur.r, G.cur.c).ch);
+      trail.push({ r: G.cur.r, c: G.cur.c, id: null });
+      G.cur.r += d[0]; G.cur.c += d[1];
+    }
+  }
+  function backspace(){
+    act();
+    skipped = [];
+    while (trail.length) {                      // first undo the typing, back over any hopped squares
+      var e = trail.pop();
+      G.cur.r = e.r; G.cur.c = e.c;
+      if (e.id !== null) {
+        var t = at(e.r, e.c);
+        if (t && t.id === e.id) { snapshot(); G.hand.push(lift(e.r, e.c)); }
+        changed(); ensureVisible();
+        return;
+      }
+    }
+    var r = G.cur.r, c = G.cur.c;
+    if (!at(r, c)) { var d = DIRS[G.cur.dir]; r -= d[0]; c -= d[1]; G.cur.r = r; G.cur.c = c; }
+    if (at(r, c)) { snapshot(); G.hand.push(lift(r, c)); }
+    changed();
+    ensureVisible();
+  }
+  function aim(r, c){
+    if (G.cur.r === r && G.cur.c === c) G.cur.dir = other(G.cur.dir);
+    else { G.cur.r = r; G.cur.c = c; }
+    trail = []; skipped = [];
+  }
+
+  /* select: put a whole word down at the cursor, along the arrow, after checking it */
+  function select(word){
+    act();
+    var w = String(word || "").toUpperCase().replace(/[^A-Z]/g, "");
+    if (w.length < 2) return say("Type a word of two or more letters, then Place.", "bad");
+    if (!isWord(w)) { ui.addable = w; return say(w + " isn’t in the dictionary.", "bad"); }
+    var d = DIRS[G.cur.dir], need = {}, spots = [], fresh = 0;
+    for (var i = 0; i < w.length; i++) {
+      var r = G.cur.r + d[0] * i, c = G.cur.c + d[1] * i, here = at(r, c);
+      if (here && here.ch !== w[i]) return say(w + " runs into the " + here.ch + " on the board.", "bad");
+      spots.push(here ? null : [r, c]);
+      if (!here) { need[w[i]] = (need[w[i]] || 0) + 1; fresh++; }
+    }
+    if (!fresh) return say(w + " is already there.");
+    /* one grid only: a word typed in the box has to cross or touch the tiles already down */
+    var joins = !Object.keys(G.board).length || fresh < w.length || spots.some(function(p){
+      return at(p[0] - 1, p[1]) || at(p[0] + 1, p[1]) || at(p[0], p[1] - 1) || at(p[0], p[1] + 1);
+    });
+    if (!joins) return say("That would start a second grid: a word has to cross or touch the one you have.", "bad");
+    var short = Object.keys(need).filter(function(ch){ return count(ch) < need[ch]; });
+    if (short.length) return say("Not enough tiles for " + w + ": you’re short of " + short.join(", ") + ".", "bad");
+    snapshot();
+    spots.forEach(function(p, i){ if (p) put(p[0], p[1], fromHand(inHand(w[i]))); });
+    G.cur.r += d[0] * w.length; G.cur.c += d[1] * w.length;
+    trail = []; skipped = [];
+    wordIn.value = "";
+    changed();
+    ensureVisible();
+  }
+
+  /* rearrange: take tiles back into your hand to build again (one tile, the word at the cursor, or all) */
+  function rearrange(what){
+    act();
+    var cells = [];
+    if (what === "all") cells = Object.keys(G.board).map(function(k){ return k.split(",").map(Number); });
+    else if (what === "word") {
+      var w = wordAt(G.cur.r, G.cur.c, G.cur.dir) || wordAt(G.cur.r, G.cur.c, other(G.cur.dir));
+      if (w) cells = w.cells;
+    } else if (at(G.cur.r, G.cur.c)) cells = [[G.cur.r, G.cur.c]];
+    if (!cells.length) return say(what === "all" ? "The board is already empty." : "Aim at a tile on the board first.", "bad");
+    snapshot();
+    cells.forEach(function(p){ G.hand.push(lift(p[0], p[1])); });
+    trail = []; skipped = [];
+    changed();
+    say("Took back " + plural(cells.length, "tile") + ".");
+  }
+  function undoMove(){
+    act();
+    if (!undo.length) return say("Nothing to undo.");
+    var s = JSON.parse(undo.pop());
+    G.board = s.b; G.hand = s.h; G.cur = s.c;
+    trail = []; skipped = [];
+    changed();
+    ensureVisible();
+  }
+
+  /* peel: with every tile placed and every word good, take one more */
+  function peel(){
+    act();
+    if (!DICT) return say("The dictionary is still loading.", "bad");
+    if (G.hand.length) return say("Use every tile in your hand first: " + G.hand.length + " to go.", "bad");
+    chk = check();
+    if (!chk.ok) { show(); return say(problem(), "bad"); }
+    if (!G.bunch.length) return bananas();
+    var t = newTile(G.bunch.pop());
+    G.hand.push(t); G.peels++; ui.fresh[t.id] = 1;
+    undo = []; trail = []; skipped = [];
+    changed();
+    say("Peel! You drew " + an(t.ch) + ". " + left() + ".", "ok");
+  }
+  function left(){ return G.bunch.length ? G.bunch.length + " left in the bunch" : "The bunch is empty"; }
+
+  /* exchange (dump): give one tile back, take three */
+  function exchange(t, r, c){
+    act();
+    if (G.bunch.length < 3) return say("Dumping needs three tiles in the bunch; " + (G.bunch.length === 1 ? "there is 1" : "there are " + G.bunch.length) + ".", "bad");
+    snapshot(); undo = [];
+    if (r !== undefined) lift(r, c); else fromHand(t);
+    var got = [];
+    for (var i = 0; i < 3; i++) { var n = newTile(G.bunch.pop()); G.hand.push(n); ui.fresh[n.id] = 1; got.push(n.ch); }
+    G.bunch.splice(Math.floor(rand() * (G.bunch.length + 1)), 0, t.ch);     // back into the bunch, anywhere
+    G.dumps++;
+    trail = []; skipped = [];
+    changed();
+    say("Dumped " + an(t.ch) + " for " + got.join(", ") + ".", "ok");
+  }
+
+  /* Bananas! */
+  function bananas(){
+    halt();
+    G.done = true;
+    var time = G.spent, best = load(K.best, {}), prev = best[G.size], record = !prev || time < prev;
+    if (record) { best[G.size] = time; store(K.best, best); }
+    drop(K.game);
+    var words = chk.words.map(function(w){ return w.text; }), longest = "";
+    words.forEach(function(w){ if (w.length > longest.length) longest = w; });
+    $("endTime").textContent = fmt(time);
+    $("endNote").textContent = !prev ? "Your first finish with " + G.size + " tiles." :
+      record ? "A new best, " + fmt(prev - time) + " faster." : "Your best with " + G.size + " tiles is " + fmt(prev) + ".";
+    $("endStats").textContent = G.size + " tiles · " + plural(words.length, "word") + " · longest " + longest + " · " +
+      plural(G.peels, "peel") + " · " + plural(G.dumps, "dump") + (G.hints ? " · " + plural(G.hints, "hint") : "");
+    show();
+    openCard("endCard");
+  }
+
+  /* hint: the word that uses the most of your hand (hard letters count extra), crossing the board cleanly */
+  function hint(){
+    act();
+    if (!WORDS) return say("The dictionary is still loading.", "bad");
+    if (!G.hand.length) return say(G.bunch.length ? "Your hand is empty: Peel!" : "Your hand is empty: call Bananas!");
+    var have = counts(G.hand.map(function(t){ return t.ch; })), tiles = onBoard();
+    var on = counts(tiles.map(function(x){ return x.t.ch; })), empty = !tiles.length, n = G.hand.length;
+    var need = new Array(26), cands = [];
+    for (var i = 0; i < WORDS.length; i++) {
+      var w = WORDS[i], L = w.length;
+      if (L < 2 || L > 8 || L > n + 1 || (empty && L > n)) continue;    // eight letters at most, so hints stay human
+      need.fill(0);
+      var extra = -1, over = 0;
+      for (var j = 0; j < L; j++) {
+        var x = w.charCodeAt(j) - 97;
+        if (x < 0 || x > 25) { over = 9; break; }
+        if (++need[x] > have[x]) { if (++over > 1) break; extra = x; }
+      }
+      if (over > 1 || (empty && over) || (over && !on[extra])) continue;
+      cands.push({ w: w.toUpperCase(), a: extra, s: worth(w, empty ? L : L - 1) });
+    }
+    cands.sort(function(a, b){ return b.s - a.s; });
+    /* the best word that fits: one with a meaning beats any without, and an example sentence is worth two tiles */
+    var found = null, best = -1;
+    for (var q = 0; q < cands.length && q < 6000; q++) {
+      var cd = cands[q];
+      if (cd.s + 1020 <= best) break;                      // nothing further down the list can do better
+      var m = meaning(cd.w), t = cd.s + (m ? 1000 + (m.ex ? 20 : 0) : 0);
+      if (t <= best) continue;
+      var spot = empty ? { w: cd.w, r: G.cur.r, c: G.cur.c, dir: G.cur.dir } : placeFor(cd, tiles);
+      if (spot) { found = spot; found.m = m; best = t; }
+    }
+    if (!found && !empty) { found = hook(); if (found) found.m = meaning(found.w); }
+    if (!found) return say(G.bunch.length >= 3 ? "No easy word fits right now. Try rearranging, or Dump a hard letter." :
+      "No easy spot left. Take back a word and rebuild it with your " + G.hand.map(function(t){ return t.ch; }).join(", ") + ".");
+    G.hints++;
+    G.cur = { r: found.r, c: found.c, dir: found.dir };
+    trail = []; skipped = [];
+    wordIn.value = found.w;
+    ui.def = found.m || { word: found.w, none: true };      // stays up after you place the word, until you close it
+    show(); ensureVisible(); save();
+    say(found.add ? "Hint: add " + an(found.add) + " to make " + found.w + ". Press Place." :
+      "Hint: " + found.w + " fits along the arrow. Press Place, or spell it.", "ok");
+  }
+  /* no word crosses cleanly? then one tile on either end of a word already down (CAT to CATS), hard letters first */
+  function hook(){
+    var letters = [];
+    G.hand.forEach(function(t){ if (letters.indexOf(t.ch) < 0) letters.push(t.ch); });
+    letters.sort(function(a, b){ return (HARD[b] || 0) - (HARD[a] || 0); });
+    for (var i = 0; i < letters.length; i++) {
+      for (var j = 0; j < chk.words.length; j++) {
+        var w = chk.words[j], d = DIRS[w.dir], p = [d[1], d[0]], L = letters[i];
+        var first = w.cells[0], last = w.cells[w.cells.length - 1];
+        var r = last[0] + d[0], c = last[1] + d[1];
+        if (clear(r, c, d, p, 1) && isWord(w.text + L)) return { w: w.text + L, r: first[0], c: first[1], dir: w.dir, add: L };
+        r = first[0] - d[0]; c = first[1] - d[1];
+        if (clear(r, c, d, p, -1) && isWord(L + w.text)) return { w: L + w.text, r: r, c: c, dir: w.dir, add: L };
+      }
+    }
+    return null;
+  }
+  /* an empty square with nothing beyond it (along d, in direction s) and nothing either side */
+  function clear(r, c, d, p, s){
+    return !at(r, c) && !at(r + d[0] * s, c + d[1] * s) && !at(r + p[0], c + p[1]) && !at(r - p[0], c - p[1]);
+  }
+  function worth(w, used){ var s = used * 10; for (var i = 0; i < w.length; i++) s += (HARD[w[i].toUpperCase()] || 0) * 4; return s; }
+  function placeFor(cand, tiles){
+    var w = cand.w;
+    for (var i = 0; i < tiles.length; i++) {
+      var x = tiles[i], ch = x.t.ch;
+      if (cand.a >= 0 ? ch.charCodeAt(0) - 65 !== cand.a : w.indexOf(ch) < 0) continue;
+      for (var k = 0; k < w.length; k++) {
+        if (w[k] !== ch) continue;
+        for (var dir in DIRS) if (fits(w, x.r, x.c, k, dir)) { var d = DIRS[dir]; return { w: w, r: x.r - d[0] * k, c: x.c - d[1] * k, dir: dir }; }
+      }
+    }
+    return null;
+  }
+  /* does w fit through the tile at ar,ac (its letter k), touching nothing else? */
+  function fits(w, ar, ac, k, dir){
+    var d = DIRS[dir], p = [d[1], d[0]], sr = ar - d[0] * k, sc = ac - d[1] * k;
+    if (at(sr - d[0], sc - d[1]) || at(sr + d[0] * w.length, sc + d[1] * w.length)) return false;
+    for (var i = 0; i < w.length; i++) {
+      if (i === k) continue;
+      var r = sr + d[0] * i, c = sc + d[1] * i;
+      if (at(r, c) || at(r + p[0], c + p[1]) || at(r - p[0], c - p[1])) return false;
+    }
+    return true;
+  }
+
+  /* ---------------------------------------------------------------- the clock */
+  function elapsed(){ return G ? G.spent + (G.t0 ? Date.now() - G.t0 : 0) : 0; }
+  function run(){ if (G && !G.done && !G.t0) G.t0 = Date.now(); tick(); }
+  function halt(){ if (G && G.t0) { G.spent += Date.now() - G.t0; G.t0 = 0; } tick(); }
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function fmt(ms){ var s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60; s %= 60; return (h ? h + ":" + pad(m) : m) + ":" + pad(s); }
+  function tick(){ clock.textContent = fmt(elapsed()); clock.classList.toggle("paused", !!(G && !G.t0 && !G.done)); }
+  setInterval(function(){ if (G && G.t0) tick(); }, 250);
+
+  /* ---------------------------------------------------------------- saving */
+  function save(){
+    if (!G || G.done) return;
+    store(K.game, {
+      v: 1, size: G.size, bunch: G.bunch, spent: elapsed(), peels: G.peels, dumps: G.dumps, hints: G.hints, nextId: G.nextId, view: G.view,
+      hand: G.hand.map(function(t){ return [t.id, t.ch]; }),
+      board: Object.keys(G.board).map(function(k){ var p = k.split(","), t = G.board[k]; return [+p[0], +p[1], t.id, t.ch]; }),
+      cur: [G.cur.r, G.cur.c, G.cur.dir]
+    });
+  }
+  function restore(s){
+    try {
+      if (!s || s.v !== 1) return null;
+      var g = { size: s.size, bunch: s.bunch.slice(), board: {}, cur: { r: s.cur[0], c: s.cur[1], dir: s.cur[2] === "v" ? "v" : "h" },
+                hand: s.hand.map(function(a){ return { id: a[0], ch: a[1] }; }),
+                spent: s.spent || 0, t0: 0, peels: s.peels || 0, dumps: s.dumps || 0, hints: s.hints || 0, nextId: s.nextId || 1000, view: s.view || null, done: false };
+      s.board.forEach(function(a){ g.board[key(a[0], a[1])] = { id: a[2], ch: a[3] }; });
+      return g;
+    } catch (e) { return null; }
+  }
+
+  /* ---------------------------------------------------------------- show: draw everything */
+  function show(){
+    if (!G) return;
+    drawBoard(); drawRack(); drawStatus(); drawButtons(); tick();
+  }
+  /* the drawn part of the endless board: every tile, the cursor and the first square, with room to build.
+     It only grows during a game, so nothing jumps when tiles come off. */
+  function frame(){
+    var r0 = Math.min(0, G.cur.r), r1 = Math.max(0, G.cur.r), c0 = Math.min(0, G.cur.c), c1 = Math.max(0, G.cur.c);
+    for (var k in G.board) { var p = k.split(","), r = +p[0], c = +p[1]; if (r < r0) r0 = r; if (r > r1) r1 = r; if (c < c0) c0 = c; if (c > c1) c1 = c; }
+    r0 -= 8; r1 += 8; c0 -= 8; c1 += 8;
+    var rows = Math.ceil(stage.clientHeight / cell) + 2, cols = Math.ceil(stage.clientWidth / cell) + 2, e;
+    if (r1 - r0 + 1 < rows) { e = rows - (r1 - r0 + 1); r0 -= Math.floor(e / 2); r1 += Math.ceil(e / 2); }
+    if (c1 - c0 + 1 < cols) { e = cols - (c1 - c0 + 1); c0 -= Math.floor(e / 2); c1 += Math.ceil(e / 2); }
+    var v = G.view;
+    if (v) { r0 = Math.min(r0, v[0]); c0 = Math.min(c0, v[1]); r1 = Math.max(r1, v[2]); c1 = Math.max(c1, v[3]); }
+    return [r0, c0, r1, c1];
+  }
+  function drawBoard(){
+    var old = G.view, v = frame();
+    G.view = v;
+    board.style.setProperty("--rows", v[2] - v[0] + 1);
+    board.style.setProperty("--cols", v[3] - v[1] + 1);
+    if (old) {                                          // grown up or left: keep the same squares under your finger
+      if (old[0] !== v[0]) stage.scrollTop += (old[0] - v[0]) * cell;
+      if (old[1] !== v[1]) stage.scrollLeft += (old[1] - v[1]) * cell;
+    }
+    var hl = {}, bad = {}, w = !G.done && (wordAt(G.cur.r, G.cur.c, G.cur.dir) || wordAt(G.cur.r, G.cur.c, other(G.cur.dir)));
+    if (w) w.cells.forEach(function(p){ hl[key(p[0], p[1])] = 1; });
+    if (chk) chk.bad.forEach(function(x){ x.cells.forEach(function(p){ bad[key(p[0], p[1])] = 1; }); });
+    var html = "";
+    for (var k in G.board) {
+      var p = k.split(","), cls = "t" + (bad[k] ? " bad" : hl[k] ? " hl" : "") + (chk && chk.loose[k] ? " loose" : "");
+      html += '<span class="' + cls + '" style="--x:' + (+p[1] - v[1]) + ";--y:" + (+p[0] - v[0]) + '">' + G.board[k].ch + "</span>";
+    }
+    tilesEl.innerHTML = html;
+    curEl.hidden = G.done;
+    curEl.className = "cur " + G.cur.dir;
+    curEl.style.setProperty("--x", G.cur.c - v[1]);
+    curEl.style.setProperty("--y", G.cur.r - v[0]);
+  }
+  function drawRack(){
+    rack.innerHTML = G.hand.map(function(t){
+      return '<button class="tile' + (ui.fresh[t.id] ? " new" : "") + '" type="button" data-id="' + t.id + '">' + t.ch + "</button>";
+    }).join("") || '<p class="empty-hand">' + (G.done ? "Every tile used." : "Your hand is empty.") + "</p>";
+  }
+  function drawStatus(){
+    if (!G) return;
+    var msg = ui.msg, kind = ui.kind, add = ui.addable;
+    if (!msg && chk) {
+      if (G.done) { msg = "Bananas! Finished in " + fmt(G.spent) + "."; kind = "ok"; }
+      else if (!chk.count) msg = "Tap tiles to spell along the arrow, or type.";
+      else if (chk.bad.length) { msg = "Not in the dictionary: " + chk.bad.map(function(w){ return w.text; }).join(", "); kind = "bad"; add = chk.bad[0].text; }
+      else if (chk.groups > 1) { msg = "Your grid is in " + chk.groups + " pieces: join them up."; kind = "bad"; }
+      else if (chk.count < 2) msg = "One tile isn’t a word yet.";
+      else if (G.hand.length) { msg = "✓ " + plural(chk.words.length, "word") + " · " + plural(G.hand.length, "tile") + " to go"; kind = "ok"; }
+      else { msg = G.bunch.length ? "✓ All placed: Peel!" : "✓ Every tile used: call Bananas!"; kind = "ok"; }
+    }
+    statusEl.textContent = "";
+    var m = document.createElement("span");
+    m.className = "msg " + kind; m.textContent = msg;
+    statusEl.appendChild(m);
+    if (G.done) { statusEl.appendChild(mini("New game", "new", "")); return; }
+    if (add && DICT && !mine.has(add.toLowerCase())) statusEl.appendChild(mini("Add " + add + " to my words", "add", add));
+    var w = wordAt(G.cur.r, G.cur.c, G.cur.dir) || wordAt(G.cur.r, G.cur.c, other(G.cur.dir));
+    if (w && !ui.dumping) statusEl.appendChild(mini("Take back " + w.text, "take", w.dir));
+    if (w && !ui.dumping && !(ui.def && ui.def.word === w.text) && meaning(w.text)) statusEl.appendChild(mini("What’s " + w.text + "?", "meaning", w.text));
+    if (ui.def) statusEl.appendChild(defBox(ui.def));
+  }
+  /* WORD from lemma · part of speech — meaning, then the example sentence */
+  function defBox(d){
+    var box = document.createElement("div"), b = document.createElement("b"), x = document.createElement("button");
+    box.className = "def";
+    b.textContent = d.word;
+    box.appendChild(b);
+    if (d.none) box.appendChild(document.createTextNode(" — no meaning on file for this one."));
+    else {
+      var pos = document.createElement("span");
+      pos.className = "pos";
+      pos.textContent = " " + (d.lemma !== d.word.toLowerCase() ? "from " + d.lemma + " · " : "") + d.pos;
+      box.appendChild(pos);
+      box.appendChild(document.createTextNode(" — " + d.def));
+      if (d.ex) { var ex = document.createElement("span"); ex.className = "ex"; ex.textContent = "“" + d.ex + "”"; box.appendChild(ex); }
+    }
+    x.type = "button"; x.className = "x"; x.dataset.act = "hidedef"; x.setAttribute("aria-label", "Hide the meaning"); x.textContent = "×";
+    box.appendChild(x);
+    return box;
+  }
+  function mini(text, what, val){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "mini"; b.textContent = text; b.dataset.act = what; b.dataset.val = val;
+    return b;
+  }
+  function drawButtons(){
+    var empty = !G.hand.length;
+    peelBtn.textContent = G.bunch.length ? "Peel" : "Bananas!";
+    peelBtn.disabled = G.done || !empty;
+    peelBtn.classList.toggle("ready", !G.done && empty && !!chk && chk.ok);
+    dumpBtn.disabled = G.done || G.bunch.length < 3;
+    dumpBtn.setAttribute("aria-pressed", ui.dumping ? "true" : "false");
+    hintBtn.disabled = G.done || !WORDS || empty;
+    undoBtn.disabled = G.done || !undo.length;
+    backBtn.disabled = G.done;
+    bunchChip.textContent = G.bunch.length ? "Bunch " + G.bunch.length : "Bunch empty";
+    handCount.textContent = "Hand · " + G.hand.length;
+    dirBtn.textContent = G.cur.dir === "h" ? "→" : "↓";
+    dirBtn.setAttribute("aria-label", G.cur.dir === "h" ? "Across: tap for down" : "Down: tap for across");
+    document.body.classList.toggle("dumping", ui.dumping);
+  }
+
+  /* ---------------------------------------------------------------- scrolling and zoom */
+  function ensureVisible(){
+    var v = G.view, x = (G.cur.c - v[1]) * cell, y = (G.cur.r - v[0]) * cell, m = cell * 1.2;
+    var L = stage.scrollLeft, T = stage.scrollTop, W = stage.clientWidth, H = stage.clientHeight;
+    if (x < L + m) stage.scrollLeft = x - m; else if (x + cell > L + W - m) stage.scrollLeft = x + cell - W + m;
+    if (y < T + m) stage.scrollTop = y - m; else if (y + cell > T + H - m) stage.scrollTop = y + cell - H + m;
+  }
+  function bounds(){
+    var b = [G.cur.r, G.cur.c, G.cur.r, G.cur.c], keys = Object.keys(G.board);
+    if (keys.length) b = [Infinity, Infinity, -Infinity, -Infinity];
+    keys.forEach(function(k){ var p = k.split(","), r = +p[0], c = +p[1]; b = [Math.min(b[0], r), Math.min(b[1], c), Math.max(b[2], r), Math.max(b[3], c)]; });
+    return b;
+  }
+  function centre(){
+    var v = G.view, b = bounds();
+    stage.scrollLeft = ((b[1] + b[3] + 1) / 2 - v[1]) * cell - stage.clientWidth / 2;
+    stage.scrollTop = ((b[0] + b[2] + 1) / 2 - v[0]) * cell - stage.clientHeight / 2;
+  }
+  function fit(){
+    var b = bounds(), z = Math.min(stage.clientWidth / (b[3] - b[1] + 3), stage.clientHeight / (b[2] - b[0] + 3));
+    if (z < cell) setZoom(z);
+    drawBoard();
+    centre();
+  }
+  /* zoom so the square under fx,fy (pixels in the board's window) stays put */
+  function setZoom(z, fx, fy){
+    z = Math.round(Math.max(ZMIN, Math.min(ZMAX, z)));
+    if (z === cell) return;
+    if (fx === undefined) { fx = stage.clientWidth / 2; fy = stage.clientHeight / 2; }
+    var lc = G ? G.view[1] + (stage.scrollLeft + fx) / cell : 0, lr = G ? G.view[0] + (stage.scrollTop + fy) / cell : 0;
+    cell = z;
+    board.style.setProperty("--cell", z + "px");
+    if (G) { drawBoard(); stage.scrollLeft = (lc - G.view[1]) * z - fx; stage.scrollTop = (lr - G.view[0]) * z - fy; }
+    prefs.cell = z; store(K.prefs, prefs);
+  }
+  $("zin").onclick = function(){ setZoom(cell * 1.2); };
+  $("zout").onclick = function(){ setZoom(cell / 1.2); };
+  $("zfit").onclick = function(){ if (G) fit(); };
+  var pinch = null;
+  function spread(t){ return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY) || 1; }
+  stage.addEventListener("touchstart", function(e){ if (e.touches.length === 2 && G) pinch = { d: spread(e.touches), z: cell }; }, { passive: true });
+  stage.addEventListener("touchmove", function(e){
+    if (!pinch || e.touches.length !== 2) return;
+    e.preventDefault();
+    var b = stage.getBoundingClientRect(), a = e.touches[0], o = e.touches[1];
+    setZoom(pinch.z * spread(e.touches) / pinch.d, (a.clientX + o.clientX) / 2 - b.left, (a.clientY + o.clientY) / 2 - b.top);
+  }, { passive: false });
+  stage.addEventListener("touchend", function(e){ if (e.touches.length < 2) pinch = null; });
+  stage.addEventListener("touchcancel", function(){ pinch = null; });
+  stage.addEventListener("wheel", function(e){
+    if (!e.ctrlKey || !G) return;                 // trackpad pinch, or Ctrl + wheel
+    e.preventDefault();
+    var b = stage.getBoundingClientRect();
+    setZoom(cell + (e.deltaY < 0 ? 1 : -1), e.clientX - b.left, e.clientY - b.top);
+  }, { passive: false });
+  addEventListener("resize", function(){ if (G) drawBoard(); });
+
+  /* ---------------------------------------------------------------- taps and keys */
+  board.addEventListener("click", function(e){
+    if (!playing()) return;
+    var b = board.getBoundingClientRect();
+    var r = G.view[0] + Math.floor((e.clientY - b.top) / cell), c = G.view[1] + Math.floor((e.clientX - b.left) / cell);
+    if (ui.dumping) { var t = at(r, c); if (t) exchange(t, r, c); else say("Tap a tile to dump it, or press Dump again to stop."); return; }
+    act();
+    aim(r, c);
+    show(); save();
+  });
+  rack.addEventListener("click", function(e){
+    var b = e.target.closest(".tile");
+    if (!b || !playing()) return;
+    var t = G.hand.filter(function(x){ return x.id === +b.dataset.id; })[0];
+    if (!t) return;
+    if (ui.dumping) exchange(t); else typeLetter(t.ch, false, t);
+  });
+  statusEl.addEventListener("click", function(e){
+    var b = e.target.closest("button");
+    if (!b || !G) return;
+    if (b.dataset.act === "new") return openCard("startCard");
+    if (b.dataset.act === "hidedef") { ui.def = null; return drawStatus(); }
+    if (!playing()) return;
+    if (b.dataset.act === "meaning") { ui.def = meaning(b.dataset.val); return drawStatus(); }
+    if (b.dataset.act === "add") {
+      mine.add(b.dataset.val.toLowerCase()); store(K.mine, Array.from(mine).sort());
+      act(); changed(); say(b.dataset.val + " is in your words now.", "ok");
+    }
+    if (b.dataset.act === "take") { G.cur.dir = b.dataset.val; rearrange("word"); }
+  });
+  $("wordForm").addEventListener("submit", function(e){ e.preventDefault(); if (playing()) select(wordIn.value); });
+  dirBtn.onclick = function(){ if (!playing()) return; act(); G.cur.dir = other(G.cur.dir); trail = []; skipped = []; show(); save(); };
+  peelBtn.onclick = function(){ if (playing()) peel(); };
+  hintBtn.onclick = function(){ if (playing()) hint(); };
+  undoBtn.onclick = function(){ if (playing()) undoMove(); };
+  backBtn.onclick = function(){ if (playing()) backspace(); };
+  dumpBtn.onclick = function(){
+    if (!playing()) return;
+    var was = ui.dumping;
+    act();
+    if (!was) { ui.dumping = true; ui.msg = "Tap the tile to dump: it goes back in the bunch and you take three."; }
+    show();
+  };
+  $("sortBtn").onclick = function(){ if (!playing()) return; G.hand.sort(function(a, b){ return a.ch < b.ch ? -1 : a.ch > b.ch ? 1 : 0; }); drawRack(); save(); };
+  $("mixBtn").onclick = function(){ if (!playing()) return; shuffle(G.hand); drawRack(); save(); };
+
+  document.addEventListener("keydown", function(e){
+    var k = e.key;
+    if (!overlay.hidden) {
+      if (k === "Escape" && /^(menuCard|helpCard|wordsCard)$/.test(ui.card)) { e.preventDefault(); back(); }
+      return;
+    }
+    if (!playing()) return;
+    if (e.target === wordIn) { if (k === "Escape") wordIn.blur(); return; }
+    if (e.ctrlKey || e.metaKey) { if (k.toLowerCase() === "z") { e.preventDefault(); undoMove(); } return; }
+    if (e.altKey) return;
+    var onControl = /^(BUTTON|A|INPUT|TEXTAREA|SELECT|SUMMARY)$/.test(e.target.tagName);
+    if (/^[a-z]$/i.test(k)) { e.preventDefault(); typeLetter(k.toUpperCase(), true); return; }
+    var arrows = { ArrowLeft: [0, -1, "h"], ArrowRight: [0, 1, "h"], ArrowUp: [-1, 0, "v"], ArrowDown: [1, 0, "v"] };
+    if (arrows[k]) {
+      e.preventDefault(); act();
+      var a = arrows[k];
+      if (G.cur.dir !== a[2]) G.cur.dir = a[2]; else { G.cur.r += a[0]; G.cur.c += a[1]; }
+      trail = []; skipped = [];
+      show(); ensureVisible(); save();
+      return;
+    }
+    if (k === "Backspace") { e.preventDefault(); backspace(); return; }
+    if (k === "Delete") { e.preventDefault(); rearrange("tile"); return; }
+    if (k === "Escape") { act(); show(); return; }
+    if (k === "?") { openCard("helpCard"); return; }
+    if (onControl) return;
+    if (k === " ") { e.preventDefault(); act(); G.cur.dir = other(G.cur.dir); trail = []; skipped = []; show(); save(); return; }
+    if (k === "Enter") { e.preventDefault(); peel(); }
+  });
+
+  /* ---------------------------------------------------------------- cards */
+  function openCard(id, goingBack){
+    if (G && G.t0) { halt(); ui.resume = !G.done; save(); }       // the clock stops while a card is open
+    if (!goingBack && ui.card && ui.card !== id) ui.stack.push(ui.card);
+    ui.card = id;
+    overlay.hidden = false;
+    [].forEach.call(overlay.children, function(c){ c.hidden = c.id !== id; });
+    if (id === "startCard") drawStart();
+    if (id === "pauseCard") drawPause();
+    if (id === "wordsCard") $("mineText").value = Array.from(mine).sort().join("\n");
+    var f = $(id).querySelector(".btn.primary:not([disabled])");
+    if (f) f.focus({ preventScroll: true });
+  }
+  function closeCards(){
+    overlay.hidden = true; ui.card = null; ui.stack = [];
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    if (ui.resume && G && !G.done) run();
+    ui.resume = false;
+    show();
+  }
+  function back(){
+    var p = ui.stack.pop();
+    if (p) openCard(p, true);
+    else if (G && !G.done) closeCards();
+    else openCard("startCard", true);
+  }
+  function drawStart(){
+    var best = load(K.best, {}), size = +prefs.size || 40;
+    [].forEach.call($("sizes").children, function(b){
+      var n = +b.dataset.size;
+      b.setAttribute("aria-pressed", n === size ? "true" : "false");
+      b.querySelector("i").textContent = best[n] ? "best " + fmt(best[n]) : "no best yet";
+    });
+    $("startBack").hidden = !(G && !G.done);
+    $("splitBtn").disabled = !DICT;
+  }
+  function drawPause(){
+    $("pauseTime").textContent = fmt(elapsed());
+    $("pauseNote").textContent = G.size + " tiles · " + G.bunch.length + " in the bunch · " + G.hand.length + " in your hand";
+    $("resumeBtn").disabled = !DICT;
+  }
+  overlay.addEventListener("click", function(e){
+    var b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.open) openCard(b.dataset.open);
+    else if (b.hasAttribute("data-back")) back();
+  });
+  $("sizes").addEventListener("click", function(e){
+    var b = e.target.closest(".size");
+    if (!b) return;
+    prefs.size = +b.dataset.size; store(K.prefs, prefs);
+    drawStart();
+  });
+  $("splitBtn").onclick = function(){
+    if (!DICT) return;
+    init(+prefs.size || 40);
+    ui.resume = true;
+    closeCards();
+    centre();
+    say("Split! " + HAND + " tiles in your hand, " + G.bunch.length + " in the bunch. Go!", "ok");
+  };
+  $("resumeBtn").onclick = function(){ ui.resume = true; closeCards(); };
+  $("seeGrid").onclick = function(){ closeCards(); fit(); };
+  $("takeAllBtn").onclick = function(){ if (!G || G.done) return; closeCards(); rearrange("all"); };
+  $("newBtn").onclick = function(){
+    if (G && !G.done && !confirm("Start a new game? This one will be lost.")) return;
+    openCard("startCard");
+  };
+  $("mineSave").onclick = function(){
+    var list = $("mineText").value.toLowerCase().split(/[^a-z]+/).filter(function(w){ return w.length > 1; });
+    mine = new Set(list);
+    store(K.mine, Array.from(mine).sort());
+    if (G) chk = check();
+    back();
+  };
+  clock.onclick = function(){ if (playing()) openCard("pauseCard"); };
+  $("menuBtn").onclick = function(){ if (ui.card === "menuCard") back(); else openCard("menuCard"); };
+
+  /* a phone that switches apps pauses the game; coming back shows the pause card */
+  document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState === "hidden") { if (G && G.t0) { halt(); save(); ui.away = true; } }
+    else if (ui.away) { ui.away = false; if (G && !G.done && overlay.hidden) openCard("pauseCard"); }
+  });
+  addEventListener("pagehide", save);
+
+  /* ---------------------------------------------------------------- start */
+  G = restore(load(K.game, null));
+  if (G) { chk = check(); show(); centre(); openCard("pauseCard"); }
+  else openCard("startCard");
+  loadWords();
+
+  /* for testing, or playing from the console */
+  window.banana = {
+    state: function(){ return G; }, check: function(){ return G && check(); }, words: function(){ return WORDS ? WORDS.length : 0; },
+    tap: function(r, c){ act(); aim(r, c); show(); }, type: function(ch){ typeLetter(ch.toUpperCase(), true); },
+    tapTile: function(i){ var t = G.hand[i]; if (t) typeLetter(t.ch, false, t); },
+    place: function(w){ select(w); }, peel: peel, dump: function(i){ exchange(G.hand[i]); }, hint: hint, undo: undoMove,
+    back: backspace, take: rearrange, status: function(){ return statusEl.textContent; },
+    meaning: meaning, def: function(){ return ui.def; }
+  };
+})();
+</script>
+</body>
+</html>
