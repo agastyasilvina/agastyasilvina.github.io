@@ -312,7 +312,7 @@ textarea{
         <li><b>Aim:</b> tap a square. Tap it again to turn between &rarr; across and &darr; down.</li>
         <li><b>Spell:</b> tap tiles in your hand, or type on a keyboard. Each tile lands at the cursor, which moves along the arrow and hops over tiles already there. Or type a whole word in the box and press Place.</li>
         <li><b>Peel:</b> when your hand is empty and every word checks out, Peel to draw one more tile.</li>
-        <li><b>Dump:</b> stuck with a hard letter? Give one tile back and take three.</li>
+        <li><b>Dump:</b> stuck with a hard letter? Give one tile back and take three. Every draw comes from the full set of 144 tiles, so a dumped letter rarely comes back; 40 or 72 is just how many tiles you play.</li>
         <li><b>Bananas!</b> When the bunch is empty and so is your hand, call Bananas! to stop the clock.</li>
       </ol>
       <p><b>Stuck?</b> Hint finds a word that fits, with its meaning and an example sentence. Tap any word on your board, then What&rsquo;s&nbsp;&hellip;?, to look it up.</p>
@@ -450,14 +450,16 @@ textarea{
   function an(ch){ return ("AEFHILMNORSX".indexOf(ch) >= 0 ? "an " : "a ") + ch; }
   function counts(letters){ var a = new Array(26).fill(0); letters.forEach(function(ch){ a[ch.charCodeAt(0) - 65]++; }); return a; }
 
-  /* init: fill the bunch, shuffle it, take 21 */
+  /* init: fill the bunch, shuffle it, take 21.
+     Every draw comes from the whole bag of 144 (G.bag); the game size only sets how many tiles you play, counted
+     down in G.left. So in a 40- or 72-tile game a dumped tile goes back among all 144, and every letter stays in play. */
   function init(size){
     var bag = [];
     for (var i = 0; i < 26; i++) for (var n = 0; n < AMOUNTS[i]; n++) bag.push(ALPHABETS[i]);
     shuffle(bag);
-    G = { size: size, bunch: bag.slice(0, size), hand: [], board: {}, cur: { r: 0, c: 0, dir: "h" },
+    G = { size: size, bag: bag, left: size, hand: [], board: {}, cur: { r: 0, c: 0, dir: "h" },
           spent: 0, t0: 0, peels: 0, dumps: 0, hints: 0, nextId: 1, view: null, done: false };
-    for (var k = 0; k < HAND; k++) G.hand.push(newTile(G.bunch.pop()));
+    for (var k = 0; k < HAND; k++) G.hand.push(draw());
     undo = []; trail = []; skipped = [];
     act();
     ui.def = null;
@@ -642,24 +644,26 @@ textarea{
     if (G.hand.length) return say("Use every tile in your hand first: " + G.hand.length + " to go.", "bad");
     chk = check();
     if (!chk.ok) { show(); return say(problem(), "bad"); }
-    if (!G.bunch.length) return bananas();
-    var t = newTile(G.bunch.pop());
+    if (!G.left) return bananas();
+    var t = draw();
     G.hand.push(t); G.peels++; ui.fresh[t.id] = 1;
     undo = []; trail = []; skipped = [];
     changed();
     say("Peel! You drew " + an(t.ch) + ". " + left() + ".", "ok");
   }
-  function left(){ return G.bunch.length ? G.bunch.length + " left in the bunch" : "The bunch is empty"; }
+  function draw(){ G.left--; return newTile(G.bag.pop()); }
+  function left(){ return G.left ? G.left + " left in the bunch" : "The bunch is empty"; }
 
   /* exchange (dump): give one tile back, take three */
   function exchange(t, r, c){
     act();
-    if (G.bunch.length < 3) return say("Dumping needs three tiles in the bunch; " + (G.bunch.length === 1 ? "there is 1" : "there are " + G.bunch.length) + ".", "bad");
+    if (G.left < 3) return say("Dumping needs three tiles in the bunch; " + (G.left === 1 ? "there is 1" : "there are " + G.left) + ".", "bad");
     snapshot(); undo = [];
     if (r !== undefined) lift(r, c); else fromHand(t);
     var got = [];
-    for (var i = 0; i < 3; i++) { var n = newTile(G.bunch.pop()); G.hand.push(n); ui.fresh[n.id] = 1; got.push(n.ch); }
-    G.bunch.splice(Math.floor(rand() * (G.bunch.length + 1)), 0, t.ch);     // back into the bunch, anywhere
+    for (var i = 0; i < 3; i++) { var n = draw(); G.hand.push(n); ui.fresh[n.id] = 1; got.push(n.ch); }
+    G.bag.splice(Math.floor(rand() * (G.bag.length + 1)), 0, t.ch);     // back among all the tiles, anywhere
+    G.left++;                                                           // three in, one out: you hold two more
     G.dumps++;
     trail = []; skipped = [];
     changed();
@@ -688,7 +692,7 @@ textarea{
   function hint(){
     act();
     if (!WORDS) return say("The dictionary is still loading.", "bad");
-    if (!G.hand.length) return say(G.bunch.length ? "Your hand is empty: Peel!" : "Your hand is empty: call Bananas!");
+    if (!G.hand.length) return say(G.left ? "Your hand is empty: Peel!" : "Your hand is empty: call Bananas!");
     var have = counts(G.hand.map(function(t){ return t.ch; })), tiles = onBoard();
     var on = counts(tiles.map(function(x){ return x.t.ch; })), empty = !tiles.length, n = G.hand.length;
     var need = new Array(26), cands = [];
@@ -717,7 +721,7 @@ textarea{
       if (spot) { found = spot; found.m = m; best = t; }
     }
     if (!found && !empty) { found = hook(); if (found) found.m = meaning(found.w); }
-    if (!found) return say(G.bunch.length >= 3 ? "No easy word fits right now. Try rearranging, or Dump a hard letter." :
+    if (!found) return say(G.left >= 3 ? "No easy word fits right now. Try rearranging, or Dump a hard letter." :
       "No easy spot left. Take back a word and rebuild it with your " + G.hand.map(function(t){ return t.ch; }).join(", ") + ".");
     G.hints++;
     G.cur = { r: found.r, c: found.c, dir: found.dir };
@@ -787,7 +791,7 @@ textarea{
   function save(){
     if (!G || G.done) return;
     store(K.game, {
-      v: 1, size: G.size, bunch: G.bunch, spent: elapsed(), peels: G.peels, dumps: G.dumps, hints: G.hints, nextId: G.nextId, view: G.view,
+      v: 2, size: G.size, bag: G.bag, left: G.left, spent: elapsed(), peels: G.peels, dumps: G.dumps, hints: G.hints, nextId: G.nextId, view: G.view,
       hand: G.hand.map(function(t){ return [t.id, t.ch]; }),
       board: Object.keys(G.board).map(function(k){ var p = k.split(","), t = G.board[k]; return [+p[0], +p[1], t.id, t.ch]; }),
       cur: [G.cur.r, G.cur.c, G.cur.dir]
@@ -795,8 +799,9 @@ textarea{
   }
   function restore(s){
     try {
-      if (!s || s.v !== 1) return null;
-      var g = { size: s.size, bunch: s.bunch.slice(), board: {}, cur: { r: s.cur[0], c: s.cur[1], dir: s.cur[2] === "v" ? "v" : "h" },
+      if (!s || (s.v !== 1 && s.v !== 2)) return null;
+      /* a game saved before the whole-bag change (v1) carries on with its own small bunch */
+      var g = { size: s.size, bag: (s.v === 2 ? s.bag : s.bunch).slice(), left: s.v === 2 ? s.left : s.bunch.length, board: {}, cur: { r: s.cur[0], c: s.cur[1], dir: s.cur[2] === "v" ? "v" : "h" },
                 hand: s.hand.map(function(a){ return { id: a[0], ch: a[1] }; }),
                 spent: s.spent || 0, t0: 0, peels: s.peels || 0, dumps: s.dumps || 0, hints: s.hints || 0, nextId: s.nextId || 1000, view: s.view || null, done: false };
       s.board.forEach(function(a){ g.board[key(a[0], a[1])] = { id: a[2], ch: a[3] }; });
@@ -860,7 +865,7 @@ textarea{
       else if (chk.groups > 1) { msg = "Your grid is in " + chk.groups + " pieces: join them up."; kind = "bad"; }
       else if (chk.count < 2) msg = "One tile isn’t a word yet.";
       else if (G.hand.length) { msg = "✓ " + plural(chk.words.length, "word") + " · " + plural(G.hand.length, "tile") + " to go"; kind = "ok"; }
-      else { msg = G.bunch.length ? "✓ All placed: Peel!" : "✓ Every tile used: call Bananas!"; kind = "ok"; }
+      else { msg = G.left ? "✓ All placed: Peel!" : "✓ Every tile used: call Bananas!"; kind = "ok"; }
     }
     statusEl.textContent = "";
     var m = document.createElement("span");
@@ -899,15 +904,15 @@ textarea{
   }
   function drawButtons(){
     var empty = !G.hand.length;
-    peelBtn.textContent = G.bunch.length ? "Peel" : "Bananas!";
+    peelBtn.textContent = G.left ? "Peel" : "Bananas!";
     peelBtn.disabled = G.done || !empty;
     peelBtn.classList.toggle("ready", !G.done && empty && !!chk && chk.ok);
-    dumpBtn.disabled = G.done || G.bunch.length < 3;
+    dumpBtn.disabled = G.done || G.left < 3;
     dumpBtn.setAttribute("aria-pressed", ui.dumping ? "true" : "false");
     hintBtn.disabled = G.done || !WORDS || empty;
     undoBtn.disabled = G.done || !undo.length;
     backBtn.disabled = G.done;
-    bunchChip.textContent = G.bunch.length ? "Bunch " + G.bunch.length : "Bunch empty";
+    bunchChip.textContent = G.left ? "Bunch " + G.left : "Bunch empty";
     handCount.textContent = "Hand · " + G.hand.length;
     dirBtn.textContent = G.cur.dir === "h" ? "→" : "↓";
     dirBtn.setAttribute("aria-label", G.cur.dir === "h" ? "Across: tap for down" : "Down: tap for across");
@@ -1085,7 +1090,7 @@ textarea{
   }
   function drawPause(){
     $("pauseTime").textContent = fmt(elapsed());
-    $("pauseNote").textContent = G.size + " tiles · " + G.bunch.length + " in the bunch · " + G.hand.length + " in your hand";
+    $("pauseNote").textContent = G.size + " tiles · " + G.left + " in the bunch · " + G.hand.length + " in your hand";
     $("resumeBtn").disabled = !DICT;
   }
   overlay.addEventListener("click", function(e){
@@ -1106,7 +1111,7 @@ textarea{
     ui.resume = true;
     closeCards();
     centre();
-    say("Split! " + HAND + " tiles in your hand, " + G.bunch.length + " in the bunch. Go!", "ok");
+    say("Split! " + HAND + " tiles in your hand, " + G.left + " in the bunch. Go!", "ok");
   };
   $("resumeBtn").onclick = function(){ ui.resume = true; closeCards(); };
   $("seeGrid").onclick = function(){ closeCards(); fit(); };
